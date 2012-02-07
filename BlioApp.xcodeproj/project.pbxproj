@@ -1413,6 +1413,14 @@
 		C9923A14126CCF2D00BA364A /* searchFieldIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = C9923A0E126CCF2D00BA364A /* searchFieldIcon.png */; };
 		C9923A15126CCF2D00BA364A /* searchFieldIcon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C9923A0F126CCF2D00BA364A /* searchFieldIcon@2x.png */; };
 		C99860DB113FD284009E5263 /* check.png in Resources */ = {isa = PBXBuildFile; fileRef = C99860DA113FD284009E5263 /* check.png */; };
+		C9A289DC14DEC10900E0AD1E /* BlioPDFFont.m in Sources */ = {isa = PBXBuildFile; fileRef = C9A289DB14DEC10900E0AD1E /* BlioPDFFont.m */; };
+		C9A289DD14DEC10900E0AD1E /* BlioPDFFont.m in Sources */ = {isa = PBXBuildFile; fileRef = C9A289DB14DEC10900E0AD1E /* BlioPDFFont.m */; };
+		C9A289DE14DEC10900E0AD1E /* BlioPDFFont.m in Sources */ = {isa = PBXBuildFile; fileRef = C9A289DB14DEC10900E0AD1E /* BlioPDFFont.m */; };
+		C9A289DF14DEC10900E0AD1E /* BlioPDFFont.m in Sources */ = {isa = PBXBuildFile; fileRef = C9A289DB14DEC10900E0AD1E /* BlioPDFFont.m */; };
+		C9A289E314DEC1FA00E0AD1E /* BlioPDFPageParser.m in Sources */ = {isa = PBXBuildFile; fileRef = C9A289E214DEC1F800E0AD1E /* BlioPDFPageParser.m */; };
+		C9A289E414DEC1FA00E0AD1E /* BlioPDFPageParser.m in Sources */ = {isa = PBXBuildFile; fileRef = C9A289E214DEC1F800E0AD1E /* BlioPDFPageParser.m */; };
+		C9A289E514DEC1FA00E0AD1E /* BlioPDFPageParser.m in Sources */ = {isa = PBXBuildFile; fileRef = C9A289E214DEC1F800E0AD1E /* BlioPDFPageParser.m */; };
+		C9A289E614DEC1FA00E0AD1E /* BlioPDFPageParser.m in Sources */ = {isa = PBXBuildFile; fileRef = C9A289E214DEC1F800E0AD1E /* BlioPDFPageParser.m */; };
 		C9A9B9AE130EC9CA009B950F /* MediaPlayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C9A9B9AD130EC9CA009B950F /* MediaPlayer.framework */; };
 		C9A9B9B1130EC9FC009B950F /* MediaPlayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C9A9B9AD130EC9CA009B950F /* MediaPlayer.framework */; };
 		C9A9B9B3130ECA28009B950F /* MediaPlayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C9A9B9AD130EC9CA009B950F /* MediaPlayer.framework */; };
@@ -2383,6 +2391,11 @@
 		C9923A0F126CCF2D00BA364A /* searchFieldIcon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "searchFieldIcon@2x.png"; sourceTree = "<group>"; };
 		C99832A113A64F8000FCE431 /* BlioXPSConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioXPSConstants.h; sourceTree = "<group>"; };
 		C99860DA113FD284009E5263 /* check.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = check.png; sourceTree = "<group>"; };
+		C9A289DA14DEC10900E0AD1E /* BlioPDFFont.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioPDFFont.h; sourceTree = "<group>"; };
+		C9A289DB14DEC10900E0AD1E /* BlioPDFFont.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioPDFFont.m; sourceTree = "<group>"; };
+		C9A289E014DEC16600E0AD1E /* BlioPDFResourceDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioPDFResourceDataSource.h; sourceTree = "<group>"; };
+		C9A289E114DEC1F800E0AD1E /* BlioPDFPageParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioPDFPageParser.h; sourceTree = "<group>"; };
+		C9A289E214DEC1F800E0AD1E /* BlioPDFPageParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioPDFPageParser.m; sourceTree = "<group>"; };
 		C9A9B9AD130EC9CA009B950F /* MediaPlayer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MediaPlayer.framework; path = System/Library/Frameworks/MediaPlayer.framework; sourceTree = SDKROOT; };
 		C9A9DAB81312B73B009B950F /* BlioMediaView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioMediaView.h; sourceTree = "<group>"; };
 		C9A9DAB91312B73B009B950F /* BlioMediaView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioMediaView.m; sourceTree = "<group>"; };
@@ -3574,11 +3587,10 @@
 		C9985BF8113E8286009E5263 /* LayoutView */ = {
 			isa = PBXGroup;
 			children = (
+				C9A289D914DEC02D00E0AD1E /* BlioLayoutPDF */,
 				C9EFAF72134E1C5B00ADF905 /* Refactored */,
 				C90DAECE125CB5B800D8E663 /* BlioLayoutGeometry.h */,
 				C9DA75B511E71FA500F584A1 /* BlioLayoutDataSource.h */,
-				C90DAEBB125CB46E00D8E663 /* BlioLayoutPDFDataSource.h */,
-				C90DAEBC125CB46E00D8E663 /* BlioLayoutPDFDataSource.m */,
 				C9A9DAB81312B73B009B950F /* BlioMediaView.h */,
 				C9A9DAB91312B73B009B950F /* BlioMediaView.m */,
 				C90889B41330F2990066F103 /* BlioBlendView.h */,
@@ -3596,6 +3608,20 @@
 				7DF2A48E11536CA100FC2045 /* BlioFlowEucBook.m */,
 			);
 			name = Refactored;
+			sourceTree = "<group>";
+		};
+		C9A289D914DEC02D00E0AD1E /* BlioLayoutPDF */ = {
+			isa = PBXGroup;
+			children = (
+				C90DAEBB125CB46E00D8E663 /* BlioLayoutPDFDataSource.h */,
+				C90DAEBC125CB46E00D8E663 /* BlioLayoutPDFDataSource.m */,
+				C9A289E014DEC16600E0AD1E /* BlioPDFResourceDataSource.h */,
+				C9A289DA14DEC10900E0AD1E /* BlioPDFFont.h */,
+				C9A289DB14DEC10900E0AD1E /* BlioPDFFont.m */,
+				C9A289E114DEC1F800E0AD1E /* BlioPDFPageParser.h */,
+				C9A289E214DEC1F800E0AD1E /* BlioPDFPageParser.m */,
+			);
+			name = BlioLayoutPDF;
 			sourceTree = "<group>";
 		};
 		C9B087691344CC1C001963D0 /* libKNFBReader */ = {
@@ -5284,6 +5310,8 @@
 				7DE0D55D147AC3E2005FD319 /* BlioBookView.m in Sources */,
 				7D5B0C48147AD3D0007E3865 /* BlioViewSettingsFontAndSizeContentsView.m in Sources */,
 				7D00FBAB147BC7C600008261 /* BlioCenterableTableViewCell.m in Sources */,
+				C9A289DC14DEC10900E0AD1E /* BlioPDFFont.m in Sources */,
+				C9A289E314DEC1FA00E0AD1E /* BlioPDFPageParser.m in Sources */,
 				7D8AD3FB14A4B6CD002F5393 /* KNFBXMLParserLock.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -5443,6 +5471,8 @@
 				7DE0D55F147AC3E2005FD319 /* BlioBookView.m in Sources */,
 				7D5B0C4A147AD3D0007E3865 /* BlioViewSettingsFontAndSizeContentsView.m in Sources */,
 				7D00FBAD147BC7C600008261 /* BlioCenterableTableViewCell.m in Sources */,
+				C9A289DE14DEC10900E0AD1E /* BlioPDFFont.m in Sources */,
+				C9A289E514DEC1FA00E0AD1E /* BlioPDFPageParser.m in Sources */,
 				7D8AD3FD14A4B6CD002F5393 /* KNFBXMLParserLock.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -5601,6 +5631,8 @@
 				7DE0D560147AC3E2005FD319 /* BlioBookView.m in Sources */,
 				7D5B0C4B147AD3D0007E3865 /* BlioViewSettingsFontAndSizeContentsView.m in Sources */,
 				7D00FBAE147BC7C600008261 /* BlioCenterableTableViewCell.m in Sources */,
+				C9A289DF14DEC10900E0AD1E /* BlioPDFFont.m in Sources */,
+				C9A289E614DEC1FA00E0AD1E /* BlioPDFPageParser.m in Sources */,
 				7D8AD3FE14A4B6CD002F5393 /* KNFBXMLParserLock.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -5760,6 +5792,8 @@
 				7DE0D55E147AC3E2005FD319 /* BlioBookView.m in Sources */,
 				7D5B0C49147AD3D0007E3865 /* BlioViewSettingsFontAndSizeContentsView.m in Sources */,
 				7D00FBAC147BC7C600008261 /* BlioCenterableTableViewCell.m in Sources */,
+				C9A289DD14DEC10900E0AD1E /* BlioPDFFont.m in Sources */,
+				C9A289E414DEC1FA00E0AD1E /* BlioPDFPageParser.m in Sources */,
 				7D8AD3FC14A4B6CD002F5393 /* KNFBXMLParserLock.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
