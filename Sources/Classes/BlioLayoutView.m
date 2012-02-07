@@ -446,7 +446,13 @@
     NSMutableString *description = [NSMutableString string];
     
     for(NSNumber *pageIndex in pageIndexes) {
-        NSArray *nonFolioPageBlocks = [self.textFlow blocksForPageAtIndex:[pageIndex unsignedIntegerValue] includingFolioBlocks:NO];
+        NSArray *nonFolioPageBlocks = nil;
+        if ([(NSObject *)self.dataSource isKindOfClass:[BlioLayoutPDFDataSource class]]) {
+            nonFolioPageBlocks = [(BlioLayoutPDFDataSource *)self.dataSource blocksForPageAtIndex:[pageIndex unsignedIntegerValue] includingFolioBlocks:NO];
+        } else {
+            nonFolioPageBlocks = [self.textFlow blocksForPageAtIndex:[pageIndex unsignedIntegerValue] includingFolioBlocks:NO];
+        }
+        
         for (BlioTextFlowBlock *block in nonFolioPageBlocks) {
             [description appendString:[block string]];
             [description appendString:@"\n"];
@@ -925,7 +931,7 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 #pragma mark -
 #pragma mark Selector
 
-- (UIImage *)viewSnapshotImageForEucSelector:(EucSelector *)selector {
+- (UIImage *)viewSnapshotImageForEucSelector:(EucSelector *)selector {    
 	[self freezeOverlayContents];
     [self updatePositionedOverlayContexts];
 	return [self.pageTurningView screenshot];
@@ -956,7 +962,9 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
     // We say "YES" to includingFolioBlocks here because we know that we're not going
     // to be asked about a folio block anyway, and getting all the blocks is more
     // efficient than getting just the non-folio blocks. 
-    for (BlioTextFlowBlock *candidateBlock in [self.textFlow blocksForPageAtIndex:pageIndex includingFolioBlocks:YES]) {
+    NSArray *pageBlocks = [self.textFlow blocksForPageAtIndex:pageIndex includingFolioBlocks:YES];
+    
+    for (BlioTextFlowBlock *candidateBlock in pageBlocks) {
         if (candidateBlock.blockID == blockID) {
             block = candidateBlock;
             break;
@@ -964,6 +972,7 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
     }
     
     CGAffineTransform viewTransform = [self pageTurningViewTransformForPageAtIndex:pageIndex];
+    
     return block ? CGRectApplyAffineTransform([block rect], viewTransform) : CGRectZero;
 }
 
@@ -971,7 +980,9 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
     NSInteger pageIndex = [BlioTextFlowBlock pageIndexForBlockID:blockID];
     
     BlioTextFlowBlock *block = nil;
-    for (BlioTextFlowBlock *candidateBlock in [self.textFlow blocksForPageAtIndex:pageIndex includingFolioBlocks:YES]) {
+    NSArray *pageBlocks = [self.textFlow blocksForPageAtIndex:pageIndex includingFolioBlocks:YES];
+    
+    for (BlioTextFlowBlock *candidateBlock in pageBlocks) {
         if (candidateBlock.blockID == blockID) {
             block = candidateBlock;
             break;
@@ -991,7 +1002,9 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
     NSInteger pageIndex = [BlioTextFlowBlock pageIndexForBlockID:blockID];
     
     BlioTextFlowBlock *block = nil;
-    for (BlioTextFlowBlock *candidateBlock in [self.textFlow blocksForPageAtIndex:pageIndex includingFolioBlocks:YES]) {
+    NSArray *pageBlocks = [self.textFlow blocksForPageAtIndex:pageIndex includingFolioBlocks:YES];
+    
+    for (BlioTextFlowBlock *candidateBlock in pageBlocks) {
         if (candidateBlock.blockID == blockID) {
             block = candidateBlock;
             break;
@@ -1019,7 +1032,9 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
     NSInteger pageIndex = [BlioTextFlowBlock pageIndexForBlockID:blockID];
     
     BlioTextFlowBlock *block = nil;
-    for (BlioTextFlowBlock *candidateBlock in [self.textFlow blocksForPageAtIndex:pageIndex includingFolioBlocks:YES]) {
+    NSArray *pageBlocks = [self.textFlow blocksForPageAtIndex:pageIndex includingFolioBlocks:YES];
+    
+    for (BlioTextFlowBlock *candidateBlock in pageBlocks) {
         if (candidateBlock.blockID == blockID) {
             block = candidateBlock;
             break;
@@ -2034,8 +2049,13 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
     NSInteger pageIndex = self.pageTurningView.leftPageIndex;
     if(self.pageTurningView.isTwoUp && pageIndex != NSUIntegerMax) {
         CGAffineTransform viewTransform = [self pageTurningViewTransformForPageAtIndex:pageIndex offsetOrigin:YES applyZoom:NO];
-        NSArray *nonFolioPageBlocks = [self.textFlow blocksForPageAtIndex:pageIndex includingFolioBlocks:NO];
-    
+        NSArray *nonFolioPageBlocks = nil;
+        if ([(NSObject *)self.dataSource isKindOfClass:[BlioLayoutPDFDataSource class]]) {
+            nonFolioPageBlocks = [(BlioLayoutPDFDataSource *)self.dataSource blocksForPageAtIndex:pageIndex includingFolioBlocks:NO];
+        } else {
+            nonFolioPageBlocks = [self.textFlow blocksForPageAtIndex:pageIndex includingFolioBlocks:NO];
+        }
+        
         for (BlioTextFlowBlock *block in nonFolioPageBlocks) {
             UIAccessibilityElement *element = [[UIAccessibilityElement alloc] initWithAccessibilityContainer:self];
             CGRect blockRect = CGRectApplyAffineTransform([block rect], viewTransform);
@@ -2050,7 +2070,12 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
     pageIndex = self.pageTurningView.rightPageIndex;
     if(pageIndex != NSUIntegerMax) {
         CGAffineTransform viewTransform = [self pageTurningViewTransformForPageAtIndex:pageIndex offsetOrigin:YES applyZoom:NO];
-        NSArray *nonFolioPageBlocks = [self.textFlow blocksForPageAtIndex:pageIndex includingFolioBlocks:NO];
+        NSArray *nonFolioPageBlocks = nil;
+        if ([(NSObject *)self.dataSource isKindOfClass:[BlioLayoutPDFDataSource class]]) {
+            nonFolioPageBlocks = [(BlioLayoutPDFDataSource *)self.dataSource blocksForPageAtIndex:pageIndex includingFolioBlocks:NO];
+        } else {
+            nonFolioPageBlocks = [self.textFlow blocksForPageAtIndex:pageIndex includingFolioBlocks:NO];
+        }
         
         for (BlioTextFlowBlock *block in nonFolioPageBlocks) {
             UIAccessibilityElement *element = [[UIAccessibilityElement alloc] initWithAccessibilityContainer:self];
@@ -2247,7 +2272,13 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
         
         ret = [NSMutableArray array];
         
-        NSArray *nonFolioPageBlocks = [self.textFlow blocksForPageAtIndex:pageIndex includingFolioBlocks:NO];
+        NSArray *nonFolioPageBlocks = nil;
+        if ([(NSObject *)self.dataSource isKindOfClass:[BlioLayoutPDFDataSource class]]) {
+            nonFolioPageBlocks = [(BlioLayoutPDFDataSource *)self.dataSource blocksForPageAtIndex:pageIndex includingFolioBlocks:NO];
+        } else {
+            nonFolioPageBlocks = [self.textFlow blocksForPageAtIndex:pageIndex includingFolioBlocks:NO];
+        }
+        
         for(BlioTextFlowBlock *block in nonFolioPageBlocks) {
             CGFloat lineStartX = 0;
             CGFloat lineMinY = 0;

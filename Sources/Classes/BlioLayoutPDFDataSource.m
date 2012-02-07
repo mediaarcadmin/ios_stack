@@ -14,21 +14,38 @@
 #import <libEucalyptus/THPair.h>
 #import "NSArray+BlioAdditions.h"
 #import "BlioLayoutHyperlink.h"
+#import "BlioPDFFont.h"
+#import "BlioPDFPageParser.h"
+#import "KNFBTextFlowPositionedWord.h"
+#import "KNFBTextFlowBlock.h"
 
 @interface BlioLayoutPDFDataSource()
 
 @property (nonatomic, retain) NSArray *tableOfContents;
 @property (nonatomic, retain) NSDictionary *namesDictionary;
+@property (nonatomic, retain) NSCache *pageToFontMappings;
+@property (nonatomic, retain) NSCache *documentFonts;
+
+- (id)mappedFont:(NSValue *)fontPointer forPageRef:(CGPDFPageRef)pageRef;
+- (NSDictionary *)mappedFontsForPageRef:(CGPDFPageRef)pageRef;
+- (NSArray *)calculateBlocksForPageAtIndex:(NSInteger)pageIndex;
 
 @end
+
+static void mapPageFont(const char *key, CGPDFObjectRef object, void *info);
 
 @implementation BlioLayoutPDFDataSource
 
 @synthesize data;
-@synthesize tableOfContents; // Lazily loaded - see -(NSArray *)tableOfContents
-@synthesize namesDictionary; // Lazily loaded - see -(NSDictionary *)namesDictionary
+@synthesize tableOfContents;
+@synthesize namesDictionary;
+@synthesize pageToFontMappings;
+@synthesize documentFonts;
 
 - (void)dealloc {
+    [pageToFontMappings release], pageToFontMappings = nil;
+    [documentFonts release], documentFonts = nil;
+    
     [pdfLock lock];
     if (pdf) CGPDFDocumentRelease(pdf);
     self.data = nil;
@@ -299,120 +316,6 @@ static NSInteger pageNumberFromAction(CGPDFDictionaryRef action, void *context) 
 	
 	return -1;
 }
-
-/*
-void dictionaryInfoFunction ( const char *key,CGPDFObjectRef object, void *info ) { 
-	NSLog(@"Processing Dictionary Info");
-	
-	NSString *keyStr = [NSString stringWithCString:key encoding:NSUTF8StringEncoding];
-	CGPDFDictionaryRef contentDict = (CGPDFDictionaryRef)info;
-	
-	CGPDFObjectType objectType = CGPDFObjectGetType(object);
-	if(objectType == kCGPDFObjectTypeDictionary)
-	{
-		CGPDFDictionaryRef value  = NULL;
-		CGPDFDictionaryGetDictionary(contentDict, key, &value);
-		NSLog(@"Value for key %@ is dictionary of size %d",keyStr,CGPDFDictionaryGetCount(value));
-		CGPDFDictionaryApplyFunction(value, dictionaryInfoFunction, value);
-	}
-	else if(objectType == kCGPDFObjectTypeArray)
-	{
-		CGPDFArrayRef value  = NULL;
-		CGPDFDictionaryGetArray(contentDict, key, &value);
-		NSLog(@"Value for key %@ is array of size %d",keyStr,CGPDFArrayGetCount(value));
-	}
-	else if(objectType == kCGPDFObjectTypeStream)
-	{
-		CGPDFStreamRef value  = NULL;
-		CGPDFDictionaryGetStream(contentDict, key, &value);
-		NSLog(@"Processing for key %@ is stream",keyStr);
-		CGPDFDataFormat dataFormat;
-		CFDataRef streamData = CGPDFStreamCopyData(value, &dataFormat);
-		CFShow(streamData);
-		NSString *contentString = [[NSString alloc]initWithBytes:[(NSData*)streamData bytes] length:[(NSData*)streamData length] encoding:NSUTF8StringEncoding];
-		NSLog(@"%@",contentString);
-		
-	}
-	else if(objectType == kCGPDFObjectTypeInteger)
-	{
-		CGPDFInteger integerValue;
-		CGPDFDictionaryGetInteger(contentDict, key, &integerValue);
-		NSLog(@"Processing for Key %@ is int value %d",keyStr,integerValue);
-		
-	}
-	else if(objectType == kCGPDFObjectTypeName)
-	{
-		const char *name;
-		CGPDFDictionaryGetName(contentDict, key, &name);
-		NSLog(@"Processing for key %@ name value %@",keyStr,[NSString stringWithCString:name encoding:NSUTF8StringEncoding]);
-	}
-	else if(objectType == kCGPDFObjectTypeString)
-	{
-		CGPDFStringRef string;
-		NSString *title = nil;
-		
-		CGPDFDictionaryGetString(contentDict, key, &string);
-		title = [(NSString *)CGPDFStringCopyTextString(string) autorelease];
-		NSLog(@"Processing for key %@ string value %@",keyStr,title);
-	}
-}
-
-void arrayInfoFunction ( size_t index,CGPDFObjectRef object, void *info ) { 
-	NSLog(@"Processing Array Info");
-	
-	NSString *keyStr = [NSString stringWithFormat:@"%d", index];
-	CGPDFArrayRef contentArray = (CGPDFArrayRef)info;
-	
-	CGPDFObjectType objectType = CGPDFObjectGetType(object);
-	if(objectType == kCGPDFObjectTypeDictionary)
-	{
-		CGPDFDictionaryRef value  = NULL;
-		CGPDFArrayGetDictionary(contentArray, index, &value);
-		NSLog(@"Value for array entry %@ is dictionary of size %d",keyStr,CGPDFDictionaryGetCount(value));
-		CGPDFDictionaryApplyFunction(value, dictionaryInfoFunction, value);
-	}
-	else if(objectType == kCGPDFObjectTypeArray)
-	{
-		CGPDFArrayRef value  = NULL;
-		CGPDFArrayGetArray(contentArray, index, &value);
-		NSLog(@"Value for array entry %@ is array of size %d",keyStr,CGPDFArrayGetCount(value));
-	}
-	else if(objectType == kCGPDFObjectTypeStream)
-	{
-		CGPDFStreamRef value  = NULL;
-		CGPDFArrayGetStream(contentArray, index, &value);
-		NSLog(@"Processing for array entry %@ is stream ",keyStr);
-		CGPDFDataFormat dataFormat;
-		CFDataRef streamData = CGPDFStreamCopyData(value, &dataFormat);
-		CFShow(streamData);
-		NSString *contentString = [[NSString alloc]initWithBytes:[(NSData*)streamData bytes] length:[(NSData*)streamData length] encoding:NSUTF8StringEncoding];
-		NSLog(@"%@",contentString);
-		
-	}
-	else if(objectType == kCGPDFObjectTypeInteger)
-	{
-		CGPDFInteger integerValue;
-		CGPDFArrayGetInteger(contentArray, index, &integerValue);
-		NSLog(@"Processing for array entry %@ is int value %d",keyStr,integerValue);
-		
-	}
-	else if(objectType == kCGPDFObjectTypeName)
-	{
-		const char *name;
-		CGPDFArrayGetName(contentArray, index, &name);
-		NSLog(@"Processing for array entry %@ is name value %@",keyStr,[NSString stringWithCString:name encoding:NSUTF8StringEncoding]);
-	}
-	else if(objectType == kCGPDFObjectTypeString)
-	{
-		CGPDFStringRef string;
-		NSString *title = nil;
-		
-		CGPDFArrayGetString(contentArray, index, &string);
-		title = [(NSString *)CGPDFStringCopyTextString(string) autorelease];
-		NSLog(@"Processing for array entry %@ is string value %@",keyStr,title);
-	}
-}
-*/
 
 static void parse_names_array(CGPDFArrayRef names, void* context) {
 	NSMutableDictionary *namesDict = (NSMutableDictionary *)context;
@@ -841,6 +744,431 @@ presentationNameAndSubTitleForSectionUuid:(NSString *)sectionUuid {
                       levelForSectionUuid:(NSString *)sectionUuid{
 	NSUInteger sectionIndex = [sectionUuid integerValue];
     return [[self.tableOfContents objectAtIndex:sectionIndex] level];
+}
+
+#pragma mark - Positioned Strings
+
+- (NSAttributedString *)attributedStringForPageIndex:(NSUInteger)aPageIndex
+{
+    NSAttributedString *aString = nil;
+    
+    [self openDocumentIfRequired];
+    
+    if (nil == pdf) {
+        return aString;
+    }
+    
+    [pdfLock lock];
+    CGPDFPageRef aPage = CGPDFDocumentGetPage(pdf, aPageIndex + 1);
+    BlioPDFPageParser *parser = [[BlioPDFPageParser alloc] initWithPageRef:aPage resourceDataSource:self];
+    [parser parse];
+    aString = [parser attributedString];
+    [pdfLock unlock];    
+
+    return aString;
+}
+
+- (UIImage *)wordOverlayViewForPageIndex:(NSUInteger)aPageIndex
+{
+    NSAttributedString *attString = [self attributedStringForPageIndex:aPageIndex];
+    
+    CGRect cropBox = [self cropRectForPage:aPageIndex + 1];
+    
+    UIGraphicsBeginImageContextWithOptions(cropBox.size, YES, 0);
+    CGContextRef ctx = UIGraphicsGetCurrentContext();
+    
+    CGContextScaleCTM(ctx, 1, -1);
+    CGContextTranslateCTM(ctx, 0, -cropBox.size.height);
+    
+    [pdfLock lock];
+    CGPDFPageRef aPage = CGPDFDocumentGetPage(pdf, aPageIndex + 1);    
+    CGAffineTransform fitTransform = CGPDFPageGetDrawingTransform(aPage, kCGPDFCropBox, CGRectMake(0, 0, cropBox.size.width, cropBox.size.height), 0, YES);
+    CGContextConcatCTM(ctx, fitTransform);
+    CGContextClearRect(ctx, cropBox);    
+    
+    CGContextSetRGBFillColor(ctx, 1, 1, 1, 1);
+    CGContextSetRGBStrokeColor(ctx, 0, 0, 0, 0.7);    
+    
+    CGContextSetRGBStrokeColor(ctx, 0, 1, 0, 0.5f);
+    
+    CGContextFillRect(ctx, cropBox);
+    CGContextSetLineWidth(ctx, 5);
+    
+    CGContextDrawPDFPage(ctx, aPage);
+    [pdfLock unlock];
+    
+    CGContextStrokeRect(ctx, cropBox);
+    
+    CGContextSetLineWidth(ctx, 1);
+    
+    [[attString string] enumerateSubstringsInRange:NSMakeRange(0, [attString length]) 
+                                           options:NSStringEnumerationByParagraphs 
+                                        usingBlock:^(NSString *paragraph, NSRange paraRange, NSRange paraEnclosingRange, BOOL *stop) {
+                                            [paragraph enumerateSubstringsInRange:NSMakeRange(0, [paragraph length]) 
+                                                                          options:NSStringEnumerationByWords
+                                                                       usingBlock:^(NSString *word, NSRange wordRange, NSRange wordEnclosingRange, BOOL *stop) {
+                                                                           
+                                                                           __block BOOL first = YES;
+                                                                           __block CGRect concatRect;
+                                                                           
+                                                                           [attString enumerateAttribute:kBlioPDFPositionAttribute 
+                                                                                                 inRange:NSMakeRange(paraRange.location + wordRange.location, wordRange.length) 
+                                                                                                 options:NSAttributedStringEnumerationLongestEffectiveRangeNotRequired 
+                                                                                              usingBlock:^(id position, NSRange attrRange, BOOL *stop) {
+                                                                                                  if (first) {
+                                                                                                      first = NO;
+                                                                                                      concatRect = [position CGRectValue];
+                                                                                                  } else {
+                                                                                                      concatRect = CGRectUnion(concatRect, [position CGRectValue]);
+                                                                                                  }
+                                                                                              }];
+                                                                           
+                                                                           CGContextSetRGBFillColor(ctx, arc4random()%1000/1000.0f, arc4random()%1000/1000.0f, arc4random()%1000/1000.0f, 0.2f);
+                                                                           CGContextFillRect(ctx, concatRect);
+                                                                           CGContextStrokeRect(ctx, concatRect);
+                                                                       }];
+                                        }];
+    
+    UIImage *overlay = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    
+    return overlay;
+}
+
+- (NSArray *)calculateBlocksForPageAtIndex:(NSInteger)pageIndex 
+{    
+    CGRect cropRect = [self cropRectForPage:pageIndex + 1];
+    CGRect mediaRect = [self mediaRectForPage:pageIndex + 1];
+    
+    CGAffineTransform flip = CGAffineTransformMakeScale(1, -1);
+    flip = CGAffineTransformTranslate(flip, 0, -mediaRect.size.height);
+                                                
+    __block NSMutableArray *pageBlocks = nil;    
+    NSAttributedString *attString = [self attributedStringForPageIndex:pageIndex];
+    NSCharacterSet *whitespaceSet = [NSCharacterSet whitespaceCharacterSet];
+    
+    if (attString) {
+        pageBlocks = [NSMutableArray array];
+        [[attString string] enumerateSubstringsInRange:NSMakeRange(0, [attString length]) 
+                                               options:NSStringEnumerationByParagraphs 
+                                            usingBlock:^(NSString *paragraph, NSRange paraRange, NSRange paraEnclosingRange, BOOL *stop) {
+                                                
+                                                __block NSMutableArray *wordsArray = [NSMutableArray array];
+                                                __block BOOL firstWord = YES;
+                                                __block CGRect blockRect;
+
+                                                NSIndexPath *blockID = [NSIndexPath indexPathForRow:[pageBlocks count] inSection:pageIndex];
+
+                                                [paragraph enumerateSubstringsInRange:NSMakeRange(0, [paragraph length]) 
+                                                                              options:NSStringEnumerationByWords
+                                                                           usingBlock:^(NSString *word, NSRange wordRange, NSRange wordEnclosingRange, BOOL *stop) {
+                                                                               
+                                                                               NSString *wordWithPunctuationAndWhitespace = [paragraph substringWithRange:wordEnclosingRange];
+                                                                               NSString *wordWithPunctuation = [wordWithPunctuationAndWhitespace stringByTrimmingCharactersInSet:whitespaceSet];
+                                                                               
+                                                                               NSRange wordWithPunctuationRange = [wordWithPunctuationAndWhitespace rangeOfString:wordWithPunctuation];
+                                                                               
+                                                                               __block BOOL firstCharacter = YES;
+                                                                               __block CGRect wordRect;
+                                                                               
+                                                                               [attString enumerateAttribute:kBlioPDFPositionAttribute 
+                                                                                                     inRange:NSMakeRange(paraRange.location + wordEnclosingRange.location + wordWithPunctuationRange.location, wordWithPunctuationRange.length) 
+                                                                                                     options:NSAttributedStringEnumerationLongestEffectiveRangeNotRequired 
+                                                                                                  usingBlock:^(id position, NSRange attrRange, BOOL *stop) {
+                                                                                                      if (position) {
+                                                                                                          if (firstCharacter) {
+                                                                                                              firstCharacter = NO;
+                                                                                                              wordRect = [position CGRectValue];
+                                                                                                          } else {
+                                                                                                              wordRect = CGRectUnion(wordRect, [position CGRectValue]);
+                                                                                                          }
+                                                                                                      }
+                                                                                                  }];
+                                                                               
+                                                                               if (CGRectContainsRect(cropRect, wordRect)) {
+                                                                                   wordRect = CGRectApplyAffineTransform(wordRect, flip);
+                                                                                   
+                                                                                   if (firstWord) {
+                                                                                       firstWord = NO;
+                                                                                       blockRect = wordRect;
+                                                                                   } else {
+                                                                                       blockRect = CGRectUnion(blockRect, wordRect);
+                                                                                   }
+                                                                                   
+                                                                                   KNFBTextFlowPositionedWord *newWord = [[KNFBTextFlowPositionedWord alloc] init];
+                                                                                   [newWord setString:wordWithPunctuation];
+                                                                                   [newWord setRect:wordRect];
+                                                                                   [newWord setBlockID:blockID];
+                                                                                   [newWord setWordIndex:[wordsArray count]];
+                                                                                   [wordsArray addObject:newWord];
+                                                                                   [newWord release];
+                                                                               }
+                                                                           }];
+                                                
+                                                KNFBTextFlowBlock *newBlock = [[KNFBTextFlowBlock alloc] init];
+                                                newBlock.pageIndex = pageIndex;
+                                                newBlock.blockIndex = [pageBlocks count];
+                                                newBlock.blockID = blockID;
+                                                newBlock.words = wordsArray;
+                                                newBlock.folio = NO;
+                                                [pageBlocks addObject:newBlock];
+                                                [newBlock release];
+                                            }];
+        
+    }
+
+    return pageBlocks;
+}
+
+// This is a direct port of the equivalent method in KNFBTextFlow
+
+- (NSArray *)blocksForPageAtIndex:(NSInteger)pageIndex includingFolioBlocks:(BOOL)includingFolioBlocks {
+    NSArray *ret = nil;
+    
+    [pageBlocksCacheLock lock];
+    {
+        NSUInteger cacheIndex = NSUIntegerMax;
+        for(NSUInteger i = 0; i < kPDFPageBlocksCacheCapacity; ++i) {
+            if(pageIndexCache[i] == pageIndex) {
+                cacheIndex = i;
+                break;
+            }
+        }
+        
+        if(cacheIndex != NSUIntegerMax) {
+            ret = [pageBlocksCache[cacheIndex] autorelease];
+            if(ret) {
+                size_t toMove = kPDFPageBlocksCacheCapacity - cacheIndex - 1;
+                if(toMove) {
+                    memmove(pageIndexCache + cacheIndex, pageIndexCache + cacheIndex + 1, toMove * sizeof(NSInteger));
+                    memmove(pageBlocksCache + cacheIndex, pageBlocksCache + cacheIndex + 1, toMove * sizeof(NSArray *));
+                } 
+            }
+        } 
+        
+        if(!ret) {
+            //if(pageBlocksCache[0]) {
+            //    NSLog(@"Discarding cached blocks for layout page %ld", (long)pageIndexCache[0]);
+            //}
+            [pageBlocksCache[0] release];
+            memmove(pageIndexCache, pageIndexCache + 1, sizeof(NSInteger) * (kPDFPageBlocksCacheCapacity - 1));
+            memmove(pageBlocksCache, pageBlocksCache + 1, sizeof(NSArray *) * (kPDFPageBlocksCacheCapacity - 1));
+            
+            ret = [self calculateBlocksForPageAtIndex:pageIndex];
+            //NSLog(@"Generating blocks for layout page %ld", (long)pageIndex);
+        } //else {
+        //NSLog(@"Using cached blocks for layout page %ld", (long)pageIndex);
+        //}
+        
+        pageBlocksCache[kPDFPageBlocksCacheCapacity - 1] = [ret retain];
+        pageIndexCache[kPDFPageBlocksCacheCapacity - 1] = pageIndex;
+        
+    }
+    [pageBlocksCacheLock unlock];
+    
+    if(!includingFolioBlocks) {
+        return [ret filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"isFolio == NO"]];
+    } else {
+        return ret;
+    }
+}
+
+#pragma mark - BlioPDFResourceDataSource
+
+- (id)fontWithName:(NSString *)name onPageRef:(CGPDFPageRef)pageRef
+{
+    id font = nil;
+    
+    NSDictionary *pageFonts = [self mappedFontsForPageRef:pageRef];
+    NSValue *fontPointer = [pageFonts valueForKey:name];
+    
+    if (fontPointer) {
+        font = [self mappedFont:fontPointer forPageRef:pageRef];
+    }
+    
+    return font;
+}
+
+- (NSCache *)pageToFontMappings
+{
+    if (!pageToFontMappings) {
+        pageToFontMappings = [[NSCache alloc] init];
+    }
+    
+    return pageToFontMappings;
+}
+
+- (NSCache *)documentFonts
+{
+    if (!documentFonts) {
+        documentFonts = [[NSCache alloc] init];
+    }
+    
+    return documentFonts;
+}
+
+static void mapPageFont(const char *key, CGPDFObjectRef object, void *info) 
+{
+    NSMutableDictionary *pageFonts = info;
+    CGPDFDictionaryRef dict;
+    
+    if (!CGPDFObjectGetValue(object, kCGPDFObjectTypeDictionary, &dict)) {
+        return;
+    }
+    
+    NSString *fontId = [NSString stringWithCString:key encoding:NSASCIIStringEncoding];
+    NSValue *uniqueFont = [NSValue valueWithPointer:dict];
+    [pageFonts setObject:uniqueFont forKey:fontId];
+}
+
+static void parseFont(const char *key, CGPDFObjectRef object, void *info) {
+    
+    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+    const char *name;
+    CGPDFDictionaryRef dict;
+    NSString *baseFont, *fontType;
+    
+    NSMutableDictionary *fonts = info;
+    
+    if (!CGPDFObjectGetValue(object, kCGPDFObjectTypeDictionary, &dict)) {
+        return;
+    }
+    
+    NSValue *uniqueFont = [NSValue valueWithPointer:dict];
+    
+    if ([fonts objectForKey:uniqueFont]) {
+        return;
+    }
+    
+    if (CGPDFDictionaryGetName(dict, "BaseFont", &name)) {
+        baseFont = [NSString stringWithString:[NSString stringWithCString:name encoding:NSASCIIStringEncoding]];
+    } else {
+        return;
+    }
+    
+    if (CGPDFDictionaryGetName(dict, "Subtype", &name)) {
+        fontType = [NSString stringWithCString: name encoding:NSASCIIStringEncoding];
+    } else {
+        return;
+    }
+    
+    BlioPDFFont *font = [[BlioPDFFont alloc] initWithKey:[NSString stringWithUTF8String:key]];
+    [font setBaseFont:baseFont];
+    [font setType:fontType];
+	
+    CGPDFDictionaryRef descriptorDict;
+    
+    NSUInteger firstWidthChar = 0;
+    CGPDFInteger firstChar;
+    if (CGPDFDictionaryGetInteger(dict, "FirstChar", &firstChar)) {
+        firstWidthChar = (NSUInteger)firstChar;
+    }
+    
+    NSUInteger lastWidthChar = 255;
+    CGPDFInteger lastChar;
+    if (CGPDFDictionaryGetInteger(dict, "LastChar", &lastChar)) {
+        lastWidthChar = (NSUInteger)lastChar;
+    }
+    
+    NSInteger defaultWidth = 0;
+    CGPDFArrayRef widths;
+    if (CGPDFDictionaryGetArray(dict, "Widths", &widths)) {
+        NSInteger widthsTotal = 0;
+        int arraySize = CGPDFArrayGetCount(widths);        
+        NSMutableDictionary *widthsDict = [font widths];
+        
+        for(int n = 0; n < arraySize; n++) {
+            if (n >= arraySize) continue;
+            CGPDFInteger width;
+            if (CGPDFArrayGetInteger(widths, n, &width)) {
+                [widthsDict setObject:[NSNumber numberWithInteger:(NSInteger)width] forKey:[NSNumber numberWithInteger:(firstWidthChar + n)]];
+                widthsTotal += width;
+            }
+        }
+        defaultWidth = (NSInteger)(round(widthsTotal/(float)arraySize));
+    }
+    
+    
+    if (CGPDFDictionaryGetDictionary(dict, "FontDescriptor", &descriptorDict)) {        
+        CGPDFReal missingWidth;
+        CGPDFReal averageWidth;
+        CGPDFReal maxWidth;
+        CGPDFArrayRef fontBBox;
+            
+        if (CGPDFDictionaryGetNumber(descriptorDict, "MissingWidth", &missingWidth)) {
+            defaultWidth = (NSInteger)missingWidth;
+        } else if (CGPDFDictionaryGetNumber(descriptorDict, "AverageWidth", &averageWidth)) {
+            defaultWidth = (NSInteger)averageWidth;
+        } 
+        
+        // Use the maxWidths if we have nothing better
+        if (defaultWidth == 0) {
+            if (CGPDFDictionaryGetNumber(descriptorDict, "MaxWidth", &maxWidth)) {
+                defaultWidth = (NSInteger)maxWidth;
+            } else if (CGPDFDictionaryGetArray(descriptorDict, "FontBBox", &fontBBox)) {
+                CGPDFReal x1, x2;
+                if (CGPDFArrayGetNumber(fontBBox, 0, &x1) && CGPDFArrayGetNumber(fontBBox, 2, &x2)) {
+                    CGFloat boxWidth = fabs(x2 - x1);
+                    defaultWidth = (NSInteger)boxWidth;
+                }
+            }
+        }
+    }
+    [font setMissingWidth:defaultWidth];
+    
+    CGPDFStreamRef unicodeStream;
+    if (CGPDFDictionaryGetStream(dict, "ToUnicode", &unicodeStream)) {
+        [font setHasUnicodeMapping:YES];
+    }
+    
+    [fonts setObject:font forKey:uniqueFont];
+    [pool drain];
+}
+
+- (id)mappedFont:(NSValue *)fontPointer forPageRef:(CGPDFPageRef)pageRef 
+{    
+    id font = [self.documentFonts objectForKey:fontPointer];
+    
+    if (!font) {        
+        CGPDFDictionaryRef dict, resources, pageFonts;
+        
+        dict = CGPDFPageGetDictionary(pageRef);
+        if (!CGPDFDictionaryGetDictionary(dict, "Resources", &resources))
+            return nil;
+        if (!CGPDFDictionaryGetDictionary(resources, "Font", &pageFonts))
+            return nil;
+        CGPDFDictionaryApplyFunction(pageFonts, &parseFont, self.documentFonts);
+                
+        font = [self.documentFonts objectForKey:fontPointer];
+    }
+    
+    return font;
+}
+
+- (NSDictionary *)mappedFontsForPageRef:(CGPDFPageRef)pageRef
+{
+    size_t pageNumber = CGPDFPageGetPageNumber(pageRef);
+    
+    NSDictionary *pageFonts = [self.pageToFontMappings objectForKey:[NSNumber numberWithInt:pageNumber]];
+    
+    if (!pageFonts) {
+        
+        NSMutableDictionary *newPageFonts = [NSMutableDictionary dictionary];
+        
+        CGPDFDictionaryRef dict = CGPDFPageGetDictionary(pageRef);        
+        CGPDFDictionaryRef resourcesDict, pageFontsDict;
+        
+        if (CGPDFDictionaryGetDictionary(dict, "Resources", &resourcesDict)) {
+            if (CGPDFDictionaryGetDictionary(resourcesDict, "Font", &pageFontsDict))
+                CGPDFDictionaryApplyFunction(pageFontsDict, &mapPageFont, newPageFonts);
+        }
+        
+        [self.pageToFontMappings setObject:newPageFonts forKey:[NSNumber numberWithInt:pageNumber]];
+        
+        pageFonts = newPageFonts;
+    }
+    
+    return pageFonts;
 }
 
 @end
