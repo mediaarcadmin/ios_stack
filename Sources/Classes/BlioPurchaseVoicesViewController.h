@@ -15,7 +15,8 @@ typedef enum {
 	BlioVoiceDownloadButtonStatePurchase = 0,
 	BlioVoiceDownloadButtonStatePurchasing = 1,
 	BlioVoiceDownloadButtonStateInProgress = 2,
-	BlioVoiceDownloadButtonStateInstalled = 3
+	BlioVoiceDownloadButtonStateInstalled = 3,
+    BlioVoiceDownloadButtonStatePreviouslyPurchased = 4
 } BlioVoiceDownloadButtonState;
 
 static const CGFloat kBlioVoiceDownloadButtonWidth = 100.0f;
@@ -29,6 +30,7 @@ static const CGFloat kBlioVoiceDownloadProgressViewRightMargin = 10.0f;
 @protocol BlioPurchaseVoiceViewDelegate
 
 -(void)purchaseProductWithID:(NSString*)productID;
+-(void)restoreProductWithID:(NSString*)productID;
 
 @end
 

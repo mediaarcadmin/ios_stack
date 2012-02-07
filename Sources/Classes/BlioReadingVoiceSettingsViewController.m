@@ -14,6 +14,7 @@
 #import "BlioAcapelaAudioManager.h"
 #import "AcapelaSpeech.h"
 #import "BlioBookManager.h"
+#import "BlioInAppPurchaseManager.h"
 
 @interface BlioReadingVoiceSettingsViewController(PRIVATE)
 - (void)layoutControlsForOrientation:(UIInterfaceOrientation)orientation;
@@ -22,7 +23,7 @@
 
 @implementation BlioReadingVoiceSettingsViewController
 
-@synthesize voiceControl, speedControl, volumeControl, playButton, voiceLabel, speedLabel, volumeLabel, availableVoices, contentView, footerHeight,ttsFetchedResultsController,totalFetchedResultsController;
+@synthesize activityIndicatorView, voiceControl, speedControl, volumeControl, playButton, voiceLabel, speedLabel, volumeLabel, availableVoices, contentView, footerHeight,ttsFetchedResultsController,totalFetchedResultsController;
 
 - (id)init
 {
@@ -53,6 +54,16 @@
 }
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    CGFloat activityIndicatorDiameter = 50.0f;
+	CGRect targetFrame = [[UIScreen mainScreen] bounds];
+	self.activityIndicatorView = [[[BlioRoundedRectActivityView alloc] initWithFrame:CGRectMake((targetFrame.size.width-activityIndicatorDiameter)/2, (targetFrame.size.height-activityIndicatorDiameter)/2, activityIndicatorDiameter, activityIndicatorDiameter)] autorelease];
+	[[[UIApplication sharedApplication] keyWindow] addSubview:activityIndicatorView];
+
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onInAppPurchaseRestoreTransactionsStarted:) name:BlioInAppPurchaseRestoreTransactionsStartedNotification object:[BlioInAppPurchaseManager sharedInAppPurchaseManager]];
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onInAppPurchaseRestoreTransactionsFinished:) name:BlioInAppPurchaseRestoreTransactionsFinishedNotification object:[BlioInAppPurchaseManager sharedInAppPurchaseManager]];
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onInAppPurchaseRestoreTransactionsFailed:) name:BlioInAppPurchaseRestoreTransactionsFailedNotification object:[BlioInAppPurchaseManager sharedInAppPurchaseManager]];
+    
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onVoiceListRefreshedNotification:) name:BlioVoiceListRefreshedNotification object:nil];
 
     // Uncomment the following line to preserve selection between presentations.
@@ -116,6 +127,9 @@
 }
 -(void)viewDidUnload {
 	[[NSNotificationCenter defaultCenter] removeObserver:self name:BlioVoiceListRefreshedNotification object:nil];
+	[[NSNotificationCenter defaultCenter] removeObserver:self name:BlioInAppPurchaseRestoreTransactionsStartedNotification object:nil];
+	[[NSNotificationCenter defaultCenter] removeObserver:self name:BlioInAppPurchaseRestoreTransactionsFinishedNotification object:nil];
+	[[NSNotificationCenter defaultCenter] removeObserver:self name:BlioInAppPurchaseRestoreTransactionsFailedNotification object:nil];
 }
 -(void)viewWillAppear:(BOOL)animated {
 	[super viewWillAppear:animated];
@@ -322,6 +336,20 @@
 - (NSString *)ttsBooksInLibraryDisclosure {
 	return [NSString stringWithFormat:NSLocalizedStringWithDefaultValue(@"TTS_BOOKS_IN_LIBRARY_DISCLOSURE",nil,[NSBundle mainBundle],@"%i of %i books in your library may be read aloud by Text-To-Speech voices.",@"Message that discloses how many of the user's books can be read by TTS."),ttsBooks,totalBooks];
 }
+
+-(void)onInAppPurchaseRestoreTransactionsStarted:(NSNotification*)notification {
+    [self.activityIndicatorView startAnimating];
+}
+-(void)onInAppPurchaseRestoreTransactionsFailed:(NSNotification*)notification {
+    [self.activityIndicatorView stopAnimating];
+    [self.tableView deselectRowAtIndexPath:[NSIndexPath indexPathForRow:self.availableVoices.count inSection:0] animated:NO];
+}
+-(void)onInAppPurchaseRestoreTransactionsFinished:(NSNotification*)notification {
+    [self.activityIndicatorView stopAnimating];
+    //		[self.navigationController pushViewController:[[[BlioDownloadVoicesViewController alloc] initWithStyle:UITableViewStyleGrouped] autorelease] animated:YES];
+    [self.navigationController pushViewController:[[[BlioPurchaseVoicesViewController alloc] initWithStyle:UITableViewStyleGrouped] autorelease] animated:YES];
+}
+
 #pragma mark UITableViewDataSource Methods
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
@@ -384,8 +412,7 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 	if (indexPath.row == self.availableVoices.count) {
-//		[self.navigationController pushViewController:[[[BlioDownloadVoicesViewController alloc] initWithStyle:UITableViewStyleGrouped] autorelease] animated:YES];
-		[self.navigationController pushViewController:[[[BlioPurchaseVoicesViewController alloc] initWithStyle:UITableViewStyleGrouped] autorelease] animated:YES];
+        [[BlioInAppPurchaseManager sharedInAppPurchaseManager] restoreCompletedTransactions];        
 	}
 	else {
 		[tableView deselectRowAtIndexPath:indexPath animated:YES];

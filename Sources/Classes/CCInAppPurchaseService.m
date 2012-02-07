@@ -88,12 +88,12 @@
 }
 
 -(CCInAppPurchaseResponse*)responseFromData:(NSData*)data {
-	NSLog(@"%@", NSStringFromSelector(_cmd));
+//	NSLog(@"%@", NSStringFromSelector(_cmd));
     
-    // test to see if valid XML found
-    				NSString * stringData = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-    				NSLog(@"stringData: %@",stringData);
-    				[stringData release];
+    // DEBUG: test to see if valid XML found
+//    				NSString * stringData = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+//    				NSLog(@"stringData: %@",stringData);
+//    				[stringData release];
 
     
 	_response = [[CCInAppPurchaseFetchProductsResponse alloc] init];
@@ -158,6 +158,7 @@
     }	
 }
 
+// Sample Product XML:
 //<product>
 //<dateCreated>2010-08-12T11:00:13-04:00</dateCreated>
 //<description>Heather's voice</description>
@@ -183,10 +184,10 @@
 		self.hardwareId = aHardwareId;
 #ifdef TEST_MODE
 		self.testMode = 1;
-		NSLog(@"TEST MODE = 1");
+		NSLog(@"IN-APP SERVER TEST MODE = 1");
 #else	
 		self.testMode = 0;
-		NSLog(@"TEST MODE = 0");
+		NSLog(@"IN-APP SERVER TEST MODE = 0");
 #endif
 	}
 	return self;
@@ -228,8 +229,6 @@
 }
 -(void) start{
 	[[NSURLConnection alloc] initWithRequest:_request.URLRequest delegate:self];
-//	NSURLConnection * connection = [[NSURLConnection alloc] initWithRequest:_request.URLRequest delegate:self startImmediately:NO];
-//	[connection start];
 }
 -(CCInAppPurchaseRequest*)request {
 	return _request;
@@ -243,7 +242,6 @@
 }
 - (void)connectionDidFinishLoading:(NSURLConnection *)aConnection {
 	self.inAppPurchaseResponse = [_request responseFromData:self.responseData];
-//	else NSLog(@"ERROR: CCInAppPurchaseRequest object does not know the class of its response!");
 	[self.delegate connectionDidFinishLoading:self];
 	[aConnection release];
 }

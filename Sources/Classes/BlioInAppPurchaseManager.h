@@ -11,13 +11,16 @@
 #import <StoreKit/StoreKit.h>
 #import "CCInAppPurchaseService.h"
 
-static NSString * const BlioInAppPurchaseProductsFetchStarted = @"BlioInAppPurchaseProductsFetchStarted";
-static NSString * const BlioInAppPurchaseProductsFetchFailed = @"BlioInAppPurchaseProductsFetchFailed";
-static NSString * const BlioInAppPurchaseProductsFetchFinished = @"BlioInAppPurchaseProductsFetchFinished";
-static NSString * const BlioInAppPurchaseProductsUpdated = @"BlioInAppPurchaseProductsUpdated";
-static NSString * const BlioInAppPurchaseTransactionFailed = @"BlioInAppPurchaseTransactionFailed";
-static NSString * const BlioInAppPurchaseTransactionRestored = @"BlioInAppPurchaseTransactionRestored";
-static NSString * const BlioInAppPurchaseTransactionPurchased = @"BlioInAppPurchaseTransactionPurchased";
+static NSString * const BlioInAppPurchaseProductsFetchStartedNotification = @"BlioInAppPurchaseProductsFetchStartedNotification";
+static NSString * const BlioInAppPurchaseProductsFetchFailedNotification = @"BlioInAppPurchaseProductsFetchFailedNotification";
+static NSString * const BlioInAppPurchaseProductsFetchFinishedNotification = @"BlioInAppPurchaseProductsFetchFinishedNotification";
+static NSString * const BlioInAppPurchaseProductsUpdatedNotification = @"BlioInAppPurchaseProductsUpdatedNotification";
+static NSString * const BlioInAppPurchaseTransactionFailedNotification = @"BlioInAppPurchaseTransactionFailedNotification";
+static NSString * const BlioInAppPurchaseTransactionRestoredNotification = @"BlioInAppPurchaseTransactionRestoredNotification";
+static NSString * const BlioInAppPurchaseTransactionPurchasedNotification = @"BlioInAppPurchaseTransactionPurchasedNotification";
+static NSString * const BlioInAppPurchaseRestoreTransactionsStartedNotification = @"BlioInAppPurchaseRestoreTransactionsStartedNotification";
+static NSString * const BlioInAppPurchaseRestoreTransactionsFailedNotification = @"BlioInAppPurchaseRestoreTransactionsFailedNotification";
+static NSString * const BlioInAppPurchaseRestoreTransactionsFinishedNotification = @"BlioInAppPurchaseRestoreTransactionsFinishedNotification";
 
 static NSString * const BlioInAppPurchaseNotificationTransactionKey = @"BlioInAppPurchaseNotificationTransactionKey";
 
@@ -42,12 +45,11 @@ static NSString * const BlioInAppPurchaseNotificationTransactionKey = @"BlioInAp
 @property (nonatomic, assign) BOOL isFetchingProducts;
 +(BlioInAppPurchaseManager*)sharedInAppPurchaseManager;
 - (BOOL)canMakePurchases;
+-(void)restoreProductWithID:(NSString*)anID;
 -(void)purchaseProductWithID:(NSString*)anID;
 -(BOOL)isPurchasingProductWithID:(NSString*)anID;
+-(BOOL)hasPreviouslyPurchasedProductWithID:(NSString*)anID;
 -(void)fetchProductsFromProductServer;
-- (void) failedTransaction:(SKPaymentTransaction *)transaction;
-- (void) restoreTransaction:(SKPaymentTransaction *)transaction;
-- (void) completeTransaction:(SKPaymentTransaction *)transaction;
 - (BOOL)verifyReceipt:(SKPaymentTransaction *)transaction;
-- (NSString *)encode:(const uint8_t *)input length:(NSInteger)length;
+-(void)restoreCompletedTransactions;
 @end
