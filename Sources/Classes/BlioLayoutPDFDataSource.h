@@ -36,6 +36,4 @@
 - (NSString *)sectionUuidForPageIndex:(NSUInteger)aPageIndex;
 - (NSArray *)blocksForPageAtIndex:(NSInteger)pageIndex includingFolioBlocks:(BOOL)includingFolioBlocks;
 
-- (UIImage *)wordOverlayViewForPageIndex:(NSUInteger)aPageIndex;
-
 @end
