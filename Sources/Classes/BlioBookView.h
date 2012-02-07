@@ -35,6 +35,13 @@ typedef enum BlioTapTurn {
     kBlioTapTurnOn = 1,
 } BlioTapTurn;
 
+typedef enum BlioTwoUp {
+    kBlioTwoUpNever = 0,
+    kBlioTwoUpLandscape = 1,
+    kBlioTwoUpAlways = 2,
+} BlioTwoUp;
+
+
 extern NSString * const kBlioOriginalFontName;
 
 #pragma mark -
@@ -130,7 +137,7 @@ extern NSString * const kBlioOriginalFontName;
 
 - (void)setPageTexture:(UIImage *)pageTexture isDark:(BOOL)isDark;
 
-@property (nonatomic, assign) BOOL twoUpLandscape;
+@property (nonatomic, assign) BlioTwoUp twoUp;
 @property (nonatomic, assign) BOOL shouldTapZoom;
 
 - (NSString *)displayPageNumberForPageAtIndex:(NSUInteger)pageIndex;

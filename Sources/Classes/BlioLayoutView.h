@@ -22,7 +22,7 @@
     NSManagedObjectID *bookID;
     EucIndexBasedPageTurningView *pageTurningView;
     
-    BOOL twoUpLandscape;
+    BlioTwoUp twoUp;
     BOOL shouldTapZoom;
     
     BlioTextFlow *textFlow;

@@ -844,6 +844,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 //		}
 		cell.statusBadge.hidden = YES;
 		cell.previewBadge.alpha = 0;
+		cell.bookTypeBadge.alpha = 0;
 		selectedGridIndex = index;
 		if ([cell.bookView.book isEncrypted]) {
 			if ([cell.bookView.book decryptionIsAvailable])
@@ -1196,7 +1197,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 - (void)controller:(NSFetchedResultsController *)controller didChangeObject:(id)anObject
 	   atIndexPath:(NSIndexPath *)indexPath forChangeType:(NSFetchedResultsChangeType)type
 	  newIndexPath:(NSIndexPath *)newIndexPath {
-    NSLog(@"%@ type: %i",NSStringFromSelector(_cmd),type);
+//    NSLog(@"%@ type: %i",NSStringFromSelector(_cmd),type);
 //	BlioBook * book = (BlioBook*)anObject;
 //	NSLog(@"controller didChangeObject. type: %i, _didEdit: %i title: %@, libraryPosition: %i",type,_didEdit,book.title,[book.libraryPosition intValue]);
 	
@@ -1532,6 +1533,10 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 			cell.previewBadge.alpha = 1;
 		}
 		else cell.previewBadge.alpha = 0;
+		if ([[self.selectedLibraryBookView.book valueForKey:@"transactionType"] intValue] == BlioTransactionTypeLend) {
+			cell.bookTypeBadge.alpha = 1;
+		}
+		else cell.bookTypeBadge.alpha = 0;
 	}
 }
 
@@ -1680,7 +1685,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 
 @implementation BlioLibraryGridViewCell
 
-@synthesize bookView, titleLabel, authorLabel, progressSlider,progressView, progressBackgroundView,delegate,pauseButton,resumeButton,stateLabel,statusBadge,previewBadge;
+@synthesize bookView, titleLabel, authorLabel, progressSlider,progressView, progressBackgroundView,delegate,pauseButton,resumeButton,stateLabel,statusBadge,previewBadge,bookTypeBadge,numberOfDaysLeftLabel,daysLeftLabel;
 @synthesize accessibilityElements;
 
 - (void)dealloc {
@@ -1698,6 +1703,9 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
     self.accessibilityElements = nil;
 	self.statusBadge = nil;
 	self.previewBadge = nil;
+    self.bookTypeBadge = nil;
+    self.numberOfDaysLeftLabel = nil;
+    self.daysLeftLabel = nil;
     [super dealloc];
 }
 
@@ -1768,12 +1776,38 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 		[self.contentView addSubview:statusBadge];		
 
 		previewBadge = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"badge-preview.png"]];
-						
+        
 		previewBadge.frame = CGRectMake(roundf(self.bookView.xInset) - 1, roundf(self.bookView.yInset) - 1, 48, 48);
 		previewBadge.autoresizingMask = UIViewAutoresizingFlexibleRightMargin;
 		[self.contentView addSubview:previewBadge];		
-		
 
+        bookTypeBadge = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"badge-daysleft.png"]];
+        
+		bookTypeBadge.frame = CGRectMake(roundf(self.bookView.xInset) - 1, roundf(self.bookView.yInset) - 1, 43, 43);
+		bookTypeBadge.autoresizingMask = UIViewAutoresizingFlexibleRightMargin;
+		[self.contentView addSubview:bookTypeBadge];		
+
+        numberOfDaysLeftLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 20, 20)];
+        numberOfDaysLeftLabel.font = [UIFont systemFontOfSize:14.0f];
+        numberOfDaysLeftLabel.adjustsFontSizeToFitWidth = YES;
+        numberOfDaysLeftLabel.backgroundColor = [UIColor clearColor];
+        numberOfDaysLeftLabel.textAlignment = UITextAlignmentCenter;
+        [numberOfDaysLeftLabel setShadowColor:[UIColor whiteColor]];
+        [numberOfDaysLeftLabel setShadowOffset:CGSizeMake(-0.5f, 0.5f)];
+        numberOfDaysLeftLabel.transform = CGAffineTransformMakeRotation(-M_PI/4);
+		[self.bookTypeBadge addSubview:numberOfDaysLeftLabel];		
+        
+        daysLeftLabel = [[UILabel alloc] initWithFrame:CGRectMake(-5, 12, 44, 10)];
+        daysLeftLabel.font = [UIFont boldSystemFontOfSize:7.0f];
+        daysLeftLabel.adjustsFontSizeToFitWidth = YES;
+        daysLeftLabel.backgroundColor = [UIColor clearColor];
+        daysLeftLabel.textAlignment = UITextAlignmentCenter;
+        [daysLeftLabel setShadowColor:[UIColor whiteColor]];
+        [daysLeftLabel setShadowOffset:CGSizeMake(-0.5f, 0.5f)];
+        daysLeftLabel.transform = CGAffineTransformMakeRotation(-M_PI/4);
+		[self.bookTypeBadge addSubview:daysLeftLabel];		
+
+        
         [aBookView release];
 		[self listenToProcessingNotifications];
 	}
@@ -1791,6 +1825,8 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 	self.statusBadge.image = nil;
 	previewBadge.hidden = YES;
 	previewBadge.alpha = 1;
+	bookTypeBadge.hidden = YES;
+	bookTypeBadge.alpha = 1;
 }
 -(void)onPauseButtonPressed:(id)sender {
 	[delegate pauseProcessingForBook:[self book]];
@@ -1912,6 +1948,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
     CGRect imageViewFrame = [self convertRect:self.bookView.imageView.frame fromView:self.bookView];
     self.deleteButton.center = CGPointMake(floorf(6 + imageViewFrame.origin.x) - 0.5f, floorf(6 + imageViewFrame.origin.y) + 0.5f);
     self.previewBadge.frame = CGRectMake(imageViewFrame.origin.x - 1, imageViewFrame.origin.y - 1, 48, 48);
+    self.bookTypeBadge.frame = CGRectMake(imageViewFrame.origin.x - 1, imageViewFrame.origin.y - 1, 43, 43);
 
     [self setNeedsLayout];
 	
@@ -1919,6 +1956,17 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 		self.previewBadge.hidden = NO;
 	}
 	else self.previewBadge.hidden = YES;
+    if ([[self.book valueForKey:@"transactionType"] intValue] == BlioTransactionTypeLend) {
+		self.bookTypeBadge.hidden = NO;
+        NSTimeInterval timeDifference = [[self.book valueForKey:@"expirationDate"] timeIntervalSinceDate:[NSDate date]];
+        NSInteger daysLeftInteger = 0;
+        if (timeDifference > 0) daysLeftInteger = ceil(timeDifference/86400);
+        self.numberOfDaysLeftLabel.text = [NSString stringWithFormat:@"%i",daysLeftInteger];
+        if (daysLeftInteger == 1) self.daysLeftLabel.text = NSLocalizedString(@"DAY LEFT", @"\"DAY LEFT\" label for borrowed books in the library interface.");
+        else self.daysLeftLabel.text = NSLocalizedString(@"DAYS LEFT", @"\"DAYS LEFT\" label for borrowed books in the library interface.");
+	}
+	else self.bookTypeBadge.hidden = YES;
+    
 	
 //	NSLog(@"[[self.book valueForKey:@processingState] intValue]: %i",[[self.book valueForKey:@"processingState"] intValue]);
 	if ([[self.book valueForKey:@"processingState"] intValue] == kBlioBookProcessingStatePlaceholderOnly) {
@@ -2060,7 +2108,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 
 @implementation BlioLibraryListCell
 
-@synthesize bookView, titleLabel, authorLabel, /*progressSlider,proportionalProgressView,*/ delegate,progressView,pauseResumeButton,statusBadge,previewBadge;
+@synthesize bookView, titleLabel, authorLabel, /*progressSlider,proportionalProgressView,*/ delegate,progressView,pauseResumeButton,statusBadge,previewBadge,bookTypeBadge,numberOfDaysLeftLabel,daysLeftLabel;
 
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
@@ -2072,6 +2120,9 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 	self.pauseResumeButton = nil;
 	self.statusBadge = nil;
 	self.previewBadge = nil;
+    self.bookTypeBadge = nil;
+    self.numberOfDaysLeftLabel = nil;
+    self.daysLeftLabel = nil;
     [super dealloc];
 }
 
@@ -2151,7 +2202,32 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 		previewBadge.image = [UIImage imageNamed:@"badge-preview.png"];
 		previewBadge.autoresizingMask = UIViewAutoresizingFlexibleRightMargin;
 		[self.contentView addSubview:previewBadge];		
-		
+
+        bookTypeBadge = [[UIImageView alloc] initWithFrame:CGRectMake(self.bookView.frame.origin.x + roundf(self.bookView.xInset) - 1, self.bookView.frame.origin.y + roundf(self.bookView.yInset) - 1, 43, 43)];
+		bookTypeBadge.image = [UIImage imageNamed:@"badge-daysleft.png"];
+		bookTypeBadge.autoresizingMask = UIViewAutoresizingFlexibleRightMargin;
+		[self.contentView addSubview:bookTypeBadge];		
+
+        numberOfDaysLeftLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 20, 20)];
+        numberOfDaysLeftLabel.font = [UIFont systemFontOfSize:14.0f];
+        numberOfDaysLeftLabel.adjustsFontSizeToFitWidth = YES;
+        numberOfDaysLeftLabel.backgroundColor = [UIColor clearColor];
+        numberOfDaysLeftLabel.textAlignment = UITextAlignmentCenter;
+        [numberOfDaysLeftLabel setShadowColor:[UIColor whiteColor]];
+        [numberOfDaysLeftLabel setShadowOffset:CGSizeMake(-0.5f, 0.5f)];
+        numberOfDaysLeftLabel.transform = CGAffineTransformMakeRotation(-M_PI/4);
+		[self.bookTypeBadge addSubview:numberOfDaysLeftLabel];		
+
+        daysLeftLabel = [[UILabel alloc] initWithFrame:CGRectMake(-5, 12, 44, 10)];
+        daysLeftLabel.font = [UIFont boldSystemFontOfSize:7.0f];
+        daysLeftLabel.adjustsFontSizeToFitWidth = YES;
+        daysLeftLabel.backgroundColor = [UIColor clearColor];
+        daysLeftLabel.textAlignment = UITextAlignmentCenter;
+        [daysLeftLabel setShadowColor:[UIColor whiteColor]];
+        [daysLeftLabel setShadowOffset:CGSizeMake(-0.5f, 0.5f)];
+        daysLeftLabel.transform = CGAffineTransformMakeRotation(-M_PI/4);
+		[self.bookTypeBadge addSubview:daysLeftLabel];		
+
 		[self listenToProcessingNotifications];
 	}
     return self;
@@ -2166,7 +2242,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 	self.accessoryView = nil;
 	pauseResumeButton.isAccessibilityElement = NO;
 	previewBadge.hidden = YES;
-
+    bookTypeBadge.hidden = YES;
 }
 -(void)onPauseResumeButtonPressed:(id)sender {
 	if ([[[self.bookView book] valueForKey:@"processingState"] intValue] == kBlioBookProcessingStateIncomplete) [delegate pauseProcessingForBook:[self book]];
@@ -2264,12 +2340,22 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
     
     CGRect imageViewFrame = [self.contentView convertRect:self.bookView.imageView.frame fromView:self.bookView];
     self.previewBadge.frame = CGRectMake(imageViewFrame.origin.x - 1, imageViewFrame.origin.y - 1, 36, 36);
-
+    self.bookTypeBadge.frame = CGRectMake(imageViewFrame.origin.x - 1, imageViewFrame.origin.y - 1, 43, 43);
 
 	if ([[self.book valueForKey:@"productType"] intValue] == BlioProductTypePreview) {
 		self.previewBadge.hidden = NO;
 	}
 	else self.previewBadge.hidden = YES;
+    if ([[self.book valueForKey:@"transactionType"] intValue] == BlioTransactionTypeLend) {
+		self.bookTypeBadge.hidden = NO;
+        NSTimeInterval timeDifference = [[self.book valueForKey:@"expirationDate"] timeIntervalSinceDate:[NSDate date]];
+        NSInteger daysLeftInteger = 0;
+        if (timeDifference > 0) daysLeftInteger = ceil(timeDifference/86400);
+        self.numberOfDaysLeftLabel.text = [NSString stringWithFormat:@"%i",daysLeftInteger];
+        if (daysLeftInteger == 1) self.daysLeftLabel.text = NSLocalizedString(@"DAY LEFT", @"\"DAY LEFT\" label for borrowed books in the library interface.");
+        else self.daysLeftLabel.text = NSLocalizedString(@"DAYS LEFT", @"\"DAYS LEFT\" label for borrowed books in the library interface.");
+	}
+	else self.bookTypeBadge.hidden = YES;
 	
 	if ([[self.book valueForKey:@"processingState"] intValue] == kBlioBookProcessingStatePlaceholderOnly) {
 		progressView.isAccessibilityElement = NO;

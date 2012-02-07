@@ -397,8 +397,12 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     if([self.bookView respondsToSelector:@selector(setJustification:)]) {
         self.bookView.justification = [[NSUserDefaults standardUserDefaults] integerForKey:kBlioLastJustificationDefaultsKey];
     }
-    if([self.bookView respondsToSelector:@selector(setTwoUpLandscape:)]) {
-        self.bookView.twoUpLandscape = [[NSUserDefaults standardUserDefaults] boolForKey:kBlioLandscapeTwoPagesDefaultsKey];
+    if([self.bookView respondsToSelector:@selector(setTwoUp:)]) {
+        if(lastLayout == kBlioPageLayoutPageLayout && [self.book twoPageSpread]) {
+            self.bookView.twoUp = kBlioTwoUpAlways;
+        } else {
+            self.bookView.twoUp = [[NSUserDefaults standardUserDefaults] boolForKey:kBlioLandscapeTwoPagesDefaultsKey] ? kBlioTwoUpLandscape : kBlioTwoUpNever;
+        }
     }
     if([self.bookView respondsToSelector:@selector(setShouldTapZoom:)]) {
         self.bookView.shouldTapZoom = [[NSUserDefaults standardUserDefaults] boolForKey:kBlioTapZoomsDefaultsKey];
@@ -1884,8 +1888,12 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         if([self.bookView respondsToSelector:@selector(setJustification:)]) {
             self.bookView.justification = [[NSUserDefaults standardUserDefaults] integerForKey:kBlioLastJustificationDefaultsKey];
         }
-        if([self.bookView respondsToSelector:@selector(setTwoUpLandscape:)]) {
-            self.bookView.twoUpLandscape = [[NSUserDefaults standardUserDefaults] boolForKey:kBlioLandscapeTwoPagesDefaultsKey];
+        if([self.bookView respondsToSelector:@selector(setTwoUp:)]) {
+            if(newLayout == kBlioPageLayoutPageLayout && [self.book twoPageSpread]) {
+                self.bookView.twoUp = kBlioTwoUpAlways;
+            } else {
+                self.bookView.twoUp = [[NSUserDefaults standardUserDefaults] boolForKey:kBlioLandscapeTwoPagesDefaultsKey] ? kBlioTwoUpLandscape : kBlioTwoUpNever;
+            }
         }
         if([self.bookView respondsToSelector:@selector(setShouldTapZoom:)]) {
             self.bookView.shouldTapZoom = [[NSUserDefaults standardUserDefaults] boolForKey:kBlioTapZoomsDefaultsKey];
@@ -1933,8 +1941,11 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     return NO;
 }
 - (BOOL)shouldShowTwoUpLandscapeSettings {
+    if(self.currentPageLayout == kBlioPageLayoutPageLayout && self.book.twoPageSpread) {
+            return NO;
+    } 
     CGSize size = self.bookView.bounds.size;
-    return size.width > size.height && [self.bookView respondsToSelector:@selector(setTwoUpLandscape:)];
+    return size.width > size.height && [self.bookView respondsToSelector:@selector(setTwoUp:)];
 }
 
 - (BOOL)shouldPresentBrightnessSliderVerticallyInPageSettings {
@@ -2141,13 +2152,13 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 
 - (void)changeTwoUpLandscape:(BOOL)shouldBeTwoUp {
     [[NSUserDefaults standardUserDefaults] setBool:shouldBeTwoUp forKey:kBlioLandscapeTwoPagesDefaultsKey];
-    if([self.bookView respondsToSelector:@selector(setTwoUpLandscape:)]) {
-        self.bookView.twoUpLandscape = shouldBeTwoUp;
+    if([self.bookView respondsToSelector:@selector(setTwoUp:)]) {
+        self.bookView.twoUp = shouldBeTwoUp ? kBlioTwoUpLandscape : kBlioTwoUpNever;
     }
 }
 - (BOOL)currentTwoUpLandscape
 {
-    return self.bookView.twoUpLandscape;
+    return self.bookView.twoUp != kBlioTwoUpNever;
 }
 
 

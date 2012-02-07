@@ -13,7 +13,7 @@
 #import "BlioAlertManager.h"
 #import "BlioBookManager.h"
 #import "BlioProcessingStandardOperations.h"
-#import "BlioXMLParserLock.h"
+#import "KNFBXMLParserLock.h"
 
 #import <libEucalyptus/EucEPubBook.h>
 #import <minizip/unzip.h>
@@ -469,7 +469,7 @@
 
                 if(encryptionXML) {
                     BlioEPubEncryptionParserDelegate *encryptionParserDelegate = [[BlioEPubEncryptionParserDelegate alloc] init];
-                    @synchronized([BlioXMLParserLock sharedLock]) {
+                    @synchronized([KNFBXMLParserLock sharedLock]) {
                         NSXMLParser * containerParser = [[NSXMLParser alloc] initWithData:encryptionXML];
                         containerParser.shouldProcessNamespaces = YES;
                         [containerParser setDelegate:encryptionParserDelegate];
@@ -502,7 +502,7 @@
                     NSLog(@"WARNING: %@ for file, %@ could not unzip!",containerPath,importableBook.fileName);
                 } else {                        
                     BlioEPubContainerParserDelegate *containerParserDelegate = [[BlioEPubContainerParserDelegate alloc] init];
-                    @synchronized([BlioXMLParserLock sharedLock]) {
+                    @synchronized([KNFBXMLParserLock sharedLock]) {
                         NSXMLParser * containerParser = [[NSXMLParser alloc] initWithData:containerXML];
                         [containerParser setDelegate:containerParserDelegate];
                         [containerParser parse];
@@ -520,7 +520,7 @@
                             NSLog(@"WARNING: opfPath: %@ for file, %@ could not unzip!",opfPath,importableBook.fileName);
                         } else {
                             BlioEPubOPFParserDelegate *opfParserDelegate = [[BlioEPubOPFParserDelegate alloc] init];
-                            @synchronized([BlioXMLParserLock sharedLock]) {
+                            @synchronized([KNFBXMLParserLock sharedLock]) {
                                 NSXMLParser * opfParser = [[NSXMLParser alloc] initWithData:opfXML];
                                 [opfParser setDelegate:opfParserDelegate];
                                 [opfParser parse];
@@ -567,7 +567,7 @@
                 NSData *KNFBMetadataXML = [self copyDataForFile:BlioXPSKNFBMetadataFile inUnzFile:xpsUnzipHandle];
                 if(KNFBMetadataXML) {
                     BlioXPSKNFBMetadataParserDelegate * KNFBMetadataParserDelegate = [[BlioXPSKNFBMetadataParserDelegate alloc] init];
-                    @synchronized([BlioXMLParserLock sharedLock]) {
+                    @synchronized([KNFBXMLParserLock sharedLock]) {
                         NSXMLParser * KNFBMetaDataParser = [[NSXMLParser alloc] initWithData:KNFBMetadataXML];
                         [KNFBMetaDataParser setDelegate:KNFBMetadataParserDelegate];
                         [KNFBMetaDataParser parse];
@@ -593,7 +593,7 @@
                         NSLog(@"ERROR: Could not find %@ for XPS file, %@!",contentTypesPath,importableBook.fileName);						
                     } else {
                         BlioXPSContentTypesParserDelegate * contentTypesParserDelegate = [[BlioXPSContentTypesParserDelegate alloc] init];
-                        @synchronized([BlioXMLParserLock sharedLock]) {
+                        @synchronized([KNFBXMLParserLock sharedLock]) {
                             NSXMLParser * contentTypesParser = [[NSXMLParser alloc] initWithData:contentTypesPathXML];
                             [contentTypesParser setDelegate:contentTypesParserDelegate];
                             [contentTypesParser parse];
@@ -611,7 +611,7 @@
                                 NSLog(@"ERROR: Could not find document properties file '%@' for XPS file, %@!",documentPropertiesPath,importableBook.fileName);						
                             } else {
                                 BlioXPSDocumentPropertiesParserDelegate * documentPropertiesParserDelegate = [[BlioXPSDocumentPropertiesParserDelegate alloc] init];
-                                @synchronized([BlioXMLParserLock sharedLock]) {
+                                @synchronized([KNFBXMLParserLock sharedLock]) {
                                     NSXMLParser * documentPropertiesParser = [[NSXMLParser alloc] initWithData:documentPropertiesXML];
                                     [documentPropertiesParser setDelegate:documentPropertiesParserDelegate];
                                     [documentPropertiesParser parse];

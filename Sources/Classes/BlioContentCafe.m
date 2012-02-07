@@ -1,6 +1,6 @@
 #import "BlioContentCafe.h"
 #import <libxml/xmlstring.h>
-#import "BlioXMLParserLock.h"
+#import "KNFBXMLParserLock.h"
 #if TARGET_OS_IPHONE
 #import <CFNetwork/CFNetwork.h>
 #endif
@@ -18547,7 +18547,7 @@ parameters:(ContentCafe_Test1 *)aParameters
 			NSLog(@"ResponseBody:\n%@", [[[NSString alloc] initWithData:responseData encoding:NSUTF8StringEncoding] autorelease]);
 		}
 		
-        @synchronized([BlioXMLParserLock sharedLock]) {
+        @synchronized([KNFBXMLParserLock sharedLock]) {
             doc = xmlParseMemory([responseData bytes], [responseData length]);
         }		
 		
@@ -18587,11 +18587,11 @@ parameters:(ContentCafe_Test1 *)aParameters
 					}
 				}
 			}
-            @synchronized([BlioXMLParserLock sharedLock]) {
+            @synchronized([KNFBXMLParserLock sharedLock]) {
 			xmlFreeDoc(doc);
             }
 		}
-        @synchronized([BlioXMLParserLock sharedLock]) {
+        @synchronized([KNFBXMLParserLock sharedLock]) {
 		xmlCleanupParser();
         }
 		[delegate operation:self completedWithResponse:response];
@@ -18644,7 +18644,7 @@ parameters:(ContentCafe_Test2 *)aParameters
 			NSLog(@"ResponseBody:\n%@", [[[NSString alloc] initWithData:responseData encoding:NSUTF8StringEncoding] autorelease]);
 		}
 		
-        @synchronized([BlioXMLParserLock sharedLock]) {
+        @synchronized([KNFBXMLParserLock sharedLock]) {
             doc = xmlParseMemory([responseData bytes], [responseData length]);
         }		
 		
@@ -18684,11 +18684,11 @@ parameters:(ContentCafe_Test2 *)aParameters
 					}
 				}
 			}
-            @synchronized([BlioXMLParserLock sharedLock]) {
+            @synchronized([KNFBXMLParserLock sharedLock]) {
 			xmlFreeDoc(doc);
             }
 		}
-        @synchronized([BlioXMLParserLock sharedLock]) {
+        @synchronized([KNFBXMLParserLock sharedLock]) {
 		xmlCleanupParser();
         }
 		[delegate operation:self completedWithResponse:response];
@@ -18741,7 +18741,7 @@ parameters:(ContentCafe_Test3 *)aParameters
 			NSLog(@"ResponseBody:\n%@", [[[NSString alloc] initWithData:responseData encoding:NSUTF8StringEncoding] autorelease]);
 		}
 		
-        @synchronized([BlioXMLParserLock sharedLock]) {
+        @synchronized([KNFBXMLParserLock sharedLock]) {
             doc = xmlParseMemory([responseData bytes], [responseData length]);
         }		
 		
@@ -18781,11 +18781,11 @@ parameters:(ContentCafe_Test3 *)aParameters
 					}
 				}
 			}
-            @synchronized([BlioXMLParserLock sharedLock]) {
+            @synchronized([KNFBXMLParserLock sharedLock]) {
 			xmlFreeDoc(doc);
             }
 		}
-        @synchronized([BlioXMLParserLock sharedLock]) {
+        @synchronized([KNFBXMLParserLock sharedLock]) {
 		xmlCleanupParser();
         }
 		[delegate operation:self completedWithResponse:response];
@@ -18838,7 +18838,7 @@ parameters:(ContentCafe_Test4 *)aParameters
 			NSLog(@"ResponseBody:\n%@", [[[NSString alloc] initWithData:responseData encoding:NSUTF8StringEncoding] autorelease]);
 		}
 		
-        @synchronized([BlioXMLParserLock sharedLock]) {
+        @synchronized([KNFBXMLParserLock sharedLock]) {
             doc = xmlParseMemory([responseData bytes], [responseData length]);
         }		
 		
@@ -18878,11 +18878,11 @@ parameters:(ContentCafe_Test4 *)aParameters
 					}
 				}
 			}
-            @synchronized([BlioXMLParserLock sharedLock]) {
+            @synchronized([KNFBXMLParserLock sharedLock]) {
 			xmlFreeDoc(doc);
             }
 		}
-        @synchronized([BlioXMLParserLock sharedLock]) {
+        @synchronized([KNFBXMLParserLock sharedLock]) {
 		xmlCleanupParser();
         }
 		[delegate operation:self completedWithResponse:response];
@@ -18935,7 +18935,7 @@ parameters:(ContentCafe_XmlPost *)aParameters
 			NSLog(@"ResponseBody:\n%@", [[[NSString alloc] initWithData:responseData encoding:NSUTF8StringEncoding] autorelease]);
 		}
 		
-        @synchronized([BlioXMLParserLock sharedLock]) {
+        @synchronized([KNFBXMLParserLock sharedLock]) {
             doc = xmlParseMemory([responseData bytes], [responseData length]);
         }		
 		
@@ -18975,11 +18975,11 @@ parameters:(ContentCafe_XmlPost *)aParameters
 					}
 				}
 			}
-            @synchronized([BlioXMLParserLock sharedLock]) {
+            @synchronized([KNFBXMLParserLock sharedLock]) {
 			xmlFreeDoc(doc);
             }
 		}
-        @synchronized([BlioXMLParserLock sharedLock]) {
+        @synchronized([KNFBXMLParserLock sharedLock]) {
 		xmlCleanupParser();
         }
 		[delegate operation:self completedWithResponse:response];
@@ -19032,7 +19032,7 @@ parameters:(ContentCafe_XmlString *)aParameters
 			NSLog(@"ResponseBody:\n%@", [[[NSString alloc] initWithData:responseData encoding:NSUTF8StringEncoding] autorelease]);
 		}
 		
-        @synchronized([BlioXMLParserLock sharedLock]) {
+        @synchronized([KNFBXMLParserLock sharedLock]) {
             doc = xmlParseMemory([responseData bytes], [responseData length]);
         }		
 		
@@ -19072,11 +19072,11 @@ parameters:(ContentCafe_XmlString *)aParameters
 					}
 				}
 			}
-            @synchronized([BlioXMLParserLock sharedLock]) {
+            @synchronized([KNFBXMLParserLock sharedLock]) {
                 xmlFreeDoc(doc);
             }
 		}
-        @synchronized([BlioXMLParserLock sharedLock]) {
+        @synchronized([KNFBXMLParserLock sharedLock]) {
             xmlCleanupParser();
         }
 		[delegate operation:self completedWithResponse:response];
@@ -19129,7 +19129,7 @@ parameters:(ContentCafe_XmlClass *)aParameters
 			NSLog(@"ResponseBody:\n%@", [[[NSString alloc] initWithData:responseData encoding:NSUTF8StringEncoding] autorelease]);
 		}
 		
-        @synchronized([BlioXMLParserLock sharedLock]) {
+        @synchronized([KNFBXMLParserLock sharedLock]) {
             doc = xmlParseMemory([responseData bytes], [responseData length]);
         }		
 		
@@ -19169,11 +19169,11 @@ parameters:(ContentCafe_XmlClass *)aParameters
 					}
 				}
 			}
-            @synchronized([BlioXMLParserLock sharedLock]) {
+            @synchronized([KNFBXMLParserLock sharedLock]) {
                 xmlFreeDoc(doc);
             }
 		}
-        @synchronized([BlioXMLParserLock sharedLock]) {
+        @synchronized([KNFBXMLParserLock sharedLock]) {
             xmlCleanupParser();
         }
 		[delegate operation:self completedWithResponse:response];
@@ -19226,7 +19226,7 @@ parameters:(ContentCafe_Single *)aParameters
 			NSLog(@"ResponseBody:\n%@", [[[NSString alloc] initWithData:responseData encoding:NSUTF8StringEncoding] autorelease]);
 		}
 		
-        @synchronized([BlioXMLParserLock sharedLock]) {
+        @synchronized([KNFBXMLParserLock sharedLock]) {
             doc = xmlParseMemory([responseData bytes], [responseData length]);
         }		
 		
@@ -19266,11 +19266,11 @@ parameters:(ContentCafe_Single *)aParameters
 					}
 				}
 			}
-            @synchronized([BlioXMLParserLock sharedLock]) {
+            @synchronized([KNFBXMLParserLock sharedLock]) {
                 xmlFreeDoc(doc);
             }
 		}
-        @synchronized([BlioXMLParserLock sharedLock]) {
+        @synchronized([KNFBXMLParserLock sharedLock]) {
             xmlCleanupParser();
         }
 		[delegate operation:self completedWithResponse:response];
@@ -19338,7 +19338,7 @@ static ContentCafeSoap_envelope *ContentCafeSoapSharedEnvelopeInstance = nil;
 	xmlDocDumpFormatMemory(doc, &buf, &size, 1);
 	
 	NSString *serializedForm = [NSString stringWithCString:(const char*)buf encoding:NSUTF8StringEncoding];
-    @synchronized([BlioXMLParserLock sharedLock]) {
+    @synchronized([KNFBXMLParserLock sharedLock]) {
 	xmlFree(buf);
 	xmlFreeDoc(doc);	
     }
@@ -19699,7 +19699,7 @@ parameters:(ContentCafe_Test1 *)aParameters
 			NSLog(@"ResponseBody:\n%@", [[[NSString alloc] initWithData:responseData encoding:NSUTF8StringEncoding] autorelease]);
 		}
 		
-        @synchronized([BlioXMLParserLock sharedLock]) {
+        @synchronized([KNFBXMLParserLock sharedLock]) {
             doc = xmlParseMemory([responseData bytes], [responseData length]);
         }		
 		
@@ -19739,11 +19739,11 @@ parameters:(ContentCafe_Test1 *)aParameters
 					}
 				}
 			}
-            @synchronized([BlioXMLParserLock sharedLock]) {
+            @synchronized([KNFBXMLParserLock sharedLock]) {
                 xmlFreeDoc(doc);
             }
 		}
-        @synchronized([BlioXMLParserLock sharedLock]) {
+        @synchronized([KNFBXMLParserLock sharedLock]) {
             xmlCleanupParser();
         }
 		[delegate operation:self completedWithResponse:response];
@@ -19796,7 +19796,7 @@ parameters:(ContentCafe_Test2 *)aParameters
 			NSLog(@"ResponseBody:\n%@", [[[NSString alloc] initWithData:responseData encoding:NSUTF8StringEncoding] autorelease]);
 		}
 		
-        @synchronized([BlioXMLParserLock sharedLock]) {
+        @synchronized([KNFBXMLParserLock sharedLock]) {
             doc = xmlParseMemory([responseData bytes], [responseData length]);
         }		
 		
@@ -19836,11 +19836,11 @@ parameters:(ContentCafe_Test2 *)aParameters
 					}
 				}
 			}
-            @synchronized([BlioXMLParserLock sharedLock]) {
+            @synchronized([KNFBXMLParserLock sharedLock]) {
                 xmlFreeDoc(doc);
             }
 		}
-        @synchronized([BlioXMLParserLock sharedLock]) {
+        @synchronized([KNFBXMLParserLock sharedLock]) {
             xmlCleanupParser();
         }
 		[delegate operation:self completedWithResponse:response];
@@ -19893,7 +19893,7 @@ parameters:(ContentCafe_Test3 *)aParameters
 			NSLog(@"ResponseBody:\n%@", [[[NSString alloc] initWithData:responseData encoding:NSUTF8StringEncoding] autorelease]);
 		}
 		
-        @synchronized([BlioXMLParserLock sharedLock]) {
+        @synchronized([KNFBXMLParserLock sharedLock]) {
             doc = xmlParseMemory([responseData bytes], [responseData length]);
         }		
 		
@@ -19933,11 +19933,11 @@ parameters:(ContentCafe_Test3 *)aParameters
 					}
 				}
 			}
-            @synchronized([BlioXMLParserLock sharedLock]) {
+            @synchronized([KNFBXMLParserLock sharedLock]) {
                 xmlFreeDoc(doc);
             }
 		}
-        @synchronized([BlioXMLParserLock sharedLock]) {
+        @synchronized([KNFBXMLParserLock sharedLock]) {
             xmlCleanupParser();
         }
 		[delegate operation:self completedWithResponse:response];
@@ -19990,7 +19990,7 @@ parameters:(ContentCafe_Test4 *)aParameters
 			NSLog(@"ResponseBody:\n%@", [[[NSString alloc] initWithData:responseData encoding:NSUTF8StringEncoding] autorelease]);
 		}
 		
-        @synchronized([BlioXMLParserLock sharedLock]) {
+        @synchronized([KNFBXMLParserLock sharedLock]) {
             doc = xmlParseMemory([responseData bytes], [responseData length]);
         }		
 		
@@ -20030,11 +20030,11 @@ parameters:(ContentCafe_Test4 *)aParameters
 					}
 				}
 			}
-            @synchronized([BlioXMLParserLock sharedLock]) {
+            @synchronized([KNFBXMLParserLock sharedLock]) {
                 xmlFreeDoc(doc);
             }
 		}
-        @synchronized([BlioXMLParserLock sharedLock]) {
+        @synchronized([KNFBXMLParserLock sharedLock]) {
             xmlCleanupParser();
         }
 		[delegate operation:self completedWithResponse:response];
@@ -20087,7 +20087,7 @@ parameters:(ContentCafe_XmlPost *)aParameters
 			NSLog(@"ResponseBody:\n%@", [[[NSString alloc] initWithData:responseData encoding:NSUTF8StringEncoding] autorelease]);
 		}
 		
-        @synchronized([BlioXMLParserLock sharedLock]) {
+        @synchronized([KNFBXMLParserLock sharedLock]) {
             doc = xmlParseMemory([responseData bytes], [responseData length]);
         }		
 		
@@ -20127,11 +20127,11 @@ parameters:(ContentCafe_XmlPost *)aParameters
 					}
 				}
 			}
-            @synchronized([BlioXMLParserLock sharedLock]) {
+            @synchronized([KNFBXMLParserLock sharedLock]) {
                 xmlFreeDoc(doc);
             }
 		}
-        @synchronized([BlioXMLParserLock sharedLock]) {
+        @synchronized([KNFBXMLParserLock sharedLock]) {
             xmlCleanupParser();
         }
 		[delegate operation:self completedWithResponse:response];
@@ -20184,7 +20184,7 @@ parameters:(ContentCafe_XmlString *)aParameters
 			NSLog(@"ResponseBody:\n%@", [[[NSString alloc] initWithData:responseData encoding:NSUTF8StringEncoding] autorelease]);
 		}
 		
-        @synchronized([BlioXMLParserLock sharedLock]) {
+        @synchronized([KNFBXMLParserLock sharedLock]) {
             doc = xmlParseMemory([responseData bytes], [responseData length]);
         }		
 		
@@ -20224,11 +20224,11 @@ parameters:(ContentCafe_XmlString *)aParameters
 					}
 				}
 			}
-            @synchronized([BlioXMLParserLock sharedLock]) {
+            @synchronized([KNFBXMLParserLock sharedLock]) {
                 xmlFreeDoc(doc);
             }
 		}
-        @synchronized([BlioXMLParserLock sharedLock]) {
+        @synchronized([KNFBXMLParserLock sharedLock]) {
             xmlCleanupParser();
         }
 		[delegate operation:self completedWithResponse:response];
@@ -20281,7 +20281,7 @@ parameters:(ContentCafe_XmlClass *)aParameters
 			NSLog(@"ResponseBody:\n%@", [[[NSString alloc] initWithData:responseData encoding:NSUTF8StringEncoding] autorelease]);
 		}
 		
-        @synchronized([BlioXMLParserLock sharedLock]) {
+        @synchronized([KNFBXMLParserLock sharedLock]) {
             doc = xmlParseMemory([responseData bytes], [responseData length]);
         }		
 		
@@ -20321,11 +20321,11 @@ parameters:(ContentCafe_XmlClass *)aParameters
 					}
 				}
 			}
-            @synchronized([BlioXMLParserLock sharedLock]) {
+            @synchronized([KNFBXMLParserLock sharedLock]) {
                 xmlFreeDoc(doc);
             }
 		}
-        @synchronized([BlioXMLParserLock sharedLock]) {
+        @synchronized([KNFBXMLParserLock sharedLock]) {
             xmlCleanupParser();
         }
 		[delegate operation:self completedWithResponse:response];
@@ -20378,7 +20378,7 @@ parameters:(ContentCafe_Single *)aParameters
 			NSLog(@"ResponseBody:\n%@", [[[NSString alloc] initWithData:responseData encoding:NSUTF8StringEncoding] autorelease]);
 		}
 		
-        @synchronized([BlioXMLParserLock sharedLock]) {
+        @synchronized([KNFBXMLParserLock sharedLock]) {
             doc = xmlParseMemory([responseData bytes], [responseData length]);
         }		
 		
@@ -20418,11 +20418,11 @@ parameters:(ContentCafe_Single *)aParameters
 					}
 				}
 			}
-            @synchronized([BlioXMLParserLock sharedLock]) {
+            @synchronized([KNFBXMLParserLock sharedLock]) {
                 xmlFreeDoc(doc);
             }
 		}
-        @synchronized([BlioXMLParserLock sharedLock]) {
+        @synchronized([KNFBXMLParserLock sharedLock]) {
             xmlCleanupParser();
         }
 		[delegate operation:self completedWithResponse:response];
@@ -20488,7 +20488,7 @@ static ContentCafeSoap12_envelope *ContentCafeSoap12SharedEnvelopeInstance = nil
 	xmlDocDumpFormatMemory(doc, &buf, &size, 1);
 	
 	NSString *serializedForm = [NSString stringWithCString:(const char*)buf encoding:NSUTF8StringEncoding];
-    @synchronized([BlioXMLParserLock sharedLock]) {
+    @synchronized([KNFBXMLParserLock sharedLock]) {
 	xmlFree(buf);	
 	xmlFreeDoc(doc);	
     }

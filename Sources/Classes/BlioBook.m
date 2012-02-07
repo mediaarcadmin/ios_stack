@@ -42,6 +42,7 @@
 @dynamic transactionType;
 @dynamic ttsRight;
 @dynamic ttsCapable;
+@dynamic twoPageSpread;
 
 - (void)dealloc {    
     [self flushCaches];
@@ -250,7 +251,7 @@
         titleString = [NSString stringWithFormat:@"%@\u2026", [titleString substringToIndex:maxTitleLength]];
     }
     
-    THStringRenderer *renderer = [[THStringRenderer alloc] initWithFontName:@"Linux Libertine O"];
+    THStringRenderer *renderer = [THStringRenderer stringRendererWithFontName:@"Linux Libertine O"];
 
     CGSize fullSize = [[UIScreen mainScreen] bounds].size;
     CGFloat pointSize = roundf(fullSize.height / 8.0f);
@@ -284,7 +285,6 @@
     
     CGContextSetRGBFillColor(ctx, 0.9f, 0.9f, 1, 0.8f);
     [renderer drawString:titleString inContext:ctx atPoint:titleRect.origin pointSize:pointSize maxWidth:titleRect.size.width flags:flags];
-    [renderer release];
     
     UIImage *aCoverImage = UIGraphicsGetImageFromCurrentImageContext();
 	UIGraphicsEndImageContext();

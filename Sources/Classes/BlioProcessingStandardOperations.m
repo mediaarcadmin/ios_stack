@@ -15,7 +15,7 @@
 #import "BlioStoreManager.h"
 #import "Reachability.h"
 #import "BlioImportManager.h"
-#import "BlioXMLParserLock.h"
+#import "KNFBXMLParserLock.h"
 
 @implementation BlioProcessingAggregateOperation
 
@@ -877,7 +877,7 @@
 		NSLog(@"Textflow sections file is present. parsing XML...");
 		NSData * data = [self getBookManifestDataForKey:BlioManifestTextFlowKey];
 		if (data) {
-            @synchronized([BlioXMLParserLock sharedLock]) {
+            @synchronized([KNFBXMLParserLock sharedLock]) {
                 textflowParser = [[NSXMLParser alloc] initWithData:data];
                 [textflowParser setDelegate:self];
                 [textflowParser parse];
@@ -920,7 +920,7 @@
 //				NSString * stringData = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
 //				NSLog(@"stringData: %@",stringData);
 //				[stringData release];
-                @synchronized([BlioXMLParserLock sharedLock]) {
+                @synchronized([KNFBXMLParserLock sharedLock]) {
                     rightsParser = [[NSXMLParser alloc] initWithData:data];
                     [rightsParser setDelegate:self];
                     [rightsParser parse];
@@ -961,7 +961,7 @@
 //			NSString * stringData = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
 //			NSLog(@"stringData: %@",stringData);
 //			[stringData release];
-            @synchronized([BlioXMLParserLock sharedLock]) {
+            @synchronized([KNFBXMLParserLock sharedLock]) {
                 audiobookReferencesParser = [[NSXMLParser alloc] initWithData:data];
                 [audiobookReferencesParser setDelegate:self];
                 [audiobookReferencesParser parse];
@@ -992,7 +992,7 @@
 			//			NSString * stringData = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
 			//			NSLog(@"stringData: %@",stringData);
 			//			[stringData release];
-            @synchronized([BlioXMLParserLock sharedLock]) {
+            @synchronized([KNFBXMLParserLock sharedLock]) {
                 metadataParser = [[NSXMLParser alloc] initWithData:data];
                 [metadataParser setDelegate:self];
                 [metadataParser parse];
@@ -1094,10 +1094,13 @@
 			NSString * featureVersion = [attributeDict objectForKey:@"Version"];
 			NSString * isRequired = [attributeDict objectForKey:@"IsRequired"];
 			if (featureName && featureVersion && isRequired) {
-				if ([[isRequired lowercaseString] isEqualToString:@"true"]) {
+                if ([featureName isEqualToString:@"TwoPageSpread"] && [[isRequired lowercaseString] isEqualToString:@"true"]) {
+                    // The feature tag here is being used to state that this book requires a two-up view, not that the app requires a 2-up feature...
+					[self setBookValue:[NSNumber numberWithBool:YES] forKey:@"twoPageSpread"]; 
+                } else if ([[isRequired lowercaseString] isEqualToString:@"true"]) {
 					NSNumber * featureCompatibilityVersion = [self.featureCompatibilityDictionary objectForKey:featureName];
-					if (featureCompatibilityVersion) NSLog(@"Required feature: %@ found. App compatibility version: %f, book version required: %f",featureName,[featureCompatibilityVersion floatValue],[featureVersion floatValue]);
-					else NSLog(@"Required feature: %@ found. App is not compatible with this feature, book version required: %f",featureName,[featureVersion floatValue]);
+//					if (featureCompatibilityVersion) NSLog(@"Required feature: %@ found. App compatibility version: %f, book version required: %f",featureName,[featureCompatibilityVersion floatValue],[featureVersion floatValue]);
+//					else NSLog(@"Required feature: %@ found. App is not compatible with this feature, book version required: %f",featureName,[featureVersion floatValue]);
 					if (!featureCompatibilityVersion || [featureCompatibilityVersion floatValue] < [featureVersion floatValue]) {
 						// the parsed feature is not listed in the app's compatibility dictionary or the book requires a higher version than our compatibility version
 
