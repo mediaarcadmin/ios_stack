@@ -383,25 +383,27 @@ static void op_TJ(CGPDFScannerRef inScanner, void *info)
     
     BOOL success = CGPDFScannerPopArray(inScanner, &array);
     
-    for (size_t n = 0; n < CGPDFArrayGetCount(array); n++) {
-        if(n >= CGPDFArrayGetCount(array))
-            continue;
-        
-        CGPDFStringRef string;
-        success = CGPDFArrayGetString(array, n, &string);
-        if (success) {
-            NSString *aString = (NSString *)CGPDFStringCopyTextString(string);
-            size_t length = CGPDFStringGetLength(string);
-            const UInt8 *bytes = CGPDFStringGetBytePtr(string);
-            [parsedPage addUnicodeString:aString withBytes:bytes length:length];
-            [aString release];
+    if (success) {
+        for (size_t n = 0; n < CGPDFArrayGetCount(array); n++) {
+            if(n >= CGPDFArrayGetCount(array))
+                continue;
             
-        } else {
-            CGPDFReal number;
-            success = CGPDFArrayGetNumber(array, n, &number);
-            if(success)
-            {
-                [parsedPage setTj:number];
+            CGPDFStringRef string;
+            success = CGPDFArrayGetString(array, n, &string);
+            if (success) {
+                NSString *aString = (NSString *)CGPDFStringCopyTextString(string);
+                size_t length = CGPDFStringGetLength(string);
+                const UInt8 *bytes = CGPDFStringGetBytePtr(string);
+                [parsedPage addUnicodeString:aString withBytes:bytes length:length];
+                [aString release];
+                
+            } else {
+                CGPDFReal number;
+                success = CGPDFArrayGetNumber(array, n, &number);
+                if(success)
+                {
+                    [parsedPage setTj:number];
+                }
             }
         }
     }
@@ -424,6 +426,7 @@ static void op_SINGLEQUOTE(CGPDFScannerRef inScanner, void *info)
         size_t length = CGPDFStringGetLength(string);
         const UInt8 *bytes = CGPDFStringGetBytePtr(string);
         [parsedPage addUnicodeString:aString withBytes:bytes length:length];
+        [aString release];
         
         [parsedPage setTj:0];
     }
@@ -481,10 +484,8 @@ static void op_Tf (CGPDFScannerRef s, void *info)
         return;
     
     BlioPDFFont *font = [[parsedPage resourceDataSource] fontWithName:[NSString stringWithCString:name encoding:NSASCIIStringEncoding] onPageRef:[parsedPage pageRef]];
-    NSString *baseFont = @"<< font not found >>";
     
     if (font) {
-        baseFont = [font baseFont];
         [parsedPage setCurrentFont:font];
     }
 }

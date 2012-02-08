@@ -16,6 +16,7 @@
 #import "Reachability.h"
 #import "BlioImportManager.h"
 #import "KNFBXMLParserLock.h"
+#import "BlioLayoutPDFDataSource.h"
 
 @implementation BlioProcessingAggregateOperation
 
@@ -1400,6 +1401,12 @@
 @end
 
 #pragma mark -
+@interface BlioProcessingGenerateCoverThumbsOperation()
+
+- (NSData *)generatePDFCoverImageOfSize:(CGSize)size maintainAspectRatio:(BOOL)maintainAspectRatio;
+
+@end
+
 @implementation BlioProcessingGenerateCoverThumbsOperation
 
 @synthesize maintainAspectRatio;
@@ -1514,6 +1521,15 @@
         imageData = [self getBookManifestDataForKey:BlioManifestCoverKey];
     }
     
+    if (!imageData) {
+        BOOL isPDF = [self hasBookManifestValueForKey:BlioManifestPDFKey];
+        
+        if (isPDF) {
+            CGSize screenSize = [[UIScreen mainScreen] bounds].size;
+            imageData = [self generatePDFCoverImageOfSize:screenSize maintainAspectRatio:YES];
+        }
+    }
+
     if (nil == imageData) {
         if (!hasCover) {
             NSLog(@"Failed to create generate cover thumbs because cover image from manifest value is nil.");
@@ -1674,6 +1690,61 @@
     // http://stackoverflow.com/questions/1424210/iphone-development-pointer-being-freed-was-not-allocated
     [pool drain];
 	
+}
+
+- (NSData *)generatePDFCoverImageOfSize:(CGSize)size maintainAspectRatio:(BOOL)maintainRatio {
+    
+    UIImage *pdfCover = nil;
+    NSData *coverData = nil;
+    
+    NSString *pdfPath = [self getBookValueForKey:@"pdfPath"];
+               
+    if (pdfPath) {
+        BlioLayoutPDFDataSource *aPDFDatasource = [[BlioLayoutPDFDataSource alloc] initWithPath:pdfPath];
+        CGRect cropRect = [aPDFDatasource cropRectForPage:1];        
+        CGSize thumbSize = size;
+        
+        if (maintainRatio) {
+            CGFloat maxToCoverWidthRatio = size.width/cropRect.size.width;
+            if ((cropRect.size.height * maxToCoverWidthRatio) < thumbSize.height) {
+                thumbSize.height = cropRect.size.height * maxToCoverWidthRatio;
+            } else {
+                CGFloat maxToCoverHeightRatio = size.height/cropRect.size.height;
+                thumbSize.width = cropRect.size.width * maxToCoverHeightRatio;
+            }
+        }
+        
+        id backing = nil;
+        CGContextRef bitmapContext = [aPDFDatasource RGBABitmapContextForPage:1 fromRect:cropRect atSize:thumbSize getBacking:&backing];
+        CGImageRef pdfImage = CGBitmapContextCreateImage(bitmapContext);
+        pdfCover = [UIImage imageWithCGImage:pdfImage];
+        CGImageRelease(pdfImage);
+        [aPDFDatasource release];
+    }
+    
+    if (pdfCover) {
+        NSString *filename = @"Cover.jpg";
+        NSString *thumbDir = [[self cacheDirectory] stringByAppendingPathComponent:BlioBookThumbnailsDir];
+        coverData = UIImageJPEGRepresentation(pdfCover, 0.8f);
+        NSFileManager *threadsafeManager = [[[NSFileManager alloc] init] autorelease];
+        
+        if (![threadsafeManager fileExistsAtPath:thumbDir]) {
+            NSError * createDirectoryError;
+            if (![threadsafeManager createDirectoryAtPath:thumbDir withIntermediateDirectories:YES attributes:nil error:&createDirectoryError]) {
+                NSLog(@"Failed to create book cache directory whilst generating PDF cover with error: %@, %@", createDirectoryError, [createDirectoryError userInfo]);
+            }
+        }
+        
+        NSString *coverPath = [thumbDir stringByAppendingPathComponent:filename];
+        [coverData writeToFile:coverPath atomically:YES];
+        
+        NSDictionary *coverManifestEntry = [NSMutableDictionary dictionary];
+        [coverManifestEntry setValue:BlioManifestEntryLocationFileSystem forKey:BlioManifestEntryLocationKey];
+        [coverManifestEntry setValue:[BlioBookThumbnailsDir stringByAppendingPathComponent:filename] forKey:BlioManifestEntryPathKey];
+        [self setBookManifestValue:coverManifestEntry forKey:BlioManifestCoverKey];
+    }
+    
+    return coverData;
 }
                            
 @end

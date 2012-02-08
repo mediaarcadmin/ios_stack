@@ -208,7 +208,8 @@
     return [self hasManifestValueForKey:BlioManifestXPSKey];
 }
 - (BOOL)hasCoverImage {
-    return [self hasManifestValueForKey:BlioManifestCoverKey];
+    // PDFs should always have a cover, if it's not currently set it should be re-generated
+    return [self hasManifestValueForKey:BlioManifestCoverKey] || [self hasPdf];
 }
 
 - (BOOL)hasTextFlow {
