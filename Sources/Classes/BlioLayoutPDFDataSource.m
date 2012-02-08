@@ -763,6 +763,7 @@ presentationNameAndSubTitleForSectionUuid:(NSString *)sectionUuid {
     BlioPDFPageParser *parser = [[BlioPDFPageParser alloc] initWithPageRef:aPage resourceDataSource:self];
     [parser parse];
     aString = [parser attributedString];
+    [parser release];
     [pdfLock unlock];    
 
     return aString;
@@ -997,12 +998,6 @@ static void parseFont(const char *key, CGPDFObjectRef object, void *info) {
         firstWidthChar = (NSUInteger)firstChar;
     }
     
-    NSUInteger lastWidthChar = 255;
-    CGPDFInteger lastChar;
-    if (CGPDFDictionaryGetInteger(dict, "LastChar", &lastChar)) {
-        lastWidthChar = (NSUInteger)lastChar;
-    }
-    
     NSInteger defaultWidth = 0;
     CGPDFArrayRef widths;
     if (CGPDFDictionaryGetArray(dict, "Widths", &widths)) {
@@ -1055,6 +1050,7 @@ static void parseFont(const char *key, CGPDFObjectRef object, void *info) {
     }
     
     [fonts setObject:font forKey:uniqueFont];
+    [font release];
     [pool drain];
 }
 
