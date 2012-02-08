@@ -1390,7 +1390,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 	CGSize viewSize = viewController.contentSizeForViewInPopover;
 	if ([viewController.view isKindOfClass:[UIScrollView class]]) {
 		[((UITableViewController*)viewController).tableView reloadData];
-		NSLog(@"[(UIScrollView*)viewController.view contentSize].height: %f",[(UIScrollView*)viewController.view contentSize].height);
+//		NSLog(@"[(UIScrollView*)viewController.view contentSize].height: %f",[(UIScrollView*)viewController.view contentSize].height);
 		viewSize.height = [(UIScrollView*)viewController.view contentSize].height;
 		if (viewSize.height > 600) viewSize.height = 600;
 	}
@@ -1399,7 +1399,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
         hasShownAppSettings = YES;
         if (viewSize.height < 440) viewSize.height = 440;
     }
-    NSLog(@"setting popover to size: %f, %f",viewSize.width,viewSize.height);
+//    NSLog(@"setting popover to size: %f, %f",viewSize.width,viewSize.height);
 	self.settingsPopoverController.popoverContentSize = viewSize;
 }
 

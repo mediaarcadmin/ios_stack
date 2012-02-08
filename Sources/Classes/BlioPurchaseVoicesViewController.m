@@ -44,22 +44,22 @@
 #pragma mark -
 #pragma mark View lifecycle
 
-
 - (void)viewDidLoad {
     [super viewDidLoad];
+        
 	CGFloat activityIndicatorDiameter = 50.0f;
 	CGRect targetFrame = [[UIScreen mainScreen] bounds];
 	self.activityIndicatorView = [[[BlioRoundedRectActivityView alloc] initWithFrame:CGRectMake((targetFrame.size.width-activityIndicatorDiameter)/2, (targetFrame.size.height-activityIndicatorDiameter)/2, activityIndicatorDiameter, activityIndicatorDiameter)] autorelease];
 		
 	[[[UIApplication sharedApplication] keyWindow] addSubview:activityIndicatorView];
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReceiveInAppPurchaseProductsFetchStarted:) name:BlioInAppPurchaseProductsFetchStarted object:[BlioInAppPurchaseManager sharedInAppPurchaseManager]];
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReceiveInAppPurchaseProductsFetchFailed:) name:BlioInAppPurchaseProductsFetchFailed object:[BlioInAppPurchaseManager sharedInAppPurchaseManager]];
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReceiveInAppPurchaseProductsFetchFinished:) name:BlioInAppPurchaseProductsFetchFinished object:[BlioInAppPurchaseManager sharedInAppPurchaseManager]];
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReceiveInAppPurchaseProductsUpdated:) name:BlioInAppPurchaseProductsUpdated object:[BlioInAppPurchaseManager sharedInAppPurchaseManager]];
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReceiveInAppPurchaseProductsFetchStarted:) name:BlioInAppPurchaseProductsFetchStartedNotification object:[BlioInAppPurchaseManager sharedInAppPurchaseManager]];
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReceiveInAppPurchaseProductsFetchFailed:) name:BlioInAppPurchaseProductsFetchFailedNotification object:[BlioInAppPurchaseManager sharedInAppPurchaseManager]];
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReceiveInAppPurchaseProductsFetchFinished:) name:BlioInAppPurchaseProductsFetchFinishedNotification object:[BlioInAppPurchaseManager sharedInAppPurchaseManager]];
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReceiveInAppPurchaseProductsUpdated:) name:BlioInAppPurchaseProductsUpdatedNotification object:[BlioInAppPurchaseManager sharedInAppPurchaseManager]];
 
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(inAppPurchaseTransactionDone:) name:BlioInAppPurchaseTransactionFailed object:[BlioInAppPurchaseManager sharedInAppPurchaseManager]];
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(inAppPurchaseTransactionDone:) name:BlioInAppPurchaseTransactionRestored object:[BlioInAppPurchaseManager sharedInAppPurchaseManager]];
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(inAppPurchaseTransactionDone:) name:BlioInAppPurchaseTransactionPurchased object:[BlioInAppPurchaseManager sharedInAppPurchaseManager]];		
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(inAppPurchaseTransactionDone:) name:BlioInAppPurchaseTransactionFailedNotification object:[BlioInAppPurchaseManager sharedInAppPurchaseManager]];
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(inAppPurchaseTransactionDone:) name:BlioInAppPurchaseTransactionRestoredNotification object:[BlioInAppPurchaseManager sharedInAppPurchaseManager]];
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(inAppPurchaseTransactionDone:) name:BlioInAppPurchaseTransactionPurchasedNotification object:[BlioInAppPurchaseManager sharedInAppPurchaseManager]];		
 	
 	if (![BlioInAppPurchaseManager sharedInAppPurchaseManager].isFetchingProducts) {
 		[[BlioInAppPurchaseManager sharedInAppPurchaseManager] fetchProductsFromProductServer];
@@ -252,6 +252,9 @@
 	[self.activityIndicatorView startAnimating];
 	[[BlioInAppPurchaseManager sharedInAppPurchaseManager] purchaseProductWithID:productID];
 }
+-(void)restoreProductWithID:(NSString*)productID {
+	[[BlioInAppPurchaseManager sharedInAppPurchaseManager] restoreProductWithID:productID];
+}
 
 
 #pragma mark -
@@ -328,9 +331,7 @@
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onProcessingOperationProgressNotification:) name:BlioProcessingOperationProgressNotification object:nil];
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onProcessingOperationCompleteNotification:) name:BlioProcessingOperationCompleteNotification object:nil];
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onProcessingOperationFailedNotification:) name:BlioProcessingOperationFailedNotification object:nil];
-		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReceiveInAppPurchaseTransactionFailed:) name:BlioInAppPurchaseTransactionFailed object:[BlioInAppPurchaseManager sharedInAppPurchaseManager]];
-//		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReceiveInAppPurchaseTransactionRestored:) name:BlioInAppPurchaseTransactionRestored object:[BlioInAppPurchaseManager sharedInAppPurchaseManager]];
-//		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReceiveInAppPurchaseTransactionPurchased:) name:BlioInAppPurchaseTransactionPurchased object:[BlioInAppPurchaseManager sharedInAppPurchaseManager]];		
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onInAppPurchaseTransactionFailedNotification:) name:BlioInAppPurchaseTransactionFailedNotification object:[BlioInAppPurchaseManager sharedInAppPurchaseManager]];
 	}
     return self;
 }
@@ -344,6 +345,7 @@
 		buttonState = aButtonState;
 		switch (buttonState) {
 			case BlioVoiceDownloadButtonStatePurchase:
+            case BlioVoiceDownloadButtonStatePreviouslyPurchased:
 				self.downloadButton.titleLabel.font = [UIFont boldSystemFontOfSize:15];
 				[self.downloadButton setTitleShadowColor:[[UIColor blackColor] colorWithAlphaComponent:0.50] forState:UIControlStateNormal];		
 				self.downloadButton.hidden = NO;
@@ -388,7 +390,8 @@
 -(void)configureWithInAppPurchaseProduct:(CCInAppPurchaseProduct*)aProduct {
 	self.product = aProduct;
     self.textLabel.text = self.product.name;
-	[self.downloadButton setTitle:[NSString stringWithFormat:@"%@",self.product.product.localizedPrice] forState:UIControlStateNormal];
+	if ([[BlioInAppPurchaseManager sharedInAppPurchaseManager] hasPreviouslyPurchasedProductWithID:self.product.productId]) [self.downloadButton setTitle:NSLocalizedString(@"Install",@"\"Install\" button label in purchase voices view") forState:UIControlStateNormal];
+	else [self.downloadButton setTitle:[NSString stringWithFormat:@"%@",self.product.product.localizedPrice] forState:UIControlStateNormal];
 	BlioProcessingDownloadAndUnzipVoiceOperation * voiceOp = [[BlioAcapelaAudioManager sharedAcapelaAudioManager] downloadVoiceOperationByVoice:self.product.name];
 	if (voiceOp) {
 		[self setDownloadButtonState:BlioVoiceDownloadButtonStateInProgress];
@@ -405,6 +408,9 @@
 	else if ([[BlioInAppPurchaseManager sharedInAppPurchaseManager] isPurchasingProductWithID:self.product.productId]) {
 		[self setDownloadButtonState:BlioVoiceDownloadButtonStatePurchasing];
 	}
+	else if ([[BlioInAppPurchaseManager sharedInAppPurchaseManager] hasPreviouslyPurchasedProductWithID:self.product.productId]) {
+		[self setDownloadButtonState:BlioVoiceDownloadButtonStatePreviouslyPurchased];
+    }
 	else [self setDownloadButtonState:BlioVoiceDownloadButtonStatePurchase];
 }
 -(void)onPlaySampleButtonPressed:(id)sender {
@@ -413,7 +419,11 @@
 }
 -(void)onDownloadButtonPressed:(id)sender {
 	//	NSLog(@"onDownloadButtonPressed");
-	if ([[BlioInAppPurchaseManager sharedInAppPurchaseManager] canMakePurchases]) {
+    if ([[BlioInAppPurchaseManager sharedInAppPurchaseManager] hasPreviouslyPurchasedProductWithID:self.product.productId]) {
+		[self setDownloadButtonState:BlioVoiceDownloadButtonStatePurchasing];
+        [self.delegate restoreProductWithID:self.product.productId];
+    }
+	else if ([[BlioInAppPurchaseManager sharedInAppPurchaseManager] canMakePurchases]) {
 		[self setDownloadButtonState:BlioVoiceDownloadButtonStatePurchasing];
 		[self.delegate purchaseProductWithID:self.product.productId];
 	}
@@ -433,7 +443,7 @@
 	if ([[note object] isKindOfClass:[BlioProcessingDownloadAndUnzipVoiceOperation class]]) {
 		BlioProcessingDownloadAndUnzipVoiceOperation * voiceOp = [note object];
 		if ([voiceOp.voice isEqualToString:self.product.productId]) {
-			//			NSLog(@"BlioPurchaseVoiceTableViewCell onProcessingProgressNotification entered. percentage: %u",voiceOp.percentageComplete);
+//            NSLog(@"BlioPurchaseVoiceTableViewCell onProcessingProgressNotification entered. percentage: %f",voiceOp.percentageComplete);
 			[self setDownloadButtonState:BlioVoiceDownloadButtonStateInProgress];
 			if (voiceOp.percentageComplete != 100) {
 				self.progressView.progress = voiceOp.percentageComplete/100.0f;
@@ -466,12 +476,13 @@
 		}
 	}
 }
-- (void)didReceiveInAppPurchaseTransactionFailed:(NSNotification*)note {
+- (void)onInAppPurchaseTransactionFailedNotification:(NSNotification*)note {
 	SKPaymentTransaction* transaction = (SKPaymentTransaction*)[[note userInfo] objectForKey:BlioInAppPurchaseNotificationTransactionKey];
 	if ([transaction.payment.productIdentifier isEqualToString:self.product.productId]) {
 		[self setDownloadButtonState:BlioVoiceDownloadButtonStatePurchase];
 	}
 }
+/*
 - (void)didReceiveInAppPurchaseTransactionRestored:(NSNotification*)note {
 	SKPaymentTransaction* transaction = (SKPaymentTransaction*)[[note userInfo] objectForKey:BlioInAppPurchaseNotificationTransactionKey];
 	if ([transaction.payment.productIdentifier isEqualToString:self.product.productId]) {
@@ -484,5 +495,6 @@
 		[self setDownloadButtonState:BlioVoiceDownloadButtonStateInProgress];
 	}
 }
+ */
 @end
 

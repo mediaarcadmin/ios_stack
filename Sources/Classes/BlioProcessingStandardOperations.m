@@ -335,7 +335,7 @@
 		expectedContentLength = NSURLResponseUnknownLength;
         executing = NO;
         finished = NO;
-		resume = YES;
+		resume = NO;
     }
     
     return self;

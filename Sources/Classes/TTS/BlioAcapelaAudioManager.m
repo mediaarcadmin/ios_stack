@@ -343,6 +343,7 @@ NSString * const BlioVoiceListRefreshedNotification = @"BlioVoiceListRefreshedNo
 -(BlioProcessingDownloadAndUnzipVoiceOperation*)downloadVoiceOperationByVoice:(NSString*)aVoice {
 	NSArray * operations = [self.downloadQueue operations];
 	for (BlioProcessingDownloadAndUnzipVoiceOperation * op in operations) {
+        NSLog(@"op.voice: %@",op.voice);
 		if ([op isKindOfClass:[BlioProcessingDownloadAndUnzipVoiceOperation class]] && [op.voice isEqualToString:aVoice]) {
 			return op;
 		}

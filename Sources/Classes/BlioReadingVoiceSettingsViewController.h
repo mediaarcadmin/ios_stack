@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "BlioAcapelaAudioManager.h"
+#import "BlioRoundedRectActivityView.h"
 
 @interface BlioReadingVoiceSettingsViewController : UITableViewController <NSFetchedResultsControllerDelegate> {
 	UISegmentedControl* voiceControl;
@@ -24,6 +25,7 @@
 	NSInteger totalBooks;
 	NSFetchedResultsController * ttsFetchedResultsController;
 	NSFetchedResultsController * totalFetchedResultsController;
+    BlioRoundedRectActivityView * activityIndicatorView;
 }
 @property (nonatomic, retain) UISegmentedControl * voiceControl;
 @property (nonatomic, retain) UISlider * speedControl;
@@ -37,5 +39,6 @@
 @property (nonatomic, assign) CGFloat footerHeight;
 @property (nonatomic, retain) NSFetchedResultsController * ttsFetchedResultsController;
 @property (nonatomic, retain) NSFetchedResultsController * totalFetchedResultsController;
+@property (nonatomic, retain) BlioRoundedRectActivityView * activityIndicatorView;
 
 @end

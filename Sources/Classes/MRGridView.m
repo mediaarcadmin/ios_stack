@@ -355,7 +355,7 @@
 	if (editTimer && [editTimer isValid]) [editTimer invalidate];
 	editTimer = nil;
 	cellDragging = YES;
-	[self setScrollEnabled:NO];
+//	[self setScrollEnabled:NO];
 	[gridView bringSubviewToFront:currDraggedCell];
 	[self animateCellPickupForCell:currDraggedCell];
 }
