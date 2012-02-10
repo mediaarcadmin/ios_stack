@@ -933,7 +933,7 @@ static void sortedBookmarkRangePredicateInit() {
 - (NSArray *)wordStringsForBookmarkRange:(BlioBookmarkRange *)range {
     if (nil != self.textFlow) {
         return [self.textFlow wordStringsForBookmarkRange:range];
-    } else {
+    } else if (![self hasPdf]) {
         id<BlioParagraphSource> paragraphSource = [[BlioBookManager sharedBookManager] checkOutParagraphSourceForBookWithID:self.objectID];
     
         id startParagraphID;

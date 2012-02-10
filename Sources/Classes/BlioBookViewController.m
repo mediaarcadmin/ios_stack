@@ -3477,7 +3477,11 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
             if (newBookmarkRange) {
                 
                 NSArray *wordStrings = [self.book wordStringsForBookmarkRange:currentPageRange];
-                NSString *bookmarkText = [wordStrings componentsJoinedByString:@" "];
+                NSString *bookmarkText = nil;
+                
+                if ([wordStrings count] > 0) {
+                    bookmarkText = [wordStrings componentsJoinedByString:@" "];
+                }
                 
                 if ([bookmarkText length] > kBlioMaxBookmarkTextLength) {
                     bookmarkText = [bookmarkText substringToIndex:kBlioMaxBookmarkTextLength];
