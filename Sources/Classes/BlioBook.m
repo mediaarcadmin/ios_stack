@@ -178,8 +178,12 @@
               ([[self textFlow] flowTreeKind] == KNFBTextFlowFlowTreeKindXaml ||
                [[self textFlow] conversionQuality] == KNFBTextFlowConversionQualityHigh))));
 }
--(BOOL)fixedViewEnabled {
+- (BOOL)fixedViewEnabled {
 	return ([self hasPdf] || ([self hasXps] && ![self hasEmbeddedEPub]));
+}
+
+- (BOOL)enforceTwoPageSpread {
+    return [[self valueForKey:@"twoPageSpread"] boolValue];
 }
 
 - (NSString *)ePubPath {

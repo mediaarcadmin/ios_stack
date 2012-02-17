@@ -398,7 +398,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         self.bookView.justification = [[NSUserDefaults standardUserDefaults] integerForKey:kBlioLastJustificationDefaultsKey];
     }
     if([self.bookView respondsToSelector:@selector(setTwoUp:)]) {
-        if(lastLayout == kBlioPageLayoutPageLayout && [self.book twoPageSpread]) {
+        if(lastLayout == kBlioPageLayoutPageLayout && self.book.enforceTwoPageSpread) {
             self.bookView.twoUp = kBlioTwoUpAlways;
         } else {
             self.bookView.twoUp = [[NSUserDefaults standardUserDefaults] boolForKey:kBlioLandscapeTwoPagesDefaultsKey] ? kBlioTwoUpLandscape : kBlioTwoUpNever;
@@ -1889,7 +1889,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
             self.bookView.justification = [[NSUserDefaults standardUserDefaults] integerForKey:kBlioLastJustificationDefaultsKey];
         }
         if([self.bookView respondsToSelector:@selector(setTwoUp:)]) {
-            if(newLayout == kBlioPageLayoutPageLayout && [self.book twoPageSpread]) {
+            if(newLayout == kBlioPageLayoutPageLayout && self.book.enforceTwoPageSpread) {
                 self.bookView.twoUp = kBlioTwoUpAlways;
             } else {
                 self.bookView.twoUp = [[NSUserDefaults standardUserDefaults] boolForKey:kBlioLandscapeTwoPagesDefaultsKey] ? kBlioTwoUpLandscape : kBlioTwoUpNever;
@@ -1941,7 +1941,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     return NO;
 }
 - (BOOL)shouldShowTwoUpLandscapeSettings {
-    if(self.currentPageLayout == kBlioPageLayoutPageLayout && self.book.twoPageSpread) {
+    if(self.currentPageLayout == kBlioPageLayoutPageLayout && self.book.enforceTwoPageSpread) {
             return NO;
     } 
     CGSize size = self.bookView.bounds.size;

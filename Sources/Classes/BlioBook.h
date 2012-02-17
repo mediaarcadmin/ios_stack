@@ -111,19 +111,20 @@ static NSString * const BlioBookThumbnailPrefix = @"thumbnail";
 @property (nonatomic, retain) NSString *title;
 @property (nonatomic, retain) NSString *titleSortable;
 @property (nonatomic, retain) NSNumber *transactionType;
+@property (nonatomic, retain) NSNumber *twoPageSpread;
+
 
 // the following two attributes are used to quickly calculate the number of TTS-compatible books
 @property (nonatomic, retain) NSNumber *audiobook;
 @property (nonatomic, retain) NSNumber *ttsRight;
 @property (nonatomic, retain) NSNumber *ttsCapable;
 
-
 @property (nonatomic, assign, readonly) BOOL hasAudiobook;
 @property (nonatomic, assign, readonly) BOOL isTTSCapable;
 @property (nonatomic, assign, readonly) BOOL hasTTSRights;
 @property (nonatomic, assign, readonly) BOOL reflowEnabled;
 @property (nonatomic, assign, readonly) BOOL fixedViewEnabled;
-@property (nonatomic, assign, readonly) BOOL twoPageSpread;
+@property (nonatomic, assign, readonly) BOOL enforceTwoPageSpread;
 
 // Lazily convenience accessors
 @property (nonatomic, retain) BlioBookmarkPoint *implicitBookmarkPoint;
