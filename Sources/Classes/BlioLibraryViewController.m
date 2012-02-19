@@ -847,7 +847,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 		cell.bookTypeBadge.alpha = 0;
 		selectedGridIndex = index;
 		if ([cell.bookView.book isEncrypted]) {
-			if ([cell.bookView.book decryptionIsAvailable])
+            if ([cell.bookView.book checkBindToLicense])
 				[self bookSelected:cell.bookView];
 		}
 		else {
@@ -947,7 +947,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
     else selectedBook = [self.fetchedResultsController objectAtIndexPath:indexPath];
 	if ([[selectedBook valueForKey:@"processingState"] intValue] == kBlioBookProcessingStateComplete) {
         if ([selectedBook isEncrypted]) {
-			if ([selectedBook decryptionIsAvailable])
+			if ([selectedBook checkBindToLicense])
 				[self openBook:selectedBook];
 		}
 		else {

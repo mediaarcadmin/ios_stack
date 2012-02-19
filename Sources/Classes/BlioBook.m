@@ -234,10 +234,13 @@
     return [[self xpsProvider] decryptionIsAvailable];
 }
 
+- (BOOL)checkBindToLicense {
+    return [[self xpsProvider] checkBindToLicense];    
+}
+
 - (BOOL)firstLayoutPageOnLeft {
     return [self hasManifestValueForKey:BlioManifestFirstLayoutPageOnLeftKey];
 }
-
 
 - (UIImage *)missingCoverImageOfSize:(CGSize)size {
     if(UIGraphicsBeginImageContextWithOptions != nil) {

@@ -18,6 +18,7 @@
 }
 
 - (id)initWithBookID:(NSManagedObjectID *)aBookID;
+- (BOOL)checkBindToLicense;
 
 @property (nonatomic, retain, readonly) NSManagedObjectID *bookID;
 

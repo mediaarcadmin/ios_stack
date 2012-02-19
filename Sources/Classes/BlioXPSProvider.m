@@ -58,15 +58,33 @@
     return self;
 }
 
+- (BOOL)doBindToLicense {
+    if ([drmSessionManager bindToLicense]) { 
+        decryptionAvailable = YES; 
+        if (reportingStatus != kKNFBDrmBookReportingStatusComplete) { 
+            reportingStatus = kKNFBDrmBookReportingStatusRequired; 
+        }
+        return YES;
+    }
+    return NO;
+}
+
+- (BOOL)checkBindToLicense {
+    if (drmSessionManager) { 
+        // If binding failed last time, we'll try again.
+        if (!decryptionAvailable && ![self doBindToLicense])
+            return NO;
+        else
+            return YES;
+    }
+    else
+        return [self drmSessionManager] && decryptionAvailable;
+}
+ 
 - (BlioDrmSessionManager*)drmSessionManager {
 	if ( !drmSessionManager ) {
 		drmSessionManager = [[BlioDrmSessionManager alloc] initWithBookID:self.bookID]; 
-		if ([drmSessionManager bindToLicense]) { 
-			decryptionAvailable = YES; 
-			if (reportingStatus != kKNFBDrmBookReportingStatusComplete) { 
-				reportingStatus = kKNFBDrmBookReportingStatusRequired; 
-			} 
-		} 
+        [self doBindToLicense];
 	} 
 	return drmSessionManager;
 }

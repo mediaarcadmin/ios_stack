@@ -173,6 +173,8 @@ static NSString * const BlioBookThumbnailPrefix = @"thumbnail";
 
 - (NSData *)textFlowDataWithPath:(NSString *)path;
 
+- (BOOL)checkBindToLicense;
+
 - (void)setManifestValue:(id)value forKey:(NSString *)key;
 - (BOOL)hasManifestValueForKey:(NSString *)key;
 - (NSData *)manifestDataForKey:(NSString *)key;
