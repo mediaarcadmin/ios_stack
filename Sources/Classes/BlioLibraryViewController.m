@@ -1252,7 +1252,6 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 										atIndex:indexPath.row];
 						break;
 					case kBlioLibraryLayoutList:
-                        1;
                         NSLog(@"indexPath: %@",indexPath);
                         NSIndexPath * adjustedIndexPath = indexPath;
                         if (librarySortType != kBlioLibrarySortTypePersonalized) {
