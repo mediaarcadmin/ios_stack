@@ -9,7 +9,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>English</string>
 	<key>CFBundleDisplayName</key>
-	<string>${PRODUCT_NAME}${BUNDLE_DISPLAY_NAME_SUFFIX}</string>
+	<string>${PRODUCT_NAME}</string>
 	<key>CFBundleDocumentTypes</key>
 	<array>
 		<dict>
@@ -127,7 +127,7 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>1155</string>
+	<string>1156</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>UIBackgroundModes</key>
@@ -191,12 +191,12 @@
 	</array>
 	<key>UTImportedTypeDeclarations</key>
 	<array/>
-    <key>UIAppFonts</key>
-    <array>
-        <string>THFonts/LinLibertineO.otf</string>
-        <string>THFonts/LinLibertineO-Bold.otf</string>
-        <string>THFonts/LinLibertineO-Italic.otf</string>
-        <string>THFonts/LinLibertineO-BoldItalic.otf</string>
-    </array>
+	<key>UIAppFonts</key>
+	<array>
+		<string>THFonts/LinLibertineO.otf</string>
+		<string>THFonts/LinLibertineO-Bold.otf</string>
+		<string>THFonts/LinLibertineO-Italic.otf</string>
+		<string>THFonts/LinLibertineO-BoldItalic.otf</string>
+	</array>
 </dict>
 </plist>
