@@ -166,7 +166,8 @@
 }
 - (BOOL)hasTTSRights {
 	//    return NO;//[[self valueForKey:@"hasTTSRightsNum"] boolValue];
-    return [[self valueForKey:@"ttsRight"] boolValue];
+    // We now run only on >= 4.0, so the VO function is available
+    return [[self valueForKey:@"ttsRight"] boolValue] || UIAccessibilityIsVoiceOverRunning(); 
 }
 - (BOOL)isTTSCapable {
     return [[self valueForKey:@"ttsCapable"] boolValue];
