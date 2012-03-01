@@ -1,4 +1,4 @@
-video * { display:none !important; }
+video, audio  * { display:none !important; }
 video, audio {
 	display:block !important;
 	background-color:rgba(128,128,128,0.5) !important;
