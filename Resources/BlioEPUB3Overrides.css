@@ -1,4 +1,4 @@
-video * { display: none !important; }
+video * { display:none !important; }
 video, audio {
 	display:block !important;
 	background-color:rgba(128,128,128,0.5) !important;
@@ -8,11 +8,17 @@ video, audio {
 	margin:auto !important;
 	text-align:center !important;
 	color:black !important;
-	padding: 1em !important;
+	padding:0 1em !important;
 }
-video:before, audio:before {
+video:before {
+	display:block;
+	margin:1em 0;
+}
+video:after, audio:after {
+	display:block;
+	margin:1em 0;
 	content:"%VIDEOPLACEHOLDERTEXT%" !important;
 }
-audio:before {
+audio:after {
 	content:"%AUDIOPLACEHOLDERTEXT%" !important;
 }
