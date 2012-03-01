@@ -1,0 +1,18 @@
+video * { display: none !important; }
+video, audio {
+	display:block !important;
+	background-color:rgba(128,128,128,0.5) !important;
+	border:2px solid black !important;
+	width:60% !important;
+	height:auto !important;
+	margin:auto !important;
+	text-align:center !important;
+	color:black !important;
+	padding: 1em !important;
+}
+video:before, audio:before {
+	content:"%VIDEOPLACEHOLDERTEXT%" !important;
+}
+audio:before {
+	content:"%AUDIOPLACEHOLDERTEXT%" !important;
+}
