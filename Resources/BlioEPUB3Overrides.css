@@ -1,5 +1,5 @@
-video, audio  * { display:none !important; }
-video, audio {
+video *,audio  * { display:none !important; }
+video,audio {
 	display:block !important;
 	background-color:rgba(128,128,128,0.5) !important;
 	border:2px solid black !important;
@@ -10,11 +10,11 @@ video, audio {
 	color:black !important;
 	padding:0 1em !important;
 }
-video:before {
+video:before,audio:before {
 	display:block;
 	margin:1em 0;
 }
-video:after, audio:after {
+video:after,audio:after {
 	display:block;
 	margin:1em 0;
 	content:"%VIDEOPLACEHOLDERTEXT%" !important;
