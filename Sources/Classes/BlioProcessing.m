@@ -175,6 +175,26 @@ static int mutationCount = 0;
     }
 }
 
+- (NSData *)getBookXPSDataWithPath:(NSString *)path {
+    BlioBook *book = [[BlioBookManager sharedBookManager] bookWithID:self.bookID];
+    if (nil == book) {
+        NSLog(@"Failed to retrieve book in BlioProcessing getBookTextFlowDataWithPath:");
+        return nil;
+    } else {
+        return [book XPSDataWithPath:path];
+    }
+}
+
+- (BOOL)bookHasXPSDataWithPath:(NSString *)path {
+    BlioBook *book = [[BlioBookManager sharedBookManager] bookWithID:self.bookID];
+    if (nil == book) {
+        NSLog(@"Failed to retrieve book in BlioProcessing bookHasXPSDataWithPath:");
+        return NO;
+    } else {
+        return [book XPSComponentExistsWithPath:path];
+    }
+}
+
 - (BOOL)bookManifestPath:(NSString *)path existsForLocation:(NSString *)location {
     BlioBook *book = [[BlioBookManager sharedBookManager] bookWithID:self.bookID];
     if (nil == book) {

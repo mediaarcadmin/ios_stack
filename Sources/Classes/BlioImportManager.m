@@ -13,6 +13,7 @@
 #import "BlioAlertManager.h"
 #import "BlioBookManager.h"
 #import "BlioProcessingStandardOperations.h"
+#import "BlioEPubMetadataReader.h"
 #import "KNFBXMLParserLock.h"
 
 #import <libEucalyptus/EucEPubBook.h>
@@ -67,7 +68,7 @@
 }
 @end
 
-@interface BlioEPubOPFParserDelegate : NSObject<NSXMLParserDelegate> {
+@interface BlioXPSDocumentPropertiesParserDelegate : NSObject<NSXMLParserDelegate> {
 	NSMutableString * _characterString;
 	NSString * _fileAs;
 	NSString * title;
@@ -78,7 +79,7 @@
 
 @end
 
-@implementation BlioEPubOPFParserDelegate
+@implementation BlioXPSDocumentPropertiesParserDelegate
 
 @synthesize title,authors;
 
@@ -135,84 +136,6 @@
 }
 @end
 
-@interface BlioEPubEncryptionParserDelegate : NSObject<NSXMLParserDelegate> {
-	NSString *unknownEncryptionAlgorithm;
-}
-@property(nonatomic,retain) NSString *unknownEncryptionAlgorithm;
-
-@end
-
-
-@implementation BlioEPubEncryptionParserDelegate
-
-@synthesize unknownEncryptionAlgorithm;
-
-- (void)dealloc {
-    self.unknownEncryptionAlgorithm = nil;
-    [super dealloc];
-}
-
-#pragma mark -
-#pragma mark NSXMLParserDelegate methods
-
-- (void)parser:(NSXMLParser *)parser didStartElement:(NSString *)elementName namespaceURI:(NSString *)namespaceURI qualifiedName:(NSString *)qName attributes:(NSDictionary *)attributeDict {
-	if ( [elementName isEqualToString:@"EncryptionMethod"] ) {
-		NSString * algorithm = [attributeDict objectForKey:@"Algorithm"];
-		if (algorithm) {
-            if(![[EucEPubBook knownEncryptionAlgorithms] containsObject:algorithm]) {
-                self.unknownEncryptionAlgorithm = algorithm;
-                [parser abortParsing];
-            }
-		}
-	}
-}
-
-@end
-
-
-
-@interface BlioEPubContainerParserDelegate : NSObject<NSXMLParserDelegate> {
-	NSString * opfPath;
-}
-@property(nonatomic,retain) NSString * opfPath;
-
-@end
-
-
-@implementation BlioEPubContainerParserDelegate
-
-@synthesize opfPath;
-
--(void)dealloc {
-	self.opfPath = nil;
-	[super dealloc];
-}
-#pragma mark -
-#pragma mark NSXMLParserDelegate methods
-
-- (void)parser:(NSXMLParser *)parser didStartElement:(NSString *)elementName namespaceURI:(NSString *)namespaceURI qualifiedName:(NSString *)qName attributes:(NSDictionary *)attributeDict {
-	if ( [elementName isEqualToString:@"rootfile"] ) {
-		NSString * fullPath = [attributeDict objectForKey:@"full-path"];
-		if (fullPath) {
-			self.opfPath = fullPath;
-		}
-	}
-}
-
-@end
-
-@interface BlioXPSDocumentPropertiesParserDelegate : BlioEPubOPFParserDelegate<NSXMLParserDelegate> {
-
-}
-
-@end
-
-@implementation BlioXPSDocumentPropertiesParserDelegate
-
-// for now, same implementation as BlioEPubOPFParserDelegate
-
-@end
-
 @interface BlioXPSContentTypesParserDelegate : NSObject<NSXMLParserDelegate> {
 	NSString * documentPropertiesPath;
 }
@@ -252,8 +175,15 @@
 @end
 
 
-@implementation BlioImportableBook
+@interface BlioImportableBook () <BlioEPubMetadataReaderDataProvider>{
+    unzFile _ePubUnzipHandle;
+}
+@end
+
+@implementation BlioImportableBook  
+
 @synthesize fileName,filePath,title,authors,sourceID,sourceSpecificID,isDRM;
+
 -(void)dealloc {
 	self.fileName = nil;
 	self.filePath = nil;
@@ -262,12 +192,254 @@
 	self.sourceSpecificID = nil;
 	[super dealloc];
 }
+
+- (NSString *)goodFilenameForZipFilename:(NSString *)filename
+{
+    while(filename.length && [filename characterAtIndex:0] == '/') {
+        // Strip leading '/'es.
+        filename = [filename substringFromIndex:1];
+    }
+    return filename.length ? filename : nil;
+}
+
+- (NSData *)copyDataForFile:(NSString *)filename inUnzFile:(unzFile)unzFile
+{
+    NSMutableData *ret = nil;
+    filename = [self goodFilenameForZipFilename:filename];
+    if(filename) {
+        if(unzLocateFile(unzFile, [filename UTF8String], 1) != UNZ_OK) {
+            NSLog(@"WARNING: '%@' in zip could not be located!", filename);
+        } else {
+            if(unzOpenCurrentFile(unzFile) != UNZ_OK) {
+                NSLog(@"WARNING: '%@' in zip could not be opened!", filename);
+            } else {
+                unz_file_info fileInfo;
+                if(unzGetCurrentFileInfo(unzFile, &fileInfo, NULL, 0, NULL, 0, NULL, 0) != UNZ_OK) {
+                    NSLog(@"WARNING: '%@' in zip could not get file info!", filename);
+                } else {
+                    ret = [[NSMutableData alloc] initWithLength:fileInfo.uncompressed_size];
+                    if(unzReadCurrentFile(unzFile, ret.mutableBytes, fileInfo.uncompressed_size) != fileInfo.uncompressed_size) {
+                        NSLog(@"WARNING: '%@' in zip could not read file!", filename);
+                        [ret release];
+                        ret = nil;                    
+                    }
+                }
+                unzCloseCurrentFile(unzFile);
+            }
+        }
+    }
+    return ret;
+}
+
+- (BOOL)blioEPubMetadataReader:(BlioEPubMetadataReader *)reader componentExistsAtPath:(NSString *)path
+{
+    path = [self goodFilenameForZipFilename:path];
+    if(path) {
+        return unzLocateFile(_ePubUnzipHandle, [path UTF8String], 1) == UNZ_OK;
+    }
+    return NO;
+}
+
+- (NSData *)blioEPubMetadataReader:(BlioEPubMetadataReader *)reader copyDataForComponentAtPath:(NSString *)path
+{
+    return [self copyDataForFile:path inUnzFile:_ePubUnzipHandle];
+}
+
+- (BlioImportableBook*)analyzeImportableBook {
+	NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];
+	
+    BlioImportableBook *toReturn = nil;
+    
+	if ([self.fileName.pathExtension compare:@"epub" options:NSCaseInsensitiveSearch] == NSOrderedSame) {
+        NSLog(@"Examining ePub %@", self.filePath);
+        
+        _ePubUnzipHandle = unzOpen([self.filePath fileSystemRepresentation]);
+        if(!_ePubUnzipHandle) {
+            NSLog(@"Could not open ePub file \"%@\" as zip; cannot import!", self.fileName);
+        } else {
+            BlioEPubMetadataReader *metadataReader = [[BlioEPubMetadataReader alloc] initWithDataProvider:self];
+            if(metadataReader) {
+                BOOL continueImporting = YES;
+
+                if(metadataReader.hasRightsXML) {
+                    self.isDRM = YES;
+#ifdef TEST_MODE
+                    NSLog(@"rights.xml file exists for ePub file \"%@\"; will import anyways in test mode...", self.fileName);
+#else
+                    NSLog(@"rights.xml file exists for ePub file \"%@\"; cannot import!", self.fileName);
+                    toReturn = self;
+                    continueImporting = NO;
+#endif			
+                }
+                
+                if(continueImporting && metadataReader.hasEncryptionXML) {
+                    NSString *unknownEncryptionAlgorithm = metadataReader.unknownEncryptionAlgorithm;
+                    if(unknownEncryptionAlgorithm) {
+                        self.isDRM = YES;
+                        toReturn = self;
+#ifdef TEST_MODE
+                        NSLog(@"encryption.xml file references unknown encryption algorithm \"%@\" for ePub file \"%@\"; will import anyways in test mode...", unknownEncryptionAlgorithm, self.fileName);
+#else
+                        NSLog(@"encryption.xml file references unknown encryption algorithm \"%@\" for ePub file \"%@\"; cannot import!", unknownEncryptionAlgorithm, self.fileName);
+                        continueImporting = NO;
+#endif			
+                    }
+                }
+                
+                if(continueImporting) {
+                    if(!metadataReader.hasContainerXML) {
+                        NSLog(@"WARNING: could not find continer.xml for %@!", self.fileName);
+                    } else {
+                        if(!metadataReader.hasPackageFile) {
+                            NSLog(@"WARNING: could not find opf file for %@!", self.fileName);
+                        } else {
+                            if (metadataReader.title) self.title = metadataReader.title;
+                            if (metadataReader.authors) self.authors = metadataReader.authors;
+                            
+                            toReturn = self;
+                        }
+                    }
+                }
+                
+            }
+            [metadataReader release];
+            
+            unzClose(_ePubUnzipHandle);
+            _ePubUnzipHandle = NULL;
+        }
+    }
+	else if ([self.fileName.pathExtension compare:@"xps" options:NSCaseInsensitiveSearch] == NSOrderedSame) {
+        NSLog(@"Examining XPS %@", self.filePath);
+        unzFile xpsUnzipHandle = unzOpen([self.filePath fileSystemRepresentation]);
+        if(!xpsUnzipHandle) {
+            NSLog(@"ERROR: Could not open XPS file, %@; cannot import!",self.fileName);
+        } else {
+            NSString * localDRMPath = BlioXPSKNFBDRMHeaderFile;
+            if ([[localDRMPath substringToIndex:1] isEqualToString:@"/"]) localDRMPath = [localDRMPath substringFromIndex:1];
+            NSLog(@"Checking for XPS DRM: %@, %@", self.fileName, localDRMPath);
+			
+#ifdef TEST_MODE
+            if(unzLocateFile(xpsUnzipHandle, [localDRMPath UTF8String], 1) != UNZ_END_OF_LIST_OF_FILE) {
+                NSLog(@"DRM Header file exists for XPS file, %@; cannot import!",self.fileName);
+                self.isDRM = YES;
+                toReturn = self;
+            } {
+#else			
+				if(unzLocateFile(xpsUnzipHandle, [localDRMPath UTF8String], 1) != UNZ_END_OF_LIST_OF_FILE) {
+					NSLog(@"DRM Header file exists for XPS file, %@; cannot import!",self.fileName);
+					self.isDRM = YES;
+					toReturn = self;
+				} else {
+#endif							
+                NSData *KNFBMetadataXML = [self copyDataForFile:BlioXPSKNFBMetadataFile inUnzFile:xpsUnzipHandle];
+                if(KNFBMetadataXML) {
+                    BlioXPSKNFBMetadataParserDelegate * KNFBMetadataParserDelegate = [[BlioXPSKNFBMetadataParserDelegate alloc] init];
+                    @synchronized([KNFBXMLParserLock sharedLock]) {
+                        NSXMLParser * KNFBMetaDataParser = [[NSXMLParser alloc] initWithData:KNFBMetadataXML];
+                        [KNFBMetaDataParser setDelegate:KNFBMetadataParserDelegate];
+                        [KNFBMetaDataParser parse];
+                        [KNFBMetaDataParser release];
+                    }
+                    if (KNFBMetadataParserDelegate.title) self.title = KNFBMetadataParserDelegate.title;
+                    if (KNFBMetadataParserDelegate.authors) self.authors = KNFBMetadataParserDelegate.authors;
+                    [KNFBMetadataParserDelegate release];
+                    [KNFBMetadataXML release];
+                    
+                    toReturn = self;
+                    
+                    if(!self.title) {
+                        NSLog(@"NOTE: Title not found in KNFB Metadata for file %@. Will now check [Content_Types].xml for document properties...",self.fileName);   
+                    }
+                } else {
+                    NSLog(@"NOTE: KNFB Metadata for file %@ was not found. Will now check [Content_Types].xml for document properties...",self.fileName);   
+                }
+                if(!self.title) {
+                    NSString *contentTypesPath = @"[Content_Types].xml";
+                    NSData *contentTypesPathXML = [self copyDataForFile:contentTypesPath inUnzFile:xpsUnzipHandle];
+                    if(!contentTypesPathXML) {
+                        NSLog(@"ERROR: Could not find %@ for XPS file, %@!",contentTypesPath,self.fileName);						
+                    } else {
+                        BlioXPSContentTypesParserDelegate * contentTypesParserDelegate = [[BlioXPSContentTypesParserDelegate alloc] init];
+                        @synchronized([KNFBXMLParserLock sharedLock]) {
+                            NSXMLParser * contentTypesParser = [[NSXMLParser alloc] initWithData:contentTypesPathXML];
+                            [contentTypesParser setDelegate:contentTypesParserDelegate];
+                            [contentTypesParser parse];
+                            [contentTypesParser release];
+                        }
+                        NSString *documentPropertiesPath = [contentTypesParserDelegate.documentPropertiesPath retain];
+                        [contentTypesParserDelegate release];
+                        [contentTypesPathXML release];
+                        
+                        if(!documentPropertiesPath) {
+                            NSLog(@"ERROR: Could not find document properties path in %@ for XPS file, %@!",contentTypesPath,self.fileName);						
+                        } else {
+                            NSData *documentPropertiesXML = [self copyDataForFile:documentPropertiesPath inUnzFile:xpsUnzipHandle];
+                            if(!documentPropertiesXML) {
+                                NSLog(@"ERROR: Could not find document properties file '%@' for XPS file, %@!",documentPropertiesPath,self.fileName);						
+                            } else {
+                                BlioXPSDocumentPropertiesParserDelegate * documentPropertiesParserDelegate = [[BlioXPSDocumentPropertiesParserDelegate alloc] init];
+                                @synchronized([KNFBXMLParserLock sharedLock]) {
+                                    NSXMLParser * documentPropertiesParser = [[NSXMLParser alloc] initWithData:documentPropertiesXML];
+                                    [documentPropertiesParser setDelegate:documentPropertiesParserDelegate];
+                                    [documentPropertiesParser parse];
+                                    [documentPropertiesParser release];
+                                }
+                                // grab title and author
+                                if (documentPropertiesParserDelegate.title) self.title = documentPropertiesParserDelegate.title;
+                                if (documentPropertiesParserDelegate.authors) self.authors = documentPropertiesParserDelegate.authors;
+                                [documentPropertiesParserDelegate release];
+                                [documentPropertiesXML release];
+                                
+                                toReturn = self;
+                            }
+                            [documentPropertiesPath release];
+                        }
+                            
+                    }
+                }
+            }
+            unzClose(xpsUnzipHandle);
+        }
+	}
+	else if ([self.fileName.pathExtension compare:@"pdf" options:NSCaseInsensitiveSearch] == NSOrderedSame) {
+        NSData *aData = [[NSData alloc] initWithContentsOfMappedFile:self.filePath];
+        CGDataProviderRef dataProvider = CGDataProviderCreateWithCFData((CFDataRef)aData);
+        CGPDFDocumentRef pdfRef = CGPDFDocumentCreateWithProvider(dataProvider);
+		CGPDFDictionaryRef pdfInfo = CGPDFDocumentGetInfo(pdfRef);
+		CGPDFStringRef string;
+		if (CGPDFDictionaryGetString(pdfInfo, "Title", &string)) {
+			CFStringRef s;
+			s = CGPDFStringCopyTextString(string);
+			if (s != NULL) {
+				self.title = (NSString *)s;
+				CFRelease(s);			
+			}
+		}
+		if (CGPDFDictionaryGetString(pdfInfo, "Author", &string)) {
+			CFStringRef s;
+			s = CGPDFStringCopyTextString(string);
+			if (s != NULL) {
+				self.authors = [NSArray arrayWithObject:(NSString *)s];
+				CFRelease(s);			
+			}
+		}
+
+        toReturn = self;
+
+		CGPDFDocumentRelease(pdfRef);
+        CGDataProviderRelease(dataProvider);
+        [aData release];
+	}
+	[pool drain];
+    
+	return toReturn;
+}
+
 @end
 
 @interface BlioImportManager (PRIVATE) 
 +(BlioImportableBook*)importableBookFromSharedFile:(NSString*)aFile;
 +(BlioImportableBook*)importableBookFromFilePath:(NSString*)aFilePath;
-+(BlioImportableBook*)analyzeImportableBook:(BlioImportableBook*)importableBook;
 -(void)scanFileSharingDirectoryInBackground;
 @end
 
@@ -385,6 +557,7 @@
 		scanningThread = nil;
 	pthread_mutex_unlock( &scanningMutex );
 }
+    
 +(BlioImportableBook*)importableBookFromFilePath:(NSString*)aFilePath {
 	BlioImportableBook * importableBook = [[[BlioImportableBook alloc] init] autorelease];
 		
@@ -392,7 +565,7 @@
 	importableBook.sourceID = BlioBookSourceOtherApplications;
 	importableBook.sourceSpecificID = importableBook.fileName;
 	importableBook.filePath = aFilePath;
-	return [BlioImportManager analyzeImportableBook:importableBook];
+	return [importableBook analyzeImportableBook];
 }
 
 +(BlioImportableBook*)importableBookFromSharedFile:(NSString*)aFile {
@@ -402,271 +575,9 @@
 	importableBook.sourceID = BlioBookSourceFileSharing;
 	importableBook.sourceSpecificID = aFile;
 	importableBook.filePath = [[BlioImportManager fileSharingDirectory] stringByAppendingPathComponent:aFile];
-	return [BlioImportManager analyzeImportableBook:importableBook];
+	return [importableBook analyzeImportableBook];
 }	
-
-+ (NSData *)copyDataForFile:(NSString *)filename inUnzFile:(unzFile)unzFile
-{
-    NSMutableData *ret = nil;
-    while(filename.length && [filename characterAtIndex:0] == '/') {
-        // Strip leading '/'es.
-        filename = [filename substringFromIndex:1];
-    }
-    if(filename.length) {
-        if(unzLocateFile(unzFile, [filename UTF8String], 1) != UNZ_OK) {
-            NSLog(@"WARNING: '%@' in zip could not be located!", filename);
-        } else {
-            if(unzOpenCurrentFile(unzFile) != UNZ_OK) {
-                NSLog(@"WARNING: '%@' in zip could not be opened!", filename);
-            } else {
-                unz_file_info fileInfo;
-                if(unzGetCurrentFileInfo(unzFile, &fileInfo, NULL, 0, NULL, 0, NULL, 0) != UNZ_OK) {
-                    NSLog(@"WARNING: '%@' in zip could not get file info!", filename);
-                } else {
-                    ret = [[NSMutableData alloc] initWithLength:fileInfo.uncompressed_size];
-                    if(unzReadCurrentFile(unzFile, ret.mutableBytes, fileInfo.uncompressed_size) != fileInfo.uncompressed_size) {
-                        NSLog(@"WARNING: '%@' in zip could not read file!", filename);
-                        [ret release];
-                        ret = nil;                    
-                    }
-                }
-                unzCloseCurrentFile(unzFile);
-            }
-        }
-    }
-    return ret;
-}
-
-+(BlioImportableBook*)analyzeImportableBook:(BlioImportableBook*)importableBook {
-	NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];
-	
-    BlioImportableBook *toReturn = nil;
     
-	if ([importableBook.fileName.pathExtension compare:@"epub" options:NSCaseInsensitiveSearch] == NSOrderedSame) {
-        NSLog(@"Examining ePub %@", importableBook.filePath);
-        unzFile ePubUnzipHandle = unzOpen([importableBook.filePath fileSystemRepresentation]);
-        if(!ePubUnzipHandle) {
-            NSLog(@"ERROR: Could not open ePub file, %@; cannot import!",importableBook.fileName);
-        } else {
-            BOOL continueImporting = YES;
-            
-            if(unzLocateFile(ePubUnzipHandle, "META-INF/rights.xml", 1) != UNZ_END_OF_LIST_OF_FILE) {
-                importableBook.isDRM = YES;
-#ifdef TEST_MODE
-                NSLog(@"rights.xml file exists for ePub file \"%@\"; will import anyways in test mode...", importableBook.fileName);
-#else
-                NSLog(@"rights.xml file exists for ePub file \"%@\"; cannot import!", importableBook.fileName);\
-                toReturn = importableBook;
-                continueImporting = NO;
-#endif			
-            } 
-            
-            if(continueImporting &&
-               unzLocateFile(ePubUnzipHandle, "META-INF/encryption.xml", 1) != UNZ_END_OF_LIST_OF_FILE) {
-                NSString *unknownEncryptionAlgorithm = nil;
-                
-                NSData *encryptionXML = [self copyDataForFile:@"META-INF/encryption.xml" inUnzFile:ePubUnzipHandle];
-
-                if(encryptionXML) {
-                    BlioEPubEncryptionParserDelegate *encryptionParserDelegate = [[BlioEPubEncryptionParserDelegate alloc] init];
-                    @synchronized([KNFBXMLParserLock sharedLock]) {
-                        NSXMLParser * containerParser = [[NSXMLParser alloc] initWithData:encryptionXML];
-                        containerParser.shouldProcessNamespaces = YES;
-                        [containerParser setDelegate:encryptionParserDelegate];
-                        [containerParser parse];
-                        [containerParser release];
-                    }
-                    unknownEncryptionAlgorithm = [[encryptionParserDelegate.unknownEncryptionAlgorithm retain] autorelease];
-                    [encryptionParserDelegate release];
-                }
-                
-                [encryptionXML release];
-                
-                if(unknownEncryptionAlgorithm) {
-                    importableBook.isDRM = YES;
-                    toReturn = importableBook;
-#ifdef TEST_MODE
-                    NSLog(@"encryption.xml file references unknown encryption algorithm \"%@\" for ePub file \"%@\"; will import anyways in test mode...", unknownEncryptionAlgorithm, importableBook.fileName);
-#else
-                    NSLog(@"encryption.xml file references unknown encryption algorithm \"%@\" for ePub file \"%@\"; cannot import!", unknownEncryptionAlgorithm, importableBook.fileName);
-                    continueImporting = NO;
-#endif			
-                }
-            } 
-
-            
-            if(continueImporting) {
-                NSString *containerPath = @"META-INF/container.xml";
-                NSData *containerXML = [self copyDataForFile:containerPath inUnzFile:ePubUnzipHandle];
-                if(!containerXML) {
-                    NSLog(@"WARNING: %@ for file, %@ could not unzip!",containerPath,importableBook.fileName);
-                } else {                        
-                    BlioEPubContainerParserDelegate *containerParserDelegate = [[BlioEPubContainerParserDelegate alloc] init];
-                    @synchronized([KNFBXMLParserLock sharedLock]) {
-                        NSXMLParser * containerParser = [[NSXMLParser alloc] initWithData:containerXML];
-                        [containerParser setDelegate:containerParserDelegate];
-                        [containerParser parse];
-                        [containerParser release];
-                    }
-                    NSString * opfPath = [containerParserDelegate.opfPath retain];
-                    [containerParserDelegate release];
-                    [containerXML release];
-                            
-                    if(!opfPath) {
-                        NSLog(@"WARNING: opfPath for file, %@ could not be found in META-INF/container.xml!",importableBook.fileName);
-                    } else {
-                        NSData *opfXML = [self copyDataForFile:opfPath inUnzFile:ePubUnzipHandle];
-                        if(!opfXML) {
-                            NSLog(@"WARNING: opfPath: %@ for file, %@ could not unzip!",opfPath,importableBook.fileName);
-                        } else {
-                            BlioEPubOPFParserDelegate *opfParserDelegate = [[BlioEPubOPFParserDelegate alloc] init];
-                            @synchronized([KNFBXMLParserLock sharedLock]) {
-                                NSXMLParser * opfParser = [[NSXMLParser alloc] initWithData:opfXML];
-                                [opfParser setDelegate:opfParserDelegate];
-                                [opfParser parse];
-                                [opfParser release];
-                            }
-                            // grab title and author
-                            if (opfParserDelegate.title) importableBook.title = opfParserDelegate.title;
-                            if (opfParserDelegate.authors) importableBook.authors = opfParserDelegate.authors;
-                            [opfParserDelegate release];
-                            [opfXML release];
-                            
-                            toReturn = importableBook;
-                        }
-                        [opfPath release];
-                    }
-                }
-            }
-            unzClose(ePubUnzipHandle);
-        }
-    }
-	else if ([importableBook.fileName.pathExtension compare:@"xps" options:NSCaseInsensitiveSearch] == NSOrderedSame) {
-        NSLog(@"Examining XPS %@", importableBook.filePath);
-        unzFile xpsUnzipHandle = unzOpen([importableBook.filePath fileSystemRepresentation]);
-        if(!xpsUnzipHandle) {
-            NSLog(@"ERROR: Could not open XPS file, %@; cannot import!",importableBook.fileName);
-        } else {
-            NSString * localDRMPath = BlioXPSKNFBDRMHeaderFile;
-            if ([[localDRMPath substringToIndex:1] isEqualToString:@"/"]) localDRMPath = [localDRMPath substringFromIndex:1];
-            NSLog(@"Checking for XPS DRM: %@, %@", importableBook.fileName, localDRMPath);
-			
-#ifdef TEST_MODE
-            if(unzLocateFile(xpsUnzipHandle, [localDRMPath UTF8String], 1) != UNZ_END_OF_LIST_OF_FILE) {
-                NSLog(@"DRM Header file exists for XPS file, %@; cannot import!",importableBook.fileName);
-                importableBook.isDRM = YES;
-                toReturn = importableBook;
-            } {
-#else			
-				if(unzLocateFile(xpsUnzipHandle, [localDRMPath UTF8String], 1) != UNZ_END_OF_LIST_OF_FILE) {
-					NSLog(@"DRM Header file exists for XPS file, %@; cannot import!",importableBook.fileName);
-					importableBook.isDRM = YES;
-					toReturn = importableBook;
-				} else {
-#endif							
-                NSData *KNFBMetadataXML = [self copyDataForFile:BlioXPSKNFBMetadataFile inUnzFile:xpsUnzipHandle];
-                if(KNFBMetadataXML) {
-                    BlioXPSKNFBMetadataParserDelegate * KNFBMetadataParserDelegate = [[BlioXPSKNFBMetadataParserDelegate alloc] init];
-                    @synchronized([KNFBXMLParserLock sharedLock]) {
-                        NSXMLParser * KNFBMetaDataParser = [[NSXMLParser alloc] initWithData:KNFBMetadataXML];
-                        [KNFBMetaDataParser setDelegate:KNFBMetadataParserDelegate];
-                        [KNFBMetaDataParser parse];
-                        [KNFBMetaDataParser release];
-                    }
-                    if (KNFBMetadataParserDelegate.title) importableBook.title = KNFBMetadataParserDelegate.title;
-                    if (KNFBMetadataParserDelegate.authors) importableBook.authors = KNFBMetadataParserDelegate.authors;
-                    [KNFBMetadataParserDelegate release];
-                    [KNFBMetadataXML release];
-                    
-                    toReturn = importableBook;
-                    
-                    if(!importableBook.title) {
-                        NSLog(@"NOTE: Title not found in KNFB Metadata for file %@. Will now check [Content_Types].xml for document properties...",importableBook.fileName);   
-                    }
-                } else {
-                    NSLog(@"NOTE: KNFB Metadata for file %@ was not found. Will now check [Content_Types].xml for document properties...",importableBook.fileName);   
-                }
-                if(!importableBook.title) {
-                    NSString *contentTypesPath = @"[Content_Types].xml";
-                    NSData *contentTypesPathXML = [self copyDataForFile:contentTypesPath inUnzFile:xpsUnzipHandle];
-                    if(!contentTypesPathXML) {
-                        NSLog(@"ERROR: Could not find %@ for XPS file, %@!",contentTypesPath,importableBook.fileName);						
-                    } else {
-                        BlioXPSContentTypesParserDelegate * contentTypesParserDelegate = [[BlioXPSContentTypesParserDelegate alloc] init];
-                        @synchronized([KNFBXMLParserLock sharedLock]) {
-                            NSXMLParser * contentTypesParser = [[NSXMLParser alloc] initWithData:contentTypesPathXML];
-                            [contentTypesParser setDelegate:contentTypesParserDelegate];
-                            [contentTypesParser parse];
-                            [contentTypesParser release];
-                        }
-                        NSString *documentPropertiesPath = [contentTypesParserDelegate.documentPropertiesPath retain];
-                        [contentTypesParserDelegate release];
-                        [contentTypesPathXML release];
-                        
-                        if(!documentPropertiesPath) {
-                            NSLog(@"ERROR: Could not find document properties path in %@ for XPS file, %@!",contentTypesPath,importableBook.fileName);						
-                        } else {
-                            NSData *documentPropertiesXML = [self copyDataForFile:documentPropertiesPath inUnzFile:xpsUnzipHandle];
-                            if(!documentPropertiesXML) {
-                                NSLog(@"ERROR: Could not find document properties file '%@' for XPS file, %@!",documentPropertiesPath,importableBook.fileName);						
-                            } else {
-                                BlioXPSDocumentPropertiesParserDelegate * documentPropertiesParserDelegate = [[BlioXPSDocumentPropertiesParserDelegate alloc] init];
-                                @synchronized([KNFBXMLParserLock sharedLock]) {
-                                    NSXMLParser * documentPropertiesParser = [[NSXMLParser alloc] initWithData:documentPropertiesXML];
-                                    [documentPropertiesParser setDelegate:documentPropertiesParserDelegate];
-                                    [documentPropertiesParser parse];
-                                    [documentPropertiesParser release];
-                                }
-                                // grab title and author
-                                if (documentPropertiesParserDelegate.title) importableBook.title = documentPropertiesParserDelegate.title;
-                                if (documentPropertiesParserDelegate.authors) importableBook.authors = documentPropertiesParserDelegate.authors;
-                                [documentPropertiesParserDelegate release];
-                                [documentPropertiesXML release];
-                                
-                                toReturn = importableBook;
-                            }
-                            [documentPropertiesPath release];
-                        }
-                            
-                    }
-                }
-            }
-            unzClose(xpsUnzipHandle);
-        }
-	}
-	else if ([importableBook.fileName.pathExtension compare:@"pdf" options:NSCaseInsensitiveSearch] == NSOrderedSame) {
-        NSData *aData = [[NSData alloc] initWithContentsOfMappedFile:importableBook.filePath];
-        CGDataProviderRef dataProvider = CGDataProviderCreateWithCFData((CFDataRef)aData);
-        CGPDFDocumentRef pdfRef = CGPDFDocumentCreateWithProvider(dataProvider);
-		CGPDFDictionaryRef pdfInfo = CGPDFDocumentGetInfo(pdfRef);
-		CGPDFStringRef string;
-		if (CGPDFDictionaryGetString(pdfInfo, "Title", &string)) {
-			CFStringRef s;
-			s = CGPDFStringCopyTextString(string);
-			if (s != NULL) {
-				importableBook.title = (NSString *)s;
-				CFRelease(s);			
-			}
-		}
-		if (CGPDFDictionaryGetString(pdfInfo, "Author", &string)) {
-			CFStringRef s;
-			s = CGPDFStringCopyTextString(string);
-			if (s != NULL) {
-				importableBook.authors = [NSArray arrayWithObject:(NSString *)s];
-				CFRelease(s);			
-			}
-		}
-
-        toReturn = importableBook;
-
-		CGPDFDocumentRelease(pdfRef);
-        CGDataProviderRelease(dataProvider);
-        [aData release];
-	}
-	[pool drain];
-    
-	return toReturn;
-}
 -(void)importBookFromFilePath:(NSString*)aFilePath {
 	if ([NSThread isMainThread]) {
 		[NSThread detachNewThreadSelector:@selector(importBookFromFilePath:) toTarget:self withObject:aFilePath];

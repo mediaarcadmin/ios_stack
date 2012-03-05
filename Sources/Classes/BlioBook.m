@@ -768,6 +768,15 @@ static void sortedBookmarkRangePredicateInit() {
     return [[self xpsProvider] dataForComponentAtPath:path];
 }
 
+- (BOOL)XPSComponentExistsWithPath:(NSString *)path {
+    return [self componentExistsInXPSAtPath:path];
+}
+
+- (NSData *)XPSDataWithPath:(NSString *)path {
+    return [self dataFromXPSAtPath:path];
+}
+
+
 - (NSData *)dataFromTextFlowAtPath:(NSString *)path {
     NSData *data = nil;
     NSString *textFlowLocation = [self manifestLocationForKey:BlioManifestTextFlowKey];

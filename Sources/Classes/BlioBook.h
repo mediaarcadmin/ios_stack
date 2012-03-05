@@ -172,6 +172,8 @@ static NSString * const BlioBookThumbnailPrefix = @"thumbnail";
 - (NSManagedObject *)fetchHighlightWithBookmarkRange:(BlioBookmarkRange *)range;
 
 - (NSData *)textFlowDataWithPath:(NSString *)path;
+- (BOOL)XPSComponentExistsWithPath:(NSString *)path;
+- (NSData *)XPSDataWithPath:(NSString *)path;
 
 - (BOOL)checkBindToLicense;
 
