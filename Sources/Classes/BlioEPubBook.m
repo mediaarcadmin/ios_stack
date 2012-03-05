@@ -81,7 +81,7 @@
                                   options:0 
                             range:NSMakeRange(0, cssString.length)];
     [cssString replaceOccurrencesOfString:@"%AUDIOPLACEHOLDERTEXT%" 
-                               withString:NSLocalizedString(@"Sorry, this version of Blio cannot play embedded audio.", @"Placeholder text for EPUB3 video content") 
+                               withString:NSLocalizedString(@"Sorry, this version of Blio cannot play embedded audio.", @"Placeholder text for EPUB3 audio content") 
                                   options:0 
                                     range:NSMakeRange(0, cssString.length)];
 
