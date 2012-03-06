@@ -352,8 +352,6 @@
 -(void)activateCellDragging:(NSTimer *)aTimer {
 //	NSLog(@"activateCellDragging");
 //	NSLog(@"cellIndices count: %i, subviews count: %i",[cellIndices count],[[gridView subviews] count]);
-	if (editTimer && [editTimer isValid]) [editTimer invalidate];
-	editTimer = nil;
 	cellDragging = YES;
 //	[self setScrollEnabled:NO];
 	[gridView bringSubviewToFront:currDraggedCell];
@@ -375,28 +373,19 @@
 	{
 		NSInteger touchedCellIndex = [self indexForTouchLocation:[_activeTouch locationInView:self]];
 		if (self.isEditing && [gridDataSource gridView:self canMoveCellAtIndex:touchedCellIndex]){
-		[self resetEditTimer];
-		CGPoint touchLoc = [_activeTouch locationInView:self];
-		self.currDraggedCell = (MRGridViewCell*)[self viewAtLocation:touchLoc];
-//		NSLog(@"self.currDraggedCell: %@",self.currDraggedCell);
-		currDraggedCellOriginalCenter = self.currDraggedCell.center;
-		currDraggedCellIndex = touchedCellIndex;
-		currentHoveredIndex = currDraggedCellIndex;
-/*		
-		//insert shadow cell
-		CGRect shadowFrame = currDraggedCell.frame;
-		shadowFrame.origin.x = shadowFrame.origin.x+shadowFrame.size.width*.1;
-		shadowFrame.origin.y = shadowFrame.origin.y+shadowFrame.size.height*.1;
-		shadowFrame.size.width = shadowFrame.size.width*.8;
-		shadowFrame.size.height = shadowFrame.size.height*.8;
-		shadowView = [[UIView alloc]initWithFrame:shadowFrame];
-		shadowView.backgroundColor = [UIColor grayColor];
-		
-		//add views to grid and reposition accordingly
-		[gridView addSubview:shadowView];
-		[gridView sendSubviewToBack:shadowView];
- */
-	}
+            [self resetEditTimer];
+            CGPoint touchLoc = [_activeTouch locationInView:self];
+            self.currDraggedCell = (MRGridViewCell*)[self viewAtLocation:touchLoc];
+//          NSLog(@"self.currDraggedCell: %@",self.currDraggedCell);
+            currDraggedCellOriginalCenter = self.currDraggedCell.center;
+            currDraggedCellIndex = touchedCellIndex;
+            currentHoveredIndex = currDraggedCellIndex;
+        }
+        else if (!self.isEditing) {
+            [self resetEditTimer];
+            currDraggedCellIndex = touchedCellIndex;
+            
+        }
 	/*
     if (aTouch.tapCount == 2) {
         [NSObject cancelPreviousPerformRequestsWithTarget:self];
@@ -536,13 +525,18 @@
 			}
 		}
 	}
-	else if (theTouch.tapCount == 1) {
-        CGPoint touchLoc = [theTouch locationInView:self];
-		[self handleSingleTap: touchLoc];
-    } 
 	else {
-		[self cleanupAfterCellDrop];
-	}
+        if (currDraggedCellIndex != -1) {
+            currDraggedCellIndex = -1;
+        }
+        else if (theTouch.tapCount == 1) {
+            CGPoint touchLoc = [theTouch locationInView:self];
+            [self handleSingleTap: touchLoc];
+        }
+    } 
+//	else {
+//		[self cleanupAfterCellDrop];
+//	}
 }
 
 - (void)touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event {
@@ -580,7 +574,7 @@
 }
 -(void) resetEditTimer {
 	if (editTimer && [editTimer isValid]) [editTimer invalidate];
-	editTimer = [NSTimer scheduledTimerWithTimeInterval:0.40f target:self selector:@selector(activateCellDragging:) userInfo:nil repeats:NO];	
+	editTimer = [NSTimer scheduledTimerWithTimeInterval:0.40f target:self selector:@selector(longPressDone:) userInfo:nil repeats:NO];	
 }
 -(void) invalidateEditTimer {
 	if (editTimer) {
@@ -590,6 +584,17 @@
 		[self cleanupAfterCellDrop];
 	}	
 }
+-(void)longPressDone:(NSTimer *)aTimer {
+    if (editTimer && [editTimer isValid]) [editTimer invalidate];
+	editTimer = nil;
+    if (self.isEditing) {
+        [self activateCellDragging:aTimer];
+    }
+    else {
+        if ([gridDelegate respondsToSelector:@selector(gridView:didTapAndHoldCellAtIndex:)]) [gridDelegate gridView:self didTapAndHoldCellAtIndex:currDraggedCellIndex];
+    }
+}
+
 -(void)scrollIfNeededAtPosition:(NSTimer*)aTimer {
 	if (!currDraggedCell) {
 		NSLog(@"currDraggedCell is not available. invalidating scroll timer...");
@@ -666,7 +671,7 @@
 
 - (void)handleSingleTap:(CGPoint)touchLoc {
     int index = [self indexForTouchLocation:touchLoc];
-	[gridDelegate gridView:self didSelectCellAtIndex:index];
+	if ([gridDelegate respondsToSelector:@selector(gridView:didSelectCellAtIndex:)]) [gridDelegate gridView:self didSelectCellAtIndex:index];
 }
 
 -(NSInteger) indexForTouchLocation:(CGPoint)touchLoc {

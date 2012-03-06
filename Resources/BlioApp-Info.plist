@@ -118,6 +118,14 @@
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>fb135291369852781</string>
+			</array>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+		</dict>
+		<dict>
 			<key>CFBundleURLName</key>
 			<string>com.knfbreading.blio</string>
 			<key>CFBundleURLSchemes</key>
@@ -212,5 +220,9 @@
 		<string>THFonts/LinLibertineO-Italic.otf</string>
 		<string>THFonts/LinLibertineO-BoldItalic.otf</string>
 	</array>
+	<key>googleAPIKey</key>
+	<string>AIzaSyAhUo_vweTs60oUsFr2_n6rVlmRzK8AulI</string>
+	<key>FacebookAppID</key>
+	<string>135291369852781</string>
 </dict>
 </plist>

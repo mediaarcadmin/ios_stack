@@ -14,6 +14,7 @@
 #import "BlioAlertManager.h"
 #import "BlioLoginViewController.h"
 #import "BlioStoreManager.h"
+#import "BlioSocialManager.h"
 #import "BlioStoreHelper.h"
 #import "AcapelaSpeech.h"
 #import "BlioAppSettingsConstants.h"
@@ -322,6 +323,7 @@ static void *background_init_thread(void * arg) {
 	[BlioStoreManager sharedInstance].processingDelegate = self.processingManager;
 	
 	[BlioStoreManager sharedInstance].rootViewController = navigationController;
+	[BlioSocialManager sharedSocialManager].rootViewController = navigationController;
 	
 	[self checkDevice];
 	    

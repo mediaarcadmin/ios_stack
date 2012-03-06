@@ -77,14 +77,17 @@
 }
 -(void)buyBookWithSourceSpecificID:(NSString*)sourceSpecificID {
 	NSLog(@"buyBookWithSourceSpecificID: %@",sourceSpecificID);
-	NSString * modifiedID = sourceSpecificID;
+	NSURL* url = [[[NSURL alloc] initWithString:[self storeURLWithSourceSpecificID:sourceSpecificID]] autorelease];
+	[[UIApplication sharedApplication] openURL:url];	
+}
+-(NSString*)storeURLWithSourceSpecificID:(NSString*)sourceSpecificID {
+    NSString * modifiedID = sourceSpecificID;
 	if ([sourceSpecificID length] > 2 && [[[sourceSpecificID substringToIndex:2] lowercaseString] isEqualToString:@"bk"]) {
 		modifiedID = [sourceSpecificID substringFromIndex:2];
 	}
 	
 	NSString * fullURL = [NSString stringWithFormat:@"%@bliostore/BTKEY=%@/detail.html", self.storeURL,modifiedID];
-	NSURL* url = [[[NSURL alloc] initWithString:fullURL] autorelease];
-	[[UIApplication sharedApplication] openURL:url];	
+    return fullURL;
 }
 - (void)loginWithUsername:(NSString*)user password:(NSString*)password {
 	if (currentUsername) [currentUsername release];

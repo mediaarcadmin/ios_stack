@@ -42,6 +42,7 @@
 @property (nonatomic, assign) BOOL forceLoginDisplayUponFailure;
 
 -(void)buyBookWithSourceSpecificID:(NSString*)sourceSpecificID;
+-(NSString*)storeURLWithSourceSpecificID:(NSString*)sourceSpecificID;
 - (void)loginWithUsername:(NSString*)user password:(NSString*)password;
 - (void)logout;
 -(BOOL)hasValidToken;

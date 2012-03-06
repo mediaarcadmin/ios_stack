@@ -198,5 +198,9 @@
 		<string>THFonts/LinLibertineO-Italic.otf</string>
 		<string>THFonts/LinLibertineO-BoldItalic.otf</string>
 	</array>
+	<key>googleAPIKey</key>
+	<string>AIzaSyAhUo_vweTs60oUsFr2_n6rVlmRzK8AulI</string>
+	<key>FacebookAppID</key>
+	<string>135291369852781</string>
 </dict>
 </plist>

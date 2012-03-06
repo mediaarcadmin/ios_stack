@@ -26,6 +26,10 @@
 -(void)buyBookWithSourceSpecificID:(NSString*)sourceSpecificID {
 	// abstract method	
 }
+-(NSString*)storeURLWithSourceSpecificID:(NSString*)sourceSpecificID {
+	// abstract method	
+    return nil;
+}
 - (void)loginWithUsername:(NSString*)user password:(NSString*)password {
 	// abstract method	
 	

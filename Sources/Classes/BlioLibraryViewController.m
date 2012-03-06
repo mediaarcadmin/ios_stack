@@ -17,6 +17,7 @@
 #import "BlioProcessingStandardOperations.h"
 #import "BlioStoreArchiveViewController.h"
 #import "BlioAlertManager.h"
+#import "BlioSocialManager.h"
 #import "BlioAppSettingsConstants.h"
 #import <libEucalyptus/THUIDeviceAdditions.h>
 
@@ -237,14 +238,6 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 	[libraryItems addObject:item];
 	[sortLibraryItems addObject:item];
 	[item release];
-	
-//	item = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Sort", @"Label for Library View Sort button")
-//	                                        style:UIBarButtonItemStyleBordered
-//	                                       target:self 
-//	                                       action:@selector(showSortOptions:)];
-//    item.width = 69.0f;
-//	[item setAccessibilityLabel:NSLocalizedString(@"Sort", @"Accessibility label for Library View Sort button")];
-//	[item setAccessibilityHint:NSLocalizedString(@"Provides options for sorting the library", @"Accessibility label for Library View Sort hint")];
 	
 	// sort segmented control start
 	NSArray *sortSegmentImages = [NSArray arrayWithObjects:
@@ -855,6 +848,11 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 		}
 	}
 }
+- (void)gridView:(MRGridView *)gridView didTapAndHoldCellAtIndex:(NSInteger)index{
+    NSLog(@"%@",NSStringFromSelector(_cmd));
+    sharedGridIndex = index;
+    [self showSocialOptions];
+}
 -(void)gridView:(MRGridView *)gridView confirmationForDeletionAtIndex:(NSInteger)index {
 	_keyValueOfCellToBeDeleted = index;
 	UIAlertView* alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Confirmation Request",@"\"Confirmation Request\" alert message title")
@@ -870,7 +868,10 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 #pragma mark UIAlertViewDelegate methods
 
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex{
-	if([[alertView buttonTitleAtIndex:buttonIndex] isEqualToString:NSLocalizedString(@"Delete",@"\"Delete\" alert button")])
+	if([[alertView buttonTitleAtIndex:buttonIndex] isEqualToString:NSLocalizedString(@"Settings",@"\"Settings\" alert button")]) {
+        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"prefs:root=TWITTER"]];
+    }
+	else if([[alertView buttonTitleAtIndex:buttonIndex] isEqualToString:NSLocalizedString(@"Delete",@"\"Delete\" alert button")])
 	{
 		
 		[self gridView:self.gridView commitEditingStyle:MRGridViewCellEditingStyleDelete forIndex:_keyValueOfCellToBeDeleted];
@@ -1382,6 +1383,24 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
     settingsController.delegate = self;
     [settingsController release];    
 }
+#pragma mark - Social Options
+
+- (void)showSocialOptions {    
+	// show sheet interface
+	NSString * sheetTitle = NSLocalizedString(@"Select Social Network:",@"\"Select Social Network:\" sort sheet title");
+	NSString * social0 = NSLocalizedString(@"Facebook",@"\"Facebook\" library social option");
+	NSString * social1 = NSLocalizedString(@"Twitter",@"\"Twitter\" library social option");
+	UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:sheetTitle
+															 delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel",@"\"Cancel\" sheet button") 
+											   destructiveButtonTitle:nil
+													otherButtonTitles:social0, social1, nil];
+	actionSheet.actionSheetStyle = UIActionSheetStyleDefault;
+    //	[actionSheet showInView:self.view];
+	[actionSheet showFromToolbar:self.navigationController.toolbar];
+	[actionSheet release];	
+}
+
+
 #pragma mark - UINavigationControllerDelegate
 
 - (void)navigationController:(UINavigationController *)navigationController didShowViewController:(UIViewController *)viewController animated:(BOOL)animated {
@@ -1417,11 +1436,29 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 {
 	//	NSLog(@"buttonIndex: %i",buttonIndex);
 	if (buttonIndex == actionSheet.cancelButtonIndex) {
-		NSLog(@"Sort Sheet cancelled");
+		NSLog(@"Social Sheet cancelled");
 		return;
 	}
 	
-	self.librarySortType = buttonIndex;	
+    BlioLibraryGridViewCell * cell = (BlioLibraryGridViewCell*)[self.gridView cellAtGridIndex:sharedGridIndex];
+    BlioBook * bookToBeShared = cell.bookView.book;
+    
+	if (buttonIndex == BlioSocialTypeFacebook) {
+        [[BlioSocialManager sharedSocialManager] shareBook:bookToBeShared socialType:BlioSocialTypeFacebook];
+    }
+	else if (buttonIndex == BlioSocialTypeTwitter) {
+        if ([BlioSocialManager canSendTweet]) {
+            [[BlioSocialManager sharedSocialManager] shareBook:bookToBeShared socialType:BlioSocialTypeTwitter];
+        }
+        else {
+            [BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Twitter Not Setup",@"\"Twitter Not Setup\" alert message title")
+                                         message:NSLocalizedStringWithDefaultValue(@"TWITTER_NOT_SETUP",nil,[NSBundle mainBundle],@"Twitter account settings were not found. Would you like to enter your username and password now?",@"Alert message shown when no twitter account settings are found.")
+                                        delegate:self 
+                               cancelButtonTitle:NSLocalizedString(@"Not Now",@"\"Not Now\" label for button used to cancel/dismiss alertview")
+                               otherButtonTitles:NSLocalizedString(@"Settings","Settings"), nil];
+        }
+    }
+    
 }
 
 #pragma mark -

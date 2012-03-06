@@ -106,6 +106,7 @@ static const CGFloat kBlioProportionalProgressBarInsetY = 3;
 	UIButton * libraryVaultButton;
 	BOOL showArchiveCell;
 	NSInteger selectedGridIndex;
+	NSInteger sharedGridIndex;
 	BlioAccessibilitySegmentedControl * sortSegmentedControl;
 	NSMutableArray * libraryItems;
 	NSMutableArray * sortLibraryItems;
@@ -137,6 +138,7 @@ static const CGFloat kBlioProportionalProgressBarInsetY = 3;
 -(void)fetchResults;
 - (CGRect)visibleRect;
 - (void)showStore:(id)sender;
+-(void)showSocialOptions;
 
 -(void)openBook:(BlioBook *)selectedBook;
 
