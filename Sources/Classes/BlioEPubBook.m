@@ -70,6 +70,25 @@
     return ret;
 }
 
+- (NSArray *)userCSSDatasForDocumentTree:(id<EucCSSDocumentTree>)documentTree
+{
+    NSMutableArray *ret = [[[super userAgentCSSDatasForDocumentTree:documentTree] mutableCopy] autorelease];
+    
+    NSMutableString *cssString = [NSMutableString stringWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"BlioEPUB3Overrides" ofType:@"css"] 
+                                                                  encoding:NSUTF8StringEncoding error:NULL];
+    [cssString replaceOccurrencesOfString:@"%VIDEOPLACEHOLDERTEXT%" 
+                               withString:NSLocalizedString(@"Sorry, this version of Blio cannot play embedded videos.", @"Placeholder text for EPUB3 video content") 
+                                  options:0 
+                            range:NSMakeRange(0, cssString.length)];
+    [cssString replaceOccurrencesOfString:@"%AUDIOPLACEHOLDERTEXT%" 
+                               withString:NSLocalizedString(@"Sorry, this version of Blio cannot play embedded audio.", @"Placeholder text for EPUB3 audio content") 
+                                  options:0 
+                                    range:NSMakeRange(0, cssString.length)];
+
+    [ret addObject:[cssString dataUsingEncoding:NSUTF8StringEncoding]];
+    return ret;
+}
+
 - (BlioBookmarkPoint *)bookmarkPointFromBookPageIndexPoint:(EucBookPageIndexPoint *)indexPoint
 {
     if(!indexPoint) {

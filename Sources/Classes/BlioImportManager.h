@@ -25,6 +25,7 @@ static NSString * const BlioFileSharingImportAborted = @"BlioFileSharingImportAb
 	BOOL isDRM;
 	NSOperationQueue *importQueue;
 }
+
 @property(nonatomic,retain) NSString * fileName;
 @property(nonatomic,retain) NSString * filePath;
 @property(nonatomic,retain) NSString * title;

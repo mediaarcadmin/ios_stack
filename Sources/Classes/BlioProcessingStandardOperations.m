@@ -17,6 +17,7 @@
 #import "BlioImportManager.h"
 #import "KNFBXMLParserLock.h"
 #import "BlioLayoutPDFDataSource.h"
+#import "BlioEPubMetadataReader.h"
 
 @implementation BlioProcessingAggregateOperation
 
@@ -828,7 +829,11 @@
 @end
 
 #pragma mark -
-@implementation BlioProcessingXPSManifestOperation
+
+@interface BlioProcessingXPSManifestOperation () <BlioEPubMetadataReaderDataProvider>
+@end
+
+@implementation BlioProcessingXPSManifestOperation 
 
 @synthesize featureCompatibilityDictionary, audioFiles, timingFiles;
 
@@ -846,7 +851,17 @@
 	[super dealloc];
 }
 
--(void)main {
+- (NSData *)blioEPubMetadataReader:(BlioEPubMetadataReader *)reader copyDataForComponentAtPath:(NSString *)path
+{
+    return [[self getBookXPSDataWithPath:path] retain];
+}
+
+- (BOOL)blioEPubMetadataReader:(BlioEPubMetadataReader *)reader componentExistsAtPath:(NSString *)path
+{
+    return [self bookHasXPSDataWithPath:path];
+}
+    
+- (void)main {
 	for (BlioProcessingOperation * blioOp in [self dependencies]) {
 		if (!blioOp.operationSuccess) {
 			NSLog(@"BlioProcessingXPSManifestOperation: %@ failed dependency found: %@",self,blioOp);
@@ -867,6 +882,20 @@
 		[manifestEntry setValue:BlioManifestEntryLocationXPS forKey:BlioManifestEntryLocationKey];
 		[manifestEntry setValue:@"" forKey:BlioManifestEntryPathKey];
 		[self setBookManifestValue:manifestEntry forKey:BlioManifestEPubKey];
+        
+        BlioEPubMetadataReader *ePubMetadata = [[BlioEPubMetadataReader alloc] initWithDataProvider:self];
+        if(ePubMetadata && 
+           [[NSDecimalNumber decimalNumberWithMantissa:3 exponent:0 isNegative:NO] compare:ePubMetadata.packageVersion] != NSOrderedDescending) {
+            @autoreleasepool {
+                BlioBook *book = [[BlioBookManager sharedBookManager] bookWithID:self.bookID];
+                [BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Advanced Book Features",@"\"Advanced Book Features\" Alert message title")
+                                             message:[NSString stringWithFormat:NSLocalizedStringWithDefaultValue(@"EPUB_3_UNSUPPORTED_ALERT",nil,[NSBundle mainBundle],@"The book \"%@\" may not display fully because it may contain elements that are not supported in this version of Blio.",@"Alert message informing the end-user that an an EPUB book might contain features that this version of Blio does not support."),book.title]
+                                            delegate:nil
+                                   cancelButtonTitle:NSLocalizedString(@"OK",@"\"OK\" label for button used to cancel/dismiss alertview")
+                                   otherButtonTitles:nil];
+            }
+        }
+        [ePubMetadata release];
 	}
 	
 	BOOL hasTextflowData = [self bookManifestPath:BlioXPSTextFlowSectionsFile existsForLocation:BlioManifestEntryLocationXPS];

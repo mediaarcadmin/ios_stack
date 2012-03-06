@@ -166,7 +166,8 @@
 }
 - (BOOL)hasTTSRights {
 	//    return NO;//[[self valueForKey:@"hasTTSRightsNum"] boolValue];
-    return [[self valueForKey:@"ttsRight"] boolValue];
+    // We now run only on >= 4.0, so the VO function is available
+    return [[self valueForKey:@"ttsRight"] boolValue] || UIAccessibilityIsVoiceOverRunning(); 
 }
 - (BOOL)isTTSCapable {
     return [[self valueForKey:@"ttsCapable"] boolValue];
@@ -766,6 +767,15 @@ static void sortedBookmarkRangePredicateInit() {
 - (NSData *)dataFromXPSAtPath:(NSString *)path {
     return [[self xpsProvider] dataForComponentAtPath:path];
 }
+
+- (BOOL)XPSComponentExistsWithPath:(NSString *)path {
+    return [self componentExistsInXPSAtPath:path];
+}
+
+- (NSData *)XPSDataWithPath:(NSString *)path {
+    return [self dataFromXPSAtPath:path];
+}
+
 
 - (NSData *)dataFromTextFlowAtPath:(NSString *)path {
     NSData *data = nil;

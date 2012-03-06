@@ -73,6 +73,8 @@ static NSString * const BlioProcessingOperationFailedNotification = @"BlioProces
 #endif
 
 - (NSData *)getBookTextFlowDataWithPath:(NSString *)path;
+- (NSData *)getBookXPSDataWithPath:(NSString *)path;
+- (BOOL)bookHasXPSDataWithPath:(NSString *)path;
 - (BOOL)bookManifestPath:(NSString *)path existsForLocation:(NSString *)location;
 - (void)setBookManifestValue:(id)value forKey:(NSString *)key;
 - (BOOL)hasBookManifestValueForKey:(NSString *)key;
