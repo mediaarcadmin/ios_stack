@@ -20,7 +20,7 @@
 
 @implementation BlioSocialManager
 
-@synthesize rootViewController;
+@synthesize rootViewController, facebook;
 
 +(BlioSocialManager*)sharedSocialManager
 {
@@ -130,23 +130,24 @@
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     
     // Setup facebook Single-Sign-On (SSO) - this needs to be done only once    
-    if (_facebook == nil) {
+    if (facebook == nil) {
         if ([defaults objectForKey:@"FacebookObj"])
-            _facebook = [defaults objectForKey:@"FacebookObj"];
+            self.facebook = [defaults objectForKey:@"FacebookObj"];
         else {
             // Authenticate application with facebook
-            _facebook = [[Facebook alloc] initWithAppId:[defaults objectForKey:@"FacebookAppID"] andDelegate:self];
+            NSLog(@"FacebookAppID: %@",[[[NSBundle mainBundle] infoDictionary] objectForKey:@"FacebookAppID"]);
+            self.facebook = [[[Facebook alloc] initWithAppId:[[[NSBundle mainBundle] infoDictionary] objectForKey:@"FacebookAppID"] andDelegate:self] autorelease];
         }
     }
     
     if ([defaults objectForKey:@"FBAccessTokenKey"] 
         && [defaults objectForKey:@"FBExpirationDateKey"]) {
-        _facebook.accessToken = [defaults objectForKey:@"FBAccessTokenKey"];
-        _facebook.expirationDate = [defaults objectForKey:@"FBExpirationDateKey"];
+        facebook.accessToken = [defaults objectForKey:@"FBAccessTokenKey"];
+        facebook.expirationDate = [defaults objectForKey:@"FBExpirationDateKey"];
     }	
     
-	if (![_facebook isSessionValid]) {
-        [_facebook authorize:nil];
+	if (![facebook isSessionValid]) {
+        [facebook authorize:[NSArray arrayWithObject: @"publish_stream"]];
     }
     else {        
         NSMutableDictionary* params = [NSMutableDictionary dictionaryWithObjectsAndKeys:
@@ -155,7 +156,7 @@
                                        nil];
         
         // Dialog to post on wall
-        [_facebook dialog:@"feed" andParams:params andDelegate:self];
+        [facebook dialog:@"feed" andParams:params andDelegate:self];
     }
 }
 
@@ -169,9 +170,9 @@
     if (!storeURL) storeURL = @"https://mobile.blioreader.com/";
 
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    [defaults setObject:[_facebook accessToken] forKey:@"FBAccessTokenKey"];
-    [defaults setObject:[_facebook expirationDate] forKey:@"FBExpirationDateKey"];
-    [defaults setObject:_facebook forKey:@"FacebookObj"];
+    [defaults setObject:[facebook accessToken] forKey:@"FBAccessTokenKey"];
+    [defaults setObject:[facebook expirationDate] forKey:@"FBExpirationDateKey"];
+    [defaults setObject:facebook forKey:@"FacebookObj"];
     [defaults synchronize];
     
     // Dialog to post on wall
@@ -181,7 +182,7 @@
                                    nil];
     
     // Dialog to post on wall
-    [_facebook dialog:@"feed" andParams:params andDelegate:self];
+    [facebook dialog:@"feed" andParams:params andDelegate:self];
     
 }
 
@@ -192,7 +193,7 @@
 - (void)fbDidExtendToken:(NSString*)accessToken
                expiresAt:(NSDate*)expiresAt {
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    [defaults setObject:[_facebook accessToken] forKey:@"FBAccessTokenKey"];
+    [defaults setObject:[facebook accessToken] forKey:@"FBAccessTokenKey"];
 }
 
 - (void) fbDidNotLogin:(BOOL)cancelled

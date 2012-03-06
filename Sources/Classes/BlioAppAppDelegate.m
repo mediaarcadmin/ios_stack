@@ -262,16 +262,11 @@ static void *background_init_thread(void * arg) {
         }
         return YES;
 	}
-	return NO;
+    return [[BlioSocialManager sharedSocialManager].facebook handleOpenURL:url]; 
 }
 
 
 - (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation {
-//	[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"For Your Information...",@"\"For Your Information...\" Alert message title")
-//								 message:[NSString stringWithFormat:@"openURL: %@",[url absoluteString]]
-//								delegate:nil
-//					   cancelButtonTitle:@"OK"
-//					   otherButtonTitles:nil];
 	return [self application:application handleOpenURL:url];
 }
 

@@ -19,11 +19,12 @@ typedef enum {
 
 @interface BlioSocialManager : NSObject<FBSessionDelegate,FBDialogDelegate> {
     UIViewController * rootViewController;
-    Facebook * _facebook;
+    Facebook * facebook;
     BlioBook * _bookToBeShared;
 }
 
 @property(nonatomic,retain) UIViewController * rootViewController;
+@property(nonatomic,retain) Facebook * facebook;
 
 +(BlioSocialManager*)sharedSocialManager;
 +(BOOL)canSendTweet;

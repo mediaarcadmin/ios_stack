@@ -122,8 +122,6 @@
 			<array>
 				<string>fb135291369852781</string>
 			</array>
-			<key>CFBundleTypeRole</key>
-			<string>Editor</string>
 		</dict>
 		<dict>
 			<key>CFBundleURLName</key>
