@@ -20,7 +20,7 @@
     if ((self = [super initWithFrame:frame])) {
         self.backgroundColor = [UIColor clearColor];
 
-        UIGraphicsBeginImageContext(CGSizeMake(100, 100));
+        UIGraphicsBeginImageContextWithOptions(CGSizeMake(100, 100), NO, self.contentScaleFactor);
         CGContextRef context = UIGraphicsGetCurrentContext();
         UIImage *logoImage = [UIImage imageWithData:[NSData dataWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"Icon@2x" ofType:@"png"]]];
         

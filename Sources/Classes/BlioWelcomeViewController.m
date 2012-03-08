@@ -171,7 +171,7 @@
         self.backgroundColor = [UIColor whiteColor];
 		
 		if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-            UIGraphicsBeginImageContext(CGSizeMake(100, 100));
+            UIGraphicsBeginImageContextWithOptions(CGSizeMake(100, 100), NO, self.contentScaleFactor);
             CGContextRef context = UIGraphicsGetCurrentContext();
             UIImage *logoImage = [UIImage imageWithData:[NSData dataWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"Icon@2x" ofType:@"png"]]];
 			
