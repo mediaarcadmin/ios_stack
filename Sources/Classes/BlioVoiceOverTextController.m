@@ -7,7 +7,7 @@
 //
 
 #import "BlioVoiceOverTextController.h"
-#import "BlioPurchaseVoicesViewController.h"
+#import "BlioReadingVoiceSettingsViewController.h"
 #import "BlioVOTipsSettingsController.h"
 
 @implementation BlioVoiceOverTextController
@@ -77,7 +77,7 @@
 
 -(void)presentDownloadVoices {
     NSLog(@"%@",NSStringFromSelector(_cmd));
-    BlioPurchaseVoicesViewController * vc = [[[BlioPurchaseVoicesViewController alloc] initWithStyle:UITableViewStyleGrouped] autorelease];
+    BlioReadingVoiceSettingsViewController * vc = [[[BlioReadingVoiceSettingsViewController alloc] init] autorelease];
     [self.navigationController pushViewController:vc animated:YES];
 }
 -(void)presentDetailedHelp {
