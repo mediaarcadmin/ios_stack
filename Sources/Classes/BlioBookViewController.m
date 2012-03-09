@@ -31,7 +31,7 @@
 #import "BlioStoreManager.h"
 #import "UIButton+BlioAdditions.h"
 #import "BlioUIImageAdditions.h"
-#import "BlioPurchaseVoicesViewController.h"
+#import "BlioReadingVoiceSettingsViewController.h"
 
 static const CGFloat kBlioBookSliderPreviewWidthPad = 180;
 static const CGFloat kBlioBookSliderPreviewHeightPad = 180;
@@ -2819,16 +2819,16 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         
 	}
 	else if (buttonIndex == 1) {
-        BlioPurchaseVoicesViewController * purchaseVoicesViewController = [[BlioPurchaseVoicesViewController alloc] initWithStyle:UITableViewStyleGrouped];
-        purchaseVoicesViewController.navigationItem.leftBarButtonItem = [[[UIBarButtonItem alloc] 
+        BlioReadingVoiceSettingsViewController * voiceViewController = [[BlioReadingVoiceSettingsViewController alloc] init];
+        voiceViewController.navigationItem.leftBarButtonItem = [[[UIBarButtonItem alloc] 
                                                   initWithTitle:NSLocalizedString(@"Done",@"\"Done\" bar button")
                                                   style:UIBarButtonItemStyleDone 
                                                   target:self
                                                   action:@selector(dismissVoicesView:)]
                                                  autorelease];		
 
-        UINavigationController * purchaseVoicesNavigationController = [[UINavigationController alloc] initWithRootViewController:purchaseVoicesViewController];
-        [purchaseVoicesViewController release];
+        UINavigationController * purchaseVoicesNavigationController = [[UINavigationController alloc] initWithRootViewController:voiceViewController];
+        [voiceViewController release];
         [self presentModalViewController:purchaseVoicesNavigationController animated:YES];
 //        [self.navigationController pushViewController:purchaseVoicesViewController animated:YES];
         [purchaseVoicesNavigationController release];

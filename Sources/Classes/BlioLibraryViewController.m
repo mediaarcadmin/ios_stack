@@ -1387,7 +1387,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 
 - (void)showSocialOptions {    
 	// show sheet interface
-	NSString * sheetTitle = NSLocalizedString(@"Select Social Network:",@"\"Select Social Network:\" sort sheet title");
+	NSString * sheetTitle = NSLocalizedString(@"Share On:",@"\"Share On:\" action sheet title");
 	NSString * social0 = NSLocalizedString(@"Facebook",@"\"Facebook\" library social option");
 	NSString * social1 = NSLocalizedString(@"Twitter",@"\"Twitter\" library social option");
 	UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:sheetTitle

@@ -150,6 +150,7 @@
         [facebook authorize:[NSArray arrayWithObject: @"publish_stream"]];
     }
     else {        
+        NSLog(@"storeURL: %@",storeURL);
         NSMutableDictionary* params = [NSMutableDictionary dictionaryWithObjectsAndKeys:
                                        NSLocalizedString(@"Share on Facebook",@"\"Share on Facebook\" message prompt"),  @"user_message_prompt",
                                        storeURL, @"link",
@@ -176,16 +177,20 @@
     [defaults synchronize];
     
     // Dialog to post on wall
+    NSLog(@"storeURL: %@",storeURL);
     NSMutableDictionary* params = [NSMutableDictionary dictionaryWithObjectsAndKeys:
                                    NSLocalizedString(@"Share on Facebook",@"\"Share on Facebook\" message prompt"),  @"user_message_prompt",
                                    storeURL, @"link",
                                    nil];
     
     // Dialog to post on wall
-    [facebook dialog:@"feed" andParams:params andDelegate:self];
-    
+    [facebook dialog:@"feed" andParams:params andDelegate:self];    
 }
-
+-(void)facebookDialog:(NSArray*)actionAndParams {
+    NSString * action = [actionAndParams objectAtIndex:0];
+    NSMutableDictionary * params = [actionAndParams objectAtIndex:1];
+    [facebook dialog:action andParams:params andDelegate:self];
+}
 - (void)fbDidLogout
 {
     
@@ -193,7 +198,8 @@
 - (void)fbDidExtendToken:(NSString*)accessToken
                expiresAt:(NSDate*)expiresAt {
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    [defaults setObject:[facebook accessToken] forKey:@"FBAccessTokenKey"];
+    [defaults setObject:accessToken forKey:@"FBAccessTokenKey"];
+    [defaults synchronize];
 }
 
 - (void) fbDidNotLogin:(BOOL)cancelled
@@ -239,7 +245,20 @@
  * Called when dialog failed to load due to an error.
  */
 - (void)dialog:(FBDialog*)dialog didFailWithError:(NSError *)error {
-    
+    //  1st time dialog shows up blank due to NSURLErrorDomain error -999. Possible race condition? 
+    //  see http://stackoverflow.com/questions/8002260/first-dialog-after-authenticating-fails-immediately-and-closes-dialog
+
+    // workaround
+    if([error code] == -999){
+        NSLog(@"Error -999 found re-open webview");
+        
+        [facebook dialog:@"feed"
+               andParams:dialog.params
+             andDelegate:self];
+        
+    }else{
+        NSLog(@"Facebook ERROR: %@",[error localizedDescription]);
+    }
 }
 
 /**
