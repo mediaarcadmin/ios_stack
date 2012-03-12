@@ -215,6 +215,14 @@
 		7D8AD3FE14A4B6CD002F5393 /* KNFBXMLParserLock.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D8AD3FA14A4B6CD002F5393 /* KNFBXMLParserLock.m */; };
 		7D9147CA1151497900BCBB23 /* BlioFlowAnalyzeOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D9147C81151497900BCBB23 /* BlioFlowAnalyzeOperation.m */; };
 		7D94C63A117630050067B732 /* BlioTextFlowParagraphSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D94C639117630050067B732 /* BlioTextFlowParagraphSource.m */; };
+		7D9A40A3150E5B37007D9A3E /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D9A40A2150E5B37007D9A3E /* CoreVideo.framework */; };
+		7D9A40A4150E5B3D007D9A3E /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D9A40A2150E5B37007D9A3E /* CoreVideo.framework */; };
+		7D9A40A5150E5B44007D9A3E /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D9A40A2150E5B37007D9A3E /* CoreVideo.framework */; };
+		7D9A40A6150E5B4C007D9A3E /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D9A40A2150E5B37007D9A3E /* CoreVideo.framework */; };
+		7D9A40A7150E5B5A007D9A3E /* libots.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D9A40A0150E50FE007D9A3E /* libots.a */; };
+		7D9A40A8150E5B5E007D9A3E /* libots.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D9A40A0150E50FE007D9A3E /* libots.a */; };
+		7D9A40A9150E5B63007D9A3E /* libots.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D9A40A0150E50FE007D9A3E /* libots.a */; };
+		7D9A40AA150E5B68007D9A3E /* libots.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D9A40A0150E50FE007D9A3E /* libots.a */; };
 		7D9A6884125ABC7200130A53 /* levenshtein_distance.c in Sources */ = {isa = PBXBuildFile; fileRef = 7D9A6882125ABC7200130A53 /* levenshtein_distance.c */; };
 		7D9A6885125ABC7200130A53 /* levenshtein_distance.c in Sources */ = {isa = PBXBuildFile; fileRef = 7D9A6882125ABC7200130A53 /* levenshtein_distance.c */; };
 		7D9A6886125ABC7200130A53 /* levenshtein_distance.c in Sources */ = {isa = PBXBuildFile; fileRef = 7D9A6882125ABC7200130A53 /* levenshtein_distance.c */; };
@@ -1874,12 +1882,12 @@
 			remoteGlobalIDString = 7D19025211494BE800375803;
 			remoteInfo = libcss;
 		};
-		7DB1248114FFC2CC00DB7666 /* PBXContainerItemProxy */ = {
+		7D9A409F150E50FE007D9A3E /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 7D00D5B910D90FC5002D06E7 /* libEucalyptus.xcodeproj */;
 			proxyType = 2;
-			remoteGlobalIDString = 7D46E1C813FD52130021763E;
-			remoteInfo = CSSTest;
+			remoteGlobalIDString = 7DB4BA8814E04C4F004B4511;
+			remoteInfo = libots;
 		};
 		7DE15F65141E76CD00D37CA2 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -2068,6 +2076,7 @@
 		7D94C63311762C4F0067B732 /* BlioParagraphSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioParagraphSource.h; sourceTree = "<group>"; };
 		7D94C638117630050067B732 /* BlioTextFlowParagraphSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioTextFlowParagraphSource.h; sourceTree = "<group>"; };
 		7D94C639117630050067B732 /* BlioTextFlowParagraphSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioTextFlowParagraphSource.m; sourceTree = "<group>"; };
+		7D9A40A2150E5B37007D9A3E /* CoreVideo.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreVideo.framework; path = System/Library/Frameworks/CoreVideo.framework; sourceTree = SDKROOT; };
 		7D9A6882125ABC7200130A53 /* levenshtein_distance.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = levenshtein_distance.c; sourceTree = "<group>"; };
 		7D9A6883125ABC7200130A53 /* levenshtein_distance.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = levenshtein_distance.h; sourceTree = "<group>"; };
 		7DA481241247708E0073AB09 /* BlioEPubBookmarkPointTranslation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioEPubBookmarkPointTranslation.h; sourceTree = "<group>"; };
@@ -2719,6 +2728,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7D9A40AA150E5B68007D9A3E /* libots.a in Frameworks */,
+				7D9A40A4150E5B3D007D9A3E /* CoreVideo.framework in Frameworks */,
 				7D381B5C10D92E86008D34E2 /* libEucalyptusIOSUI.a in Frameworks */,
 				7DAA2FF011512A8D006634CC /* libEucalyptusEPub.a in Frameworks */,
 				7DE15F6E141E76E100D37CA2 /* libEucalyptusEPubIOSUI.a in Frameworks */,
@@ -2764,6 +2775,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7D9A40A8150E5B5E007D9A3E /* libots.a in Frameworks */,
+				7D9A40A3150E5B37007D9A3E /* CoreVideo.framework in Frameworks */,
 				A30E1024123EA5B400D31157 /* libEucalyptusIOSUI.a in Frameworks */,
 				7DE15F73141E770500D37CA2 /* libEucalyptusModel.a in Frameworks */,
 				7DE15F72141E770500D37CA2 /* libEucalyptusEPubIOSUI.a in Frameworks */,
@@ -2809,6 +2822,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7D9A40A7150E5B5A007D9A3E /* libots.a in Frameworks */,
+				7D9A40A6150E5B4C007D9A3E /* CoreVideo.framework in Frameworks */,
 				A31CC88413FEA07E0010BFC5 /* libEucalyptusIOSUI.a in Frameworks */,
 				7DE15F75141E770E00D37CA2 /* libEucalyptusModel.a in Frameworks */,
 				7DE15F74141E770E00D37CA2 /* libEucalyptusEPubIOSUI.a in Frameworks */,
@@ -2854,6 +2869,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7D9A40A9150E5B63007D9A3E /* libots.a in Frameworks */,
+				7D9A40A5150E5B44007D9A3E /* CoreVideo.framework in Frameworks */,
 				A36D35D9120B136700E1A035 /* libEucalyptusIOSUI.a in Frameworks */,
 				7DE15F71141E76F200D37CA2 /* libEucalyptusModel.a in Frameworks */,
 				7DE15F70141E76F200D37CA2 /* libEucalyptusEPubIOSUI.a in Frameworks */,
@@ -3170,6 +3187,7 @@
 		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				7D9A40A2150E5B37007D9A3E /* CoreVideo.framework */,
 				7D2711AD124931D40087C4E3 /* Accelerate.framework */,
 				DC5320DE11C09EF40042D3EA /* AudioToolbox.framework */,
 				1D30AB110D05D00D00671497 /* Foundation.framework */,
@@ -3205,6 +3223,7 @@
 				7D68AF481150F39A00430710 /* libEucalyptusEPub.a */,
 				7D68AF4A1150F39A00430710 /* libEucalyptusCSS.a */,
 				7D3F504A11EF3DDA0065A5F7 /* libEucalyptusBase.a */,
+				7D9A40A0150E50FE007D9A3E /* libots.a */,
 				7D381B5110D92E81008D34E2 /* libexpat.a */,
 				7D381B4D10D92E81008D34E2 /* libhyphenate.a */,
 				7D68AF4C1150F39A00430710 /* libwapcaplet.a */,
@@ -3212,7 +3231,6 @@
 				7D68AF501150F39A00430710 /* libcss.a */,
 				7D229E8512F98D0D0037D93D /* libminiunzip.a */,
 				7D381B5510D92E81008D34E2 /* TransitionTest.app */,
-				7DB1248214FFC2CC00DB7666 /* CSSTest */,
 				7DE15F6C141E76CD00D37CA2 /* PageLayoutTest */,
 			);
 			name = Products;
@@ -4296,11 +4314,11 @@
 			remoteRef = 7D68AF4F1150F39A00430710 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		7DB1248214FFC2CC00DB7666 /* CSSTest */ = {
+		7D9A40A0150E50FE007D9A3E /* libots.a */ = {
 			isa = PBXReferenceProxy;
-			fileType = "compiled.mach-o.executable";
-			path = CSSTest;
-			remoteRef = 7DB1248114FFC2CC00DB7666 /* PBXContainerItemProxy */;
+			fileType = archive.ar;
+			path = libots.a;
+			remoteRef = 7D9A409F150E50FE007D9A3E /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		7DE15F66141E76CD00D37CA2 /* libEucalyptusModel.a */ = {

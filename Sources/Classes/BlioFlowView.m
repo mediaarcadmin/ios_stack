@@ -568,22 +568,11 @@
     return [_eucBookView refreshHighlights];
 }
 
-- (BlioBookmarkRange *)bookmarkRangeFromSelectorRange:(EucSelectorRange *)range
+- (BlioBookmarkRange *)bookmarkRangeFromIndexPointRange:(EucBookPageIndexPointRange *)indexPointRange
 {
-    EucBookPageIndexPoint *indexPoint = [[EucBookPageIndexPoint alloc] init];
-    
-    indexPoint.source = [_eucBookView.book currentPageIndexPoint].source;
-    
-    indexPoint.block = [((THPair *)range.startBlockId).second unsignedIntValue];
-    indexPoint.word = [range.startElementId unsignedIntValue];
-    BlioBookmarkPoint *startPoint = [self bookmarkPointFromBookPageIndexPoint:indexPoint];
-    
-    indexPoint.block = [((THPair *)range.endBlockId).second unsignedIntValue];
-    indexPoint.word = [range.endElementId unsignedIntValue];
-    BlioBookmarkPoint *endPoint = [self bookmarkPointFromBookPageIndexPoint:indexPoint];
-    
-    [indexPoint release];
-    
+    BlioBookmarkPoint *startPoint = [self bookmarkPointFromBookPageIndexPoint:indexPointRange.startPoint];
+    BlioBookmarkPoint *endPoint = [self bookmarkPointFromBookPageIndexPoint:indexPointRange.endPoint];
+        
     BlioBookmarkRange *bookmarkRange = [[BlioBookmarkRange alloc] init];
     bookmarkRange.startPoint = startPoint;
     bookmarkRange.endPoint = endPoint;    
@@ -603,12 +592,12 @@
 
 - (BlioBookmarkRange *)selectedRange 
 {
-    EucSelectorRange *selectedRange = [self.selector selectedRange];
+    EucBookPageIndexPointRange *selectedRange = (EucBookPageIndexPointRange *)[super selectedRange];
         
-    if(selectedRange) {        
-        return [self bookmarkRangeFromSelectorRange:selectedRange];
+    if(selectedRange) {
+        return [self bookmarkRangeFromIndexPointRange:selectedRange];
     } else {
-        EucBookPageIndexPoint *indexPoint = [_eucBookView.book currentPageIndexPoint];
+        EucBookPageIndexPoint *indexPoint = [_eucBookView currentPageIndexPoint];
         BlioBookmarkPoint *pagePoint = [self bookmarkPointFromBookPageIndexPoint:indexPoint];
         
         BlioBookmarkRange *bookmarkRange = [[BlioBookmarkRange alloc] init];

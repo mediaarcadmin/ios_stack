@@ -9,7 +9,7 @@
 #import "KNFBFlowEucBook.h"
 #import "BlioEPubBookmarkPointTranslation.h"
 
-@interface BlioFlowEucBook : KNFBFlowEucBook <BlioEPubBookmarkPointTranslation> {}
+@interface BlioFlowEucBook : KNFBFlowEucBook <BlioEPubBookmarkPointTranslation>
 
 - (id)initWithBookID:(NSManagedObjectID *)blioBookID;
 

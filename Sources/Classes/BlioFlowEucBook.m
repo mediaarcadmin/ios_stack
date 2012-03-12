@@ -19,13 +19,18 @@
 #import <libEucalyptus/EucBookNavPoint.h>
 #import <libEucalyptus/EucCSSXHTMLTree.h>
 #import <libEucalyptus/EucCSSLayoutRunExtractor.h>
+#import <libEucalyptus/EucCSSIntermediateDocument.h>
 #import <libEucalyptus/THPair.h>
 #import <libEucalyptus/THRegex.h>
 
 #import <CoreData/CoreData.h>
 #import <objc/runtime.h>
 
-@implementation BlioFlowEucBook
+@implementation BlioFlowEucBook {
+    NSString *_title;
+    NSString *_author;
+    NSString *_etextNumber;
+}
 
 #pragma mark -
 #pragma mark Overriden methods
@@ -45,9 +50,9 @@
                                  textFlow:aTextFlow
                                 fakeCover:aFakeCover])) 
         {
-            self.title = blioBook.title;
-            self.author = blioBook.author;
-            self.etextNumber = nil;
+            _title = [blioBook.title copy];
+            _author = [blioBook.author copy];
+            _etextNumber = [[NSString alloc] initWithFormat:@"%ld-%@", (long)blioBook.sourceID, blioBook.sourceSpecificID];
         }
     }
     
@@ -61,8 +66,28 @@
     BlioBook *aBook = [[BlioBookManager sharedBookManager] bookWithID:self.bookID];
     [aBook flushCaches];
     
+    [_title release];
+    [_author release];
+    [_etextNumber release];
+    
     [super dealloc];
 }
+
+- (NSString *)author
+{
+    return _author;
+}
+
+- (NSString *)title
+{
+    return _title;
+}
+
+- (NSString *)etextNumber
+{
+    return _etextNumber;
+}
+
 
 - (NSData *)dataForURL:(NSURL *)url
 {

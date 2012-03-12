@@ -11,6 +11,7 @@
 #import "BlioBookManager.h"
 
 #import <libEucalyptus/EucEPubDataProvider.h>
+#import <libEucalyptus/EucEPubBookReference.h>
 #import <libEucalyptus/EucEPubFilesystemDataProvider.h>
 #import <libEucalyptus/EucEPubZipDataProvider.h>
 
@@ -44,9 +45,13 @@
         }
     }
     if(dataProvider) {
-        if ((self = [super initWithDataProvider:dataProvider cacheDirectoryPath:[book.bookCacheDirectory stringByAppendingPathComponent:BlioBookEucalyptusCacheDir]])) {
-            self.blioBookID = aBookID;
-            self.persistsPositionAutomatically = NO;
+        EucEPubBookReference *bookReference = [[EucEPubBookReference alloc] initWithDataProvider:dataProvider];
+        if(bookReference) {
+            if ((self = [super initWithBookReference:bookReference 
+                                 cacheDirectoryPath:[book.bookCacheDirectory stringByAppendingPathComponent:BlioBookEucalyptusCacheDir]])) {
+                self.blioBookID = aBookID;
+            }
+            [bookReference release];
         }
         [dataProvider release];
     } else {
