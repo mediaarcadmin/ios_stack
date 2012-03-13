@@ -1492,6 +1492,8 @@
                                     delegate:nil
                            cancelButtonTitle:NSLocalizedString(@"OK",@"\"OK\" label for alertview")
                            otherButtonTitles:nil];
+        [[NSUserDefaults standardUserDefaults] setInteger:-1 forKey:kBlioDownloadNewBooksDefaultsKey];		 
+        [[NSUserDefaults standardUserDefaults] synchronize];
     }
 	if (buttonIndex == 1) {
         [[BlioStoreManager sharedInstance] retrieveBooksForSourceID:BlioBookSourceOnlineStore];
