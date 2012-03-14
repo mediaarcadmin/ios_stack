@@ -26,11 +26,7 @@
 #import <CoreData/CoreData.h>
 #import <objc/runtime.h>
 
-@implementation BlioFlowEucBook {
-    NSString *_title;
-    NSString *_author;
-    NSString *_etextNumber;
-}
+@implementation BlioFlowEucBook
 
 #pragma mark -
 #pragma mark Overriden methods
@@ -48,11 +44,11 @@
         if ((self = [super initWithBookID:blioBookID
                        cacheDirectoryPath:aCacheDirectoryPath
                                  textFlow:aTextFlow
-                                fakeCover:aFakeCover])) 
+                                fakeCover:aFakeCover
+                                    title:blioBook.title
+                                   author:blioBook.author
+                         uniqueIdentifier:[NSString stringWithFormat:@"%ld-%@", (long)blioBook.sourceID, blioBook.sourceSpecificID]])) 
         {
-            _title = [blioBook.title copy];
-            _author = [blioBook.author copy];
-            _etextNumber = [[NSString alloc] initWithFormat:@"%ld-%@", (long)blioBook.sourceID, blioBook.sourceSpecificID];
         }
     }
     
@@ -65,29 +61,9 @@
     
     BlioBook *aBook = [[BlioBookManager sharedBookManager] bookWithID:self.bookID];
     [aBook flushCaches];
-    
-    [_title release];
-    [_author release];
-    [_etextNumber release];
-    
+        
     [super dealloc];
 }
-
-- (NSString *)author
-{
-    return _author;
-}
-
-- (NSString *)title
-{
-    return _title;
-}
-
-- (NSString *)etextNumber
-{
-    return _etextNumber;
-}
-
 
 - (NSData *)dataForURL:(NSURL *)url
 {
