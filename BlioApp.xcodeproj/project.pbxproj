@@ -6085,6 +6085,7 @@
 				OTHER_LDFLAGS = (
 					"-ObjC",
 					"-all_load",
+					"-fobjc-arc",
 				);
 				PRODUCT_NAME = "Blio${BUNDLE_NAME_SUFFIX}";
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -6115,6 +6116,7 @@
 				OTHER_LDFLAGS = (
 					"-ObjC",
 					"-all_load",
+					"-fobjc-arc",
 				);
 				PRODUCT_NAME = Blio;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -6146,6 +6148,7 @@
 				OTHER_LDFLAGS = (
 					"-ObjC",
 					"-all_load",
+					"-fobjc-arc",
 				);
 				PRODUCT_NAME = Blio;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -6177,6 +6180,7 @@
 				OTHER_LDFLAGS = (
 					"-ObjC",
 					"-all_load",
+					"-fobjc-arc",
 				);
 				PRODUCT_NAME = Blio;
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
@@ -6210,6 +6214,7 @@
 				OTHER_LDFLAGS = (
 					"-ObjC",
 					"-all_load",
+					"-fobjc-arc",
 				);
 				PRODUCT_NAME = Blio;
 				PROVISIONING_PROFILE = "65475B68-F414-4377-BEFA-9809B2D6E957";
@@ -6245,6 +6250,7 @@
 				OTHER_LDFLAGS = (
 					"-ObjC",
 					"-all_load",
+					"-fobjc-arc",
 				);
 				PRODUCT_NAME = SamsClubApp;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -6277,6 +6283,7 @@
 				OTHER_LDFLAGS = (
 					"-ObjC",
 					"-all_load",
+					"-fobjc-arc",
 				);
 				PRODUCT_NAME = SamsClubApp;
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "2EB4883C-CAB1-4956-9964-74E1B4C92B05";
@@ -6311,6 +6318,7 @@
 				OTHER_LDFLAGS = (
 					"-ObjC",
 					"-all_load",
+					"-fobjc-arc",
 				);
 				PRODUCT_NAME = SamsClubApp;
 				PROVISIONING_PROFILE = "40E97D09-A302-4526-902E-170EFF4CECE2";
@@ -6374,6 +6382,7 @@
 				OTHER_LDFLAGS = (
 					"-ObjC",
 					"-all_load",
+					"-fobjc-arc",
 				);
 				PRODUCT_NAME = "Blio${BUNDLE_NAME_SUFFIX}";
 				PROVISIONING_PROFILE = "308F14CC-3406-42F3-AA0D-363A4E4AC5DD";
@@ -6408,6 +6417,7 @@
 				OTHER_LDFLAGS = (
 					"-ObjC",
 					"-all_load",
+					"-fobjc-arc",
 				);
 				PRODUCT_NAME = Blio;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -6439,6 +6449,7 @@
 				OTHER_LDFLAGS = (
 					"-ObjC",
 					"-all_load",
+					"-fobjc-arc",
 				);
 				PRODUCT_NAME = Blio;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -6470,6 +6481,7 @@
 				OTHER_LDFLAGS = (
 					"-ObjC",
 					"-all_load",
+					"-fobjc-arc",
 				);
 				PRODUCT_NAME = Blio;
 				TARGETED_DEVICE_FAMILY = "1,2";
