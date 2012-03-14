@@ -48,6 +48,31 @@
 	
     [alert show];
 }
++(void)showTaggedAlertWithTitle:(NSString *)title message:(NSString *)message delegate:(id)delegate tag:(NSInteger)tag cancelButtonTitle:(NSString *)cancelButtonTitle otherButtonTitles:(NSString *)otherButtonTitles, ...
+{
+    UIAlertView *alert = [[[UIAlertView alloc] initWithTitle:title
+                                                     message:message
+                                                    delegate:delegate
+                                           cancelButtonTitle:cancelButtonTitle
+                                           otherButtonTitles:otherButtonTitles, nil] autorelease];
+    if (otherButtonTitles != nil) {
+		va_list args;
+		va_start(args, otherButtonTitles);
+		NSString * title = nil;
+		while((title = va_arg(args,NSString*))) {
+			[alert addButtonWithTitle:title];
+		}
+		va_end(args);
+    }
+	alert.tag = tag;
+    [alert show];
+}
+
+
+
+
+
+
 + (void)showAlertOfSuppressedType:(NSString*)alertType
 							title:(NSString *)title
 						 message:(NSString *)message

@@ -125,37 +125,62 @@
 	[AcapelaSpeech setVoicesDirectoryArray:[NSArray arrayWithObject:voicesPath]];    
 }
 
-- (void)checkDevice {
-	// Check that this is the same device as last time.
-	NSString* thisDevice = [[NSUserDefaults standardUserDefaults] stringForKey:kBlioDeviceIDDefaultsKey];
-    if ( !thisDevice )
-		// First time, so just store the id.
-		[[NSUserDefaults standardUserDefaults] setObject:(id)[[UIDevice currentDevice] uniqueIdentifier] forKey:kBlioDeviceIDDefaultsKey]; 
-	else if ([thisDevice compare:[[UIDevice currentDevice] uniqueIdentifier]] != NSOrderedSame ) {
-		[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"New Device",@"\"New Device\" alert message title") 
-									 message:NSLocalizedStringWithDefaultValue(@"DEVICE_CHANGED",nil,[NSBundle mainBundle],@"This version of Blio was restored from another device.  Your purchased books must be re-downloaded.  Remember to deregister your old device if you no longer plan to use Blio on it.",@"Alert Text informing the end-user that the password must contain at least one digit.")
-									delegate:nil 
-						   cancelButtonTitle:nil
-						   otherButtonTitles:@"OK", nil];
-		
-		// Delete the secure store.
-		NSArray *paths = NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES);
-		NSString *documentsDirectory = [paths objectAtIndex:0];
-		NSString* strDataStore = [documentsDirectory stringByAppendingString:@"/playready.hds"];
-		if ([[NSFileManager defaultManager] fileExistsAtPath:strDataStore]) {
-			NSError * error;
-			if (![[NSFileManager defaultManager] removeItemAtPath:strDataStore error:&error]) {
-				NSLog(@"WARNING: deletion of PlayReady store failed. %@, %@", error, [error userInfo]);
-			}
-		}
-		
-		// Delete paid books.
-		[self.processingManager deleteBooksForSourceID:BlioBookSourceOnlineStore];
-	
-		// Reset the id for this device.
-		[[NSUserDefaults standardUserDefaults] setObject:(id)[[UIDevice currentDevice] uniqueIdentifier] forKey:kBlioDeviceIDDefaultsKey]; 
-	}
+- (void)resetDRM {
+    
+    // Delete the secure store.
+    NSString *supportDirectory = [NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES) objectAtIndex:0];
+    NSString* strDataStore = [supportDirectory stringByAppendingString:@"/playready.hds"];
+    if ([[NSFileManager defaultManager] fileExistsAtPath:strDataStore]) {
+        NSError * error;
+        if (![[NSFileManager defaultManager] removeItemAtPath:strDataStore error:&error]) 
+            NSLog(@"WARNING: deletion of PlayReady store failed. %@, %@", error, [error userInfo]);
+    }
+    // Delete paid books.
+    [self.processingManager deleteBooksForSourceID:BlioBookSourceOnlineStore];
+    
+    // Delete device certificates. 
+    NSString *devcertDatFile = [supportDirectory stringByAppendingPathComponent:@"devcert.dat"];
+    if ([[NSFileManager defaultManager] fileExistsAtPath:devcertDatFile]) {
+        NSError * error;
+        if (![[NSFileManager defaultManager] removeItemAtPath:devcertDatFile error:&error])
+            NSLog(@"WARNING: deletion of device certificate failed. %@, %@", error, [error userInfo]);
+    }
+    NSString *binaryDevcertDatFile = [supportDirectory stringByAppendingPathComponent:@"bdevcert.dat"];
+    if ([[NSFileManager defaultManager] fileExistsAtPath:binaryDevcertDatFile]) {
+        NSError * error;
+        if (![[NSFileManager defaultManager] removeItemAtPath:binaryDevcertDatFile error:&error])
+            NSLog(@"WARNING: deletion of binary device certificate failed. %@, %@", error, [error userInfo]);
+    }
+    
+    // Reset the id for this device.
+    CFPreferencesSetValue(CFSTR("deviceID"),[[UIDevice currentDevice] uniqueIdentifier],CFSTR("com.knfbreading.Blio"),kCFPreferencesCurrentUser,kCFPreferencesCurrentHost);
+    CFPreferencesSynchronize(CFSTR("com.knfbreading.Blio"),kCFPreferencesCurrentUser,kCFPreferencesCurrentHost);
+    
 }
+
+- (void)checkDevice {
+    CFStringRef deviceIDCFPrefs = CFPreferencesCopyValue(CFSTR("deviceID"), CFSTR("com.knfbreading.Blio"), kCFPreferencesCurrentUser, kCFPreferencesCurrentHost);
+    if (!deviceIDCFPrefs) {
+        // Ensure device id saved to CFPreferences.
+        CFPreferencesSetValue(CFSTR("deviceID"),[[UIDevice currentDevice] uniqueIdentifier],CFSTR("com.knfbreading.Blio"),kCFPreferencesCurrentUser,kCFPreferencesCurrentHost);
+        CFPreferencesSynchronize(CFSTR("com.knfbreading.Blio"),kCFPreferencesCurrentUser,kCFPreferencesCurrentHost);
+        // We won't use NSUserDefaults any more for the device id.
+        [[NSUserDefaults standardUserDefaults] setObject:nil forKey:kBlioDeviceIDDefaultsKey];
+        // No need to check if we've restored from another device because even if we have,
+        // there's no need to reset DRM since the app didn't run on that other device.    
+    }
+    else if ([(NSString*)deviceIDCFPrefs compare:[[UIDevice currentDevice] uniqueIdentifier]] 
+             != NSOrderedSame) {
+        // Restored from another device, on which app has previously run.  Reset the DRM.
+        [BlioAlertManager showAlertWithTitle:NSLocalizedString(@"New Device",@"\"New Device\" alert message title") 
+                                     message:NSLocalizedStringWithDefaultValue(@"DEVICE_CHANGED",nil,[NSBundle mainBundle],@"This version of Blio was restored from another device.  Your purchased books must be re-downloaded.  Remember to deregister your old device if you no longer plan to use Blio on it.",@"Alert Text informing the end-user that the password must contain at least one digit.")
+                                    delegate:nil 
+                           cancelButtonTitle:nil
+                           otherButtonTitles:@"OK", nil]; 
+        [self resetDRM];
+    }
+}
+
 
 - (BOOL)canOpenURL:(NSURL *)url {
     if ([url isFileURL]) {

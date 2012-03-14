@@ -18,6 +18,8 @@
 #import "NSString+BlioAdditions.h"
 #import "BlioAppSettingsConstants.h"
 
+#define AUTODOWNLOAD_ALERT_TAG 15
+
 @interface BlioProcessingManager()
 @property (nonatomic, retain) NSOperationQueue *preAvailabilityQueue;
 
@@ -1487,17 +1489,23 @@
 
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex{
 	if (buttonIndex == 0) {
-        [BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Auto-Download Setting",@"\"Auto-Download Books\" Alert message title")
+        if (alertView.tag != AUTODOWNLOAD_ALERT_TAG) {
+            [BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Auto-Download Setting",@"\"Auto-Download Books\" Alert message title")
                                      message:NSLocalizedStringWithDefaultValue(@"AUTO_DOWNLOAD_SETTING_INFO_WITHOUT_DOWNLOAD",nil,[NSBundle mainBundle],@"You can download your books later by going to the Archive.  To select whether or not to download books automatically in the future, go to My Account in Settings.",@"Alert message informing the first time iOS end-user where auto-download setting can be changed after someone has chosen not to download books upon first time launch.")
                                     delegate:nil
                            cancelButtonTitle:NSLocalizedString(@"OK",@"\"OK\" label for alertview")
                            otherButtonTitles:nil];
+            [[NSUserDefaults standardUserDefaults] setInteger:-1 forKey:kBlioDownloadNewBooksDefaultsKey];		 
+            [[NSUserDefaults standardUserDefaults] synchronize];
+        }
+        else
+            [[BlioStoreManager sharedInstance] retrieveBooksForSourceID:BlioBookSourceOnlineStore];
     }
 	if (buttonIndex == 1) {
-        [[BlioStoreManager sharedInstance] retrieveBooksForSourceID:BlioBookSourceOnlineStore];
-        [BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Auto-Download Setting",@"\"Auto-Download Books\" Alert message title")
+        [BlioAlertManager showTaggedAlertWithTitle:NSLocalizedString(@"Auto-Download Setting",@"\"Auto-Download Books\" Alert message title")
                                      message:NSLocalizedStringWithDefaultValue(@"AUTO_DOWNLOAD_SETTING_INFO_WITH_DOWNLOAD",nil,[NSBundle mainBundle],@"To select whether or not to download books automatically in the future, go to My Account in Settings.",@"Alert message informing the first time iOS end-user where auto-download setting can be changed after someone chosen not to download books upon first time launch.")
-                                    delegate:nil
+                                    delegate:self
+                                         tag:AUTODOWNLOAD_ALERT_TAG
                            cancelButtonTitle:NSLocalizedString(@"OK",@"\"OK\" label for alertview")
                            otherButtonTitles:nil];
 
