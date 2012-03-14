@@ -265,9 +265,14 @@
 			BlioTransactionType incomingTransactionType = [BlioOnlineStoreHelper transactionTypeForCode:bookOwnershipInfo.TransactionType];
             BlioTransactionType preExistingTransactionType = [[preExistingBook valueForKey:@"transactionType"] intValue];
             if (preExistingBook == nil) {
-				newISBNs++;
-				[self getContentMetaDataFromISBN:bookOwnershipInfo.ISBN];
+				if ([bookOwnershipInfo.RecordStatusId intValue] != 2) {
+                    newISBNs++;
+                   [self getContentMetaDataFromISBN:bookOwnershipInfo.ISBN];
+                }
 			}
+            else if ([bookOwnershipInfo.RecordStatusId intValue] == 2) {
+                [[BlioStoreManager sharedInstance].processingDelegate deleteBook:preExistingBook attemptArchive:NO shouldSave:YES];
+            }
 			else if (([[preExistingBook valueForKey:@"productType"] intValue] == BlioProductTypePreview && [bookOwnershipInfo.ProductTypeId intValue] == BlioProductTypeFull)) {
                 NSLog(@"replacing preview version of ISBN:%@ with full version...",bookOwnershipInfo.ISBN);
                 [[BlioStoreManager sharedInstance].processingDelegate deleteBook:preExistingBook shouldSave:YES];
