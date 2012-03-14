@@ -1387,13 +1387,23 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 
 - (void)showSocialOptions {    
 	// show sheet interface
+    UIActionSheet *actionSheet = nil;
 	NSString * sheetTitle = NSLocalizedString(@"Share On:",@"\"Share On:\" action sheet title");
-	NSString * social0 = NSLocalizedString(@"Facebook",@"\"Facebook\" library social option");
-	NSString * social1 = NSLocalizedString(@"Twitter",@"\"Twitter\" library social option");
-	UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:sheetTitle
-															 delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel",@"\"Cancel\" sheet button") 
-											   destructiveButtonTitle:nil
-													otherButtonTitles:social0, social1, nil];
+	NSString * social0 = NSLocalizedString(@"Facebook",@"\"Facebook\" library social option");\
+    
+    if([[UIDevice currentDevice] compareSystemVersion:@"5.0"] >= NSOrderedSame) {
+        NSString * social1 = NSLocalizedString(@"Twitter",@"\"Twitter\" library social option");
+        actionSheet = [[UIActionSheet alloc] initWithTitle:sheetTitle
+                                                                 delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel",@"\"Cancel\" sheet button") 
+                                                   destructiveButtonTitle:nil
+                                                        otherButtonTitles:social0, social1, nil];
+    }
+    else {
+        actionSheet = [[UIActionSheet alloc] initWithTitle:sheetTitle
+                                                  delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel",@"\"Cancel\" sheet button") 
+                                    destructiveButtonTitle:nil
+                                         otherButtonTitles:social0, nil];
+    }
 	actionSheet.actionSheetStyle = UIActionSheetStyleDefault;
     //	[actionSheet showInView:self.view];
 	[actionSheet showFromToolbar:self.navigationController.toolbar];
@@ -1451,11 +1461,20 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
             [[BlioSocialManager sharedSocialManager] shareBook:bookToBeShared socialType:BlioSocialTypeTwitter];
         }
         else {
-            [BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Twitter Not Setup",@"\"Twitter Not Setup\" alert message title")
-                                         message:NSLocalizedStringWithDefaultValue(@"TWITTER_NOT_SETUP",nil,[NSBundle mainBundle],@"Twitter account settings were not found. Would you like to enter your username and password now?",@"Alert message shown when no twitter account settings are found.")
-                                        delegate:self 
-                               cancelButtonTitle:NSLocalizedString(@"Not Now",@"\"Not Now\" label for button used to cancel/dismiss alertview")
-                               otherButtonTitles:NSLocalizedString(@"Settings","Settings"), nil];
+            if([[UIDevice currentDevice] compareSystemVersion:@"5.1"] >= NSOrderedSame) {
+                [BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Twitter Not Setup",@"\"Twitter Not Setup\" alert message title")
+                                             message:NSLocalizedStringWithDefaultValue(@"TWITTER_NOT_SETUP",nil,[NSBundle mainBundle],@"Twitter account settings were not found. Please enter your username and password in the Settings App.",@"Alert message shown when no twitter account settings are found.")
+                                            delegate:self 
+                                   cancelButtonTitle:NSLocalizedString(@"OK",@"\"OK\" label for button used to cancel/dismiss alertview")
+                                   otherButtonTitles:nil];
+            }
+            else {
+                [BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Twitter Not Setup",@"\"Twitter Not Setup\" alert message title")
+                                             message:NSLocalizedStringWithDefaultValue(@"TWITTER_NOT_SETUP",nil,[NSBundle mainBundle],@"Twitter account settings were not found. Would you like to enter your username and password now?",@"Alert message shown when no twitter account settings are found, and the option to go directly to the Settings App is presented.")
+                                            delegate:self 
+                                   cancelButtonTitle:NSLocalizedString(@"Not Now",@"\"Not Now\" label for button used to cancel/dismiss alertview")
+                                   otherButtonTitles:NSLocalizedString(@"Settings","Settings"), nil];
+            }
         }
     }
     
