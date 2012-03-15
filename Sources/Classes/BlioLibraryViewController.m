@@ -1969,7 +1969,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 	else if ([[[self.bookView book] valueForKey:@"processingState"] intValue] == kBlioBookProcessingStateSuspended) {
 		return NSLocalizedString(@"suspended.", @"Accessibility label for suspended Library View cell book description");
 	}
-	else return NSLocalizedString(@"Opens book.", @"Accessibility hint for Library View cell book when not editing");
+	else return NSLocalizedString(@"Opens book. Double-tap and hold to share.", @"Accessibility hint for Library View cell book when not editing (i.e. can share)");
 }
 - (id)accessibilityElementAtIndex:(NSInteger)index {    
     return [self.accessibilityElements objectAtIndex:index];
