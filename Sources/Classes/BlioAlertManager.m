@@ -23,7 +23,7 @@
 }
 
 +(void)showAlert:(UIAlertView*)alert {
-	[alert show];
+    [alert performSelectorOnMainThread:@selector(show) withObject:nil waitUntilDone:NO];	
 }
 + (void)showAlertWithTitle:(NSString *)title
 				   message:(NSString *)message
@@ -46,7 +46,7 @@
 		va_end(args);
     }
 	
-    [alert show];
+    [alert performSelectorOnMainThread:@selector(show) withObject:nil waitUntilDone:NO];	
 }
 +(void)showTaggedAlertWithTitle:(NSString *)title message:(NSString *)message delegate:(id)delegate tag:(NSInteger)tag cancelButtonTitle:(NSString *)cancelButtonTitle otherButtonTitles:(NSString *)otherButtonTitles, ...
 {
@@ -65,7 +65,7 @@
 		va_end(args);
     }
 	alert.tag = tag;
-    [alert show];
+    [alert performSelectorOnMainThread:@selector(show) withObject:nil waitUntilDone:NO];	
 }
 
 
@@ -93,6 +93,7 @@
 		}
 	}
 	if (isRepeat) return;
+
     UIAlertView *alert = [[[UIAlertView alloc] initWithTitle:title
                                                      message:message
                                                     delegate:delegate
