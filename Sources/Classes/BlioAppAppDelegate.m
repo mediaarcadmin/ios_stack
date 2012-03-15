@@ -153,11 +153,27 @@
     }
     
     // Reset the id for this device.
-    CFPreferencesSetValue(CFSTR("deviceID"),[[UIDevice currentDevice] uniqueIdentifier],CFSTR("com.knfbreading.Blio"),kCFPreferencesCurrentUser,kCFPreferencesCurrentHost);
-    CFPreferencesSynchronize(CFSTR("com.knfbreading.Blio"),kCFPreferencesCurrentUser,kCFPreferencesCurrentHost);
+    [[NSUserDefaults standardUserDefaults] setObject:(id)[[UIDevice currentDevice] uniqueIdentifier] forKey:kBlioDeviceIDDefaultsKey]; 
     
 }
 
+- (void)checkDevice { 
+    // Check that this is the same device as last time. 
+    NSString* thisDevice = [[NSUserDefaults standardUserDefaults] stringForKey:kBlioDeviceIDDefaultsKey]; 
+    if ( !thisDevice ) 
+        // First time, so just store the id. 
+        [[NSUserDefaults standardUserDefaults] setObject:(id)[[UIDevice currentDevice] uniqueIdentifier] forKey:kBlioDeviceIDDefaultsKey];  
+    else if ([thisDevice compare:[[UIDevice currentDevice] uniqueIdentifier]] != NSOrderedSame ) { 
+        [BlioAlertManager showAlertWithTitle:NSLocalizedString(@"New Device",@"\"New Device\" alert message title")  
+                                    message:NSLocalizedStringWithDefaultValue(@"DEVICE_CHANGED",nil,[NSBundle mainBundle],@"This version of Blio was restored from another device.  Your purchased books must be re-downloaded.  Remember to deregister your old device if you no longer plan to use Blio on it.",@"Alert Text informing the end-user that the password must contain at least one digit.") 
+                                    delegate:nil  
+                           cancelButtonTitle:nil 
+                           otherButtonTitles:@"OK", nil];
+        [self resetDRM];
+    }
+}
+
+/*
 - (void)checkDevice {
     CFStringRef deviceIDCFPrefs = CFPreferencesCopyValue(CFSTR("deviceID"), CFSTR("com.knfbreading.Blio"), kCFPreferencesCurrentUser, kCFPreferencesCurrentHost);
     if (!deviceIDCFPrefs) {
@@ -180,7 +196,7 @@
         [self resetDRM];
     }
 }
-
+*/
 
 - (BOOL)canOpenURL:(NSURL *)url {
     if ([url isFileURL]) {
