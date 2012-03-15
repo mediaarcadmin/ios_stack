@@ -168,7 +168,7 @@
                                     message:NSLocalizedStringWithDefaultValue(@"DEVICE_CHANGED",nil,[NSBundle mainBundle],@"This version of Blio was restored from another device.  Your purchased books must be re-downloaded.  Remember to deregister your old device if you no longer plan to use Blio on it.",@"Alert Text informing the end-user that the password must contain at least one digit.") 
                                     delegate:nil  
                            cancelButtonTitle:nil 
-                           otherButtonTitles:@"OK", nil];
+                           otherButtonTitles:NSLocalizedString(@"OK",@"\"OK\" label for button used to cancel/dismiss alertview"), nil];
         [self resetDRM];
     }
 }

@@ -574,6 +574,7 @@
 							   otherButtonTitles:NSLocalizedString(@"OK",@"\"OK\" label for button used to cancel/dismiss alertview"), nil];
 			return nil;
 		}
+        /* legacy code from non-ex web service
 		else if ([bodyPart isKindOfClass:[BookVault_RequestDownloadWithTokenResponse class]]) {
 			if ( [[bodyPart RequestDownloadWithTokenResult].ReturnCode intValue] == 100 ) { 
 				[BlioAlertManager removeSuppressionForAlertType:BlioBookDownloadFailureAlertType];
@@ -602,6 +603,8 @@
 				return nil;
 			}
 		}
+         */
+        /* legacy for older variant of service
 		else if ([bodyPart isKindOfClass:[BookVault_RequestDownloadWithTokenExResponse class]]) {
 			if ( [[bodyPart RequestDownloadWithTokenExResult].ReturnCode intValue] == 100 ) { 
 				[BlioAlertManager removeSuppressionForAlertType:BlioBookDownloadFailureAlertType];
@@ -611,7 +614,15 @@
 			}
 			else {
 				NSLog(@"DownloadRequest error: %@",[bodyPart RequestDownloadWithTokenExResult].Message);
-				if ([[bodyPart RequestDownloadWithTokenExResult].Message rangeOfString:@"does not own"].location != NSNotFound) {
+                NSLog(@"[[bodyPart RequestDownloadWithTokenExResult].ReturnCode intValue]: %i",[[bodyPart RequestDownloadWithTokenExResult].ReturnCode intValue]);
+                if ( [[bodyPart RequestDownloadWithTokenExResult].ReturnCode intValue] == 106 ) { 
+                    [BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Error Downloading Book",@"\"Error Downloading Book\" alert message title")  
+                                                 message:[NSString stringWithFormat:NSLocalizedStringWithDefaultValue(@"DOWNLOADURL_SERVICE_106_ERROR",nil,[NSBundle mainBundle],@"This is a temporary message for book: %@.",@"Alert message shown 106 error occurs."),[book title]]
+                                                delegate:nil  
+                                       cancelButtonTitle:NSLocalizedString(@"OK",@"\"OK\" label for button used to cancel/dismiss alertview")
+                                       otherButtonTitles:nil];
+                }
+				else if ([[bodyPart RequestDownloadWithTokenExResult].Message rangeOfString:@"does not own"].location != NSNotFound) {
 					[BlioAlertManager showAlertOfSuppressedType:BlioBookDownloadFailureAlertType\
                                                           title:NSLocalizedString(@"Error Downloading Book",@"\"Error Downloading Book\" alert message title") 
                                                         message:[bodyPart RequestDownloadWithTokenExResult].Message
@@ -630,6 +641,7 @@
 				return nil;
 			}
 		}
+         */
 		else if ([bodyPart isKindOfClass:[BookVault_RequestClientDownloadWithTokenExResponse class]]) {
 			if ( [[bodyPart RequestClientDownloadWithTokenExResult].ReturnCode intValue] == 100 ) { 
 				[BlioAlertManager removeSuppressionForAlertType:BlioBookDownloadFailureAlertType];
@@ -639,7 +651,15 @@
 			}
 			else {
 				NSLog(@"DownloadRequest error: %@",[bodyPart RequestClientDownloadWithTokenExResult].Message);
-				if ([[bodyPart RequestClientDownloadWithTokenExResult].Message rangeOfString:@"does not own"].location != NSNotFound) {
+                NSLog(@"[[bodyPart RequestClientDownloadWithTokenExResult].ReturnCode intValue]: %i",[[bodyPart RequestClientDownloadWithTokenExResult].ReturnCode intValue]);
+                if ( [[bodyPart RequestClientDownloadWithTokenExResult].ReturnCode intValue] == 106 ) { 
+                    [BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Error Downloading Book",@"\"Error Downloading Book\" alert message title")  
+                                                 message:[NSString stringWithFormat:NSLocalizedStringWithDefaultValue(@"DOWNLOADURL_SERVICE_106_ERROR",nil,[NSBundle mainBundle],@"This is a temporary message for book: %@.",@"Alert message shown 106 error occurs."),[book title]]
+                                                delegate:nil  
+                                       cancelButtonTitle:NSLocalizedString(@"OK",@"\"OK\" label for button used to cancel/dismiss alertview")
+                                       otherButtonTitles:nil];
+                }
+				else if ([[bodyPart RequestClientDownloadWithTokenExResult].Message rangeOfString:@"does not own"].location != NSNotFound) {
 					[BlioAlertManager showAlertOfSuppressedType:BlioBookDownloadFailureAlertType\
                                                           title:NSLocalizedString(@"Error Downloading Book",@"\"Error Downloading Book\" alert message title") 
                                                         message:[bodyPart RequestClientDownloadWithTokenExResult].Message
