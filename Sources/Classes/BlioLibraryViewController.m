@@ -1463,7 +1463,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
         else {
             if([[UIDevice currentDevice] compareSystemVersion:@"5.1"] >= NSOrderedSame) {
                 [BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Twitter Not Setup",@"\"Twitter Not Setup\" alert message title")
-                                             message:NSLocalizedStringWithDefaultValue(@"TWITTER_NOT_SETUP",nil,[NSBundle mainBundle],@"Twitter account settings were not found. Please enter your username and password in the Settings App.",@"Alert message shown when no twitter account settings are found.")
+                                             message:NSLocalizedStringWithDefaultValue(@"TWITTER_NOT_SETUP",nil,[NSBundle mainBundle],@"Twitter account settings were not found. Please enter your username and password in your Twitter Settings.",@"Alert message shown when no twitter account settings are found.")
                                             delegate:self 
                                    cancelButtonTitle:NSLocalizedString(@"OK",@"\"OK\" label for button used to cancel/dismiss alertview")
                                    otherButtonTitles:nil];
