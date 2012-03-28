@@ -169,14 +169,15 @@
 - (id)initWithFrame:(CGRect)frame {
     if ((self = [super initWithFrame:frame])) {
         self.backgroundColor = [UIColor whiteColor];
-		
+		/*
 		if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
             UIGraphicsBeginImageContextWithOptions(CGSizeMake(100, 100), NO, self.contentScaleFactor);
             CGContextRef context = UIGraphicsGetCurrentContext();
-            UIImage *logoImage = [UIImage imageWithData:[NSData dataWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"Icon@2x" ofType:@"png"]]];
+//            UIImage *logoImage = [UIImage imageWithData:[NSData dataWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"Icon@2x" ofType:@"png"]]];
+            UIImage *logoImage = [UIImage imageWithData:[NSData dataWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"iTunesArtwork" ofType:@""]]];
 			
             // Mask off the outside of the icon like the device does.
-            CGContextMoveToPoint(context, 0, 0);
+            CGContextMoveToPoint(context, 0, 50);
             CGContextAddArcToPoint(context, 0, 0, 50, 0, 15);
             CGContextAddArcToPoint(context, 100, 0, 100, 50, 15);
             CGContextAddArcToPoint(context, 100, 100, 50, 100, 15);
@@ -203,6 +204,7 @@
 			[self addSubview:welcomeTextView];
 			[welcomeTextView release];
 		}    
+         */
 		existingUserTitleView = [[UILabel alloc] initWithFrame:CGRectZero];
 		existingUserTitleView.lineBreakMode = UILineBreakModeWordWrap;
 		existingUserTitleView.numberOfLines = 0;
@@ -399,19 +401,21 @@
         
         self.cellContainerView.frame = CGRectMake(contentMargin - kBlioWelcomeCellMargin, self.view.bounds.size.height * 0.45f, self.view.bounds.size.width - contentMargin*2 + kBlioWelcomeCellMargin*2, self.view.bounds.size.height * 0.55f - contentMargin);
         self.view.backgroundColor = [UIColor whiteColor];
-        UIGraphicsBeginImageContext(CGSizeMake(100, 100));
+//        UIGraphicsBeginImageContext(CGSizeMake(100, 100));
+        UIGraphicsBeginImageContextWithOptions(CGSizeMake(100, 100), NO, [[UIScreen mainScreen] scale]);
         CGContextRef context = UIGraphicsGetCurrentContext();
-        UIImage *logoImage = [UIImage imageWithData:[NSData dataWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"Icon@2x" ofType:@"png"]]];
-        
+//        UIImage *logoImage = [UIImage imageWithData:[NSData dataWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"Icon@2x" ofType:@"png"]]];
+        UIImage *logoImage = [UIImage imageWithData:[NSData dataWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"iTunesArtwork" ofType:@""]]];
+        logoImage = [UIImage imageWithCGImage:logoImage.CGImage scale:[[UIScreen mainScreen] scale] orientation:UIImageOrientationUp];
         // Mask off the outside of the icon like the device does.
-        CGContextMoveToPoint(context, 0, 0);
+        CGContextMoveToPoint(context, 0, 50);
         CGContextAddArcToPoint(context, 0, 0, 50, 0, 15);
         CGContextAddArcToPoint(context, 100, 0, 100, 50, 15);
         CGContextAddArcToPoint(context, 100, 100, 50, 100, 15);
         CGContextAddArcToPoint(context, 0, 100, 0, 50, 15);
         CGContextClosePath(context);
         CGContextClip(context);
-        [logoImage drawInRect:CGRectMake(-7, -7, 114, 114)];
+        [logoImage drawInRect:CGRectMake(-8, -8, 116, 116)];
         
         self.logoView = [[[UIImageView alloc] initWithImage:UIGraphicsGetImageFromCurrentImageContext()] autorelease];
 //        logoView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleRightMargin;

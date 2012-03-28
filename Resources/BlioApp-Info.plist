@@ -102,6 +102,7 @@
 		<string>Icon.png</string>
 		<string>Icon@2x.png</string>
 		<string>Icon-iPad.png</string>
+		<string>Icon-iPad@2x.png</string>
 	</array>
 	<key>CFBundleIdentifier</key>
 	<string>com.knfbreading.Blio${BUNDLE_ID_SUFFIX}</string>
