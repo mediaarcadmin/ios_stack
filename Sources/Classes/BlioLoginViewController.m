@@ -20,24 +20,26 @@
     if ((self = [super initWithFrame:frame])) {
         self.backgroundColor = [UIColor clearColor];
 
-        UIGraphicsBeginImageContextWithOptions(CGSizeMake(100, 100), NO, self.contentScaleFactor);
+        UIGraphicsBeginImageContextWithOptions(CGSizeMake(100, 100), NO, [[UIScreen mainScreen] scale]);
         CGContextRef context = UIGraphicsGetCurrentContext();
         UIImage *logoImage;
-        if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
-            logoImage = [UIImage imageWithData:[NSData dataWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"Icon-iPad@2x" ofType:@"png"]]];
-        else
-            logoImage = [UIImage imageWithData:[NSData dataWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"Icon@2x" ofType:@"png"]]];
-        
+//        if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
+//            logoImage = [UIImage imageWithData:[NSData dataWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"Icon-iPad@2x" ofType:@"png"]]];
+//        else
+//            logoImage = [UIImage imageWithData:[NSData dataWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"Icon@2x" ofType:@"png"]]];
+        logoImage = [UIImage imageWithData:[NSData dataWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"iTunesArtwork" ofType:@""]]];
+
+        logoImage = [UIImage imageWithCGImage:logoImage.CGImage scale:[[UIScreen mainScreen] scale] orientation:UIImageOrientationUp];
+
         // Mask off the outside of the icon like the device does.
-        CGContextMoveToPoint(context, 0, 0);
+        CGContextMoveToPoint(context, 0, 50);
         CGContextAddArcToPoint(context, 0, 0, 50, 0, 15);
         CGContextAddArcToPoint(context, 100, 0, 100, 50, 15);
         CGContextAddArcToPoint(context, 100, 100, 50, 100, 15);
         CGContextAddArcToPoint(context, 0, 100, 0, 50, 15);
-        CGContextAddArcToPoint(context, 0, 0, 50, 0, 15);
         CGContextClosePath(context);
         CGContextClip(context);
-        [logoImage drawInRect:CGRectMake(-7, -7, 114, 114)];
+        [logoImage drawInRect:CGRectMake(-8, -8, 116, 116)];
         
         logoView = [[UIImageView alloc] initWithImage:UIGraphicsGetImageFromCurrentImageContext()];
         UIGraphicsEndImageContext();
