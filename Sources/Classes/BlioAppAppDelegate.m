@@ -126,7 +126,6 @@
 }
 
 - (void)resetDRM {
-    
     // Delete the secure store.
     NSString *supportDirectory = [NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES) objectAtIndex:0];
     NSString* strDataStore = [supportDirectory stringByAppendingString:@"/playready.hds"];
@@ -152,11 +151,51 @@
             NSLog(@"WARNING: deletion of binary device certificate failed. %@, %@", error, [error userInfo]);
     }
     
-    // Reset the id for this device.
-    [[NSUserDefaults standardUserDefaults] setObject:(id)[[UIDevice currentDevice] uniqueIdentifier] forKey:kBlioDeviceIDDefaultsKey]; 
+    // Reset the id for this device.  It must now be a UUID.
+    CFStringRef deviceUUID = CFUUIDCreateString(kCFAllocatorDefault, CFUUIDCreate(kCFAllocatorDefault));
+    [[NSUserDefaults standardUserDefaults] setObject:(id)deviceUUID forKey:kBlioDeviceIDDefaultsKey]; 
     
+    // Reinitialize model certificates.
+    [self ensureCorrectCertsAvailable];
 }
 
+- (void)checkDevice {
+    NSString* deviceIDDefaults = [[NSUserDefaults standardUserDefaults] stringForKey:kBlioDeviceIDDefaultsKey];
+    if (!deviceIDDefaults) { 
+        // First time.  Create a UUID for device ID and store it.
+        CFStringRef deviceUUID = CFUUIDCreateString(kCFAllocatorDefault, CFUUIDCreate(kCFAllocatorDefault));
+        [[NSUserDefaults standardUserDefaults] setObject:(id)deviceUUID forKey:kBlioDeviceIDDefaultsKey]; 
+        // Initialize model certificates.
+        [self ensureCorrectCertsAvailable];
+    }
+    else if ([deviceIDDefaults length] == 40) {  
+        // We must be upgrading from 3.1 or previous.
+        // The stored ID is a UDID.  Apple is forcing us to change it to a UUID.
+        
+        // We do not currently have a method to see if the device id has changed, be it UDID or UUID.
+        //if ([deviceIDDefaults compare:[[UIDevice currentDevice] uniqueIdentifier]] == NSOrderedSame ) {   
+            [BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Rights Managment Reset",@"\"Rights Managment Reset\" alert message title") 
+                                         message:NSLocalizedStringWithDefaultValue(@"DRM_RESET",nil,[NSBundle mainBundle],@"This version of Blio requires an initial redownload of your paid books.  Go to your Archive to retrieve them.",@"Alert Text informing the end user that paid books must be redownloaded.")
+                                        delegate:nil 
+                               cancelButtonTitle:nil
+                               otherButtonTitles:@"OK", nil];
+            [self resetDRM];
+            
+        //}
+        /*
+        else {
+            // Restored from another device.  Reset the DRM.
+            [BlioAlertManager showAlertWithTitle:NSLocalizedString(@"New Device",@"\"New Device\" alert message title") 
+                                         message:NSLocalizedStringWithDefaultValue(@"DEVICE_CHANGED",nil,[NSBundle mainBundle],@"This version of Blio was restored from another device.  Your purchased books must be redownloaded.  Remember to deregister your old device if you no longer plan to use Blio on it.",@"Alert Text informing the end user that the password must contain at least one digit.")
+                                        delegate:nil 
+                               cancelButtonTitle:nil
+                               otherButtonTitles:@"OK", nil]; 
+            [self resetDRM];
+        }*/
+    }
+}
+
+/* using UDID only
 - (void)checkDevice { 
     // Check that this is the same device as last time. 
     NSString* thisDevice = [[NSUserDefaults standardUserDefaults] stringForKey:kBlioDeviceIDDefaultsKey]; 
@@ -172,8 +211,9 @@
         [self resetDRM];
     }
 }
+ */
 
-/*
+/* Using CFPreferences instead of NSUserDefaults
 - (void)checkDevice {
     CFStringRef deviceIDCFPrefs = CFPreferencesCopyValue(CFSTR("deviceID"), CFSTR("com.knfbreading.Blio"), kCFPreferencesCurrentUser, kCFPreferencesCurrentHost);
     if (!deviceIDCFPrefs) {
@@ -333,8 +373,6 @@ static void *background_init_thread(void * arg) {
 	}
     
     [self ensureApplicationSupportAvailable];
-    
-    [self ensureCorrectCertsAvailable];
     
     // TODO - update this with a proper check for TTS being enabled
     [[NSUserDefaults standardUserDefaults] setBool:YES forKey:kBlioTTSEnabledDefaultsKey];
