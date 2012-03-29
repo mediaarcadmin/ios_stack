@@ -617,7 +617,7 @@
                 NSLog(@"[[bodyPart RequestDownloadWithTokenExResult].ReturnCode intValue]: %i",[[bodyPart RequestDownloadWithTokenExResult].ReturnCode intValue]);
                 if ( [[bodyPart RequestDownloadWithTokenExResult].ReturnCode intValue] == 106 ) { 
                     [BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Error Downloading Book",@"\"Error Downloading Book\" alert message title")  
-                                                 message:[NSString stringWithFormat:NSLocalizedStringWithDefaultValue(@"DOWNLOADURL_SERVICE_106_ERROR",nil,[NSBundle mainBundle],@"This is a temporary message for book: %@.",@"Alert message shown 106 error occurs."),[book title]]
+                                                 message:[NSString stringWithFormat:NSLocalizedStringWithDefaultValue(@"DOWNLOADURL_SERVICE_106_ERROR",nil,[NSBundle mainBundle],@"The book %@ failed to download.  Please report an error 106 for ISBN %@ to Blio technical support.",@"Alert message shown when 106 error occurs."),[book title],downloadRequest.isbn]
                                                 delegate:nil  
                                        cancelButtonTitle:NSLocalizedString(@"OK",@"\"OK\" label for button used to cancel/dismiss alertview")
                                        otherButtonTitles:nil];

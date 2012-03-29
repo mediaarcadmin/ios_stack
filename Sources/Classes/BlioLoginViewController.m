@@ -206,7 +206,7 @@
     self.copyrightLabel = [[[UILabel alloc] initWithFrame:CGRectMake(10, self.view.bounds.size.height - 40, self.view.bounds.size.width - 20, 40)] autorelease];
     copyrightLabel.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleTopMargin;
     copyrightLabel.textAlignment = UITextAlignmentRight;
-    copyrightLabel.text = NSLocalizedString(@"©2011 | Blio.com", @"Accessibility label for copyright statement.");
+    copyrightLabel.text = NSLocalizedString(@"©2012 | Blio.com", @"Accessibility label for copyright statement.");
     copyrightLabel.font = [UIFont boldSystemFontOfSize:12.0];
     copyrightLabel.textColor = [UIColor colorWithRed:76.0f/255.0f green:76.0f/255.0f blue:76.0f/255.0f alpha:1.0f];
     copyrightLabel.backgroundColor = [UIColor clearColor];
