@@ -73,10 +73,12 @@
     NSString* rsrcWmModelCert = [sourceDir stringByAppendingPathComponent:wmModelCertFilename]; 
     NSString* docsWmModelCert = [documentsDirectory stringByAppendingPathComponent:wmModelCertFilename];
 	[fileManager copyItemAtPath:rsrcWmModelCert toPath:docsWmModelCert error:&err];
-    
+    [BlioProcessingOperation addSkipBackupAttributeToItemAtURL:[NSURL fileURLWithPath:docsWmModelCert]];
+
 	NSString* rsrcPRModelCert = [sourceDir stringByAppendingPathComponent:prModelCertFilename]; 
 	NSString* docsPRModelCert = [documentsDirectory stringByAppendingPathComponent:prModelCertFilename];
 	[fileManager copyItemAtPath:rsrcPRModelCert toPath:docsPRModelCert error:&err];    
+    [BlioProcessingOperation addSkipBackupAttributeToItemAtURL:[NSURL fileURLWithPath:docsPRModelCert]];
 }
 
 - (void)ensureApplicationSupportAvailable {    
@@ -104,7 +106,11 @@
 		if (![[NSFileManager defaultManager] createDirectoryAtPath:voicesPath withIntermediateDirectories:YES attributes:nil error:&createTTSDirError]) {
 			NSLog(@"ERROR: could not create TTS directory in the Application Support directory! %@, %@",createTTSDirError, [createTTSDirError userInfo]);
 		}
-		else NSLog(@"Created TTS directory within Application Support...");
+		else {
+            NSLog(@"Created TTS directory within Application Support...");
+            [BlioProcessingOperation addSkipBackupAttributeToItemAtURL:[NSURL fileURLWithPath:voicesPath]];
+        }
+        
 	}    
     
 #ifdef TEST_MODE
@@ -134,8 +140,6 @@
         if (![[NSFileManager defaultManager] removeItemAtPath:strDataStore error:&error]) 
             NSLog(@"WARNING: deletion of PlayReady store failed. %@, %@", error, [error userInfo]);
     }
-    // Delete paid books.
-    [self.processingManager deleteBooksForSourceID:BlioBookSourceOnlineStore];
     
     // Delete device certificates. 
     NSString *devcertDatFile = [supportDirectory stringByAppendingPathComponent:@"devcert.dat"];
@@ -152,23 +156,49 @@
     }
     
     // Reset the id for this device.  It must now be a UUID.
+#ifdef TEST_MODE
+    [[NSUserDefaults standardUserDefaults] setObject:(id)[[UIDevice currentDevice] uniqueIdentifier] forKey:kBlioDeviceIDDefaultsKey];
+#else
     CFStringRef deviceUUID = CFUUIDCreateString(kCFAllocatorDefault, CFUUIDCreate(kCFAllocatorDefault));
     [[NSUserDefaults standardUserDefaults] setObject:(id)deviceUUID forKey:kBlioDeviceIDDefaultsKey]; 
+#endif
     
     // Reinitialize model certificates.
     [self ensureCorrectCertsAvailable];
 }
 
 - (void)checkDevice {
+    // check for backup flag file
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES);
+    NSString *basePath = ([paths count] > 0) ? [paths objectAtIndex:0] : nil;
+    NSString * flagFilePath = [basePath stringByAppendingPathComponent: @"NotFromBackup"];
+    
+    BOOL flagFileMissing = NO;
+    if (![[NSFileManager defaultManager] fileExistsAtPath:flagFilePath]) {
+        // possibly restored, maybe first time...
+        flagFileMissing = YES;
+        // create flag file for future
+        [[NSFileManager defaultManager] createFileAtPath:flagFilePath
+                                                contents:[NSData data]
+                                              attributes:nil];
+        NSURL *flagFileURL = [NSURL fileURLWithPath: flagFilePath];
+        [BlioProcessingOperation addSkipBackupAttributeToItemAtURL:flagFileURL];
+    }
+    
     NSString* deviceIDDefaults = [[NSUserDefaults standardUserDefaults] stringForKey:kBlioDeviceIDDefaultsKey];
+
     if (!deviceIDDefaults) { 
-        // First time.  Create a UUID for device ID and store it.
+        // First time (fresh install or restoration from iCloud?). Create a UUID for device ID and store it.
+#ifdef TEST_MODE
+        [[NSUserDefaults standardUserDefaults] setObject:(id)[[UIDevice currentDevice] uniqueIdentifier] forKey:kBlioDeviceIDDefaultsKey];
+#else
         CFStringRef deviceUUID = CFUUIDCreateString(kCFAllocatorDefault, CFUUIDCreate(kCFAllocatorDefault));
         [[NSUserDefaults standardUserDefaults] setObject:(id)deviceUUID forKey:kBlioDeviceIDDefaultsKey]; 
+#endif
         // Initialize model certificates.
         [self ensureCorrectCertsAvailable];
     }
-    else if ([deviceIDDefaults length] == 40) {  
+    if ([deviceIDDefaults length] == 40) {  
         // We must be upgrading from 3.1 or previous.
         // The stored ID is a UDID.  Apple is forcing us to change it to a UUID.
         
@@ -180,7 +210,9 @@
                                cancelButtonTitle:nil
                                otherButtonTitles:@"OK", nil];
             [self resetDRM];
-            
+            // Delete paid books.
+            [self.processingManager deleteBooksForSourceID:BlioBookSourceOnlineStore];
+
         //}
         /*
         else {
@@ -193,6 +225,35 @@
             [self resetDRM];
         }*/
     }
+    else if (flagFileMissing) {
+        [self resetDRM];
+        [[BlioStoreManager sharedInstance] logoutForSourceID:BlioBookSourceOnlineStore];
+        if (deviceIDDefaults) {
+            // NSUserDefaults happened to be backed up and restored
+            [[NSUserDefaults standardUserDefaults] setBool:NO forKey:kBlioHasLoggedInKey];
+            [[NSUserDefaults standardUserDefaults] synchronize];
+        }
+        NSManagedObjectContext *moc = [self managedObjectContext];
+        NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
+        [fetchRequest setEntity:[NSEntityDescription entityForName:@"BlioBook" inManagedObjectContext:moc]];
+        //        [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"sourceID == %@",[NSNumber numberWithInt:BlioBookSourceOnlineStore]]];
+        NSError *errorExecute = nil; 
+        NSArray *results = [moc executeFetchRequest:fetchRequest error:&errorExecute]; 
+        [fetchRequest release];
+        if(!errorExecute && results.count != 0) {
+            // we've restored: no flag file, but there are books in the persistent store. Reset DRM and make paid books "placeholder only" in preparation for re-downloading. Verify bundled books.
+            [BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Rights Managment Reset",@"\"Rights Managment Reset\" alert message title") 
+                                         message:NSLocalizedStringWithDefaultValue(@"DRM_RESET_AFTER_RESTORE",nil,[NSBundle mainBundle],@"A restoration from backup requires an login to redownload of your paid books.",@"Alert Text informing the end user that login is required for paid books to be redownloaded.")
+                                        delegate:nil 
+                               cancelButtonTitle:nil
+                               otherButtonTitles:@"OK", nil];
+            
+            [self.processingManager verifyBundledBooks];
+            [self.processingManager deleteBooksForSourceID:BlioBookSourceOnlineStore];
+            forceLoginAfterRestore = YES;
+        }
+    }
+
 }
 
 /* using UDID only
@@ -443,9 +504,14 @@ static void *background_init_thread(void * arg) {
     
 	// this login block must happen after the views are attached to the window
 	if ([[Reachability reachabilityWithHostName:[[BlioStoreManager sharedInstance] loginHostnameForSourceID:BlioBookSourceOnlineStore]] currentReachabilityStatus] != NotReachable) {
+        NSLog(@"[[BlioStoreManager sharedInstance] isLoggedInForSourceID:BlioBookSourceOnlineStore]: %i",[[BlioStoreManager sharedInstance] isLoggedInForSourceID:BlioBookSourceOnlineStore]);
 		if (![[BlioStoreManager sharedInstance] isLoggedInForSourceID:BlioBookSourceOnlineStore]) {
 			if ([[BlioStoreManager sharedInstance] hasLoginCredentials]) {
 				[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loginDismissed:) name:BlioLoginFinished object:[BlioStoreManager sharedInstance]];
+				[[BlioStoreManager sharedInstance] requestLoginForSourceID:BlioBookSourceOnlineStore];
+			}
+            else if (forceLoginAfterRestore) {
+				[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loginDismissedAfterCloudRestore:) name:BlioLoginFinished object:[BlioStoreManager sharedInstance]];
 				[[BlioStoreManager sharedInstance] requestLoginForSourceID:BlioBookSourceOnlineStore];
 			}
 			else {
@@ -485,7 +551,7 @@ static void *background_init_thread(void * arg) {
     if (![[NSUserDefaults standardUserDefaults] objectForKey:@"WelcomeScreenShown"]) { 
         [[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithBool:YES] forKey:@"WelcomeScreenShown"]; 
         [[NSUserDefaults standardUserDefaults] synchronize];
-         [[BlioStoreManager sharedInstance] showWelcomeViewForSourceID:BlioBookSourceOnlineStore]; 
+         if (!forceLoginAfterRestore) [[BlioStoreManager sharedInstance] showWelcomeViewForSourceID:BlioBookSourceOnlineStore]; 
     }
         
     /*
@@ -520,7 +586,15 @@ static void *background_init_thread(void * arg) {
 		}
 	}
 }
-
+-(void)loginDismissedAfterCloudRestore:(NSNotification*)note {
+	[BlioStoreManager sharedInstance].initialLoginCheckFinished = YES;
+	[[NSNotificationCenter defaultCenter] removeObserver:self name:BlioLoginFinished object:[BlioStoreManager sharedInstance]];
+	if ([[[note userInfo] valueForKey:@"sourceID"] intValue] == BlioBookSourceOnlineStore) {
+		if (![[BlioStoreManager sharedInstance] isLoggedInForSourceID:BlioBookSourceOnlineStore]) {
+            [self.processingManager deletePaidBooks];
+        }
+    }
+}
 #pragma mark -
 #pragma mark UIApplicationDelegate - Background Tasks and Termination
 

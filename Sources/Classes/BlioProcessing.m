@@ -11,6 +11,8 @@
 #import "BlioBook.h"
 
 #import <pthread.h>
+#import <sys/xattr.h>
+#import <libEucalyptus/THUIDeviceAdditions.h>
 
 @implementation BlioProcessingOperation
 
@@ -291,6 +293,27 @@ static int mutationCount = 0;
     [aRequest release];
 
     [pool drain];
+}
++ (BOOL)addSkipBackupAttributeToItemAtURL:(NSURL *)URL
+{
+    // for iOS 5.1 and above
+    if([[UIDevice currentDevice] compareSystemVersion:@"5.1"] >= NSOrderedSame) {
+        NSError * setKeyError = nil;
+        [URL setResourceValue:[NSNumber numberWithBool:YES] forKey:NSURLIsExcludedFromBackupKey error:&setKeyError];
+        if (setKeyError) {
+            NSLog(@"ERROR (addSkipBackupAttributeToItemAtURL 5.1 and above): %@",[setKeyError localizedDescription]);
+            return NO;
+        }
+        return YES;
+    }
+    // for iOS 5.0.1
+    const char* filePath = [[URL path] fileSystemRepresentation];
+    
+    const char* attrName = "com.apple.MobileBackup";
+    u_int8_t attrValue = 1;
+    
+    int result = setxattr(filePath, attrName, &attrValue, sizeof(attrValue), 0, 0);
+    return result == 0;
 }
 
 @end

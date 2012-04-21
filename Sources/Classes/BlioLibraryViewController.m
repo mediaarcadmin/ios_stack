@@ -309,6 +309,22 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 		
         NSLog(@"Creating Books");  
 		
+        NSArray * bundledBookArray = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"BundledBooks"];
+        for (NSDictionary * bundledBookDictionary in bundledBookArray) {
+            [self.processingDelegate enqueueBookWithTitle:[bundledBookDictionary objectForKey:@"title"] 
+                                                  authors:[bundledBookDictionary objectForKey:@"authors"]
+                                                coverPath:[bundledBookDictionary objectForKey:@"coverPath"]
+                                                 ePubPath:[bundledBookDictionary objectForKey:@"ePubPath"]
+                                                  pdfPath:[bundledBookDictionary objectForKey:@"pdfPath"]
+                                                  xpsPath:[bundledBookDictionary objectForKey:@"xpsPath"]
+                                             textFlowPath:[bundledBookDictionary objectForKey:@"textFlowPath"]
+                                            audiobookPath:[bundledBookDictionary objectForKey:@"audiobookPath"]
+                                                 sourceID:BlioBookSourceLocalBundle
+                                         sourceSpecificID:[bundledBookDictionary objectForKey:@"sourceSpecificID"] // this should normally be BTKey number when downloaded from the Book Store
+                                          placeholderOnly:[[bundledBookDictionary objectForKey:@"placeholderOnly"] boolValue]
+             ];
+        }
+        /*
 		[self.processingDelegate enqueueBookWithTitle:@"Peter Rabbit" 
 											  authors:[NSArray arrayWithObjects:@"Potter, Beatrix", nil]
 											coverPath:nil
@@ -334,6 +350,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 									 sourceSpecificID:@"SleepyHollow" // this should normally be BTKey number when downloaded from the Book Store
 									  placeholderOnly:NO
 		 ];
+         */
 /*
 		[self.processingDelegate enqueueBookWithTitle:@"Maskerade" 
                                               authors:[NSArray arrayWithObjects:@"Pratchett, Terry", nil]

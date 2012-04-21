@@ -75,6 +75,7 @@
         self.operationSuccess = NO;
         NSLog(@"Warning: Could not create book cache directory at %@ - error %@ - abandoning.", cachePath, error);
     } else {        
+        [BlioProcessingOperation addSkipBackupAttributeToItemAtURL:[NSURL fileURLWithPath:cachePath]];
         CFAbsoluteTime startTime = CFAbsoluteTimeGetCurrent();
             
         BlioBook *book = [[BlioBookManager sharedBookManager] bookWithID:self.bookID];

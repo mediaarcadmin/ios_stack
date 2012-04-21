@@ -265,6 +265,7 @@
 			BlioTransactionType incomingTransactionType = [BlioOnlineStoreHelper transactionTypeForCode:bookOwnershipInfo.TransactionType];
             BlioTransactionType preExistingTransactionType = [[preExistingBook valueForKey:@"transactionType"] intValue];
             if (preExistingBook == nil) {
+                NSLog(@"ISBN: %@, %i",bookOwnershipInfo.ISBN,[bookOwnershipInfo.RecordStatusId intValue]);
 				if ([bookOwnershipInfo.RecordStatusId intValue] != 2) {
                     newISBNs++;
                    [self getContentMetaDataFromISBN:bookOwnershipInfo.ISBN];
