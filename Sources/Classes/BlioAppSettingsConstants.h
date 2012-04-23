@@ -40,6 +40,7 @@ static NSString * const kBlioTapZoomsDefaultsKey = @"TapZooms";
 static NSString * const kBlioLandscapeTwoPagesDefaultsKey = @"LandscapeTwoPages";
 static NSString * const kBlioDownloadNewBooksDefaultsKey = @"downloadnewbooks";
 static NSString * const kBlioWelcomeScreenHasShownKey = @"kBlioWelcomeScreenHasShownKey";
+static NSString * const kBlioHasLoggedInKey = @"kBlioHasLoggedInKey";
 static NSString * const kBlioUsersDictionaryDefaultsKey = @"kBlioUsersDictionaryDefaultsKey";
 static NSString * const kBlioUserLoginCredentialsDefaultsKey = @"kBlioUserLoginCredentialsDefaultsKey";
 static NSString * const kBlioUserRegistrationRecordsDefaultsKey = @"kBlioUserRegistrationRecordsDefaultsKey";

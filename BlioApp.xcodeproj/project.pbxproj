@@ -1326,6 +1326,18 @@
 		A3E5AF1D12B2FD44008F48C6 /* forward-black@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A3E5AF1A12B2FD44008F48C6 /* forward-black@2x.png */; };
 		A3E6419912397C0400D2B85A /* icon-back.png in Resources */ = {isa = PBXBuildFile; fileRef = A3E6419712397C0400D2B85A /* icon-back.png */; };
 		A3E6419A12397C0400D2B85A /* icon-back@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A3E6419812397C0400D2B85A /* icon-back@2x.png */; };
+		A3EB90941525F8A000C2E35D /* iTunesArtwork in Resources */ = {isa = PBXBuildFile; fileRef = A3EB90931525F8A000C2E35D /* iTunesArtwork */; };
+		A3EB90951525F8A000C2E35D /* iTunesArtwork in Resources */ = {isa = PBXBuildFile; fileRef = A3EB90931525F8A000C2E35D /* iTunesArtwork */; };
+		A3EB90961525F8A000C2E35D /* iTunesArtwork in Resources */ = {isa = PBXBuildFile; fileRef = A3EB90931525F8A000C2E35D /* iTunesArtwork */; };
+		A3EB909A1525F8F100C2E35D /* Default-Landscape@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A3EB90971525F8F100C2E35D /* Default-Landscape@2x.png */; };
+		A3EB909B1525F8F100C2E35D /* Default-Landscape@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A3EB90971525F8F100C2E35D /* Default-Landscape@2x.png */; };
+		A3EB909C1525F8F100C2E35D /* Default-Landscape@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A3EB90971525F8F100C2E35D /* Default-Landscape@2x.png */; };
+		A3EB909D1525F8F100C2E35D /* Default-Portrait@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A3EB90981525F8F100C2E35D /* Default-Portrait@2x.png */; };
+		A3EB909E1525F8F100C2E35D /* Default-Portrait@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A3EB90981525F8F100C2E35D /* Default-Portrait@2x.png */; };
+		A3EB909F1525F8F100C2E35D /* Default-Portrait@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A3EB90981525F8F100C2E35D /* Default-Portrait@2x.png */; };
+		A3EB90A01525F8F100C2E35D /* Icon-iPad@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A3EB90991525F8F100C2E35D /* Icon-iPad@2x.png */; };
+		A3EB90A11525F8F100C2E35D /* Icon-iPad@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A3EB90991525F8F100C2E35D /* Icon-iPad@2x.png */; };
+		A3EB90A21525F8F100C2E35D /* Icon-iPad@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A3EB90991525F8F100C2E35D /* Icon-iPad@2x.png */; };
 		A3F24EB1143F671A007565C2 /* voiceover-quickstart.html in Resources */ = {isa = PBXBuildFile; fileRef = A3F24EB0143F6719007565C2 /* voiceover-quickstart.html */; };
 		A3F24EB2143F671A007565C2 /* voiceover-quickstart.html in Resources */ = {isa = PBXBuildFile; fileRef = A3F24EB0143F6719007565C2 /* voiceover-quickstart.html */; };
 		A3F24EB3143F671A007565C2 /* voiceover-quickstart.html in Resources */ = {isa = PBXBuildFile; fileRef = A3F24EB0143F6719007565C2 /* voiceover-quickstart.html */; };
@@ -2375,6 +2387,10 @@
 		A3E5AF1A12B2FD44008F48C6 /* forward-black@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "forward-black@2x.png"; sourceTree = "<group>"; };
 		A3E6419712397C0400D2B85A /* icon-back.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-back.png"; sourceTree = "<group>"; };
 		A3E6419812397C0400D2B85A /* icon-back@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-back@2x.png"; sourceTree = "<group>"; };
+		A3EB90931525F8A000C2E35D /* iTunesArtwork */ = {isa = PBXFileReference; lastKnownFileType = file; path = iTunesArtwork; sourceTree = "<group>"; };
+		A3EB90971525F8F100C2E35D /* Default-Landscape@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-Landscape@2x.png"; sourceTree = "<group>"; };
+		A3EB90981525F8F100C2E35D /* Default-Portrait@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-Portrait@2x.png"; sourceTree = "<group>"; };
+		A3EB90991525F8F100C2E35D /* Icon-iPad@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-iPad@2x.png"; sourceTree = "<group>"; };
 		A3EC8A21122857E100D27D8C /* bigdefs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = bigdefs.h; path = DRM/bigdefs.h; sourceTree = "<group>"; };
 		A3F24EB0143F6719007565C2 /* voiceover-quickstart.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = "voiceover-quickstart.html"; sourceTree = "<group>"; };
 		A3F24EB5143F7733007565C2 /* BlioVoiceOverHelpSettingsController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioVoiceOverHelpSettingsController.h; sourceTree = "<group>"; };
@@ -3003,6 +3019,7 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				A3EB90931525F8A000C2E35D /* iTunesArtwork */,
 				A365921A146C1C0500B23AAA /* icon-wrench.png */,
 				A365921B146C1C0500B23AAA /* icon-wrench@2x.png */,
 				A3F24EB0143F6719007565C2 /* voiceover-quickstart.html */,
@@ -4089,6 +4106,9 @@
 		DCB0363E11BDC42C00B341D4 /* Resources-iPad */ = {
 			isa = PBXGroup;
 			children = (
+				A3EB90971525F8F100C2E35D /* Default-Landscape@2x.png */,
+				A3EB90981525F8F100C2E35D /* Default-Portrait@2x.png */,
+				A3EB90991525F8F100C2E35D /* Icon-iPad@2x.png */,
 				A3951A2712E9E87D0023EE10 /* userdoc-ipad.html */,
 				7DB6493812B12AC100F42F87 /* DRM-iPad */,
 				A382D3D611C9159000CFEB88 /* Default-Landscape.png */,
@@ -4591,6 +4611,10 @@
 				DCC2F7F314917EDD006B2F45 /* badge-daysleft.png in Resources */,
 				DC92D6AD15047804002AF222 /* FBDialog.bundle in Resources */,
 				7DB1248514FFEB0500DB7666 /* BlioEPUB3Overrides.css in Resources */,
+				A3EB90941525F8A000C2E35D /* iTunesArtwork in Resources */,
+				A3EB909A1525F8F100C2E35D /* Default-Landscape@2x.png in Resources */,
+				A3EB909D1525F8F100C2E35D /* Default-Portrait@2x.png in Resources */,
+				A3EB90A01525F8F100C2E35D /* Icon-iPad@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -4838,6 +4862,10 @@
 				DCC2F7F514917EDD006B2F45 /* badge-daysleft.png in Resources */,
 				DC92D6AF15047805002AF222 /* FBDialog.bundle in Resources */,
 				7DB1248714FFEB0500DB7666 /* BlioEPUB3Overrides.css in Resources */,
+				A3EB90961525F8A000C2E35D /* iTunesArtwork in Resources */,
+				A3EB909C1525F8F100C2E35D /* Default-Landscape@2x.png in Resources */,
+				A3EB909F1525F8F100C2E35D /* Default-Portrait@2x.png in Resources */,
+				A3EB90A21525F8F100C2E35D /* Icon-iPad@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -5331,6 +5359,10 @@
 				DCC2F7F414917EDD006B2F45 /* badge-daysleft.png in Resources */,
 				DC92D6AE15047805002AF222 /* FBDialog.bundle in Resources */,
 				7DB1248614FFEB0500DB7666 /* BlioEPUB3Overrides.css in Resources */,
+				A3EB90951525F8A000C2E35D /* iTunesArtwork in Resources */,
+				A3EB909B1525F8F100C2E35D /* Default-Landscape@2x.png in Resources */,
+				A3EB909E1525F8F100C2E35D /* Default-Portrait@2x.png in Resources */,
+				A3EB90A11525F8F100C2E35D /* Icon-iPad@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -6103,6 +6135,7 @@
 				OTHER_LDFLAGS = (
 					"-ObjC",
 					"-all_load",
+					"-fobjc-arc",
 				);
 				PRODUCT_NAME = "Blio${BUNDLE_NAME_SUFFIX}";
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -6133,6 +6166,7 @@
 				OTHER_LDFLAGS = (
 					"-ObjC",
 					"-all_load",
+					"-fobjc-arc",
 				);
 				PRODUCT_NAME = Blio;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -6164,6 +6198,7 @@
 				OTHER_LDFLAGS = (
 					"-ObjC",
 					"-all_load",
+					"-fobjc-arc",
 				);
 				PRODUCT_NAME = Blio;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -6195,6 +6230,7 @@
 				OTHER_LDFLAGS = (
 					"-ObjC",
 					"-all_load",
+					"-fobjc-arc",
 				);
 				PRODUCT_NAME = Blio;
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
@@ -6228,6 +6264,7 @@
 				OTHER_LDFLAGS = (
 					"-ObjC",
 					"-all_load",
+					"-fobjc-arc",
 				);
 				PRODUCT_NAME = Blio;
 				PROVISIONING_PROFILE = "65475B68-F414-4377-BEFA-9809B2D6E957";
@@ -6263,6 +6300,7 @@
 				OTHER_LDFLAGS = (
 					"-ObjC",
 					"-all_load",
+					"-fobjc-arc",
 				);
 				PRODUCT_NAME = SamsClubApp;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -6295,6 +6333,7 @@
 				OTHER_LDFLAGS = (
 					"-ObjC",
 					"-all_load",
+					"-fobjc-arc",
 				);
 				PRODUCT_NAME = SamsClubApp;
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "2EB4883C-CAB1-4956-9964-74E1B4C92B05";
@@ -6329,6 +6368,7 @@
 				OTHER_LDFLAGS = (
 					"-ObjC",
 					"-all_load",
+					"-fobjc-arc",
 				);
 				PRODUCT_NAME = SamsClubApp;
 				PROVISIONING_PROFILE = "40E97D09-A302-4526-902E-170EFF4CECE2";
@@ -6359,7 +6399,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 4.0;
 				OTHER_CFLAGS = "-DDRM_INLINING_SUPPORTED";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "906AF447-5F1C-4A13-9A64-ABA631581901";
-				SDKROOT = iphoneos5.0;
+				SDKROOT = iphoneos5.1;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
 				WARNING_CFLAGS = "-Wall";
@@ -6392,6 +6432,7 @@
 				OTHER_LDFLAGS = (
 					"-ObjC",
 					"-all_load",
+					"-fobjc-arc",
 				);
 				PRODUCT_NAME = "Blio${BUNDLE_NAME_SUFFIX}";
 				PROVISIONING_PROFILE = "308F14CC-3406-42F3-AA0D-363A4E4AC5DD";
@@ -6426,6 +6467,7 @@
 				OTHER_LDFLAGS = (
 					"-ObjC",
 					"-all_load",
+					"-fobjc-arc",
 				);
 				PRODUCT_NAME = Blio;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -6457,6 +6499,7 @@
 				OTHER_LDFLAGS = (
 					"-ObjC",
 					"-all_load",
+					"-fobjc-arc",
 				);
 				PRODUCT_NAME = Blio;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -6488,6 +6531,7 @@
 				OTHER_LDFLAGS = (
 					"-ObjC",
 					"-all_load",
+					"-fobjc-arc",
 				);
 				PRODUCT_NAME = Blio;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -6516,7 +6560,7 @@
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_CFLAGS = "-DDRM_INLINING_SUPPORTED";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
-				SDKROOT = iphoneos5.0;
+				SDKROOT = iphoneos5.1;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
 				WARNING_CFLAGS = "-Wall";
@@ -6543,7 +6587,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 4.0;
 				OTHER_CFLAGS = "-DDRM_INLINING_SUPPORTED";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
-				SDKROOT = iphoneos5.0;
+				SDKROOT = iphoneos5.1;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
 				WARNING_CFLAGS = "-Wall";

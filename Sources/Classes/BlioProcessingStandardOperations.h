@@ -80,7 +80,7 @@
 -(void)startDownload;
 -(void)headDownload;
 -(NSString*)temporaryPath;
-
+-(BOOL)shouldBackupDownload;
 @end
 
 @interface BlioProcessingLicenseAcquisitionOperation : BlioProcessingOperation {

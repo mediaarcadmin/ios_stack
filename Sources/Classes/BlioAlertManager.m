@@ -23,7 +23,7 @@
 }
 
 +(void)showAlert:(UIAlertView*)alert {
-	[alert show];
+    [alert performSelectorOnMainThread:@selector(show) withObject:nil waitUntilDone:NO];	
 }
 + (void)showAlertWithTitle:(NSString *)title
 				   message:(NSString *)message
@@ -46,8 +46,33 @@
 		va_end(args);
     }
 	
-    [alert show];
+    [alert performSelectorOnMainThread:@selector(show) withObject:nil waitUntilDone:NO];	
 }
++(void)showTaggedAlertWithTitle:(NSString *)title message:(NSString *)message delegate:(id)delegate tag:(NSInteger)tag cancelButtonTitle:(NSString *)cancelButtonTitle otherButtonTitles:(NSString *)otherButtonTitles, ...
+{
+    UIAlertView *alert = [[[UIAlertView alloc] initWithTitle:title
+                                                     message:message
+                                                    delegate:delegate
+                                           cancelButtonTitle:cancelButtonTitle
+                                           otherButtonTitles:otherButtonTitles, nil] autorelease];
+    if (otherButtonTitles != nil) {
+		va_list args;
+		va_start(args, otherButtonTitles);
+		NSString * title = nil;
+		while((title = va_arg(args,NSString*))) {
+			[alert addButtonWithTitle:title];
+		}
+		va_end(args);
+    }
+	alert.tag = tag;
+    [alert performSelectorOnMainThread:@selector(show) withObject:nil waitUntilDone:NO];	
+}
+
+
+
+
+
+
 + (void)showAlertOfSuppressedType:(NSString*)alertType
 							title:(NSString *)title
 						 message:(NSString *)message
@@ -68,6 +93,7 @@
 		}
 	}
 	if (isRepeat) return;
+
     UIAlertView *alert = [[[UIAlertView alloc] initWithTitle:title
                                                      message:message
                                                     delegate:delegate

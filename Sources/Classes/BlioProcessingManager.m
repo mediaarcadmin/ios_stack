@@ -18,6 +18,8 @@
 #import "NSString+BlioAdditions.h"
 #import "BlioAppSettingsConstants.h"
 
+#define AUTODOWNLOAD_ALERT_TAG 15
+
 @interface BlioProcessingManager()
 @property (nonatomic, retain) NSOperationQueue *preAvailabilityQueue;
 
@@ -1015,8 +1017,10 @@
 	if ((sourceID == BlioBookSourceOnlineStore || sourceID == BlioBookSourceLocalBundleDRM) && [[BlioStoreManager sharedInstance] isLoggedInForSourceID:BlioBookSourceOnlineStore]) {
 		[self resumeProcessingForSourceID:BlioBookSourceOnlineStore];
 		[self resumeProcessingForSourceID:BlioBookSourceLocalBundleDRM];
-        if ([[NSUserDefaults standardUserDefaults] integerForKey:kBlioDownloadNewBooksDefaultsKey] == 0 && ![[NSUserDefaults standardUserDefaults] boolForKey:kBlioWelcomeScreenHasShownKey]) {
-            [[NSUserDefaults standardUserDefaults] setInteger:1 forKey:kBlioDownloadNewBooksDefaultsKey];
+        if (![[NSUserDefaults standardUserDefaults] boolForKey:kBlioHasLoggedInKey]) {
+            [[NSUserDefaults standardUserDefaults] setBool:YES forKey:kBlioDownloadNewBooksDefaultsKey];
+            [[NSUserDefaults standardUserDefaults] setBool:YES forKey:kBlioHasLoggedInKey];
+            [[NSUserDefaults standardUserDefaults] synchronize];
             [BlioAlertManager showAlertWithTitle:NSLocalizedString(@"You Have Books",@"\"You Have Books\" Alert message title")
                                          message:NSLocalizedStringWithDefaultValue(@"AUTO_DOWNLOAD_BOOKS_FIRST_TIME",nil,[NSBundle mainBundle],@"Would you like to download the books in your account now?",@"Alert message informing the first time iOS end-user of the option to download all the user's books.")
                                         delegate:self
@@ -1203,6 +1207,102 @@
 	}
 	*/
 }
+
+-(void) verifyBundledBooks {
+	NSManagedObjectContext *moc = [[BlioBookManager sharedBookManager] managedObjectContextForCurrentThread];
+	
+	NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
+    [fetchRequest setEntity:[NSEntityDescription entityForName:@"BlioBook" inManagedObjectContext:moc]];
+    [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"sourceID == %@ || sourceID == %@", [NSNumber numberWithInt:BlioBookSourceLocalBundle],[NSNumber numberWithInt:BlioBookSourceLocalBundleDRM]]];
+	
+	NSError *errorExecute = nil;
+    NSArray *results = [moc executeFetchRequest:fetchRequest error:&errorExecute]; 
+    
+    if (errorExecute) {
+        NSLog(@"BlioProcessingManager verifyBundledBooks: Error getting incomplete book results. %@, %@", errorExecute, [errorExecute userInfo]); 
+    }
+    else {
+		if ([results count] > 0) {
+			NSLog(@"Found %i bundled book results, will verify if source files are present...",[results count]); 
+            NSArray * bundledBookArray = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"BundledBooks"];
+			for (BlioBook * book in results) {
+                // test to see if book source file is present. if not, repair.
+                BOOL needsRepairXPS = ([book hasXps] && ![[NSFileManager defaultManager] fileExistsAtPath:[book xpsPath]]);
+                BOOL needsRepairPDF = ([book hasPdf] && ![[NSFileManager defaultManager] fileExistsAtPath:[book pdfPath]]);
+                BOOL needsRepairEPub = ([book hasEPub] && ![[NSFileManager defaultManager] fileExistsAtPath:[book ePubPath]]);
+                if (needsRepairXPS || needsRepairPDF || needsRepairEPub) {
+                    NSDictionary * bundledBookDictionary = nil;
+                    for (NSDictionary * aBundledBookDictionary in bundledBookArray) {
+                        if ([[book sourceSpecificID] isEqualToString:[aBundledBookDictionary objectForKey:@"sourceSpecificID"]]) bundledBookDictionary = aBundledBookDictionary;
+                    }
+                    if (bundledBookDictionary) {
+
+                        [book setValue:[NSNumber numberWithInt:kBlioBookProcessingStateIncomplete] forKey:@"processingState"];
+                        NSError * error = nil;
+                        if (![moc save:&error]) {
+                            NSLog(@"BlioProcessingManager verifyBundledBooks: save processingState to BlioBookProcessingStateIncomplete failed in processing manager with error: %@, %@", error, [error userInfo]);
+                        }		                        
+                        [self enqueueBookWithTitle:[bundledBookDictionary objectForKey:@"title"] 
+                                                              authors:[bundledBookDictionary objectForKey:@"authors"]
+                                                            coverPath:[bundledBookDictionary objectForKey:@"coverPath"]
+                                                             ePubPath:[bundledBookDictionary objectForKey:@"ePubPath"]
+                                                              pdfPath:[bundledBookDictionary objectForKey:@"pdfPath"]
+                                                              xpsPath:[bundledBookDictionary objectForKey:@"xpsPath"]
+                                                         textFlowPath:[bundledBookDictionary objectForKey:@"textFlowPath"]
+                                                        audiobookPath:[bundledBookDictionary objectForKey:@"audiobookPath"]
+                                                             sourceID:BlioBookSourceLocalBundle
+                                                     sourceSpecificID:[bundledBookDictionary objectForKey:@"sourceSpecificID"] // this should normally be BTKey number when downloaded from the Book Store
+                                                      placeholderOnly:[[bundledBookDictionary objectForKey:@"placeholderOnly"] boolValue]
+                         ];
+                    }
+                    else {
+                        NSLog(@"Damaged Bundled Book found, but no source record with which to repair; deleting Bundled Book: %@",[book title]);
+                        [self deleteBook:book attemptArchive:NO shouldSave:YES];
+                    }
+                }
+			}
+			
+		}
+		else {
+			NSLog(@"No bundled book results to verify."); 
+		}
+	}
+    [fetchRequest release];
+	
+	// end resume previous processing operations
+	
+}
+-(void) processArchivedBooks {
+	NSManagedObjectContext *moc = [[BlioBookManager sharedBookManager] managedObjectContextForCurrentThread];
+	
+	NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
+    [fetchRequest setEntity:[NSEntityDescription entityForName:@"BlioBook" inManagedObjectContext:moc]];
+    [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"sourceID == %@ && processingState == %@", [NSNumber numberWithInt:BlioBookSourceOnlineStore],[NSNumber numberWithInt:kBlioBookProcessingStatePlaceholderOnly]]];
+	
+	NSError *errorExecute = nil;
+    NSArray *results = [moc executeFetchRequest:fetchRequest error:&errorExecute]; 
+    
+    if (errorExecute) {
+        NSLog(@"BlioProcessingManager processArchivedBooks: Error getting incomplete book results. %@, %@", errorExecute, [errorExecute userInfo]); 
+    }
+    else {
+		if ([results count] > 0) {
+			NSLog(@"Found %i archived paid book results, will process...",[results count]); 
+			for (BlioBook * book in results) {
+                [self enqueueBook:book];
+			}
+			
+		}
+		else {
+			NSLog(@"No archived paid book results to process."); 
+		}
+	}
+    [fetchRequest release];
+	
+	// end resume previous processing operations
+	
+}
+
 -(void) deleteBooksForSourceID:(BlioBookSourceID)sourceID {
 	NSManagedObjectContext *moc = [[BlioBookManager sharedBookManager] managedObjectContextForCurrentThread];
 	
@@ -1233,7 +1333,34 @@
 	// end resume previous processing operations
 	
 }
+-(void) deletePaidBooks {
+    NSManagedObjectContext *moc = [[BlioBookManager sharedBookManager] managedObjectContextForCurrentThread];
+    
+	NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
+    [fetchRequest setEntity:[NSEntityDescription entityForName:@"BlioBook" inManagedObjectContext:moc]];
+    [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"sourceID == %@",[NSNumber numberWithInt:BlioBookSourceOnlineStore]]];
+	
+	NSError *errorExecute = nil;
+    NSArray *results = [moc executeFetchRequest:fetchRequest error:&errorExecute]; 
+    
+    if (errorExecute) {
+        NSLog(@"Error getting incomplete book results. %@, %@", errorExecute, [errorExecute userInfo]); 
+    }
+    else {
+		if ([results count] > 0) {
+			NSLog(@"Found %i book results, will delete...",[results count]); 
+			for (BlioBook * book in results) {
+				[self deleteBook:book attemptArchive:NO shouldSave:YES];
+			}
+			
+		}
+		else {
+			NSLog(@"No paid book results to delete."); 
+		}
+	}
+    [fetchRequest release];
 
+}
 -(void) deletePaidBooksForUserNum:(NSInteger)user siteNum:(NSInteger)site {
 	NSManagedObjectContext *moc = [[BlioBookManager sharedBookManager] managedObjectContextForCurrentThread];
 		
@@ -1329,7 +1456,21 @@
 	
 	if ([[aBook valueForKey:@"sourceID"] intValue] == BlioBookSourceOnlineStore && attemptArchive) {
 		// delete all files except the thumbnail so that we can put the book back in the vault.
-		NSString * coverFilename = BlioManifestCoverKey;
+		NSString * coverFilename = [aBook manifestPathForKey:BlioManifestCoverKey];
+        if (coverFilename) coverFilename = [[aBook manifestPathForKey:BlioManifestCoverKey] lastPathComponent];
+        else {
+            if ([[NSFileManager defaultManager] fileExistsAtPath:[[aBook bookCacheDirectory] stringByAppendingPathComponent:BlioManifestCoverKey]]) {
+                coverFilename = BlioManifestCoverKey;
+                
+                // restore entry to point to CoverImage on disk, since placeholders do not have XPS available.
+                NSDictionary *manifestEntry = [NSMutableDictionary dictionary];
+                [manifestEntry setValue:BlioManifestEntryLocationFileSystem forKey:BlioManifestEntryLocationKey];
+                [manifestEntry setValue:coverFilename forKey:BlioManifestEntryPathKey];
+                [aBook setManifestValue:manifestEntry forKey:BlioManifestCoverKey];
+            }
+            else [aBook setManifestValue:nil forKey:BlioManifestCoverKey];
+        }
+        NSLog(@"coverFilename: %@",coverFilename);
 		NSString * thumbnailsDirectory = BlioBookThumbnailsDir;
 		if ([fileManager fileExistsAtPath:[aBook bookCacheDirectory]]) {
 			NSError * directoryContentError;
@@ -1341,13 +1482,6 @@
 							NSLog(@"WARNING: deletion of asset for paid book failed. %@, %@", error, [error userInfo]);
 						}
 					}
-                    else if ([fileName isEqualToString:coverFilename]) {
-                        // restore entry to point to CoverImage on disk, since placeholders do not have XPS available.
-                        NSDictionary *manifestEntry = [NSMutableDictionary dictionary];
-                        [manifestEntry setValue:BlioManifestEntryLocationFileSystem forKey:BlioManifestEntryLocationKey];
-                        [manifestEntry setValue:BlioManifestCoverKey forKey:BlioManifestEntryPathKey];
-                        [aBook setManifestValue:manifestEntry forKey:BlioManifestCoverKey];
-                    }
 				}
 				// reset asset values in BlioBook.
 				[aBook setManifestValue:nil forKey:BlioManifestAudiobookKey];
@@ -1364,6 +1498,7 @@
 				NSLog(@"ERROR: could not get directory content listing for paid book. %@, %@", directoryContentError, [directoryContentError userInfo]);
 			}
 		}
+        /*
 		// delete bookmarks and notes
 		if ([aBook valueForKey:@"bookmarks"]) {
 			for (NSManagedObject * obj in [aBook valueForKey:@"bookmarks"]) {	
@@ -1382,6 +1517,7 @@
 		}
 		if ([aBook valueForKey:@"placeInBook"]) [moc deleteObject:[aBook valueForKey:@"placeInBook"]];
 		[aBook setValue:[NSNumber numberWithFloat:0] forKey:@"progress"];
+         */
 	}
 	else {
 		// delete permanent files
@@ -1487,19 +1623,25 @@
 
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex{
 	if (buttonIndex == 0) {
-        [BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Auto-Download Setting",@"\"Auto-Download Books\" Alert message title")
+        if (alertView.tag != AUTODOWNLOAD_ALERT_TAG) {
+            [BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Auto-Download Setting",@"\"Auto-Download Books\" Alert message title")
                                      message:NSLocalizedStringWithDefaultValue(@"AUTO_DOWNLOAD_SETTING_INFO_WITHOUT_DOWNLOAD",nil,[NSBundle mainBundle],@"You can download your books later by going to the Archive.  To select whether or not to download books automatically in the future, go to My Account in Settings.",@"Alert message informing the first time iOS end-user where auto-download setting can be changed after someone has chosen not to download books upon first time launch.")
                                     delegate:nil
                            cancelButtonTitle:NSLocalizedString(@"OK",@"\"OK\" label for alertview")
                            otherButtonTitles:nil];
-        [[NSUserDefaults standardUserDefaults] setInteger:-1 forKey:kBlioDownloadNewBooksDefaultsKey];		 
-        [[NSUserDefaults standardUserDefaults] synchronize];
+            [[NSUserDefaults standardUserDefaults] setInteger:-1 forKey:kBlioDownloadNewBooksDefaultsKey];		 
+            [[NSUserDefaults standardUserDefaults] synchronize];
+        }
+        else {
+            [self processArchivedBooks];
+            [[BlioStoreManager sharedInstance] retrieveBooksForSourceID:BlioBookSourceOnlineStore];
+        }
     }
 	if (buttonIndex == 1) {
-        [[BlioStoreManager sharedInstance] retrieveBooksForSourceID:BlioBookSourceOnlineStore];
-        [BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Auto-Download Setting",@"\"Auto-Download Books\" Alert message title")
+        [BlioAlertManager showTaggedAlertWithTitle:NSLocalizedString(@"Auto-Download Setting",@"\"Auto-Download Books\" Alert message title")
                                      message:NSLocalizedStringWithDefaultValue(@"AUTO_DOWNLOAD_SETTING_INFO_WITH_DOWNLOAD",nil,[NSBundle mainBundle],@"To select whether or not to download books automatically in the future, go to My Account in Settings.",@"Alert message informing the first time iOS end-user where auto-download setting can be changed after someone chosen not to download books upon first time launch.")
-                                    delegate:nil
+                                    delegate:self
+                                         tag:AUTODOWNLOAD_ALERT_TAG
                            cancelButtonTitle:NSLocalizedString(@"OK",@"\"OK\" label for alertview")
                            otherButtonTitles:nil];
 

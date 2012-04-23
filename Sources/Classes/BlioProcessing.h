@@ -85,6 +85,7 @@ static NSString * const BlioProcessingOperationFailedNotification = @"BlioProces
 - (id)getBookValueForKey:(NSString *)key;
 
 - (void)reportBookReadingIfRequired;
++ (BOOL)addSkipBackupAttributeToItemAtURL:(NSURL *)URL;
 
 @end
 
@@ -111,7 +112,10 @@ static NSString * const BlioProcessingOperationFailedNotification = @"BlioProces
 - (void)pauseProcessingForBook:(BlioBook*)aBook;
 - (void)suspendProcessingForBook:(BlioBook*)aBook;
 - (void)stopProcessingForBook:(BlioBook*)aBook;
+- (void) verifyBundledBooks;
+- (void) processArchivedBooks;
 -(void) deleteBooksForSourceID:(BlioBookSourceID)sourceID;
+-(void) deletePaidBooks;
 -(void) deletePaidBooksForUserNum:(NSInteger)user siteNum:(NSInteger)site;
 -(void) deleteBook:(BlioBook*)aBook shouldSave:(BOOL)shouldSave;
 -(void) deleteBook:(BlioBook*)aBook attemptArchive:(BOOL)attemptArchive shouldSave:(BOOL)shouldSave;

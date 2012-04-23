@@ -467,6 +467,27 @@ ErrorExit:
 		aid = [[aid stringByAppendingString:[self getTagValue:self.serverResponse xmlTag:@"accountid"]] stringByAppendingString:@"}"];
 		//		[[NSUserDefaults standardUserDefaults] setObject:aid forKey:kBlioAccountIDDefaultsKey];
 		[[BlioStoreManager sharedInstance] saveRegistrationAccountID:aid serviceID:sid];
+        
+        // set DRM files to not backup over iCloud/iTunes.
+        NSString *supportDirectory = [NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES) objectAtIndex:0];
+        NSString* strDataStore = [supportDirectory stringByAppendingString:@"/playready.hds"];
+        if ([[NSFileManager defaultManager] fileExistsAtPath:strDataStore]) [BlioProcessingOperation addSkipBackupAttributeToItemAtURL:[NSURL fileURLWithPath:strDataStore]];
+        
+        NSString *devcertDatFile = [supportDirectory stringByAppendingPathComponent:@"devcert.dat"];
+        if ([[NSFileManager defaultManager] fileExistsAtPath:devcertDatFile]) [BlioProcessingOperation addSkipBackupAttributeToItemAtURL:[NSURL fileURLWithPath:devcertDatFile]];
+
+        NSString *binaryDevcertDatFile = [supportDirectory stringByAppendingPathComponent:@"bdevcert.dat"];
+        if ([[NSFileManager defaultManager] fileExistsAtPath:binaryDevcertDatFile]) [BlioProcessingOperation addSkipBackupAttributeToItemAtURL:[NSURL fileURLWithPath:binaryDevcertDatFile]];
+
+        NSString *iPhoneCertDatFile = [supportDirectory stringByAppendingPathComponent:@"iphonecert.dat"];
+        if ([[NSFileManager defaultManager] fileExistsAtPath:iPhoneCertDatFile]) [BlioProcessingOperation addSkipBackupAttributeToItemAtURL:[NSURL fileURLWithPath:iPhoneCertDatFile]];
+
+        NSString *zprivencrDatFile = [supportDirectory stringByAppendingPathComponent:@"zprivencr.dat"];
+        if ([[NSFileManager defaultManager] fileExistsAtPath:zprivencrDatFile]) [BlioProcessingOperation addSkipBackupAttributeToItemAtURL:[NSURL fileURLWithPath:zprivencrDatFile]];
+
+        NSString *zprivsigDatFile = [supportDirectory stringByAppendingPathComponent:@"zprivsig.dat"];
+        if ([[NSFileManager defaultManager] fileExistsAtPath:zprivsigDatFile]) [BlioProcessingOperation addSkipBackupAttributeToItemAtURL:[NSURL fileURLWithPath:zprivsigDatFile]];
+
 		return YES;
 	}
 	

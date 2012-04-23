@@ -102,9 +102,41 @@
 		<string>Icon.png</string>
 		<string>Icon@2x.png</string>
 		<string>Icon-iPad.png</string>
+		<string>Icon-iPad@2x.png</string>
 	</array>
 	<key>CFBundleIdentifier</key>
 	<string>com.knfbreading.Blio${BUNDLE_ID_SUFFIX}</string>
+	<key>BundledBooks</key>
+	<array>
+		<dict>
+			<key>title</key>
+			<string>Peter Rabbit</string>
+			<key>authors</key>
+			<array>
+				<string>Potter, Beatrix</string>
+			</array>
+			<key>xpsPath</key>
+			<string>XPS-Starters/Peter Rabbit.xps</string>
+			<key>sourceSpecificID</key>
+			<string>PeterRabbit</string>
+			<key>placeholderOnly</key>
+			<false/>
+		</dict>
+		<dict>
+			<key>title</key>
+			<string>The Legend of Sleepy Hollow</string>
+			<key>authors</key>
+			<array>
+				<string>Irving, Washington</string>
+			</array>
+			<key>xpsPath</key>
+			<string>XPS-Starters/The Legend of Sleepy Hollow.xps</string>
+			<key>sourceSpecificID</key>
+			<string>SleepyHollow</string>
+			<key>placeholderOnly</key>
+			<false/>
+		</dict>
+	</array>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
@@ -112,7 +144,7 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>3.0</string>
+	<string>3.2</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleURLTypes</key>
@@ -133,7 +165,7 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>1156</string>
+	<string>3297</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>UIBackgroundModes</key>

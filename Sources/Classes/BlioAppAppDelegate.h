@@ -38,6 +38,8 @@
 
     BOOL delayedDidFinishLaunchingLaunchComplete;
     NSMutableArray *delayedURLOpens;
+    
+    BOOL forceLoginAfterRestore;
 }
 
 @property (nonatomic, retain) UIWindow *window;

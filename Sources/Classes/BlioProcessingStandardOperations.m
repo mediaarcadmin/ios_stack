@@ -754,6 +754,9 @@
 
         }
 		else {
+            
+            if (![self shouldBackupDownload]) [BlioProcessingOperation addSkipBackupAttributeToItemAtURL:[NSURL fileURLWithPath:cachedPath]];
+
 			//[self setBookValue:[NSString stringWithString:(NSString *)uniqueString] forKey:self.filenameKey];
             NSDictionary *manifestEntry = [NSMutableDictionary dictionary];
             [manifestEntry setValue:BlioManifestEntryLocationFileSystem forKey:BlioManifestEntryLocationKey];
@@ -774,7 +777,10 @@
 #endif
 	
 }
-
+-(BOOL)shouldBackupDownload {
+    if (self.sourceID == BlioBookSourceLocalBundle || self.sourceID == BlioBookSourceLocalBundleDRM) return NO;
+    return YES;
+}
 @end
 
 #pragma mark -
@@ -824,6 +830,9 @@
     }
     
     [super prepareForStartOnBackgroundThread];
+}
+-(BOOL)shouldBackupDownload {
+    return NO;
 }
 
 @end
@@ -876,6 +885,8 @@
 	
 	NSDictionary *manifestEntry = nil;
 	
+    BlioBook *book = [[BlioBookManager sharedBookManager] bookWithID:self.bookID];
+
 	BOOL hasEmbeddedEPub = [self bookManifestPath:BlioXPSEPubMetaInfContainerFile existsForLocation:BlioManifestEntryLocationXPS];
 	if (hasEmbeddedEPub) {
 		manifestEntry = [NSMutableDictionary dictionary];
@@ -887,7 +898,6 @@
         if(ePubMetadata && 
            [[NSDecimalNumber decimalNumberWithMantissa:3 exponent:0 isNegative:NO] compare:ePubMetadata.packageVersion] != NSOrderedDescending) {
             @autoreleasepool {
-                BlioBook *book = [[BlioBookManager sharedBookManager] bookWithID:self.bookID];
                 [BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Advanced Book Features",@"\"Advanced Book Features\" Alert message title")
                                              message:[NSString stringWithFormat:NSLocalizedStringWithDefaultValue(@"EPUB_3_UNSUPPORTED_ALERT",nil,[NSBundle mainBundle],@"The book \"%@\" may not display fully because it may contain elements that are not supported in this version of Blio.",@"Alert message informing the end-user that an an EPUB book might contain features that this version of Blio does not support."),book.title]
                                             delegate:nil
@@ -919,10 +929,19 @@
 	
 	BOOL hasCoverData = [self bookManifestPath:BlioXPSCoverImage existsForLocation:BlioManifestEntryLocationXPS];
 	if (hasCoverData) {
-		manifestEntry = [NSMutableDictionary dictionary];
+        // move file cover to CoverImage within cache directory
+        if ([[book manifestLocationForKey:BlioManifestCoverKey] isEqualToString:BlioManifestEntryLocationFileSystem]) {
+            NSString * currentCoverPath = [book manifestPathForKey:BlioManifestCoverKey];
+            if (![[NSFileManager defaultManager] fileExistsAtPath:[[book bookCacheDirectory] stringByAppendingPathComponent:BlioManifestCoverKey]]) {
+                NSError * moveOldCoverError = nil;
+                [[NSFileManager defaultManager] moveItemAtPath:currentCoverPath toPath:[[book bookCacheDirectory] stringByAppendingPathComponent:BlioManifestCoverKey] error:&moveOldCoverError];
+                if (moveOldCoverError) NSLog(@"ERROR: moving old book cover in preparation for XPS cover use: %@",[moveOldCoverError localizedDescription]);
+            }
+        }
+        manifestEntry = [NSMutableDictionary dictionary];
 		[manifestEntry setValue:BlioManifestEntryLocationXPS forKey:BlioManifestEntryLocationKey];
 		[manifestEntry setValue:BlioXPSCoverImage forKey:BlioManifestEntryPathKey];
-		[self setBookManifestValue:manifestEntry forKey:BlioManifestCoverKey];
+		[self setBookManifestValue:manifestEntry forKey:BlioManifestCoverKey];        
 	}
 	
 	BOOL hasThumbnailData = [self bookManifestPath:BlioXPSMetaDataDir existsForLocation:BlioManifestEntryLocationXPS];
@@ -933,7 +952,6 @@
 		[self setBookManifestValue:manifestEntry forKey:BlioManifestThumbnailDirectoryKey];
 	}
 	
-	BlioBook *book = [[BlioBookManager sharedBookManager] bookWithID:self.bookID];
 //	NSLog(@"[book isEncrypted]: %i",[book isEncrypted]);
 	if ([book isEncrypted]) {
 		BOOL hasRightsData = [self bookManifestPath:BlioXPSKNFBRightsFile existsForLocation:BlioManifestEntryLocationXPS];

@@ -265,9 +265,15 @@
 			BlioTransactionType incomingTransactionType = [BlioOnlineStoreHelper transactionTypeForCode:bookOwnershipInfo.TransactionType];
             BlioTransactionType preExistingTransactionType = [[preExistingBook valueForKey:@"transactionType"] intValue];
             if (preExistingBook == nil) {
-				newISBNs++;
-				[self getContentMetaDataFromISBN:bookOwnershipInfo.ISBN];
+                NSLog(@"ISBN: %@, %i",bookOwnershipInfo.ISBN,[bookOwnershipInfo.RecordStatusId intValue]);
+				if ([bookOwnershipInfo.RecordStatusId intValue] != 2) {
+                    newISBNs++;
+                   [self getContentMetaDataFromISBN:bookOwnershipInfo.ISBN];
+                }
 			}
+            else if ([bookOwnershipInfo.RecordStatusId intValue] == 2) {
+                [[BlioStoreManager sharedInstance].processingDelegate deleteBook:preExistingBook attemptArchive:NO shouldSave:YES];
+            }
 			else if (([[preExistingBook valueForKey:@"productType"] intValue] == BlioProductTypePreview && [bookOwnershipInfo.ProductTypeId intValue] == BlioProductTypeFull)) {
                 NSLog(@"replacing preview version of ISBN:%@ with full version...",bookOwnershipInfo.ISBN);
                 [[BlioStoreManager sharedInstance].processingDelegate deleteBook:preExistingBook shouldSave:YES];
@@ -569,6 +575,7 @@
 							   otherButtonTitles:NSLocalizedString(@"OK",@"\"OK\" label for button used to cancel/dismiss alertview"), nil];
 			return nil;
 		}
+        /* legacy code from non-ex web service
 		else if ([bodyPart isKindOfClass:[BookVault_RequestDownloadWithTokenResponse class]]) {
 			if ( [[bodyPart RequestDownloadWithTokenResult].ReturnCode intValue] == 100 ) { 
 				[BlioAlertManager removeSuppressionForAlertType:BlioBookDownloadFailureAlertType];
@@ -597,6 +604,8 @@
 				return nil;
 			}
 		}
+         */
+        /* legacy for older variant of service
 		else if ([bodyPart isKindOfClass:[BookVault_RequestDownloadWithTokenExResponse class]]) {
 			if ( [[bodyPart RequestDownloadWithTokenExResult].ReturnCode intValue] == 100 ) { 
 				[BlioAlertManager removeSuppressionForAlertType:BlioBookDownloadFailureAlertType];
@@ -606,7 +615,15 @@
 			}
 			else {
 				NSLog(@"DownloadRequest error: %@",[bodyPart RequestDownloadWithTokenExResult].Message);
-				if ([[bodyPart RequestDownloadWithTokenExResult].Message rangeOfString:@"does not own"].location != NSNotFound) {
+                NSLog(@"[[bodyPart RequestDownloadWithTokenExResult].ReturnCode intValue]: %i",[[bodyPart RequestDownloadWithTokenExResult].ReturnCode intValue]);
+                if ( [[bodyPart RequestDownloadWithTokenExResult].ReturnCode intValue] == 106 ) { 
+                    [BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Error Downloading Book",@"\"Error Downloading Book\" alert message title")  
+                                                 message:[NSString stringWithFormat:NSLocalizedStringWithDefaultValue(@"DOWNLOADURL_SERVICE_106_ERROR",nil,[NSBundle mainBundle],@"The book %@ failed to download.  Please report an error 106 for ISBN %@ to Blio technical support.",@"Alert message shown when 106 error occurs."),[book title],downloadRequest.isbn]
+                                                delegate:nil  
+                                       cancelButtonTitle:NSLocalizedString(@"OK",@"\"OK\" label for button used to cancel/dismiss alertview")
+                                       otherButtonTitles:nil];
+                }
+				else if ([[bodyPart RequestDownloadWithTokenExResult].Message rangeOfString:@"does not own"].location != NSNotFound) {
 					[BlioAlertManager showAlertOfSuppressedType:BlioBookDownloadFailureAlertType\
                                                           title:NSLocalizedString(@"Error Downloading Book",@"\"Error Downloading Book\" alert message title") 
                                                         message:[bodyPart RequestDownloadWithTokenExResult].Message
@@ -625,6 +642,7 @@
 				return nil;
 			}
 		}
+         */
 		else if ([bodyPart isKindOfClass:[BookVault_RequestClientDownloadWithTokenExResponse class]]) {
 			if ( [[bodyPart RequestClientDownloadWithTokenExResult].ReturnCode intValue] == 100 ) { 
 				[BlioAlertManager removeSuppressionForAlertType:BlioBookDownloadFailureAlertType];
@@ -634,7 +652,15 @@
 			}
 			else {
 				NSLog(@"DownloadRequest error: %@",[bodyPart RequestClientDownloadWithTokenExResult].Message);
-				if ([[bodyPart RequestClientDownloadWithTokenExResult].Message rangeOfString:@"does not own"].location != NSNotFound) {
+                NSLog(@"[[bodyPart RequestClientDownloadWithTokenExResult].ReturnCode intValue]: %i",[[bodyPart RequestClientDownloadWithTokenExResult].ReturnCode intValue]);
+                if ( [[bodyPart RequestClientDownloadWithTokenExResult].ReturnCode intValue] == 106 ) { 
+                    [BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Error Downloading Book",@"\"Error Downloading Book\" alert message title")  
+                                                 message:[NSString stringWithFormat:NSLocalizedStringWithDefaultValue(@"DOWNLOADURL_SERVICE_106_ERROR",nil,[NSBundle mainBundle],@"The book %@ failed to download.  Please report an error 106 for ISBN %@ to Blio technical support.",@"Alert message shown when 106 error occurs."),[book title],downloadRequest.isbn]
+                                                delegate:nil  
+                                       cancelButtonTitle:NSLocalizedString(@"OK",@"\"OK\" label for button used to cancel/dismiss alertview")
+                                       otherButtonTitles:nil];
+                }
+				else if ([[bodyPart RequestClientDownloadWithTokenExResult].Message rangeOfString:@"does not own"].location != NSNotFound) {
 					[BlioAlertManager showAlertOfSuppressedType:BlioBookDownloadFailureAlertType\
                                                           title:NSLocalizedString(@"Error Downloading Book",@"\"Error Downloading Book\" alert message title") 
                                                         message:[bodyPart RequestClientDownloadWithTokenExResult].Message
