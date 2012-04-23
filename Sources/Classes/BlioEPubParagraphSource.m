@@ -12,7 +12,6 @@
 #import "BlioBookManager.h"
 
 #import <libEucalyptus/EucEPubBook.h>
-#import <libEucalyptus/EucEPubPageLayoutController.h>
 #import <libEucalyptus/EucBookPageIndexPoint.h>
 #import <libEucalyptus/EucBookNavPoint.h>
 #import <libEucalyptus/EucCSSLayoutRunExtractor.h>

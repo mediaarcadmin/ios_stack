@@ -261,15 +261,7 @@
         if (hasEnhancedContent) {
             aPageTurningView.lightIsStaticWhenPagesPannedOrZoomed = NO;
         }
-        
-        // Must do this here so that teh page aspect ration takes account of the twoUp property
-        CGSize mySize = self.bounds.size;
-        BlioTwoUp myTwoUp = self.twoUp;
-        self.pageTurningView.twoUp =
-        (myTwoUp == kBlioTwoUpAlways ||
-         (myTwoUp == kBlioTwoUpLandscape && 
-          mySize.width > mySize.height));
-        
+                
         if (CGRectEqualToRect(firstPageCrop, CGRectZero)) {
             [aPageTurningView setPageAspectRatio:0];
         } else {
@@ -319,12 +311,6 @@
 			firstLayout = YES;
 		}
 		self.pageSize = newSize;
-
-        BlioTwoUp myTwoUp = self.twoUp;
-        self.pageTurningView.twoUp =
-        (myTwoUp == kBlioTwoUpAlways ||
-         (myTwoUp == kBlioTwoUpLandscape && 
-          newSize.width > newSize.height));
         
         if(self.selector.tracking) {
             [self.selector setSelectedRange:nil];
@@ -912,6 +898,15 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
     [self.selector setSelectionDisabled:NO];
 }
 
+- (BOOL)pageTurningViewShouldBeTwoUp:(EucPageTurningView *)aPageTurningView
+{
+    CGSize size = aPageTurningView.bounds.size;
+    BlioTwoUp myTwoUp = self.twoUp;
+    return (myTwoUp == kBlioTwoUpAlways ||
+            (myTwoUp == kBlioTwoUpLandscape && 
+             size.width > size.height));
+}
+
 - (BOOL)pageTurningView:(EucPageTurningView *)pageTurningView pageEdgeIsRigidForPageWithIdentifier:(id)identifier
 {
     NSUInteger pageIndex = [identifier unsignedIntegerValue];
@@ -1129,7 +1124,6 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
     }
     
     if(shouldBeTwoUp != wasTwoUp) {
-        self.pageTurningView.twoUp = shouldBeTwoUp;
         [self.pageTurningView layoutSubviews];
         [self zoomForNewPageAnimated:NO];
         [self hideOverlay];

@@ -272,6 +272,10 @@
 		7DCA224912F8905E0016C0B9 /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DCA224612F890460016C0B9 /* MobileCoreServices.framework */; };
 		7DCD8E5511E32EFF00BA3255 /* BlioBookManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DCD8E5311E32EFF00BA3255 /* BlioBookManager.m */; };
 		7DCD8FB911E3452800BA3255 /* BlioEPubBook.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DCD8FB711E3452800BA3255 /* BlioEPubBook.m */; };
+		7DD5836D1545B9FD00D59B95 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DD5836C1545B9FD00D59B95 /* CoreMedia.framework */; };
+		7DD5836E1545BA0600D59B95 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DD5836C1545B9FD00D59B95 /* CoreMedia.framework */; };
+		7DD5836F1545BA0D00D59B95 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DD5836C1545B9FD00D59B95 /* CoreMedia.framework */; };
+		7DD583701545BA1500D59B95 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DD5836C1545B9FD00D59B95 /* CoreMedia.framework */; };
 		7DD9BA141199B7F4001FED8E /* BlioSelectableBookView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DD9BA131199B7F4001FED8E /* BlioSelectableBookView.m */; };
 		7DDCC00E132E88C800FE8201 /* libxml2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DDCC00D132E88C800FE8201 /* libxml2.dylib */; };
 		7DDCC00F132E88DC00FE8201 /* libxml2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DDCC00D132E88C800FE8201 /* libxml2.dylib */; };
@@ -284,13 +288,9 @@
 		7DE0D55E147AC3E2005FD319 /* BlioBookView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DE0D55C147AC3E2005FD319 /* BlioBookView.m */; };
 		7DE0D55F147AC3E2005FD319 /* BlioBookView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DE0D55C147AC3E2005FD319 /* BlioBookView.m */; };
 		7DE0D560147AC3E2005FD319 /* BlioBookView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DE0D55C147AC3E2005FD319 /* BlioBookView.m */; };
-		7DE15F6E141E76E100D37CA2 /* libEucalyptusEPubIOSUI.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DE15F68141E76CD00D37CA2 /* libEucalyptusEPubIOSUI.a */; };
 		7DE15F6F141E76E100D37CA2 /* libEucalyptusModel.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DE15F66141E76CD00D37CA2 /* libEucalyptusModel.a */; };
-		7DE15F70141E76F200D37CA2 /* libEucalyptusEPubIOSUI.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DE15F68141E76CD00D37CA2 /* libEucalyptusEPubIOSUI.a */; };
 		7DE15F71141E76F200D37CA2 /* libEucalyptusModel.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DE15F66141E76CD00D37CA2 /* libEucalyptusModel.a */; };
-		7DE15F72141E770500D37CA2 /* libEucalyptusEPubIOSUI.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DE15F68141E76CD00D37CA2 /* libEucalyptusEPubIOSUI.a */; };
 		7DE15F73141E770500D37CA2 /* libEucalyptusModel.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DE15F66141E76CD00D37CA2 /* libEucalyptusModel.a */; };
-		7DE15F74141E770E00D37CA2 /* libEucalyptusEPubIOSUI.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DE15F68141E76CD00D37CA2 /* libEucalyptusEPubIOSUI.a */; };
 		7DE15F75141E770E00D37CA2 /* libEucalyptusModel.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DE15F66141E76CD00D37CA2 /* libEucalyptusModel.a */; };
 		7DE2749A1382DD6A00641A54 /* KNFBPageMarker.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DE274991382DD6A00641A54 /* KNFBPageMarker.m */; };
 		7DE2749B1382DD6A00641A54 /* KNFBPageMarker.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DE274991382DD6A00641A54 /* KNFBPageMarker.m */; };
@@ -1908,13 +1908,6 @@
 			remoteGlobalIDString = 7D5FC0431403D61B009D2229;
 			remoteInfo = libEucalyptusModel;
 		};
-		7DE15F67141E76CD00D37CA2 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 7D00D5B910D90FC5002D06E7 /* libEucalyptus.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 7D8D910F1403D2E800632892;
-			remoteInfo = libEucalyptusEPubIOSUI;
-		};
 		7DE15F6B141E76CD00D37CA2 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 7D00D5B910D90FC5002D06E7 /* libEucalyptus.xcodeproj */;
@@ -2126,6 +2119,7 @@
 		7DCD8E5311E32EFF00BA3255 /* BlioBookManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioBookManager.m; sourceTree = "<group>"; };
 		7DCD8FB611E3452800BA3255 /* BlioEPubBook.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioEPubBook.h; sourceTree = "<group>"; };
 		7DCD8FB711E3452800BA3255 /* BlioEPubBook.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioEPubBook.m; sourceTree = "<group>"; };
+		7DD5836C1545B9FD00D59B95 /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
 		7DD9BA121199B7F4001FED8E /* BlioSelectableBookView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioSelectableBookView.h; sourceTree = "<group>"; };
 		7DD9BA131199B7F4001FED8E /* BlioSelectableBookView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioSelectableBookView.m; sourceTree = "<group>"; };
 		7DDCC00D132E88C800FE8201 /* libxml2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libxml2.dylib; path = usr/lib/libxml2.dylib; sourceTree = SDKROOT; };
@@ -2744,11 +2738,11 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7DD5836D1545B9FD00D59B95 /* CoreMedia.framework in Frameworks */,
 				7D9A40AA150E5B68007D9A3E /* libots.a in Frameworks */,
 				7D9A40A4150E5B3D007D9A3E /* CoreVideo.framework in Frameworks */,
 				7D381B5C10D92E86008D34E2 /* libEucalyptusIOSUI.a in Frameworks */,
 				7DAA2FF011512A8D006634CC /* libEucalyptusEPub.a in Frameworks */,
-				7DE15F6E141E76E100D37CA2 /* libEucalyptusEPubIOSUI.a in Frameworks */,
 				7DE15F6F141E76E100D37CA2 /* libEucalyptusModel.a in Frameworks */,
 				7DAA2FF111512A8D006634CC /* libEucalyptusCSS.a in Frameworks */,
 				7DF4A12C11EF4DBD00F6A4DD /* libEucalyptusBase.a in Frameworks */,
@@ -2791,11 +2785,11 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7DD5836F1545BA0D00D59B95 /* CoreMedia.framework in Frameworks */,
 				7D9A40A8150E5B5E007D9A3E /* libots.a in Frameworks */,
 				7D9A40A3150E5B37007D9A3E /* CoreVideo.framework in Frameworks */,
 				A30E1024123EA5B400D31157 /* libEucalyptusIOSUI.a in Frameworks */,
 				7DE15F73141E770500D37CA2 /* libEucalyptusModel.a in Frameworks */,
-				7DE15F72141E770500D37CA2 /* libEucalyptusEPubIOSUI.a in Frameworks */,
 				A30E1027123EA5B400D31157 /* libEucalyptusEPub.a in Frameworks */,
 				A30E1028123EA5B400D31157 /* libEucalyptusCSS.a in Frameworks */,
 				A30E1025123EA5B400D31157 /* libEucalyptusBase.a in Frameworks */,
@@ -2838,11 +2832,11 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7DD583701545BA1500D59B95 /* CoreMedia.framework in Frameworks */,
 				7D9A40A7150E5B5A007D9A3E /* libots.a in Frameworks */,
 				7D9A40A6150E5B4C007D9A3E /* CoreVideo.framework in Frameworks */,
 				A31CC88413FEA07E0010BFC5 /* libEucalyptusIOSUI.a in Frameworks */,
 				7DE15F75141E770E00D37CA2 /* libEucalyptusModel.a in Frameworks */,
-				7DE15F74141E770E00D37CA2 /* libEucalyptusEPubIOSUI.a in Frameworks */,
 				A31CC88713FEA07E0010BFC5 /* libEucalyptusEPub.a in Frameworks */,
 				A31CC88813FEA07E0010BFC5 /* libEucalyptusCSS.a in Frameworks */,
 				A31CC88513FEA07E0010BFC5 /* libEucalyptusBase.a in Frameworks */,
@@ -2885,11 +2879,11 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7DD5836E1545BA0600D59B95 /* CoreMedia.framework in Frameworks */,
 				7D9A40A9150E5B63007D9A3E /* libots.a in Frameworks */,
 				7D9A40A5150E5B44007D9A3E /* CoreVideo.framework in Frameworks */,
 				A36D35D9120B136700E1A035 /* libEucalyptusIOSUI.a in Frameworks */,
 				7DE15F71141E76F200D37CA2 /* libEucalyptusModel.a in Frameworks */,
-				7DE15F70141E76F200D37CA2 /* libEucalyptusEPubIOSUI.a in Frameworks */,
 				A36D35DC120B136700E1A035 /* libEucalyptusEPub.a in Frameworks */,
 				A36D35DD120B136700E1A035 /* libEucalyptusCSS.a in Frameworks */,
 				A36D35DA120B136700E1A035 /* libEucalyptusBase.a in Frameworks */,
@@ -3204,6 +3198,7 @@
 		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				7DD5836C1545B9FD00D59B95 /* CoreMedia.framework */,
 				7D9A40A2150E5B37007D9A3E /* CoreVideo.framework */,
 				7D2711AD124931D40087C4E3 /* Accelerate.framework */,
 				DC5320DE11C09EF40042D3EA /* AudioToolbox.framework */,
@@ -3236,7 +3231,6 @@
 			children = (
 				7D381B4B10D92E81008D34E2 /* libEucalyptusIOSUI.a */,
 				7DE15F66141E76CD00D37CA2 /* libEucalyptusModel.a */,
-				7DE15F68141E76CD00D37CA2 /* libEucalyptusEPubIOSUI.a */,
 				7D68AF481150F39A00430710 /* libEucalyptusEPub.a */,
 				7D68AF4A1150F39A00430710 /* libEucalyptusCSS.a */,
 				7D3F504A11EF3DDA0065A5F7 /* libEucalyptusBase.a */,
@@ -4346,13 +4340,6 @@
 			fileType = archive.ar;
 			path = libEucalyptusModel.a;
 			remoteRef = 7DE15F65141E76CD00D37CA2 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		7DE15F68141E76CD00D37CA2 /* libEucalyptusEPubIOSUI.a */ = {
-			isa = PBXReferenceProxy;
-			fileType = archive.ar;
-			path = libEucalyptusEPubIOSUI.a;
-			remoteRef = 7DE15F67141E76CD00D37CA2 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		7DE15F6C141E76CD00D37CA2 /* PageLayoutTest */ = {

@@ -21,7 +21,6 @@
 #import <libEucalyptus/EucCSSLayoutRunExtractor.h>
 #import <libEucalyptus/EucCSSIntermediateDocument.h>
 #import <libEucalyptus/THPair.h>
-#import <libEucalyptus/THRegex.h>
 
 #import <CoreData/CoreData.h>
 #import <objc/runtime.h>

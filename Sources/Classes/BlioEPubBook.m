@@ -13,7 +13,7 @@
 #import <libEucalyptus/EucEPubDataProvider.h>
 #import <libEucalyptus/EucEPubBookReference.h>
 #import <libEucalyptus/EucEPubFilesystemDataProvider.h>
-#import <libEucalyptus/EucEPubZipDataProvider.h>
+#import <libEucalyptus/EucEPubZipCachingDataProvider.h>
 
 #import "BlioEPubXPSDataProvider.h"
 
@@ -38,7 +38,7 @@
                         // into the filesystem after download.
                         dataProvider = [[EucEPubFilesystemDataProvider alloc] initWithBasePath:ePubPath];
                     } else {
-                        dataProvider = [[EucEPubZipDataProvider alloc] initWithZipFileAtPath:ePubPath];
+                        dataProvider = [[EucEPubZipCachingDataProvider alloc] initWithZipFileAtPath:ePubPath];
                     }
                 }
             } 
