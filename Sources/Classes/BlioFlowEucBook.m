@@ -45,7 +45,7 @@
                                  textFlow:aTextFlow
                                 fakeCover:aFakeCover
                                     title:blioBook.title
-                                   author:blioBook.author
+                                   author:blioBook.authorsWithStandardFormat
                          uniqueIdentifier:[NSString stringWithFormat:@"%ld-%@", (long)blioBook.sourceID, blioBook.sourceSpecificID]])) 
         {
         }

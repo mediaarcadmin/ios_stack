@@ -96,6 +96,8 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 @property (nonatomic, retain) NSArray *fontDisplayNames;
 @property (nonatomic, retain) NSDictionary *fontDisplayNameToFontName;
 
+- (void)setPageColor:(BlioPageColor)newColor forBookView:(UIView<BlioBookView> *)bookView;
+
 - (NSArray *)_toolbarItemsWithTTSInstalled:(BOOL)installed enabled:(BOOL)enabled;
 - (void)setPageJumpSliderPreview;
 - (void) _updatePageJumpLabelWithLabel:(NSString *)newLabel;
@@ -159,8 +161,6 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 @synthesize returnToStatusBarStyle = _returnToStatusBarStyle;
 @synthesize returnToNavigationBarHidden = _returnToNavigationBarHidden;
 @synthesize returnToStatusBarHidden = _returnToStatusBarHidden;
-
-@synthesize currentPageColor = _currentPageColor;
 
 @synthesize audioPlaying = _audioPlaying;
 @synthesize audioEnabled = _audioEnabled;
@@ -347,6 +347,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         lastLayout = kBlioPageLayoutPageLayout;
     }
 
+    UIView<BlioBookView> *newBookView = nil;
     switch (lastLayout) {
         case kBlioPageLayoutSpeedRead: {
             if ([self.book hasEPub] || [self.book hasTextFlow]) {
@@ -354,8 +355,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
                                                                                delegate:self
                                                                                  bookID:self.book.objectID
                                                                                animated:YES];
-                self.bookView = aBookView; 
-                [aBookView release];
+                newBookView = aBookView; 
 				for (UIBarButtonItem* item in self.toolbarItems)
 					if (item.action==@selector(toggleAudio:))
 						[item setEnabled:NO];
@@ -368,8 +368,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
                                                                          delegate:self
                                                                            bookID:self.book.objectID
                                                                          animated:YES];
-                self.bookView = aBookView;
-                [aBookView release];
+                newBookView = aBookView;
             }
         }
             break;
@@ -379,34 +378,14 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
                                                                      delegate:self
                                                                        bookID:self.book.objectID
                                                                      animated:YES];
-                self.bookView = aBookView;
-                [aBookView release];
+                newBookView = aBookView;
             }
         } 
             break;
     }
-    
-    self.currentPageColor = [[NSUserDefaults standardUserDefaults] integerForKey:kBlioLastPageColorDefaultsKey];
-    if([self.bookView respondsToSelector:@selector(setFontName:)]) {
-        self.bookView.fontName = [self sanitizedFontNameForName:[[NSUserDefaults standardUserDefaults] objectForKey:kBlioLastFontNameDefaultsKey]];
-    }
-    if([self.bookView respondsToSelector:@selector(setFontSizeIndex:)]) {
-        NSUInteger fontSizeIndex = [[NSUserDefaults standardUserDefaults] integerForKey:kBlioLastFontSizeIndexDefaultsKey];
-        self.bookView.fontSizeIndex = MIN([self fontSizeCount] - 1, fontSizeIndex);
-    }
-    if([self.bookView respondsToSelector:@selector(setJustification:)]) {
-        self.bookView.justification = [[NSUserDefaults standardUserDefaults] integerForKey:kBlioLastJustificationDefaultsKey];
-    }
-    if([self.bookView respondsToSelector:@selector(setTwoUp:)]) {
-        if(lastLayout == kBlioPageLayoutPageLayout && self.book.enforceTwoPageSpread) {
-            self.bookView.twoUp = kBlioTwoUpAlways;
-        } else {
-            self.bookView.twoUp = [[NSUserDefaults standardUserDefaults] boolForKey:kBlioLandscapeTwoPagesDefaultsKey] ? kBlioTwoUpLandscape : kBlioTwoUpNever;
-        }
-    }
-    if([self.bookView respondsToSelector:@selector(setShouldTapZoom:)]) {
-        self.bookView.shouldTapZoom = [[NSUserDefaults standardUserDefaults] boolForKey:kBlioTapZoomsDefaultsKey];
-    }
+        
+    self.bookView = newBookView;
+    [newBookView release];
     
     bookReady = YES;
 }
@@ -803,19 +782,42 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         _bookView = [bookView retain];
         
         if(_bookView) {
-            if(self.isViewLoaded) {
-				if ([self.navigationItem.titleView isKindOfClass:[EucBookTitleView class]]) {
-					EucBookTitleView *titleView = (EucBookTitleView *)self.navigationItem.titleView;
-					[titleView setTitle:[self.book title]];
-					[titleView setAuthor:[self.book authorsWithStandardFormat]];              
-				}                
-                if ([_bookView wantsTouchesSniffed]) {
-                    [(THEventCapturingWindow *)self.rootView.window addTouchObserver:self forView:_bookView];            
-                }                
-                
-                [self.rootView addSubview:_bookView];
-                [self.rootView sendSubviewToBack:_bookView];
-            }                        
+            
+            if([_bookView respondsToSelector:@selector(setFontName:)]) {
+                _bookView.fontName = [self sanitizedFontNameForName:[[NSUserDefaults standardUserDefaults] objectForKey:kBlioLastFontNameDefaultsKey]];
+            }
+            if([_bookView respondsToSelector:@selector(setFontSizeIndex:)]) {
+                NSUInteger fontSizeIndex = [[NSUserDefaults standardUserDefaults] integerForKey:kBlioLastFontSizeIndexDefaultsKey];
+                _bookView.fontSizeIndex = MIN([self fontSizeCount] - 1, fontSizeIndex);
+            }
+            if([_bookView respondsToSelector:@selector(setJustification:)]) {
+                _bookView.justification = [[NSUserDefaults standardUserDefaults] integerForKey:kBlioLastJustificationDefaultsKey];
+            }
+            if([_bookView respondsToSelector:@selector(setTwoUp:)]) {
+                if([self currentPageLayout] == kBlioPageLayoutPageLayout && self.book.enforceTwoPageSpread) {
+                    _bookView.twoUp = kBlioTwoUpAlways;
+                } else {
+                    _bookView.twoUp = [[NSUserDefaults standardUserDefaults] boolForKey:kBlioLandscapeTwoPagesDefaultsKey] ? kBlioTwoUpLandscape : kBlioTwoUpNever;
+                }
+            }
+            if([_bookView respondsToSelector:@selector(setShouldTapZoom:)]) {
+                _bookView.shouldTapZoom = [[NSUserDefaults standardUserDefaults] boolForKey:kBlioTapZoomsDefaultsKey];
+            }
+            
+            [self.rootView addSubview:_bookView];
+            [self.rootView sendSubviewToBack:_bookView];
+            
+            [self setPageColor:[[NSUserDefaults standardUserDefaults] integerForKey:kBlioLastPageColorDefaultsKey] forBookView:_bookView];
+            
+            if ([self.navigationItem.titleView isKindOfClass:[EucBookTitleView class]]) {
+                EucBookTitleView *titleView = (EucBookTitleView *)self.navigationItem.titleView;
+                [titleView setTitle:[self.book title]];
+                [titleView setAuthor:[self.book authorsWithStandardFormat]];              
+            }                
+            if ([_bookView wantsTouchesSniffed]) {
+                [(THEventCapturingWindow *)self.rootView.window addTouchObserver:self forView:_bookView];            
+            }                
+            
             [_bookView addObserver:self 
                         forKeyPath:@"currentBookmarkPoint" 
                            options:NSKeyValueObservingOptionNew
@@ -1846,10 +1848,10 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 - (void)changePageLayout:(BlioPageLayout)newLayout {
     BlioPageLayout currentLayout = self.currentPageLayout;
     if(currentLayout != newLayout) { 
+        UIView<BlioBookView> *newBookView = nil;
 		if (newLayout == kBlioPageLayoutPlainText && [self reflowEnabled]) {
             BlioFlowView *ePubView = [[BlioFlowView alloc] initWithFrame:self.rootView.bounds delegate:self bookID:self.book.objectID animated:NO];
-            self.bookView = ePubView;
-            [ePubView release];
+            newBookView = ePubView;
             [[NSUserDefaults standardUserDefaults] setInteger:kBlioPageLayoutPlainText forKey:kBlioLastLayoutDefaultsKey];
 			// Audio enable status could have been changed by speedread, so confirm status.
 			if ( self.audioEnabled )
@@ -1859,8 +1861,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 				
         } else if (newLayout == kBlioPageLayoutPageLayout && [self fixedViewEnabled]) {
             BlioLayoutView *layoutView = [[BlioLayoutView alloc] initWithFrame:self.rootView.bounds delegate:self bookID:self.book.objectID animated:NO];
-            self.bookView = layoutView;            
-            [layoutView release];
+            newBookView = layoutView;            
             [[NSUserDefaults standardUserDefaults] setInteger:kBlioPageLayoutPageLayout forKey:kBlioLastLayoutDefaultsKey]; 
 			// Audio enable status could have been changed by speedread, so confirm status.
 			if ( self.audioEnabled )
@@ -1869,36 +1870,16 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 						[item setEnabled:YES];
         } else if (newLayout == kBlioPageLayoutSpeedRead && [self reflowEnabled]) {
             BlioSpeedReadView *speedReadView = [[BlioSpeedReadView alloc] initWithFrame:self.rootView.bounds delegate:self bookID:self.book.objectID animated:NO];
-            self.bookView = speedReadView;     
-            [speedReadView release];
+            newBookView = speedReadView;     
 			for (UIBarButtonItem* item in self.toolbarItems)
 				if (item.action==@selector(toggleAudio:))
 					[item setEnabled:NO];
             [[NSUserDefaults standardUserDefaults] setInteger:kBlioPageLayoutSpeedRead forKey:kBlioLastLayoutDefaultsKey];
         }
-        
-        self.currentPageColor = [[NSUserDefaults standardUserDefaults] integerForKey:kBlioLastPageColorDefaultsKey];
-        if([self.bookView respondsToSelector:@selector(setFontName:)]) {
-            self.bookView.fontName = [self sanitizedFontNameForName:[[NSUserDefaults standardUserDefaults] objectForKey:kBlioLastFontNameDefaultsKey]];
-        }
-        if([self.bookView respondsToSelector:@selector(setFontSizeIndex:)]) {
-            NSUInteger fontSizeIndex = [[NSUserDefaults standardUserDefaults] integerForKey:kBlioLastFontSizeIndexDefaultsKey];
-            self.bookView.fontSizeIndex = MIN([self fontSizeCount] - 1, fontSizeIndex);
-        }
-        if([self.bookView respondsToSelector:@selector(setJustification:)]) {
-            self.bookView.justification = [[NSUserDefaults standardUserDefaults] integerForKey:kBlioLastJustificationDefaultsKey];
-        }
-        if([self.bookView respondsToSelector:@selector(setTwoUp:)]) {
-            if(newLayout == kBlioPageLayoutPageLayout && self.book.enforceTwoPageSpread) {
-                self.bookView.twoUp = kBlioTwoUpAlways;
-            } else {
-                self.bookView.twoUp = [[NSUserDefaults standardUserDefaults] boolForKey:kBlioLandscapeTwoPagesDefaultsKey] ? kBlioTwoUpLandscape : kBlioTwoUpNever;
-            }
-        }
-        if([self.bookView respondsToSelector:@selector(setShouldTapZoom:)]) {
-            self.bookView.shouldTapZoom = [[NSUserDefaults standardUserDefaults] boolForKey:kBlioTapZoomsDefaultsKey];
-        }
 
+        self.bookView = newBookView;
+        [newBookView release];
+        
         // Reset the search results
         self.searchViewController = nil;
         self.searchPopover = nil;
@@ -2070,9 +2051,8 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     return [fontSizes autorelease];
 }
 
-- (void)setCurrentPageColor:(BlioPageColor)newColor
+- (void)setPageColor:(BlioPageColor)newColor forBookView:(UIView<BlioBookView> *)bookView
 {
-    UIView<BlioBookView> *bookView = self.bookView;
     if([bookView isKindOfClass:[BlioSpeedReadView class]]) {
         [(BlioSpeedReadView*)bookView setColor:newColor];
     } else {
@@ -2118,7 +2098,6 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
             [bookView setPageTexture:pageTexture isDark:kBlioFontPageTexturesAreDarkArray[newColor]];
         }
     }
-    _currentPageColor = newColor;
 }
 
 - (void)changeJustification:(BlioJustification)newJustification {
@@ -2135,8 +2114,11 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 }
 
 - (void)changePageColor:(BlioPageColor)newPageColor {
-    self.currentPageColor = newPageColor;
-    [[NSUserDefaults standardUserDefaults] setInteger:self.currentPageColor forKey:kBlioLastPageColorDefaultsKey];
+    [[NSUserDefaults standardUserDefaults] setInteger:newPageColor forKey:kBlioLastPageColorDefaultsKey];
+    [self setPageColor:newPageColor forBookView:self.bookView];
+}
+- (BlioPageColor)currentPageColor {
+    return [[NSUserDefaults standardUserDefaults] integerForKey:kBlioLastPageColorDefaultsKey];
 }
 
 - (void)changeTapZooms:(BOOL)newTapZooms {

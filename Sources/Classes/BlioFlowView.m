@@ -63,7 +63,7 @@
 }
 
 - (id)initWithFrame:(CGRect)frame
-    delegate:(id<BlioBookViewDelegate>)aDelegate
+           delegate:(id<BlioBookViewDelegate>)aDelegate
              bookID:(NSManagedObjectID *)aBookID 
            animated:(BOOL)animated 
 {

@@ -118,9 +118,7 @@ typedef enum {
 	BOOL _audioEnabled;
     
     id<BlioParagraphSource> _audioParagraphSource;
-        
-    BlioPageColor _currentPageColor;
-    
+
     UIBarButtonItem* _pageJumpButton;
     UIView* _pageJumpView;
     UILabel* _pageJumpLabel;
@@ -169,8 +167,6 @@ typedef enum {
 @property (nonatomic, assign) UIStatusBarStyle returnToStatusBarStyle;
 @property (nonatomic, assign) BOOL returnToNavigationBarHidden;
 @property (nonatomic, assign) BOOL returnToStatusBarHidden;
-
-@property (nonatomic, assign) BlioPageColor currentPageColor;
 
 @property (nonatomic, retain) UIView<BlioBookView> *bookView;
 @property (nonatomic, assign) BOOL audioPlaying;
