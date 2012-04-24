@@ -810,4 +810,16 @@
     _eucBookView.useContinuousReadingAccessibility = !shouldTapZoom;
 }
 
+- (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration
+{
+    [_eucBookView willRotateToInterfaceOrientation:toInterfaceOrientation duration:duration];
+    [_eucBookView setNeedsLayout];
+}
+
+- (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation
+{
+    [_eucBookView didRotateFromInterfaceOrientation:fromInterfaceOrientation];
+}
+
+
 @end
