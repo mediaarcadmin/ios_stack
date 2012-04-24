@@ -813,7 +813,6 @@
 - (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration
 {
     [_eucBookView willRotateToInterfaceOrientation:toInterfaceOrientation duration:duration];
-    [_eucBookView setNeedsLayout];
 }
 
 - (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation
