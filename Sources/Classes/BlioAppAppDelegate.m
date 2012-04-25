@@ -217,7 +217,10 @@
         [self resetDRM]; // The stored ID is a UDID.  Apple is forcing us to change it to a UUID.
         [self.processingManager deleteBooksForSourceID:BlioBookSourceOnlineStore];
         // We do not force a login for the greater convenience of the upgraders, even though it
-        // would be appropriate for an iTunes restore.  
+        // would be appropriate for an iTunes restore.
+        
+        [[NSUserDefaults standardUserDefaults] setBool:YES forKey:kBlioHasLoggedInKey];
+        [[NSUserDefaults standardUserDefaults] synchronize];
     }
     else if (flagFileMissing) {
         // We have installed fresh, or else restoring from iCloud. 
