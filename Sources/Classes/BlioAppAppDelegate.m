@@ -155,10 +155,12 @@
             NSLog(@"WARNING: deletion of binary device certificate failed. %@, %@", error, [error userInfo]);
     }
     
-    // Reset the id for this device.  It must now be a UUID.
+
 #ifdef TEST_MODE
-    [[NSUserDefaults standardUserDefaults] setObject:(id)[[UIDevice currentDevice] uniqueIdentifier] forKey:kBlioDeviceIDDefaultsKey];
+    NSString* testDeviceID = [[[UIDevice currentDevice] uniqueIdentifier] stringByAppendingString:@"X"]; 
+    [[NSUserDefaults standardUserDefaults] setObject:testDeviceID forKey:kBlioDeviceIDDefaultsKey];
 #else
+    // Reset the id for this device.  It must now be a UUID.
     CFUUIDRef uuidObj = CFUUIDCreate(kCFAllocatorDefault);
     NSString *uuidStr = [(NSString *)CFUUIDCreateString(kCFAllocatorDefault, uuidObj) autorelease];
     [[NSUserDefaults standardUserDefaults] setObject:uuidStr forKey:kBlioDeviceIDDefaultsKey];
@@ -188,42 +190,25 @@
     }
     
     NSString* deviceIDDefaults = [[NSUserDefaults standardUserDefaults] stringForKey:kBlioDeviceIDDefaultsKey];
-    
-/* No longer necessary
-    if (!deviceIDDefaults) { 
-#ifdef TEST_MODE
-        [[NSUserDefaults standardUserDefaults] setObject:(id)[[UIDevice currentDevice] uniqueIdentifier] forKey:kBlioDeviceIDDefaultsKey];
-#else
-        CFUUIDRef uuidObj = CFUUIDCreate(kCFAllocatorDefault);
-        NSString *uuidStr = [(NSString *)CFUUIDCreateString(kCFAllocatorDefault, uuidObj) autorelease];
-        [[NSUserDefaults standardUserDefaults] setObject:uuidStr forKey:kBlioDeviceIDDefaultsKey];
-        CFRelease(uuidObj);
-#endif
-        // Initialize model certificates.
-        [self ensureCorrectCertsAvailable];
-    }
-*/
-    
-#ifndef TEST_MODE  
     // For test mode we don't have a way of detecting an upgrade so we skip all this.  
     // So to test the following, don't be in test mode.
     if ([deviceIDDefaults length] == 40) {  
-        // We are upgrading from 3.1 or previous, or else restoring from iTunes.
-        [BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Rights Managment Reset",@"\"Rights Managment Reset\" alert message title") 
+        // We are upgrading from 3.1 or previous, or else restoring from version 3.1 backed up to iTunes.
+        [BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Rights Management Reset",@"\"Rights Management Reset\" alert message title") 
                                          message:NSLocalizedStringWithDefaultValue(@"DRM_RESET",nil,[NSBundle mainBundle],@"This version of Blio requires an initial redownload of your paid books.  Go to your Archive to retrieve them.",@"Alert Text informing the end user that paid books must be redownloaded.")
                                         delegate:nil 
                                cancelButtonTitle:nil
                            otherButtonTitles:@"OK", nil];
         [self resetDRM]; // The stored ID is a UDID.  Apple is forcing us to change it to a UUID.
         [self.processingManager deleteBooksForSourceID:BlioBookSourceOnlineStore];
-        // We do not force a login for the greater convenience of the upgraders, even though it
+        // For the convenience of upgraders we do not force a login, even though it
         // would be appropriate for an iTunes restore.
-        
         [[NSUserDefaults standardUserDefaults] setBool:YES forKey:kBlioHasLoggedInKey];
         [[NSUserDefaults standardUserDefaults] synchronize];
     }
     else if (flagFileMissing) {
-        // We have installed fresh, or else restoring from iCloud. 
+        // We have installed fresh, or else restoring from version 3.2 that's been backed up either 
+        // to iTunes and iCloud. 
         [self resetDRM];
         [[BlioStoreManager sharedInstance] logoutForSourceID:BlioBookSourceOnlineStore];
         if (deviceIDDefaults) {
@@ -240,7 +225,7 @@
         [fetchRequest release];
         if(!errorExecute && results.count != 0) {
             // we've restored: no flag file, but there are books in the persistent store. Reset DRM and make paid books "placeholder only" in preparation for re-downloading. Verify bundled books.
-            [BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Rights Managment Reset",@"\"Rights Managment Reset\" alert message title") 
+            [BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Rights Management Reset",@"\"Rights Management Reset\" alert message title") 
                                          message:NSLocalizedStringWithDefaultValue(@"DRM_RESET_AFTER_RESTORE",nil,[NSBundle mainBundle],@"This version of Blio was restored from another device.  You must log in to redownload your purchased books.  Remember to deregister your old device if you no longer plan to use Blio on it.",@"Alert Text informing the end user that login is required for paid books to be redownloaded.")
                                         delegate:nil 
                                cancelButtonTitle:nil
@@ -251,7 +236,6 @@
             forceLoginAfterRestore = YES;
         }
     }
-#endif
 }
 
 /* formerly using UDID only
