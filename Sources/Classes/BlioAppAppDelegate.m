@@ -159,8 +159,10 @@
 #ifdef TEST_MODE
     [[NSUserDefaults standardUserDefaults] setObject:(id)[[UIDevice currentDevice] uniqueIdentifier] forKey:kBlioDeviceIDDefaultsKey];
 #else
-    CFStringRef deviceUUID = CFUUIDCreateString(kCFAllocatorDefault, CFUUIDCreate(kCFAllocatorDefault));
-    [[NSUserDefaults standardUserDefaults] setObject:(id)deviceUUID forKey:kBlioDeviceIDDefaultsKey]; 
+    CFUUIDRef uuidObj = CFUUIDCreate(kCFAllocatorDefault);
+    NSString *uuidStr = [(NSString *)CFUUIDCreateString(kCFAllocatorDefault, uuidObj) autorelease];
+    [[NSUserDefaults standardUserDefaults] setObject:uuidStr forKey:kBlioDeviceIDDefaultsKey];
+    CFRelease(uuidObj); 
 #endif
     
     // Reinitialize model certificates.
@@ -186,46 +188,39 @@
     }
     
     NSString* deviceIDDefaults = [[NSUserDefaults standardUserDefaults] stringForKey:kBlioDeviceIDDefaultsKey];
-
+    
+/* No longer necessary
     if (!deviceIDDefaults) { 
-        // First time (fresh install or restoration from iCloud?). Create a UUID for device ID and store it.
 #ifdef TEST_MODE
         [[NSUserDefaults standardUserDefaults] setObject:(id)[[UIDevice currentDevice] uniqueIdentifier] forKey:kBlioDeviceIDDefaultsKey];
 #else
-        CFStringRef deviceUUID = CFUUIDCreateString(kCFAllocatorDefault, CFUUIDCreate(kCFAllocatorDefault));
-        [[NSUserDefaults standardUserDefaults] setObject:(id)deviceUUID forKey:kBlioDeviceIDDefaultsKey]; 
+        CFUUIDRef uuidObj = CFUUIDCreate(kCFAllocatorDefault);
+        NSString *uuidStr = [(NSString *)CFUUIDCreateString(kCFAllocatorDefault, uuidObj) autorelease];
+        [[NSUserDefaults standardUserDefaults] setObject:uuidStr forKey:kBlioDeviceIDDefaultsKey];
+        CFRelease(uuidObj);
 #endif
         // Initialize model certificates.
         [self ensureCorrectCertsAvailable];
     }
+*/
+    
+#ifndef TEST_MODE  
+    // For test mode we don't have a way of detecting an upgrade so we skip all this.  
+    // So to test the following, don't be in test mode.
     if ([deviceIDDefaults length] == 40) {  
-        // We must be upgrading from 3.1 or previous.
-        // The stored ID is a UDID.  Apple is forcing us to change it to a UUID.
-        
-        // We do not currently have a method to see if the device id has changed, be it UDID or UUID.
-        //if ([deviceIDDefaults compare:[[UIDevice currentDevice] uniqueIdentifier]] == NSOrderedSame ) {   
-            [BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Rights Managment Reset",@"\"Rights Managment Reset\" alert message title") 
+        // We are upgrading from 3.1 or previous, or else restoring from iTunes.
+        [BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Rights Managment Reset",@"\"Rights Managment Reset\" alert message title") 
                                          message:NSLocalizedStringWithDefaultValue(@"DRM_RESET",nil,[NSBundle mainBundle],@"This version of Blio requires an initial redownload of your paid books.  Go to your Archive to retrieve them.",@"Alert Text informing the end user that paid books must be redownloaded.")
                                         delegate:nil 
                                cancelButtonTitle:nil
-                               otherButtonTitles:@"OK", nil];
-            [self resetDRM];
-            // Delete paid books.
-            [self.processingManager deleteBooksForSourceID:BlioBookSourceOnlineStore];
-
-        //}
-        /*
-        else {
-            // Restored from another device.  Reset the DRM.
-            [BlioAlertManager showAlertWithTitle:NSLocalizedString(@"New Device",@"\"New Device\" alert message title") 
-                                         message:NSLocalizedStringWithDefaultValue(@"DEVICE_CHANGED",nil,[NSBundle mainBundle],@"This version of Blio was restored from another device.  Your purchased books must be redownloaded.  Remember to deregister your old device if you no longer plan to use Blio on it.",@"Alert Text informing the end user that the password must contain at least one digit.")
-                                        delegate:nil 
-                               cancelButtonTitle:nil
-                               otherButtonTitles:@"OK", nil]; 
-            [self resetDRM];
-        }*/
+                           otherButtonTitles:@"OK", nil];
+        [self resetDRM]; // The stored ID is a UDID.  Apple is forcing us to change it to a UUID.
+        [self.processingManager deleteBooksForSourceID:BlioBookSourceOnlineStore];
+        // We do not force a login for the greater convenience of the upgraders, even though it
+        // would be appropriate for an iTunes restore.  
     }
     else if (flagFileMissing) {
+        // We have installed fresh, or else restoring from iCloud. 
         [self resetDRM];
         [[BlioStoreManager sharedInstance] logoutForSourceID:BlioBookSourceOnlineStore];
         if (deviceIDDefaults) {
@@ -243,7 +238,7 @@
         if(!errorExecute && results.count != 0) {
             // we've restored: no flag file, but there are books in the persistent store. Reset DRM and make paid books "placeholder only" in preparation for re-downloading. Verify bundled books.
             [BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Rights Managment Reset",@"\"Rights Managment Reset\" alert message title") 
-                                         message:NSLocalizedStringWithDefaultValue(@"DRM_RESET_AFTER_RESTORE",nil,[NSBundle mainBundle],@"A restoration from backup requires an login to redownload of your paid books.",@"Alert Text informing the end user that login is required for paid books to be redownloaded.")
+                                         message:NSLocalizedStringWithDefaultValue(@"DRM_RESET_AFTER_RESTORE",nil,[NSBundle mainBundle],@"This version of Blio was restored from another device.  You must log in to redownload your purchased books.  Remember to deregister your old device if you no longer plan to use Blio on it.",@"Alert Text informing the end user that login is required for paid books to be redownloaded.")
                                         delegate:nil 
                                cancelButtonTitle:nil
                                otherButtonTitles:@"OK", nil];
@@ -253,10 +248,10 @@
             forceLoginAfterRestore = YES;
         }
     }
-
+#endif
 }
 
-/* using UDID only
+/* formerly using UDID only
 - (void)checkDevice { 
     // Check that this is the same device as last time. 
     NSString* thisDevice = [[NSUserDefaults standardUserDefaults] stringForKey:kBlioDeviceIDDefaultsKey]; 
@@ -274,30 +269,6 @@
 }
  */
 
-/* Using CFPreferences instead of NSUserDefaults
-- (void)checkDevice {
-    CFStringRef deviceIDCFPrefs = CFPreferencesCopyValue(CFSTR("deviceID"), CFSTR("com.knfbreading.Blio"), kCFPreferencesCurrentUser, kCFPreferencesCurrentHost);
-    if (!deviceIDCFPrefs) {
-        // Ensure device id saved to CFPreferences.
-        CFPreferencesSetValue(CFSTR("deviceID"),[[UIDevice currentDevice] uniqueIdentifier],CFSTR("com.knfbreading.Blio"),kCFPreferencesCurrentUser,kCFPreferencesCurrentHost);
-        CFPreferencesSynchronize(CFSTR("com.knfbreading.Blio"),kCFPreferencesCurrentUser,kCFPreferencesCurrentHost);
-        // We won't use NSUserDefaults any more for the device id.
-        [[NSUserDefaults standardUserDefaults] setObject:nil forKey:kBlioDeviceIDDefaultsKey];
-        // No need to check if we've restored from another device because even if we have,
-        // there's no need to reset DRM since the app didn't run on that other device.    
-    }
-    else if ([(NSString*)deviceIDCFPrefs compare:[[UIDevice currentDevice] uniqueIdentifier]] 
-             != NSOrderedSame) {
-        // Restored from another device, on which app has previously run.  Reset the DRM.
-        [BlioAlertManager showAlertWithTitle:NSLocalizedString(@"New Device",@"\"New Device\" alert message title") 
-                                     message:NSLocalizedStringWithDefaultValue(@"DEVICE_CHANGED",nil,[NSBundle mainBundle],@"This version of Blio was restored from another device.  Your purchased books must be re-downloaded.  Remember to deregister your old device if you no longer plan to use Blio on it.",@"Alert Text informing the end-user that the password must contain at least one digit.")
-                                    delegate:nil 
-                           cancelButtonTitle:nil
-                           otherButtonTitles:@"OK", nil]; 
-        [self resetDRM];
-    }
-}
-*/
 
 - (BOOL)canOpenURL:(NSURL *)url {
     if ([url isFileURL]) {
