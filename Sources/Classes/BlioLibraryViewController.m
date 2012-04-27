@@ -859,6 +859,11 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 		if ([cell.bookView.book isEncrypted]) {
             if ([cell.bookView.book checkBindToLicense])
 				[self bookSelected:cell.bookView];
+            else {
+                cell.statusBadge.hidden = NO;
+                cell.previewBadge.alpha = 1;
+                cell.bookTypeBadge.alpha = 1;
+            }
 		}
 		else {
 			[self bookSelected:cell.bookView];
