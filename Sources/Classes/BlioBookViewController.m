@@ -2338,8 +2338,9 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 
 - (void) prepareTextToSpeakWithAudioManager:(BlioAudioManager*)audioMgr fromBookmarkPoint:(BlioBookmarkPoint *)point {
 	if ( !point ) {
-		// Continuing to speak, we just need more text.
-		[self getNextBlockForAudioManager:audioMgr];
+		// Continuing to speak, we just may need more text.
+        if ( audioMgr.currentWordOffset == [audioMgr.blockWords count] )
+            [self getNextBlockForAudioManager:audioMgr];
 	}
 	else {
 		// Play button has just been pushed.
