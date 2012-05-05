@@ -22,6 +22,8 @@ NSString * const kBlioPDFPositionAttribute = @"BlioPDFPositionAttribute";
 @property (nonatomic, assign) CGAffineTransform textMatrix;
 @property (nonatomic, assign) CGAffineTransform textLineMatrix;
 @property (nonatomic, readonly, assign) CGAffineTransform textStateMatrix;
+@property (nonatomic, retain) NSMutableArray *ctmStack;
+@property (nonatomic, assign) CGAffineTransform ctm;
 @property (nonatomic) CGFloat Tj;
 @property (nonatomic) CGFloat Tl;
 @property (nonatomic) CGFloat Tc;
@@ -58,12 +60,15 @@ static void op_Tw(CGPDFScannerRef inScanner, void *info);
 static void op_Tz(CGPDFScannerRef inScanner, void *info);
 static void op_BT(CGPDFScannerRef inScanner, void *info);
 static void op_ET(CGPDFScannerRef inScanner, void *info);
+static void op_cm(CGPDFScannerRef inScanner, void *info);
+static void op_q(CGPDFScannerRef inScanner, void *info);
+static void op_Q(CGPDFScannerRef inScanner, void *info);
 
 @implementation BlioPDFPageParser
 
 @synthesize resourceDataSource;
 @synthesize currentFont;
-@synthesize textMatrix, textLineMatrix, textStateMatrix, Tj, Tl, Tc, Tw, Th, Ts, Tfs, userUnit, lastGlyphWidth;
+@synthesize textMatrix, textLineMatrix, textStateMatrix, ctmStack, ctm, Tj, Tl, Tc, Tw, Th, Ts, Tfs, userUnit, lastGlyphWidth;
 @synthesize pageRef;
 @synthesize rotateTransform;
 @synthesize unicodeStrings;
@@ -86,6 +91,7 @@ static void op_ET(CGPDFScannerRef inScanner, void *info);
     resourceDataSource = nil;
     [unicodeStrings release], unicodeStrings = nil;
     [currentFont release], currentFont = nil;
+    [ctmStack release], ctmStack = nil;
     
     [super dealloc];
 }
@@ -102,6 +108,8 @@ static void op_ET(CGPDFScannerRef inScanner, void *info);
         
         textMatrix = CGAffineTransformIdentity;
         textLineMatrix = CGAffineTransformIdentity;
+        ctmStack = [[NSMutableArray alloc] init];
+        ctm = CGAffineTransformIdentity;
         Th = 1;
         userUnit = 1.0f;
         lastGlyphWidth = -1;
@@ -133,6 +141,9 @@ static void op_ET(CGPDFScannerRef inScanner, void *info);
     CGPDFOperatorTableSetCallback(myTable, "\"", &op_DOUBLEQUOTE);
     CGPDFOperatorTableSetCallback(myTable, "BT", &op_BT);
     CGPDFOperatorTableSetCallback(myTable, "ET", &op_ET);
+    CGPDFOperatorTableSetCallback(myTable, "cm", &op_cm);
+    CGPDFOperatorTableSetCallback(myTable, "q", &op_q);
+    CGPDFOperatorTableSetCallback(myTable, "Q", &op_Q);
     
     CGPDFScannerRef myScanner;
     CGPDFContentStreamRef myContentStream;
@@ -196,6 +207,7 @@ static void op_ET(CGPDFScannerRef inScanner, void *info);
 - (void)updateTextStateMatrix 
 {
     textStateMatrix = CGAffineTransformMake(Tfs*Th, 0, 0, Tfs, 0, Ts);
+    //NSLog(@"textStateMatrix: %@", NSStringFromCGAffineTransform(textStateMatrix));
 }
 
 - (void)addLineBreak
@@ -241,9 +253,10 @@ static void op_ET(CGPDFScannerRef inScanner, void *info);
         NSMutableAttributedString *positionedString = [[NSMutableAttributedString alloc] initWithString:unicodeString];
         
         for (int i = 0; i < length; i++) {
-            
+            //NSLog(@"%@ - %@", NSStringFromCGAffineTransform(textStateMatrix), NSStringFromCGAffineTransform(textMatrix));
             CGAffineTransform textRenderingMatrix = CGAffineTransformConcat(textStateMatrix, textMatrix);
-
+            textRenderingMatrix = CGAffineTransformConcat(textRenderingMatrix, ctm);
+            
             unichar characterCode = (unichar)(bytes[i]);
             CGFloat glyphWidth = ([currentFont glyphWidthForCharacter:characterCode])/1000.0f;
 
@@ -257,7 +270,8 @@ static void op_ET(CGPDFScannerRef inScanner, void *info);
             
             CGRect glyphRect = CGRectMake(- (Tj/1000.0f),0,Gx, Tfs * userUnit);
             CGRect transformedRect = CGRectApplyAffineTransform(glyphRect, textRenderingMatrix);
-                 
+            //NSLog(@"%@ - %@ - %@", [positionedString string], NSStringFromCGRect(glyphRect), NSStringFromCGRect(transformedRect));     
+            
             NSDictionary *attrs = [[NSDictionary alloc] initWithObjectsAndKeys:[NSValue valueWithCGRect:transformedRect], kBlioPDFPositionAttribute, nil];
             [positionedString setAttributes:attrs range:NSMakeRange(i, 1)];
             [attrs release];
@@ -265,6 +279,7 @@ static void op_ET(CGPDFScannerRef inScanner, void *info);
             Tj = 0;
             CGAffineTransform offsetMatrix = CGAffineTransformMakeTranslation(Tx, 0);
             textMatrix = CGAffineTransformConcat(offsetMatrix, textMatrix);
+            //NSLog(@"addUni: %@", NSStringFromCGAffineTransform(textMatrix));
         }
         
         [self.unicodeStrings addObject:positionedString];
@@ -292,6 +307,7 @@ static void op_Td(CGPDFScannerRef inScanner, void *info)
     if (success) {        
         [parsedPage setTextLineMatrix:CGAffineTransformTranslate([parsedPage textLineMatrix], matrix[0], matrix[1])];
         [parsedPage setTextMatrix:[parsedPage textLineMatrix]];
+        //NSLog(@"opTd: %@", NSStringFromCGAffineTransform([parsedPage textMatrix]));
         [parsedPage addLineBreak];
     }
     
@@ -315,6 +331,8 @@ static void op_TD(CGPDFScannerRef inScanner, void *info)
         [parsedPage setTl:-(matrix[1])];        
         [parsedPage setTextLineMatrix:CGAffineTransformTranslate([parsedPage textLineMatrix], matrix[0], matrix[1])];
         [parsedPage setTextMatrix:[parsedPage textLineMatrix]];
+        //NSLog(@"opTD: %@", NSStringFromCGAffineTransform([parsedPage textMatrix]));
+
         [parsedPage addLineBreak];
     }
     
@@ -337,6 +355,8 @@ static void op_Tm(CGPDFScannerRef inScanner, void *info)
     if (success) {
         [parsedPage setTextLineMatrix:CGAffineTransformMake(matrix[0], matrix[1], matrix[2], matrix[3], matrix[4], matrix[5])];
         [parsedPage setTextMatrix:[parsedPage textLineMatrix]];
+        //NSLog(@"opTm: %@", NSStringFromCGAffineTransform([parsedPage textMatrix]));
+
         [parsedPage addParagraphBreak];
     }
 }
@@ -351,6 +371,8 @@ static void op_TSTAR(CGPDFScannerRef inScanner, void *info)
     
     [parsedPage setTextLineMatrix:CGAffineTransformTranslate([parsedPage textLineMatrix], 0, -([parsedPage Tl]))];
     [parsedPage setTextMatrix:[parsedPage textLineMatrix]];
+    //NSLog(@"opTDSTAR: %@", NSStringFromCGAffineTransform([parsedPage textMatrix]));
+
     [parsedPage addLineBreak];
 }
 
@@ -415,6 +437,8 @@ static void op_SINGLEQUOTE(CGPDFScannerRef inScanner, void *info)
     
     [parsedPage setTextLineMatrix:CGAffineTransformTranslate([parsedPage textLineMatrix], 0, -([parsedPage Tl]))];
     [parsedPage setTextMatrix:[parsedPage textLineMatrix]];
+    //NSLog(@"opSNGEQUOTE: %@", NSStringFromCGAffineTransform([parsedPage textMatrix]));
+
     [parsedPage addLineBreak];
     
     CGPDFStringRef string;
@@ -449,6 +473,8 @@ static void op_DOUBLEQUOTE(CGPDFScannerRef inScanner, void *info)
     
     [parsedPage setTextLineMatrix:CGAffineTransformTranslate([parsedPage textLineMatrix], 0, -([parsedPage Tl]))];
     [parsedPage setTextMatrix:[parsedPage textLineMatrix]];
+    //NSLog(@"opDOUBLEQUOTE: %@", NSStringFromCGAffineTransform([parsedPage textMatrix]));
+
     [parsedPage addLineBreak];
     
     CGPDFStringRef string;
@@ -478,6 +504,7 @@ static void op_Tf (CGPDFScannerRef s, void *info)
     }
     
     [parsedPage setTfs:number];
+    //NSLog(@"Tfs: %f", [parsedPage Tfs]);
     [parsedPage updateTextStateMatrix];
     
     if (!CGPDFScannerPopName(s, &name))
@@ -551,6 +578,8 @@ static void op_BT(CGPDFScannerRef inScanner, void *info)
 {
     BlioPDFPageParser *parsedPage = info;
     [parsedPage setTextMatrix:CGAffineTransformIdentity];
+    //NSLog(@"opBT: %@", NSStringFromCGAffineTransform([parsedPage textMatrix]));
+
     [parsedPage setTextLineMatrix:CGAffineTransformIdentity];
     [parsedPage setTj:0];
 }
@@ -560,5 +589,39 @@ static void op_ET(CGPDFScannerRef inScanner, void *info)
     BlioPDFPageParser *parsedPage = info;
     [parsedPage addParagraphBreak];
 }
+
+static void op_cm(CGPDFScannerRef inScanner, void *info) 
+{
+   
+    CGPDFReal matrix[6];
+    BOOL success;
+    
+    for (int i = 0; i < 6; i++) {
+        success = CGPDFScannerPopNumber(inScanner, &matrix[5-i]);
+    }
+    
+    if (success) {
+        CGAffineTransform ctm = CGAffineTransformMake(matrix[0], matrix[1], matrix[2], matrix[3], matrix[4], matrix[5]);
+
+        BlioPDFPageParser *parsedPage = info;
+        [parsedPage setCtm:CGAffineTransformConcat([parsedPage ctm], ctm)];
+        //NSLog(@"Op_cm: %@", NSStringFromCGAffineTransform([parsedPage ctm]));
+    }
+        
+}
+
+static void op_q(CGPDFScannerRef inScanner, void *info) 
+{
+    //NSLog(@"Push CTM");
+    BlioPDFPageParser *parsedPage = info;
+    [[parsedPage ctmStack] addObject:[NSValue valueWithCGAffineTransform:[parsedPage ctm]]];    
+}
+
+static void op_Q(CGPDFScannerRef inScanner, void *info) 
+{
+    //NSLog(@"Pop CTM");
+    BlioPDFPageParser *parsedPage = info;
+    [parsedPage setCtm:[[[parsedPage ctmStack] lastObject] CGAffineTransformValue]];    
+}  
 
 @end
