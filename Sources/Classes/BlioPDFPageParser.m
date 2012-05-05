@@ -621,7 +621,9 @@ static void op_Q(CGPDFScannerRef inScanner, void *info)
 {
     //NSLog(@"Pop CTM");
     BlioPDFPageParser *parsedPage = info;
-    [parsedPage setCtm:[[[parsedPage ctmStack] lastObject] CGAffineTransformValue]];    
+    NSValue *poppedMatrix = [[parsedPage ctmStack] lastObject];
+    [parsedPage setCtm:[poppedMatrix CGAffineTransformValue]];  
+    [[parsedPage ctmStack] removeObject:poppedMatrix];
 }  
 
 @end
