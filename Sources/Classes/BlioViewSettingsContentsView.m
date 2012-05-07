@@ -322,7 +322,7 @@
         aFontAndSizeLabel.font = [UIFont boldSystemFontOfSize:14.0f];
         aFontAndSizeLabel.textColor = whiteColor;
         aFontAndSizeLabel.backgroundColor = clearColor;
-        aFontAndSizeLabel.text = NSLocalizedString(@"Typography",@"Settings Label for Typography button.");
+        aFontAndSizeLabel.text = NSLocalizedString(@"Font Options",@"Settings Label for Font Options button.");
         [self addSubview:aFontAndSizeLabel];
         self.fontAndSizeLabel = aFontAndSizeLabel;
         [aFontAndSizeLabel release];
