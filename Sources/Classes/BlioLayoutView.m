@@ -34,6 +34,8 @@
 #define BLIOLAYOUT_LHSHOTZONE 0.25f
 #define BLIOLAYOUT_RHSHOTZONE 0.75f
 
+#define DEBUG_BLOCKS 0
+
 @interface BlioLayoutView()
 
 @property (nonatomic, retain) BlioGestureSuppressingView *overlay;
@@ -1042,7 +1044,8 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 }
 
 - (NSArray *)highlightRangesForCurrentPage {
-	NSUInteger startPageIndex = self.pageTurningView.leftPageIndex;
+    
+    NSUInteger startPageIndex = self.pageTurningView.leftPageIndex;
     NSUInteger endPageIndex = self.pageTurningView.rightPageIndex;
     if(startPageIndex == NSUIntegerMax) {
         startPageIndex = endPageIndex;
@@ -1050,7 +1053,7 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
     if(endPageIndex == NSUIntegerMax) {
         endPageIndex = startPageIndex;
     }
-    	
+    
     BlioBookmarkPoint *startPoint = [[BlioBookmarkPoint alloc] init];
 	startPoint.layoutPage = startPageIndex + 1;
     
@@ -1645,6 +1648,39 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 
 - (NSArray *)pageTurningView:(EucIndexBasedPageTurningView *)pageTurningView highlightsForPageAtIndex:(NSUInteger)pageIndex {
 
+    if (DEBUG_BLOCKS) {
+        
+        NSArray *pageBlocks = nil;
+        if ([(NSObject *)self.dataSource isKindOfClass:[BlioLayoutPDFDataSource class]]) {
+            pageBlocks = [(BlioLayoutPDFDataSource *)self.dataSource blocksForPageAtIndex:pageIndex includingFolioBlocks:NO];
+        } else {
+            pageBlocks = [self.textFlow blocksForPageAtIndex:pageIndex includingFolioBlocks:NO];
+        }
+        
+        NSMutableArray *rects = [[[NSMutableArray alloc] init] autorelease];
+        CGAffineTransform  pageTransform = [self pageTurningViewTransformForPageAtIndex:pageIndex offsetOrigin:NO applyZoom:NO];
+        
+        for (BlioTextFlowBlock *block in pageBlocks) {                
+            for (BlioTextFlowPositionedWord *word in [block words]) {
+                //NSLog(@"%@ - %@", [word string], NSStringFromCGRect([word rect]));
+                CGRect pageRect = CGRectApplyAffineTransform([word rect], pageTransform);
+                if ([(NSObject *)self.dataSource isKindOfClass:[BlioLayoutPDFDataSource class]]) {
+                    pageRect = [self.window.layer convertRect:pageRect fromLayer:self.pageTurningView.layer];
+                }
+                [rects addObject:[NSValue valueWithCGRect:pageRect]];
+            }
+        }
+        
+        NSMutableArray *allHighlights = [NSMutableArray array];
+        
+        for (NSValue *rectValue in rects) {
+            THPair *highlightPair = [[THPair alloc] initWithFirst:(id)rectValue second:(id)[UIColor colorWithRed:rand()%800/1000.0f green:rand()%800/1000.0f blue:rand()%800/1000.0f alpha:0.3f]];
+            [allHighlights addObject:highlightPair];
+            [highlightPair release];
+        }
+        return allHighlights;
+    }
+    
     EucSelectorRange *selectedRange = [self.selector selectedRange];
     BlioBookmarkRange *excludedRange = [self bookmarkRangeFromSelectorRange:selectedRange];
     

@@ -73,7 +73,7 @@
     UIViewController *fontSettingsController = [[UIViewController alloc] init];
     fontSettingsController.contentSizeForViewInPopover = ((UINavigationController *)self.contentViewController).topViewController.contentSizeForViewInPopover;
     fontSettingsController.view = aFontSettingsView;
-    fontSettingsController.navigationItem.title = NSLocalizedString(@"Typography", "Title for Typography Settings Popover");
+    fontSettingsController.navigationItem.title = NSLocalizedString(@"Font Options", "Title for Font Options Popover");
     
     [((UINavigationController *)self.contentViewController) pushViewController:fontSettingsController animated:YES];
     
