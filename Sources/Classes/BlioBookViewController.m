@@ -2339,7 +2339,12 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 - (void) prepareTextToSpeakWithAudioManager:(BlioAudioManager*)audioMgr fromBookmarkPoint:(BlioBookmarkPoint *)point {
 	if ( !point ) {
 		// Continuing to speak, we just may need more text.
-        if ( audioMgr.currentWordOffset >= ([audioMgr.blockWords count]-1) )
+        // For an audiobook, we may be in the middle of a block because of .mp3 editing, 
+        // so make sure we are done with the current one before moving to the next.
+        // This check should be valid in any case but in TTS sometimes it's not;
+        // sometimes the highlight never reaches the last word of a block because
+        // there's no willSpeakWord callback for the it.
+        if ( _acapelaAudioManager || (audioMgr.currentWordOffset == [audioMgr.blockWords count]) )
             [self getNextBlockForAudioManager:audioMgr];
 	}
 	else {
