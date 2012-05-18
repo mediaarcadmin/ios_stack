@@ -598,7 +598,6 @@
 		A31CC71D13FEA07E0010BFC5 /* icon-play.png in Resources */ = {isa = PBXBuildFile; fileRef = 55822F1C10F2891B008614FD /* icon-play.png */; };
 		A31CC71E13FEA07E0010BFC5 /* icon-plus.png in Resources */ = {isa = PBXBuildFile; fileRef = 55822F1D10F2891B008614FD /* icon-plus.png */; };
 		A31CC71F13FEA07E0010BFC5 /* icon-search.png in Resources */ = {isa = PBXBuildFile; fileRef = 55822F1E10F2891B008614FD /* icon-search.png */; };
-		A31CC72013FEA07E0010BFC5 /* logo-white.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DB9F95210F3A08C0010DF0B /* logo-white.png */; };
 		A31CC72113FEA07E0010BFC5 /* booktextureandshadowsubtle.png in Resources */ = {isa = PBXBuildFile; fileRef = 555CAF2B10F3B943007B1885 /* booktextureandshadowsubtle.png */; };
 		A31CC72213FEA07E0010BFC5 /* LibraryGridViewController.png in Resources */ = {isa = PBXBuildFile; fileRef = 555CAF3C10F3B991007B1885 /* LibraryGridViewController.png */; };
 		A31CC72313FEA07E0010BFC5 /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 556D1D5A10F3BE580019315C /* Icon.png */; };
@@ -635,9 +634,6 @@
 		A31CC74313FEA07E0010BFC5 /* MainNavControllerAndLibraryView-iPad.xib in Resources */ = {isa = PBXBuildFile; fileRef = DCB0363F11BDC43300B341D4 /* MainNavControllerAndLibraryView-iPad.xib */; };
 		A31CC74413FEA07E0010BFC5 /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A382D3D211C9155F00CFEB88 /* Default@2x.png */; };
 		A31CC74513FEA07E0010BFC5 /* Icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A382D3D311C9155F00CFEB88 /* Icon@2x.png */; };
-		A31CC74613FEA07E0010BFC5 /* Default-Landscape.png in Resources */ = {isa = PBXBuildFile; fileRef = A382D3D611C9159000CFEB88 /* Default-Landscape.png */; };
-		A31CC74713FEA07E0010BFC5 /* Default-Portrait.png in Resources */ = {isa = PBXBuildFile; fileRef = A382D3D711C9159000CFEB88 /* Default-Portrait.png */; };
-		A31CC74813FEA07E0010BFC5 /* Icon-iPad.png in Resources */ = {isa = PBXBuildFile; fileRef = A382D3D811C9159000CFEB88 /* Icon-iPad.png */; };
 		A31CC74913FEA07E0010BFC5 /* DRM in Resources */ = {isa = PBXBuildFile; fileRef = DC2EB05411C96E28006AC1B6 /* DRM */; };
 		A31CC74A13FEA07E0010BFC5 /* icon-freebooks@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A3C7436011CAC178005A2219 /* icon-freebooks@2x.png */; };
 		A31CC74B13FEA07E0010BFC5 /* icon-cart@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A3C7436111CAC178005A2219 /* icon-cart@2x.png */; };
@@ -709,7 +705,6 @@
 		A31CC78E13FEA07E0010BFC5 /* SelectionKnob.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D4A00F111DBA36800DDA5B7 /* SelectionKnob.png */; };
 		A31CC78F13FEA07E0010BFC5 /* SelectionKnob@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D4A00F211DBA36800DDA5B7 /* SelectionKnob@2x.png */; };
 		A31CC79013FEA07E0010BFC5 /* button-buybooks.png in Resources */ = {isa = PBXBuildFile; fileRef = DC795B2D11E7E21B000DA04D /* button-buybooks.png */; };
-		A31CC79113FEA07E0010BFC5 /* logo-white@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DB5F70F11EC65BF00D33185 /* logo-white@2x.png */; };
 		A31CC79213FEA07E0010BFC5 /* buttonBarArrowDownSmall.png in Resources */ = {isa = PBXBuildFile; fileRef = C9FD392511FD69FF008F1F50 /* buttonBarArrowDownSmall.png */; };
 		A31CC79313FEA07E0010BFC5 /* buttonBarArrowDownSmall@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C9FD392611FD69FF008F1F50 /* buttonBarArrowDownSmall@2x.png */; };
 		A31CC79413FEA07E0010BFC5 /* buttonBarArrowUpSmall.png in Resources */ = {isa = PBXBuildFile; fileRef = C9FD392711FD69FF008F1F50 /* buttonBarArrowUpSmall.png */; };
@@ -720,8 +715,6 @@
 		A31CC79913FEA07E0010BFC5 /* library-pausebutton@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DC18E085120517010077DF01 /* library-pausebutton@2x.png */; };
 		A31CC79A13FEA07E0010BFC5 /* library-resumebutton@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DC18E089120517170077DF01 /* library-resumebutton@2x.png */; };
 		A31CC79B13FEA07E0010BFC5 /* library-progress-background@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DC18E091120517C20077DF01 /* library-progress-background@2x.png */; };
-		A31CC79C13FEA07E0010BFC5 /* eula.html in Resources */ = {isa = PBXBuildFile; fileRef = A3FE55B512074EFA0038DA0C /* eula.html */; };
-		A31CC79D13FEA07E0010BFC5 /* userdoc.html in Resources */ = {isa = PBXBuildFile; fileRef = A3FE55B612074EFA0038DA0C /* userdoc.html */; };
 		A31CC79E13FEA07E0010BFC5 /* booktexture-nocover.png in Resources */ = {isa = PBXBuildFile; fileRef = C9CEBD751211959B0040CEFF /* booktexture-nocover.png */; };
 		A31CC79F13FEA07E0010BFC5 /* BlioFeatureCompatibility.plist in Resources */ = {isa = PBXBuildFile; fileRef = DC2ABE401213DC0F00E6C483 /* BlioFeatureCompatibility.plist */; };
 		A31CC7A113FEA07E0010BFC5 /* button-delete-red@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DCA1B8FC122289C60022D410 /* button-delete-red@2x.png */; };
@@ -973,6 +966,7 @@
 		A31CC8A113FEA07E0010BFC5 /* MediaPlayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C9A9B9AD130EC9CA009B950F /* MediaPlayer.framework */; };
 		A31CC8A213FEA07E0010BFC5 /* libXpsSDKipad.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C9EFAF4C134DF4B800ADF905 /* libXpsSDKipad.a */; };
 		A31E82EE120B3FD800CB6657 /* credits.html in Resources */ = {isa = PBXBuildFile; fileRef = A3FE55B412074EFA0038DA0C /* credits.html */; };
+		A320D447154F187E002671FB /* credits-toshiba.html in Resources */ = {isa = PBXBuildFile; fileRef = A320D446154F187E002671FB /* credits-toshiba.html */; };
 		A323E75B1427A64F0043E78E /* BlioVOTipsSettingsController.m in Sources */ = {isa = PBXBuildFile; fileRef = A323E75A1427A64F0043E78E /* BlioVOTipsSettingsController.m */; };
 		A323E75C1427A64F0043E78E /* BlioVOTipsSettingsController.m in Sources */ = {isa = PBXBuildFile; fileRef = A323E75A1427A64F0043E78E /* BlioVOTipsSettingsController.m */; };
 		A323E75D1427A64F0043E78E /* BlioVOTipsSettingsController.m in Sources */ = {isa = PBXBuildFile; fileRef = A323E75A1427A64F0043E78E /* BlioVOTipsSettingsController.m */; };
@@ -1287,7 +1281,455 @@
 		A3B6F6F4120C5E2E00D48E04 /* BlioViewSettingsSheet.m in Sources */ = {isa = PBXBuildFile; fileRef = A3B6F6F2120C5E2E00D48E04 /* BlioViewSettingsSheet.m */; };
 		A3B6F88B120CB11900D48E04 /* BlioCoverView.m in Sources */ = {isa = PBXBuildFile; fileRef = C96785EF120C0AAC008669BA /* BlioCoverView.m */; };
 		A3B6F8A1120CB45300D48E04 /* BlioViewSettingsSheet.m in Sources */ = {isa = PBXBuildFile; fileRef = A3B6F6F2120C5E2E00D48E04 /* BlioViewSettingsSheet.m */; };
+		A3BEFC6C152DE9E6009B4F4A /* XPS-Starters in Resources */ = {isa = PBXBuildFile; fileRef = A3CF839712E4B7E00069FA16 /* XPS-Starters */; };
+		A3BEFC6D152DE9E6009B4F4A /* speedreaderBackgroundImages in Resources */ = {isa = PBXBuildFile; fileRef = 553D5B16126F6B6B00A1CE83 /* speedreaderBackgroundImages */; };
+		A3BEFC6E152DE9E6009B4F4A /* credits.html in Resources */ = {isa = PBXBuildFile; fileRef = A3FE55B412074EFA0038DA0C /* credits.html */; };
+		A3BEFC6F152DE9E6009B4F4A /* MainNavControllerAndLibraryView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 28AD735F0D9D9599002E5188 /* MainNavControllerAndLibraryView.xib */; };
+		A3BEFC70152DE9E6009B4F4A /* RootViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 28F335F01007B36200424DE2 /* RootViewController.xib */; };
+		A3BEFC71152DE9E6009B4F4A /* BookEdge.pvrtc in Resources */ = {isa = PBXBuildFile; fileRef = 7D381CDB10D93023008D34E2 /* BookEdge.pvrtc */; };
+		A3BEFC72152DE9E6009B4F4A /* booktextureandshadow.png in Resources */ = {isa = PBXBuildFile; fileRef = C977636C10E056E2005E0E2B /* booktextureandshadow.png */; };
+		A3BEFC73152DE9E6009B4F4A /* row-dark.png in Resources */ = {isa = PBXBuildFile; fileRef = C977649910E0E413005E0E2B /* row-dark.png */; };
+		A3BEFC74152DE9E6009B4F4A /* row-light.png in Resources */ = {isa = PBXBuildFile; fileRef = C977649A10E0E413005E0E2B /* row-light.png */; };
+		A3BEFC75152DE9E6009B4F4A /* icon-speedread.png in Resources */ = {isa = PBXBuildFile; fileRef = C985466610E22BCC002305A2 /* icon-speedread.png */; };
+		A3BEFC76152DE9E6009B4F4A /* icon-page.png in Resources */ = {isa = PBXBuildFile; fileRef = C985466710E22BCD002305A2 /* icon-page.png */; };
+		A3BEFC77152DE9E6009B4F4A /* icon-layout.png in Resources */ = {isa = PBXBuildFile; fileRef = C985466810E22BCD002305A2 /* icon-layout.png */; };
+		A3BEFC78152DE9E6009B4F4A /* done-button-down.png in Resources */ = {isa = PBXBuildFile; fileRef = C985477110E244FE002305A2 /* done-button-down.png */; };
+		A3BEFC79152DE9E6009B4F4A /* done-button-up.png in Resources */ = {isa = PBXBuildFile; fileRef = C985477210E244FE002305A2 /* done-button-up.png */; };
+		A3BEFC7A152DE9E6009B4F4A /* paper-black.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D81ED2310E90C220016D44A /* paper-black.png */; };
+		A3BEFC7B152DE9E6009B4F4A /* paper-neutral.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D81ED2410E90C220016D44A /* paper-neutral.png */; };
+		A3BEFC7C152DE9E6009B4F4A /* paper-white.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D81ED2510E90C220016D44A /* paper-white.png */; };
+		A3BEFC7D152DE9E6009B4F4A /* icon-lock.png in Resources */ = {isa = PBXBuildFile; fileRef = C9D8A57810F2289D00FD5F22 /* icon-lock.png */; };
+		A3BEFC7E152DE9E6009B4F4A /* icon-finger.png in Resources */ = {isa = PBXBuildFile; fileRef = C9D8A57910F2289D00FD5F22 /* icon-finger.png */; };
+		A3BEFC80152DE9E6009B4F4A /* librarybackground.png in Resources */ = {isa = PBXBuildFile; fileRef = 55822EF110F2860F008614FD /* librarybackground.png */; };
+		A3BEFC81152DE9E6009B4F4A /* button-list.png in Resources */ = {isa = PBXBuildFile; fileRef = 55822F0310F286BB008614FD /* button-list.png */; };
+		A3BEFC82152DE9E6009B4F4A /* button-grid.png in Resources */ = {isa = PBXBuildFile; fileRef = 55822F0410F286BB008614FD /* button-grid.png */; };
+		A3BEFC83152DE9E6009B4F4A /* icon-contents.png in Resources */ = {isa = PBXBuildFile; fileRef = 55822F1910F2891B008614FD /* icon-contents.png */; };
+		A3BEFC84152DE9E6009B4F4A /* icon-pause.png in Resources */ = {isa = PBXBuildFile; fileRef = 55822F1B10F2891B008614FD /* icon-pause.png */; };
+		A3BEFC85152DE9E6009B4F4A /* icon-play.png in Resources */ = {isa = PBXBuildFile; fileRef = 55822F1C10F2891B008614FD /* icon-play.png */; };
+		A3BEFC86152DE9E6009B4F4A /* icon-plus.png in Resources */ = {isa = PBXBuildFile; fileRef = 55822F1D10F2891B008614FD /* icon-plus.png */; };
+		A3BEFC87152DE9E6009B4F4A /* icon-search.png in Resources */ = {isa = PBXBuildFile; fileRef = 55822F1E10F2891B008614FD /* icon-search.png */; };
+		A3BEFC89152DE9E6009B4F4A /* booktextureandshadowsubtle.png in Resources */ = {isa = PBXBuildFile; fileRef = 555CAF2B10F3B943007B1885 /* booktextureandshadowsubtle.png */; };
+		A3BEFC8A152DE9E6009B4F4A /* LibraryGridViewController.png in Resources */ = {isa = PBXBuildFile; fileRef = 555CAF3C10F3B991007B1885 /* LibraryGridViewController.png */; };
+		A3BEFC8C152DE9E6009B4F4A /* scrubber-icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DB9FAB710F3C7EB0010DF0B /* scrubber-icon.png */; };
+		A3BEFC8D152DE9E6009B4F4A /* Lighting.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7DE7B5E21104B4FD0021F382 /* Lighting.xib */; };
+		A3BEFC8E152DE9E6009B4F4A /* speedread-thumb.png in Resources */ = {isa = PBXBuildFile; fileRef = 553E98FA1107B8E600FB309D /* speedread-thumb.png */; };
+		A3BEFC8F152DE9E6009B4F4A /* roundedcorners.png in Resources */ = {isa = PBXBuildFile; fileRef = 5590D316111C8E7D00CE0C4F /* roundedcorners.png */; };
+		A3BEFC90152DE9E6009B4F4A /* BlioStoreBookView.xib in Resources */ = {isa = PBXBuildFile; fileRef = C9867DE51127164F0070A03E /* BlioStoreBookView.xib */; };
+		A3BEFC91152DE9E6009B4F4A /* downloadButton.png in Resources */ = {isa = PBXBuildFile; fileRef = C9F47A0A1129BC7E00563348 /* downloadButton.png */; };
+		A3BEFC92152DE9E6009B4F4A /* downloadButtonPressed.png in Resources */ = {isa = PBXBuildFile; fileRef = C9F47A0B1129BC7E00563348 /* downloadButtonPressed.png */; };
+		A3BEFC93152DE9E6009B4F4A /* back-black.png in Resources */ = {isa = PBXBuildFile; fileRef = A37A584A113C36EF0003CCFF /* back-black.png */; };
+		A3BEFC94152DE9E6009B4F4A /* forward-black.png in Resources */ = {isa = PBXBuildFile; fileRef = A37A586A113C45640003CCFF /* forward-black.png */; };
+		A3BEFC95152DE9E6009B4F4A /* check.png in Resources */ = {isa = PBXBuildFile; fileRef = C99860DA113FD284009E5263 /* check.png */; };
+		A3BEFC96152DE9E6009B4F4A /* shadow-bottom.png in Resources */ = {isa = PBXBuildFile; fileRef = C9F748581140100100680E93 /* shadow-bottom.png */; };
+		A3BEFC97152DE9E6009B4F4A /* shadow-right.png in Resources */ = {isa = PBXBuildFile; fileRef = C9F749401140261700680E93 /* shadow-right.png */; };
+		A3BEFC98152DE9E6009B4F4A /* shadow-left.png in Resources */ = {isa = PBXBuildFile; fileRef = C9F749411140261700680E93 /* shadow-left.png */; };
+		A3BEFC99152DE9E6009B4F4A /* shadow-top.png in Resources */ = {isa = PBXBuildFile; fileRef = C9F749421140261700680E93 /* shadow-top.png */; };
+		A3BEFC9A152DE9E6009B4F4A /* SearchCellDivider.png in Resources */ = {isa = PBXBuildFile; fileRef = DCA65A3911503A4D006534F4 /* SearchCellDivider.png */; };
+		A3BEFC9B152DE9E6009B4F4A /* icon-categories.png in Resources */ = {isa = PBXBuildFile; fileRef = DCA65A4511503CF6006534F4 /* icon-categories.png */; };
+		A3BEFC9C152DE9E6009B4F4A /* icon-vault.png in Resources */ = {isa = PBXBuildFile; fileRef = DCA65A4611503CF6006534F4 /* icon-vault.png */; };
+		A3BEFC9D152DE9E6009B4F4A /* icon-cart.png in Resources */ = {isa = PBXBuildFile; fileRef = A383F2431174FA7A0049ED3A /* icon-cart.png */; };
+		A3BEFC9E152DE9E6009B4F4A /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = C9E5DC11117C741600950BA0 /* Localizable.strings */; };
+		A3BEFC9F152DE9E6009B4F4A /* library-progress-background.png in Resources */ = {isa = PBXBuildFile; fileRef = DC12F612117E563C0074B2D8 /* library-progress-background.png */; };
+		A3BEFCA0152DE9E6009B4F4A /* button-delete-red.png in Resources */ = {isa = PBXBuildFile; fileRef = DCFF6190117F6F4E00463427 /* button-delete-red.png */; };
+		A3BEFCA1152DE9E6009B4F4A /* button-delete-black.png in Resources */ = {isa = PBXBuildFile; fileRef = DCFF6191117F6F4E00463427 /* button-delete-black.png */; };
+		A3BEFCA2152DE9E6009B4F4A /* library-resumebutton.png in Resources */ = {isa = PBXBuildFile; fileRef = DCFF6196117F703A00463427 /* library-resumebutton.png */; };
+		A3BEFCA3152DE9E6009B4F4A /* library-pausebutton.png in Resources */ = {isa = PBXBuildFile; fileRef = DCFF6197117F703A00463427 /* library-pausebutton.png */; };
+		A3BEFCA4152DE9E6009B4F4A /* BlioVoiceData.plist in Resources */ = {isa = PBXBuildFile; fileRef = DCC447E011ADBAB700CBD491 /* BlioVoiceData.plist */; };
+		A3BEFCA5152DE9E6009B4F4A /* voice-sample-play-button.png in Resources */ = {isa = PBXBuildFile; fileRef = DCC4548811B092A800CBD491 /* voice-sample-play-button.png */; };
+		A3BEFCA6152DE9E6009B4F4A /* voiceSamples in Resources */ = {isa = PBXBuildFile; fileRef = DCC45ACB11B458A400CBD491 /* voiceSamples */; };
+		A3BEFCA7152DE9E6009B4F4A /* icon-noTTS.png in Resources */ = {isa = PBXBuildFile; fileRef = C9D280B111AD0FCE00857CFB /* icon-noTTS.png */; };
+		A3BEFCA8152DE9E6009B4F4A /* button-tts-pause.png in Resources */ = {isa = PBXBuildFile; fileRef = C9D280B211AD0FCE00857CFB /* button-tts-pause.png */; };
+		A3BEFCA9152DE9E6009B4F4A /* icon-freebooks.png in Resources */ = {isa = PBXBuildFile; fileRef = DCCE466911B9AE22002D7E01 /* icon-freebooks.png */; };
+		A3BEFCAA152DE9E6009B4F4A /* MainNavControllerAndLibraryView-iPad.xib in Resources */ = {isa = PBXBuildFile; fileRef = DCB0363F11BDC43300B341D4 /* MainNavControllerAndLibraryView-iPad.xib */; };
+		A3BEFCB0152DE9E6009B4F4A /* DRM in Resources */ = {isa = PBXBuildFile; fileRef = DC2EB05411C96E28006AC1B6 /* DRM */; };
+		A3BEFCB1152DE9E6009B4F4A /* icon-freebooks@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A3C7436011CAC178005A2219 /* icon-freebooks@2x.png */; };
+		A3BEFCB2152DE9E6009B4F4A /* icon-cart@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A3C7436111CAC178005A2219 /* icon-cart@2x.png */; };
+		A3BEFCB3152DE9E6009B4F4A /* icon-contents@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A3C7436211CAC178005A2219 /* icon-contents@2x.png */; };
+		A3BEFCB4152DE9E6009B4F4A /* icon-layout@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A3C7436411CAC178005A2219 /* icon-layout@2x.png */; };
+		A3BEFCB5152DE9E6009B4F4A /* icon-lock@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A3C7436511CAC178005A2219 /* icon-lock@2x.png */; };
+		A3BEFCB6152DE9E6009B4F4A /* icon-page@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A3C7436611CAC178005A2219 /* icon-page@2x.png */; };
+		A3BEFCB7152DE9E6009B4F4A /* icon-pause@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A3C7436711CAC178005A2219 /* icon-pause@2x.png */; };
+		A3BEFCB8152DE9E6009B4F4A /* icon-play@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A3C7436811CAC178005A2219 /* icon-play@2x.png */; };
+		A3BEFCB9152DE9E6009B4F4A /* icon-plus@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A3C7436911CAC178005A2219 /* icon-plus@2x.png */; };
+		A3BEFCBA152DE9E6009B4F4A /* icon-search@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A3C7436A11CAC178005A2219 /* icon-search@2x.png */; };
+		A3BEFCBB152DE9E6009B4F4A /* icon-speedread@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A3C7436B11CAC178005A2219 /* icon-speedread@2x.png */; };
+		A3BEFCBC152DE9E6009B4F4A /* icon-vault@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A3C7436C11CAC178005A2219 /* icon-vault@2x.png */; };
+		A3BEFCBD152DE9E6009B4F4A /* paper-black@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A3C7436D11CAC178005A2219 /* paper-black@2x.png */; };
+		A3BEFCBE152DE9E6009B4F4A /* paper-neutral@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A3C7436E11CAC178005A2219 /* paper-neutral@2x.png */; };
+		A3BEFCBF152DE9E6009B4F4A /* paper-white@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A3C7436F11CAC178005A2219 /* paper-white@2x.png */; };
+		A3BEFCC0152DE9E6009B4F4A /* librarybackground-iPad.png in Resources */ = {isa = PBXBuildFile; fileRef = DC48C4E811D3199C00C5D186 /* librarybackground-iPad.png */; };
+		A3BEFCC1152DE9E6009B4F4A /* iPodLikeSliderBlueLeftCap.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D4A00BE11DBA36800DDA5B7 /* iPodLikeSliderBlueLeftCap.png */; };
+		A3BEFCC2152DE9E6009B4F4A /* iPodLikeSliderBlueLeftCap@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D4A00BF11DBA36800DDA5B7 /* iPodLikeSliderBlueLeftCap@2x.png */; };
+		A3BEFCC3152DE9E6009B4F4A /* iPodLikeSliderKnob-Small.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D4A00C011DBA36800DDA5B7 /* iPodLikeSliderKnob-Small.png */; };
+		A3BEFCC4152DE9E6009B4F4A /* iPodLikeSliderKnob-Small@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D4A00C111DBA36800DDA5B7 /* iPodLikeSliderKnob-Small@2x.png */; };
+		A3BEFCC5152DE9E6009B4F4A /* iPodLikeSliderKnob.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D4A00C211DBA36800DDA5B7 /* iPodLikeSliderKnob.png */; };
+		A3BEFCC6152DE9E6009B4F4A /* iPodLikeSliderKnob@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D4A00C311DBA36800DDA5B7 /* iPodLikeSliderKnob@2x.png */; };
+		A3BEFCC7152DE9E6009B4F4A /* iPodLikeSliderWhiteRightCap.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D4A00C411DBA36800DDA5B7 /* iPodLikeSliderWhiteRightCap.png */; };
+		A3BEFCC8152DE9E6009B4F4A /* iPodLikeSliderWhiteRightCap@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D4A00C511DBA36800DDA5B7 /* iPodLikeSliderWhiteRightCap@2x.png */; };
+		A3BEFCC9152DE9E6009B4F4A /* LineLoupeHigh.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D4A00C611DBA36800DDA5B7 /* LineLoupeHigh.png */; };
+		A3BEFCCA152DE9E6009B4F4A /* LineLoupeHigh@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D4A00C711DBA36800DDA5B7 /* LineLoupeHigh@2x.png */; };
+		A3BEFCCB152DE9E6009B4F4A /* LineLoupeLow.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D4A00C811DBA36800DDA5B7 /* LineLoupeLow.png */; };
+		A3BEFCCC152DE9E6009B4F4A /* LineLoupeLow@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D4A00C911DBA36800DDA5B7 /* LineLoupeLow@2x.png */; };
+		A3BEFCCD152DE9E6009B4F4A /* LineLoupeMask.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D4A00CA11DBA36800DDA5B7 /* LineLoupeMask.png */; };
+		A3BEFCCE152DE9E6009B4F4A /* LineLoupeMask@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D4A00CB11DBA36800DDA5B7 /* LineLoupeMask@2x.png */; };
+		A3BEFCCF152DE9E6009B4F4A /* MagnificationLoupeHigh.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D4A00CC11DBA36800DDA5B7 /* MagnificationLoupeHigh.png */; };
+		A3BEFCD0152DE9E6009B4F4A /* MagnificationLoupeHigh@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D4A00CD11DBA36800DDA5B7 /* MagnificationLoupeHigh@2x.png */; };
+		A3BEFCD1152DE9E6009B4F4A /* MagnificationLoupeLow.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D4A00CE11DBA36800DDA5B7 /* MagnificationLoupeLow.png */; };
+		A3BEFCD2152DE9E6009B4F4A /* MagnificationLoupeLow@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D4A00CF11DBA36800DDA5B7 /* MagnificationLoupeLow@2x.png */; };
+		A3BEFCD3152DE9E6009B4F4A /* MagnificationLoupeMask.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D4A00D011DBA36800DDA5B7 /* MagnificationLoupeMask.png */; };
+		A3BEFCD4152DE9E6009B4F4A /* MagnificationLoupeMask@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D4A00D111DBA36800DDA5B7 /* MagnificationLoupeMask@2x.png */; };
+		A3BEFCD5152DE9E6009B4F4A /* MenuArrowBottom.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D4A00D211DBA36800DDA5B7 /* MenuArrowBottom.png */; };
+		A3BEFCD6152DE9E6009B4F4A /* MenuArrowBottom@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D4A00D311DBA36800DDA5B7 /* MenuArrowBottom@2x.png */; };
+		A3BEFCD7152DE9E6009B4F4A /* MenuArrowBottomHighlighted.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D4A00D411DBA36800DDA5B7 /* MenuArrowBottomHighlighted.png */; };
+		A3BEFCD8152DE9E6009B4F4A /* MenuArrowBottomHighlighted@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D4A00D511DBA36800DDA5B7 /* MenuArrowBottomHighlighted@2x.png */; };
+		A3BEFCD9152DE9E6009B4F4A /* MenuArrowTop.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D4A00D611DBA36800DDA5B7 /* MenuArrowTop.png */; };
+		A3BEFCDA152DE9E6009B4F4A /* MenuArrowTop@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D4A00D711DBA36800DDA5B7 /* MenuArrowTop@2x.png */; };
+		A3BEFCDB152DE9E6009B4F4A /* MenuArrowTopHighlighted.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D4A00D811DBA36800DDA5B7 /* MenuArrowTopHighlighted.png */; };
+		A3BEFCDC152DE9E6009B4F4A /* MenuArrowTopHighlighted@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D4A00D911DBA36800DDA5B7 /* MenuArrowTopHighlighted@2x.png */; };
+		A3BEFCDD152DE9E6009B4F4A /* MenuBackground.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D4A00DA11DBA36800DDA5B7 /* MenuBackground.png */; };
+		A3BEFCDE152DE9E6009B4F4A /* MenuBackground@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D4A00DB11DBA36800DDA5B7 /* MenuBackground@2x.png */; };
+		A3BEFCDF152DE9E6009B4F4A /* MenuBackgroundHighlighted.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D4A00DC11DBA36800DDA5B7 /* MenuBackgroundHighlighted.png */; };
+		A3BEFCE0152DE9E6009B4F4A /* MenuBackgroundHighlighted@2.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D4A00DD11DBA36800DDA5B7 /* MenuBackgroundHighlighted@2.png */; };
+		A3BEFCE1152DE9E6009B4F4A /* MenuBottomShadowLeft.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D4A00DE11DBA36800DDA5B7 /* MenuBottomShadowLeft.png */; };
+		A3BEFCE2152DE9E6009B4F4A /* MenuBottomShadowLeft@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D4A00DF11DBA36800DDA5B7 /* MenuBottomShadowLeft@2x.png */; };
+		A3BEFCE3152DE9E6009B4F4A /* MenuBottomShadowMiddle.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D4A00E011DBA36800DDA5B7 /* MenuBottomShadowMiddle.png */; };
+		A3BEFCE4152DE9E6009B4F4A /* MenuBottomShadowMiddle@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D4A00E111DBA36800DDA5B7 /* MenuBottomShadowMiddle@2x.png */; };
+		A3BEFCE5152DE9E6009B4F4A /* MenuBottomShadowRight.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D4A00E211DBA36800DDA5B7 /* MenuBottomShadowRight.png */; };
+		A3BEFCE6152DE9E6009B4F4A /* MenuBottomShadowRight@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D4A00E311DBA36800DDA5B7 /* MenuBottomShadowRight@2x.png */; };
+		A3BEFCE7152DE9E6009B4F4A /* MenuRidge.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D4A00E411DBA36800DDA5B7 /* MenuRidge.png */; };
+		A3BEFCE8152DE9E6009B4F4A /* MenuRidge@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D4A00E511DBA36800DDA5B7 /* MenuRidge@2x.png */; };
+		A3BEFCE9152DE9E6009B4F4A /* PurchaseButton.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D4A00E611DBA36800DDA5B7 /* PurchaseButton.png */; };
+		A3BEFCEA152DE9E6009B4F4A /* PurchaseButtonPressed.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D4A00E711DBA36800DDA5B7 /* PurchaseButtonPressed.png */; };
+		A3BEFCEB152DE9E6009B4F4A /* PurchaseConfirmButton.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D4A00E811DBA36800DDA5B7 /* PurchaseConfirmButton.png */; };
+		A3BEFCEC152DE9E6009B4F4A /* PurchaseConfirmButtonPressed.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D4A00E911DBA36800DDA5B7 /* PurchaseConfirmButtonPressed.png */; };
+		A3BEFCED152DE9E6009B4F4A /* rightButtonBlackOpaque.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D4A00EA11DBA36800DDA5B7 /* rightButtonBlackOpaque.png */; };
+		A3BEFCEE152DE9E6009B4F4A /* rightButtonBlackOpaque@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D4A00EB11DBA36800DDA5B7 /* rightButtonBlackOpaque@2x.png */; };
+		A3BEFCEF152DE9E6009B4F4A /* rightButtonBlackTranslucent.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D4A00EC11DBA36800DDA5B7 /* rightButtonBlackTranslucent.png */; };
+		A3BEFCF0152DE9E6009B4F4A /* rightButtonBlackTranslucent@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D4A00ED11DBA36800DDA5B7 /* rightButtonBlackTranslucent@2x.png */; };
+		A3BEFCF1152DE9E6009B4F4A /* rightButtonBlue.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D4A00EE11DBA36800DDA5B7 /* rightButtonBlue.png */; };
+		A3BEFCF2152DE9E6009B4F4A /* rightButtonBlue@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D4A00EF11DBA36800DDA5B7 /* rightButtonBlue@2x.png */; };
+		A3BEFCF3152DE9E6009B4F4A /* SelectionEnd.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D4A00F011DBA36800DDA5B7 /* SelectionEnd.png */; };
+		A3BEFCF4152DE9E6009B4F4A /* SelectionKnob.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D4A00F111DBA36800DDA5B7 /* SelectionKnob.png */; };
+		A3BEFCF5152DE9E6009B4F4A /* SelectionKnob@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D4A00F211DBA36800DDA5B7 /* SelectionKnob@2x.png */; };
+		A3BEFCF6152DE9E6009B4F4A /* button-buybooks.png in Resources */ = {isa = PBXBuildFile; fileRef = DC795B2D11E7E21B000DA04D /* button-buybooks.png */; };
+		A3BEFCF8152DE9E6009B4F4A /* buttonBarArrowDownSmall.png in Resources */ = {isa = PBXBuildFile; fileRef = C9FD392511FD69FF008F1F50 /* buttonBarArrowDownSmall.png */; };
+		A3BEFCF9152DE9E6009B4F4A /* buttonBarArrowDownSmall@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C9FD392611FD69FF008F1F50 /* buttonBarArrowDownSmall@2x.png */; };
+		A3BEFCFA152DE9E6009B4F4A /* buttonBarArrowUpSmall.png in Resources */ = {isa = PBXBuildFile; fileRef = C9FD392711FD69FF008F1F50 /* buttonBarArrowUpSmall.png */; };
+		A3BEFCFB152DE9E6009B4F4A /* buttonBarArrowUpSmall@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C9FD392811FD69FF008F1F50 /* buttonBarArrowUpSmall@2x.png */; };
+		A3BEFCFC152DE9E6009B4F4A /* navigationBarBlackTranslucentButton.png in Resources */ = {isa = PBXBuildFile; fileRef = C98857381202ED54006905CF /* navigationBarBlackTranslucentButton.png */; };
+		A3BEFCFD152DE9E6009B4F4A /* navigationBarBlackTranslucentButton@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C98857391202ED54006905CF /* navigationBarBlackTranslucentButton@2x.png */; };
+		A3BEFCFE152DE9E6009B4F4A /* button-delete-black@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DC18E082120516F30077DF01 /* button-delete-black@2x.png */; };
+		A3BEFCFF152DE9E6009B4F4A /* library-pausebutton@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DC18E085120517010077DF01 /* library-pausebutton@2x.png */; };
+		A3BEFD00152DE9E6009B4F4A /* library-resumebutton@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DC18E089120517170077DF01 /* library-resumebutton@2x.png */; };
+		A3BEFD01152DE9E6009B4F4A /* library-progress-background@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DC18E091120517C20077DF01 /* library-progress-background@2x.png */; };
+		A3BEFD04152DE9E6009B4F4A /* booktexture-nocover.png in Resources */ = {isa = PBXBuildFile; fileRef = C9CEBD751211959B0040CEFF /* booktexture-nocover.png */; };
+		A3BEFD05152DE9E6009B4F4A /* BlioFeatureCompatibility.plist in Resources */ = {isa = PBXBuildFile; fileRef = DC2ABE401213DC0F00E6C483 /* BlioFeatureCompatibility.plist */; };
+		A3BEFD06152DE9E6009B4F4A /* button-delete-red@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DCA1B8FC122289C60022D410 /* button-delete-red@2x.png */; };
+		A3BEFD07152DE9E6009B4F4A /* button-tts-pause@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DCA1B8FF122289D20022D410 /* button-tts-pause@2x.png */; };
+		A3BEFD08152DE9E6009B4F4A /* downloadButton@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DCA1B903122289EF0022D410 /* downloadButton@2x.png */; };
+		A3BEFD09152DE9E6009B4F4A /* downloadButtonPressed@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DCA1B904122289EF0022D410 /* downloadButtonPressed@2x.png */; };
+		A3BEFD0A152DE9E6009B4F4A /* voice-sample-play-button@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DC32BF8C12248E38008DBDD8 /* voice-sample-play-button@2x.png */; };
+		A3BEFD0B152DE9E6009B4F4A /* badge-audiobook.png in Resources */ = {isa = PBXBuildFile; fileRef = DC5FCDCC1227640D003C57CA /* badge-audiobook.png */; };
+		A3BEFD0C152DE9E6009B4F4A /* badge-notsupported.png in Resources */ = {isa = PBXBuildFile; fileRef = DC5FCDCD1227640D003C57CA /* badge-notsupported.png */; };
+		A3BEFD0D152DE9E6009B4F4A /* badge-tts.png in Resources */ = {isa = PBXBuildFile; fileRef = DC5FCDCE1227640D003C57CA /* badge-tts.png */; };
+		A3BEFD0E152DE9E6009B4F4A /* badge-tts@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DC5FCDCF1227640D003C57CA /* badge-tts@2x.png */; };
+		A3BEFD0F152DE9E6009B4F4A /* badge-notsupported@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DC5FCDD01227640D003C57CA /* badge-notsupported@2x.png */; };
+		A3BEFD10152DE9E6009B4F4A /* badge-audiobook@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DC5FCDD11227640D003C57CA /* badge-audiobook@2x.png */; };
+		A3BEFD11152DE9E6009B4F4A /* icon-back.png in Resources */ = {isa = PBXBuildFile; fileRef = A3E6419712397C0400D2B85A /* icon-back.png */; };
+		A3BEFD12152DE9E6009B4F4A /* icon-back@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A3E6419812397C0400D2B85A /* icon-back@2x.png */; };
+		A3BEFD13152DE9E6009B4F4A /* table-headerbar-background.png in Resources */ = {isa = PBXBuildFile; fileRef = DC8CADA3124877DA00C1EED9 /* table-headerbar-background.png */; };
+		A3BEFD14152DE9E6009B4F4A /* table-headerbar-background@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DC8CADA4124877DA00C1EED9 /* table-headerbar-background@2x.png */; };
+		A3BEFD15152DE9E6009B4F4A /* searchBarBorder.png in Resources */ = {isa = PBXBuildFile; fileRef = C95FCB06123A7B7C00859B92 /* searchBarBorder.png */; };
+		A3BEFD16152DE9E6009B4F4A /* searchBarBorder@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C95FCB07123A7B7C00859B92 /* searchBarBorder@2x.png */; };
+		A3BEFD17152DE9E6009B4F4A /* searchFieldIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = C9923A0E126CCF2D00BA364A /* searchFieldIcon.png */; };
+		A3BEFD18152DE9E6009B4F4A /* searchFieldIcon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C9923A0F126CCF2D00BA364A /* searchFieldIcon@2x.png */; };
+		A3BEFD19152DE9E6009B4F4A /* greyButton.png in Resources */ = {isa = PBXBuildFile; fileRef = DCD4A28B126F470F00A131B7 /* greyButton.png */; };
+		A3BEFD1A152DE9E6009B4F4A /* greyButton@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DCD4A28C126F470F00A131B7 /* greyButton@2x.png */; };
+		A3BEFD1B152DE9E6009B4F4A /* greyButtonPressed.png in Resources */ = {isa = PBXBuildFile; fileRef = DCD4A28D126F470F00A131B7 /* greyButtonPressed.png */; };
+		A3BEFD1C152DE9E6009B4F4A /* greyButtonPressed@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DCD4A28E126F470F00A131B7 /* greyButtonPressed@2x.png */; };
+		A3BEFD1D152DE9E6009B4F4A /* icon-add@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DCD4A4E4126F7F8E00A131B7 /* icon-add@2x.png */; };
+		A3BEFD1E152DE9E6009B4F4A /* icon-bookmarked@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DCD4A4E5126F7F8E00A131B7 /* icon-bookmarked@2x.png */; };
+		A3BEFD1F152DE9E6009B4F4A /* icon-bookmarked.png in Resources */ = {isa = PBXBuildFile; fileRef = DCD4A4E6126F7F8E00A131B7 /* icon-bookmarked.png */; };
+		A3BEFD20152DE9E6009B4F4A /* icon-add.png in Resources */ = {isa = PBXBuildFile; fileRef = DCD4A4E7126F7F8E00A131B7 /* icon-add.png */; };
+		A3BEFD21152DE9E6009B4F4A /* icon-import.png in Resources */ = {isa = PBXBuildFile; fileRef = A3B0B2AF126E088400FC3D18 /* icon-import.png */; };
+		A3BEFD22152DE9E6009B4F4A /* icon-import@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A3B0B2B0126E088500FC3D18 /* icon-import@2x.png */; };
+		A3BEFD23152DE9E6009B4F4A /* icon-title@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D131D191295628300BCA583 /* icon-title@2x.png */; };
+		A3BEFD24152DE9E6009B4F4A /* icon-title.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D131D1A1295628300BCA583 /* icon-title.png */; };
+		A3BEFD25152DE9E6009B4F4A /* icon-list@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D131D1B1295628300BCA583 /* icon-list@2x.png */; };
+		A3BEFD26152DE9E6009B4F4A /* icon-list.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D131D1C1295628300BCA583 /* icon-list.png */; };
+		A3BEFD27152DE9E6009B4F4A /* icon-grid@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D131D1D1295628300BCA583 /* icon-grid@2x.png */; };
+		A3BEFD28152DE9E6009B4F4A /* icon-grid.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D131D1E1295628300BCA583 /* icon-grid.png */; };
+		A3BEFD29152DE9E6009B4F4A /* icon-author@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D131D1F1295628300BCA583 /* icon-author@2x.png */; };
+		A3BEFD2A152DE9E6009B4F4A /* icon-author.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D131D201295628300BCA583 /* icon-author.png */; };
+		A3BEFD2B152DE9E6009B4F4A /* icon-arbitrary@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D131D211295628300BCA583 /* icon-arbitrary@2x.png */; };
+		A3BEFD2C152DE9E6009B4F4A /* icon-arbitrary.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D131D221295628300BCA583 /* icon-arbitrary.png */; };
+		A3BEFD2D152DE9E6009B4F4A /* webstore-screenshot-ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = DCFAC96912AD738D0049341B /* webstore-screenshot-ipad.png */; };
+		A3BEFD2E152DE9E6009B4F4A /* webstore-screenshot-ipad@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DCFAC96A12AD738D0049341B /* webstore-screenshot-ipad@2x.png */; };
+		A3BEFD2F152DE9E6009B4F4A /* webstore-screenshot-phone.png in Resources */ = {isa = PBXBuildFile; fileRef = DCF63D1412B59CA7003E762C /* webstore-screenshot-phone.png */; };
+		A3BEFD30152DE9E6009B4F4A /* webstore-screenshot-phone@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DCF63D1512B59CA7003E762C /* webstore-screenshot-phone@2x.png */; };
+		A3BEFD31152DE9E6009B4F4A /* button-background-graygradient.png in Resources */ = {isa = PBXBuildFile; fileRef = DCF641FD12B60B60003E762C /* button-background-graygradient.png */; };
+		A3BEFD32152DE9E6009B4F4A /* button-background-graygradient@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DCF641FE12B60B60003E762C /* button-background-graygradient@2x.png */; };
+		A3BEFD33152DE9E6009B4F4A /* DRM-iPad in Resources */ = {isa = PBXBuildFile; fileRef = 7DB6493812B12AC100F42F87 /* DRM-iPad */; };
+		A3BEFD34152DE9E6009B4F4A /* paper-black~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DA97BA212B25A6400F1FF75 /* paper-black~ipad.png */; };
+		A3BEFD35152DE9E6009B4F4A /* paper-neutral~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DA97BA312B25A6500F1FF75 /* paper-neutral~ipad.png */; };
+		A3BEFD36152DE9E6009B4F4A /* paper-white~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DA97C1012B273CC00F1FF75 /* paper-white~ipad.png */; };
+		A3BEFD37152DE9E6009B4F4A /* back-black@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A3E5AF1612B2FD2A008F48C6 /* back-black@2x.png */; };
+		A3BEFD38152DE9E6009B4F4A /* forward-black@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A3E5AF1A12B2FD44008F48C6 /* forward-black@2x.png */; };
+		A3BEFD39152DE9E6009B4F4A /* apache2-license.html in Resources */ = {isa = PBXBuildFile; fileRef = A39305FE12BAC01A00949150 /* apache2-license.html */; };
+		A3BEFD3A152DE9E6009B4F4A /* gnulesser-license.html in Resources */ = {isa = PBXBuildFile; fileRef = A393060212BAC03400949150 /* gnulesser-license.html */; };
+		A3BEFD3B152DE9E6009B4F4A /* mit-license.html in Resources */ = {isa = PBXBuildFile; fileRef = A393060312BAC03400949150 /* mit-license.html */; };
+		A3BEFD3C152DE9E6009B4F4A /* openfont-license.html in Resources */ = {isa = PBXBuildFile; fileRef = A393060412BAC03400949150 /* openfont-license.html */; };
+		A3BEFD3D152DE9E6009B4F4A /* badge-preview.png in Resources */ = {isa = PBXBuildFile; fileRef = DC63DB1512DF8F2E00D8C750 /* badge-preview.png */; };
+		A3BEFD3E152DE9E6009B4F4A /* badge-preview@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DC63DB1612DF8F2E00D8C750 /* badge-preview@2x.png */; };
+		A3BEFD3F152DE9E6009B4F4A /* userdoc-ipad.html in Resources */ = {isa = PBXBuildFile; fileRef = A3951A2712E9E87D0023EE10 /* userdoc-ipad.html */; };
+		A3BEFD40152DE9E6009B4F4A /* sfhf-license.html in Resources */ = {isa = PBXBuildFile; fileRef = 7D07620112EEC96A008EF96D /* sfhf-license.html */; };
+		A3BEFD41152DE9E6009B4F4A /* minizip-license.html in Resources */ = {isa = PBXBuildFile; fileRef = 7DB56E8413097EB900814B75 /* minizip-license.html */; };
+		A3BEFD42152DE9E6009B4F4A /* playButton.png in Resources */ = {isa = PBXBuildFile; fileRef = C9A9DAEC1312BC22009B950F /* playButton.png */; };
+		A3BEFD43152DE9E6009B4F4A /* paper-black-quartered~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D1D521C131E9A64007E36E9 /* paper-black-quartered~ipad.png */; };
+		A3BEFD44152DE9E6009B4F4A /* paper-neutral-quartered~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D1D521D131E9A64007E36E9 /* paper-neutral-quartered~ipad.png */; };
+		A3BEFD45152DE9E6009B4F4A /* paper-white-quartered~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D1D521E131E9A64007E36E9 /* paper-white-quartered~ipad.png */; };
+		A3BEFD46152DE9E6009B4F4A /* ePubBaseOverrides.css in Resources */ = {isa = PBXBuildFile; fileRef = C93ECB15134B6215003B99FD /* ePubBaseOverrides.css */; };
+		A3BEFD47152DE9E6009B4F4A /* TextFlowCover.xhtml in Resources */ = {isa = PBXBuildFile; fileRef = C93ECB16134B6215003B99FD /* TextFlowCover.xhtml */; };
+		A3BEFD48152DE9E6009B4F4A /* TextFlowFlow.css in Resources */ = {isa = PBXBuildFile; fileRef = C93ECB17134B6215003B99FD /* TextFlowFlow.css */; };
+		A3BEFD49152DE9E6009B4F4A /* TextFlowXAML.css in Resources */ = {isa = PBXBuildFile; fileRef = C93ECB18134B6215003B99FD /* TextFlowXAML.css */; };
+		A3BEFD4A152DE9E6009B4F4A /* TextFlowXAMLOverrides.css in Resources */ = {isa = PBXBuildFile; fileRef = C93ECB19134B6215003B99FD /* TextFlowXAMLOverrides.css */; };
+		A3BEFD4B152DE9E6009B4F4A /* book-overlay@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DC8A54451412E25D0009341B /* book-overlay@2x.png */; };
+		A3BEFD4C152DE9E6009B4F4A /* book-overlay.png in Resources */ = {isa = PBXBuildFile; fileRef = DC8A54461412E25D0009341B /* book-overlay.png */; };
+		A3BEFD4D152DE9E6009B4F4A /* THFonts in Resources */ = {isa = PBXBuildFile; fileRef = 7D71550A13E99F2700A593A9 /* THFonts */; };
+		A3BEFD4E152DE9E6009B4F4A /* voiceover-tips.html in Resources */ = {isa = PBXBuildFile; fileRef = A323E75F1427A6D10043E78E /* voiceover-tips.html */; };
+		A3BEFD4F152DE9E6009B4F4A /* brightness-sun-bright.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D69C35014293D6500136CFB /* brightness-sun-bright.png */; };
+		A3BEFD50152DE9E6009B4F4A /* brightness-sun-bright@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D69C35114293D6500136CFB /* brightness-sun-bright@2x.png */; };
+		A3BEFD51152DE9E6009B4F4A /* brightness-sun-dim.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D69C35214293D6500136CFB /* brightness-sun-dim.png */; };
+		A3BEFD52152DE9E6009B4F4A /* brightness-sun-dim@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D69C35314293D6500136CFB /* brightness-sun-dim@2x.png */; };
+		A3BEFD53152DE9E6009B4F4A /* voiceover-quickstart.html in Resources */ = {isa = PBXBuildFile; fileRef = A3F24EB0143F6719007565C2 /* voiceover-quickstart.html */; };
+		A3BEFD54152DE9E6009B4F4A /* icon-wrench.png in Resources */ = {isa = PBXBuildFile; fileRef = A365921A146C1C0500B23AAA /* icon-wrench.png */; };
+		A3BEFD55152DE9E6009B4F4A /* icon-wrench@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A365921B146C1C0500B23AAA /* icon-wrench@2x.png */; };
+		A3BEFD56152DE9E6009B4F4A /* BlioFonts.plist in Resources */ = {isa = PBXBuildFile; fileRef = 7DE96E1C147D1556000C39DB /* BlioFonts.plist */; };
+		A3BEFD57152DE9E6009B4F4A /* FlowViewEucPageOptions.plist in Resources */ = {isa = PBXBuildFile; fileRef = 7DE0D557147AC2B0005FD319 /* FlowViewEucPageOptions.plist */; };
+		A3BEFD58152DE9E6009B4F4A /* badge-daysleft@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DCC2F7EE14917EDD006B2F45 /* badge-daysleft@2x.png */; };
+		A3BEFD59152DE9E6009B4F4A /* badge-daysleft.png in Resources */ = {isa = PBXBuildFile; fileRef = DCC2F7EF14917EDD006B2F45 /* badge-daysleft.png */; };
+		A3BEFD5A152DE9E6009B4F4A /* FBDialog.bundle in Resources */ = {isa = PBXBuildFile; fileRef = DC92D6A815047804002AF222 /* FBDialog.bundle */; };
+		A3BEFD5B152DE9E6009B4F4A /* BlioEPUB3Overrides.css in Resources */ = {isa = PBXBuildFile; fileRef = 7DB1248414FFEB0500DB7666 /* BlioEPUB3Overrides.css */; };
+		A3BEFD61152DE9E6009B4F4A /* NSArray+BlioAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DB7029E1248D38E00BC3272 /* NSArray+BlioAdditions.m */; };
+		A3BEFD62152DE9E6009B4F4A /* BlioViewSettingsContentsView.m in Sources */ = {isa = PBXBuildFile; fileRef = C9C37B9B122D278800DD350F /* BlioViewSettingsContentsView.m */; };
+		A3BEFD63152DE9E6009B4F4A /* BlioViewSettingsPopover.m in Sources */ = {isa = PBXBuildFile; fileRef = C9C37C2D122D3F5900DD350F /* BlioViewSettingsPopover.m */; };
+		A3BEFD64152DE9E6009B4F4A /* BlioModalPopoverController.m in Sources */ = {isa = PBXBuildFile; fileRef = C9221744123504E500992E2E /* BlioModalPopoverController.m */; };
+		A3BEFD65152DE9E6009B4F4A /* BlioBookSearchPopoverController.m in Sources */ = {isa = PBXBuildFile; fileRef = C95FC84A123A3D1100859B92 /* BlioBookSearchPopoverController.m */; };
+		A3BEFD66152DE9E6009B4F4A /* BlioBookSearchResultsTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C95FCCFF123BCED600859B92 /* BlioBookSearchResultsTableViewController.m */; };
+		A3BEFD67152DE9E6009B4F4A /* BlioBookSearchResult.m in Sources */ = {isa = PBXBuildFile; fileRef = C95FCD0D123BDB1300859B92 /* BlioBookSearchResult.m */; };
+		A3BEFD68152DE9E6009B4F4A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.m */; };
+		A3BEFD69152DE9E6009B4F4A /* BlioAppAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1D3623250D0F684500981E51 /* BlioAppAppDelegate.m */; };
+		A3BEFD6A152DE9E6009B4F4A /* BlioLibraryViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 28C286E00D94DF7D0034E888 /* BlioLibraryViewController.m */; };
+		A3BEFD6B152DE9E6009B4F4A /* BlioLayoutView.m in Sources */ = {isa = PBXBuildFile; fileRef = C94D27B210DBCE3700F30AFE /* BlioLayoutView.m */; };
+		A3BEFD6C152DE9E6009B4F4A /* BlioBook.m in Sources */ = {isa = PBXBuildFile; fileRef = C9775AF510DFD728005E0E2B /* BlioBook.m */; };
+		A3BEFD6D152DE9E6009B4F4A /* BlioAcapelaAudioManager.m in Sources */ = {isa = PBXBuildFile; fileRef = A37FC33410EA785F00F3DC5A /* BlioAcapelaAudioManager.m */; };
+		A3BEFD6E152DE9E6009B4F4A /* BlioNotesView.m in Sources */ = {isa = PBXBuildFile; fileRef = C932B03A10ECBC6000B8286A /* BlioNotesView.m */; };
+		A3BEFD6F152DE9E6009B4F4A /* BlioBookViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D7917F510F21CD400C4D839 /* BlioBookViewController.m */; };
+		A3BEFD70152DE9E6009B4F4A /* BlioFlowView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D79183510F2257C00C4D839 /* BlioFlowView.m */; };
+		A3BEFD71152DE9E6009B4F4A /* BlioUIImageAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = C9D8A4A210F20E4800FD5F22 /* BlioUIImageAdditions.m */; };
+		A3BEFD72152DE9E6009B4F4A /* BlioCoverView.m in Sources */ = {isa = PBXBuildFile; fileRef = C96785EF120C0AAC008669BA /* BlioCoverView.m */; };
+		A3BEFD73152DE9E6009B4F4A /* BlioContentsTabViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C990F9C5110065CB00C82CA8 /* BlioContentsTabViewController.m */; };
+		A3BEFD74152DE9E6009B4F4A /* BlioBookmark.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D4CE4741100C64C0061BDF2 /* BlioBookmark.m */; };
+		A3BEFD75152DE9E6009B4F4A /* BlioLightSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DE7B6391104BC780021F382 /* BlioLightSettingsViewController.m */; };
+		A3BEFD76152DE9E6009B4F4A /* BlioSpeedReadView.m in Sources */ = {isa = PBXBuildFile; fileRef = 553E99001107B8F200FB309D /* BlioSpeedReadView.m */; };
+		A3BEFD77152DE9E6009B4F4A /* BlioTextFlow.m in Sources */ = {isa = PBXBuildFile; fileRef = C9E1FA24110EE4D500999587 /* BlioTextFlow.m */; };
+		A3BEFD78152DE9E6009B4F4A /* BlioAudioBookManager.m in Sources */ = {isa = PBXBuildFile; fileRef = A3DDFDFE110FD1AA00EF1D44 /* BlioAudioBookManager.m */; };
+		A3BEFD79152DE9E6009B4F4A /* BlioAudioManager.m in Sources */ = {isa = PBXBuildFile; fileRef = A3169288111488C9005AAE5E /* BlioAudioManager.m */; };
+		A3BEFD7A152DE9E6009B4F4A /* BlioStoreArchiveViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C972648D111C7B8C001BCC0B /* BlioStoreArchiveViewController.m */; };
+		A3BEFD7B152DE9E6009B4F4A /* BlioAppSettingsController.m in Sources */ = {isa = PBXBuildFile; fileRef = A3A672B511304D7700138097 /* BlioAppSettingsController.m */; };
+		A3BEFD7C152DE9E6009B4F4A /* BlioReadingVoiceSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A3A67375113078E300138097 /* BlioReadingVoiceSettingsViewController.m */; };
+		A3BEFD7D152DE9E6009B4F4A /* BlioWebToolsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C93E825C1134241D000117C6 /* BlioWebToolsViewController.m */; };
+		A3BEFD7E152DE9E6009B4F4A /* BlioProcessingManager.m in Sources */ = {isa = PBXBuildFile; fileRef = C9F936EF113530260047B985 /* BlioProcessingManager.m */; };
+		A3BEFD7F152DE9E6009B4F4A /* BlioProcessingStandardOperations.m in Sources */ = {isa = PBXBuildFile; fileRef = C9B61CC11136BA620012CE7E /* BlioProcessingStandardOperations.m */; };
+		A3BEFD80152DE9E6009B4F4A /* BlioProcessing.m in Sources */ = {isa = PBXBuildFile; fileRef = C9B61CC61136BAA80012CE7E /* BlioProcessing.m */; };
+		A3BEFD81152DE9E6009B4F4A /* ZipArchive.mm in Sources */ = {isa = PBXBuildFile; fileRef = C9B620CB1137BE170012CE7E /* ZipArchive.mm */; settings = {COMPILER_FLAGS = "-w"; }; };
+		A3BEFD82152DE9E6009B4F4A /* BlioWebToolSettingsController.m in Sources */ = {isa = PBXBuildFile; fileRef = A371FDCD113AF77200E1A51C /* BlioWebToolSettingsController.m */; };
+		A3BEFD83152DE9E6009B4F4A /* UIDevice+BlioAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = C9AF20E7114A67C3007D7AFC /* UIDevice+BlioAdditions.m */; };
+		A3BEFD84152DE9E6009B4F4A /* BlioFlowAnalyzeOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D9147C81151497900BCBB23 /* BlioFlowAnalyzeOperation.m */; };
+		A3BEFD85152DE9E6009B4F4A /* BlioTextFlowFlow.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DA5665311529FD2000A849D /* BlioTextFlowFlow.m */; };
+		A3BEFD86152DE9E6009B4F4A /* BlioTextFlowParagraph.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DA5665911529FE2000A849D /* BlioTextFlowParagraph.m */; };
+		A3BEFD87152DE9E6009B4F4A /* BlioTextFlowFlowTree.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DF2A38A1152C5F100FC2045 /* BlioTextFlowFlowTree.m */; };
+		A3BEFD88152DE9E6009B4F4A /* BlioFlowEucBook.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DF2A48E11536CA100FC2045 /* BlioFlowEucBook.m */; };
+		A3BEFD89152DE9E6009B4F4A /* Reachability.m in Sources */ = {isa = PBXBuildFile; fileRef = DC5077A0116A3F2800CD40B3 /* Reachability.m */; };
+		A3BEFD8A152DE9E6009B4F4A /* MRGridView.m in Sources */ = {isa = PBXBuildFile; fileRef = DC2A3E5D116C5DF80049A97E /* MRGridView.m */; };
+		A3BEFD8B152DE9E6009B4F4A /* MRGridViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = DC2A3E5F116C5DF80049A97E /* MRGridViewCell.m */; };
+		A3BEFD8C152DE9E6009B4F4A /* MRGridViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DC2A3E61116C5DF80049A97E /* MRGridViewController.m */; };
+		A3BEFD8D152DE9E6009B4F4A /* BlioBookVault.m in Sources */ = {isa = PBXBuildFile; fileRef = A38161551164FB3E003A9709 /* BlioBookVault.m */; };
+		A3BEFD8E152DE9E6009B4F4A /* NSDate+ISO8601Parsing.m in Sources */ = {isa = PBXBuildFile; fileRef = A38161571164FB3E003A9709 /* NSDate+ISO8601Parsing.m */; };
+		A3BEFD8F152DE9E6009B4F4A /* NSDate+ISO8601Unparsing.m in Sources */ = {isa = PBXBuildFile; fileRef = A38161591164FB3E003A9709 /* NSDate+ISO8601Unparsing.m */; };
+		A3BEFD90152DE9E6009B4F4A /* USAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = A381615B1164FB3E003A9709 /* USAdditions.m */; };
+		A3BEFD91152DE9E6009B4F4A /* USGlobals.m in Sources */ = {isa = PBXBuildFile; fileRef = A381615D1164FB3E003A9709 /* USGlobals.m */; };
+		A3BEFD92152DE9E6009B4F4A /* xsd.m in Sources */ = {isa = PBXBuildFile; fileRef = A381615F1164FB3E003A9709 /* xsd.m */; };
+		A3BEFD93152DE9E6009B4F4A /* BlioOnlineStoreHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = A368C69D116A3A52008653CF /* BlioOnlineStoreHelper.m */; };
+		A3BEFD94152DE9E6009B4F4A /* BlioLoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A3F9385A116BC37B00E53BD3 /* BlioLoginViewController.m */; };
+		A3BEFD95152DE9E6009B4F4A /* CellTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = A3F9387E116BD63500E53BD3 /* CellTextField.m */; };
+		A3BEFD96152DE9E6009B4F4A /* EditableTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = A3F93880116BD63500E53BD3 /* EditableTableViewCell.m */; };
+		A3BEFD97152DE9E6009B4F4A /* BlioStoreWebsiteViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A3689AF3116E3D1A0039FD35 /* BlioStoreWebsiteViewController.m */; };
+		A3BEFD98152DE9E6009B4F4A /* BlioContentCafe.m in Sources */ = {isa = PBXBuildFile; fileRef = A36D809B117141DF00F93176 /* BlioContentCafe.m */; };
+		A3BEFD99152DE9E6009B4F4A /* BlioTextFlowParagraphSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D94C639117630050067B732 /* BlioTextFlowParagraphSource.m */; };
+		A3BEFD9A152DE9E6009B4F4A /* BlioAccessibilitySegmentedControl.m in Sources */ = {isa = PBXBuildFile; fileRef = C9336E7B1180854800D29256 /* BlioAccessibilitySegmentedControl.m */; };
+		A3BEFD9B152DE9E6009B4F4A /* BlioEPubParagraphSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D79CFAC117F55E70081F554 /* BlioEPubParagraphSource.m */; };
+		A3BEFD9C152DE9E6009B4F4A /* BlioAlertManager.m in Sources */ = {isa = PBXBuildFile; fileRef = DCA4D09B11925AB30046CE51 /* BlioAlertManager.m */; };
+		A3BEFD9D152DE9E6009B4F4A /* BlioStoreManager.m in Sources */ = {isa = PBXBuildFile; fileRef = DC0B99371194E9190040CEFB /* BlioStoreManager.m */; };
+		A3BEFD9E152DE9E6009B4F4A /* BlioStoreHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = DC0B993D1194F03B0040CEFB /* BlioStoreHelper.m */; };
+		A3BEFD9F152DE9E6009B4F4A /* BlioSelectableBookView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DD9BA131199B7F4001FED8E /* BlioSelectableBookView.m */; };
+		A3BEFDA0152DE9E6009B4F4A /* BlioDownloadVoicesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DCC451E811B042FC00CBD491 /* BlioDownloadVoicesViewController.m */; };
+		A3BEFDA1152DE9E6009B4F4A /* BlioBookSearchController.m in Sources */ = {isa = PBXBuildFile; fileRef = C93317AE11B5457D0057E0BE /* BlioBookSearchController.m */; };
+		A3BEFDA2152DE9E6009B4F4A /* BlioLicenseClient.m in Sources */ = {isa = PBXBuildFile; fileRef = A39A8C8E11B97C0F00182D7E /* BlioLicenseClient.m */; };
+		A3BEFDA3152DE9E6009B4F4A /* BlioBookSearchViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C9406B2F11C64A580072CE23 /* BlioBookSearchViewController.m */; };
+		A3BEFDA4152DE9E6009B4F4A /* BlioBookSearchToolbar.m in Sources */ = {isa = PBXBuildFile; fileRef = C9AC4A8311C7A2BA007B569B /* BlioBookSearchToolbar.m */; };
+		A3BEFDA5152DE9E6009B4F4A /* BlioSplitViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DC48C98D11D54A0100C5D186 /* BlioSplitViewController.m */; };
+		A3BEFDA6152DE9E6009B4F4A /* BlioSplitView.m in Sources */ = {isa = PBXBuildFile; fileRef = DC48C98F11D54A0100C5D186 /* BlioSplitView.m */; };
+		A3BEFDA7152DE9E6009B4F4A /* BlioBookManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DCD8E5311E32EFF00BA3255 /* BlioBookManager.m */; };
+		A3BEFDA8152DE9E6009B4F4A /* BlioEPubBook.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DCD8FB711E3452800BA3255 /* BlioEPubBook.m */; };
+		A3BEFDA9152DE9E6009B4F4A /* NSObject+BlioAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DF429D111E4EC5B00B8227E /* NSObject+BlioAdditions.m */; };
+		A3BEFDAA152DE9E6009B4F4A /* BlioXPSProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = C9DA72B811E60C9400F584A1 /* BlioXPSProvider.m */; };
+		A3BEFDAB152DE9E6009B4F4A /* BlioTextFlowXAMLTree.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DBD0EEA120191F8009CD9DA /* BlioTextFlowXAMLTree.m */; };
+		A3BEFDAC152DE9E6009B4F4A /* BlioTextFlowXAMLTreeNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DBD0F741201977D009CD9DA /* BlioTextFlowXAMLTreeNode.m */; };
+		A3BEFDAD152DE9E6009B4F4A /* NSData+MBBase64.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DB190EA120315A80001017D /* NSData+MBBase64.m */; };
+		A3BEFDAE152DE9E6009B4F4A /* NSString+BlioAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DB1913712031A8B0001017D /* NSString+BlioAdditions.m */; };
+		A3BEFDAF152DE9E6009B4F4A /* BlioEULATextController.m in Sources */ = {isa = PBXBuildFile; fileRef = A3FE55AB12074EBD0038DA0C /* BlioEULATextController.m */; };
+		A3BEFDB0152DE9E6009B4F4A /* BlioHelpSettingsController.m in Sources */ = {isa = PBXBuildFile; fileRef = A3FE55AD12074EBD0038DA0C /* BlioHelpSettingsController.m */; };
+		A3BEFDB1152DE9E6009B4F4A /* BlioVersionController.m in Sources */ = {isa = PBXBuildFile; fileRef = A3FE55AF12074EBD0038DA0C /* BlioVersionController.m */; };
+		A3BEFDB2152DE9E6009B4F4A /* BlioViewSettingsSheet.m in Sources */ = {isa = PBXBuildFile; fileRef = A3B6F6F2120C5E2E00D48E04 /* BlioViewSettingsSheet.m */; };
+		A3BEFDB3152DE9E6009B4F4A /* BlioBeveledView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D8A801E121A99FB00A54E16 /* BlioBeveledView.m */; };
+		A3BEFDB4152DE9E6009B4F4A /* BlioDrmSessionManager.m in Sources */ = {isa = PBXBuildFile; fileRef = A3729AF41225A18800E68C25 /* BlioDrmSessionManager.m */; };
+		A3BEFDB5152DE9E6009B4F4A /* DigitalLockerGateway.m in Sources */ = {isa = PBXBuildFile; fileRef = DCEB07731242AFEF0073881D /* DigitalLockerGateway.m */; };
+		A3BEFDB6152DE9E6009B4F4A /* BlioCreateAccountViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DCE78E3B123CB9960038970C /* BlioCreateAccountViewController.m */; };
+		A3BEFDB7152DE9E6009B4F4A /* BlioRoundedRectActivityView.m in Sources */ = {isa = PBXBuildFile; fileRef = DC8CB3241249298400C1EED9 /* BlioRoundedRectActivityView.m */; };
+		A3BEFDB8152DE9E6009B4F4A /* BlioTextFlowBlockCombiner.m in Sources */ = {isa = PBXBuildFile; fileRef = C9F4812B1252465900083923 /* BlioTextFlowBlockCombiner.m */; };
+		A3BEFDB9152DE9E6009B4F4A /* BlioInAppPurchaseManager.m in Sources */ = {isa = PBXBuildFile; fileRef = DCC9B4EC1254E84600B17FBB /* BlioInAppPurchaseManager.m */; };
+		A3BEFDBA152DE9E6009B4F4A /* CCInAppPurchaseService.m in Sources */ = {isa = PBXBuildFile; fileRef = DCC9B5B1125535A800B17FBB /* CCInAppPurchaseService.m */; };
+		A3BEFDBB152DE9E6009B4F4A /* BlioPurchaseVoicesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DCC9B64B1255BFA000B17FBB /* BlioPurchaseVoicesViewController.m */; };
+		A3BEFDBC152DE9E6009B4F4A /* BlioGetBooksImportViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DCF6E1FA125E6F8C00CAC22B /* BlioGetBooksImportViewController.m */; };
+		A3BEFDBD152DE9E6009B4F4A /* BlioImportManager.m in Sources */ = {isa = PBXBuildFile; fileRef = DC84EDF71261267400BC6514 /* BlioImportManager.m */; };
+		A3BEFDBE152DE9E6009B4F4A /* levenshtein_distance.c in Sources */ = {isa = PBXBuildFile; fileRef = 7D9A6882125ABC7200130A53 /* levenshtein_distance.c */; };
+		A3BEFDBF152DE9E6009B4F4A /* BlioLayoutHyperlink.m in Sources */ = {isa = PBXBuildFile; fileRef = C90DAE8C125CB03000D8E663 /* BlioLayoutHyperlink.m */; };
+		A3BEFDC0152DE9E6009B4F4A /* BlioLayoutPDFDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = C90DAEBC125CB46E00D8E663 /* BlioLayoutPDFDataSource.m */; };
+		A3BEFDC1152DE9E6009B4F4A /* BlioMyAccountViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DCAC9610126918C200C24BF7 /* BlioMyAccountViewController.m */; };
+		A3BEFDC2152DE9E6009B4F4A /* BlioTOCEntry.m in Sources */ = {isa = PBXBuildFile; fileRef = C976B33512A6486000D2CC05 /* BlioTOCEntry.m */; };
+		A3BEFDC3152DE9E6009B4F4A /* SKProduct+LocalizedPrice.m in Sources */ = {isa = PBXBuildFile; fileRef = DCF0C27312B1362900275449 /* SKProduct+LocalizedPrice.m */; };
+		A3BEFDC4152DE9E6009B4F4A /* BlioDefaultViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DB195B012B14CA20087E61F /* BlioDefaultViewController.m */; };
+		A3BEFDC5152DE9E6009B4F4A /* THNSDataAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DB349A712B1955C00BCE8DF /* THNSDataAdditions.m */; };
+		A3BEFDC6152DE9E6009B4F4A /* BlioWelcomeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DCC761D212BA507200B6EFAF /* BlioWelcomeViewController.m */; };
+		A3BEFDC7152DE9E6009B4F4A /* UIButton+BlioAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = DCC762B512BA6D6500B6EFAF /* UIButton+BlioAdditions.m */; };
+		A3BEFDC8152DE9E6009B4F4A /* SFHFKeychainUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = DCF6C56012EE23D00022E2E5 /* SFHFKeychainUtils.m */; };
+		A3BEFDC9152DE9E6009B4F4A /* BlioEPubXPSDataProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D229FB112F9AA430037D93D /* BlioEPubXPSDataProvider.m */; };
+		A3BEFDCA152DE9E6009B4F4A /* BlioMediaView.m in Sources */ = {isa = PBXBuildFile; fileRef = C9A9DAB91312B73B009B950F /* BlioMediaView.m */; };
+		A3BEFDCB152DE9E6009B4F4A /* BlioBlendView.m in Sources */ = {isa = PBXBuildFile; fileRef = C90889B51330F2990066F103 /* BlioBlendView.m */; };
+		A3BEFDCC152DE9E6009B4F4A /* BlioGestureSuppressingView.m in Sources */ = {isa = PBXBuildFile; fileRef = C9CEF2E71338C61400FB5BE0 /* BlioGestureSuppressingView.m */; };
+		A3BEFDCD152DE9E6009B4F4A /* BlioTextFlowCombinedBlock.m in Sources */ = {isa = PBXBuildFile; fileRef = C9046635134361E000E93027 /* BlioTextFlowCombinedBlock.m */; };
+		A3BEFDCE152DE9E6009B4F4A /* BlioTextFlowFlowReference.m in Sources */ = {isa = PBXBuildFile; fileRef = C904663A1343625F00E93027 /* BlioTextFlowFlowReference.m */; };
+		A3BEFDCF152DE9E6009B4F4A /* BlioTextFlowBlock.m in Sources */ = {isa = PBXBuildFile; fileRef = C904663C1343626300E93027 /* BlioTextFlowBlock.m */; };
+		A3BEFDD0152DE9E6009B4F4A /* BlioTextFlowPageMarker.m in Sources */ = {isa = PBXBuildFile; fileRef = C904663E1343626C00E93027 /* BlioTextFlowPageMarker.m */; };
+		A3BEFDD1152DE9E6009B4F4A /* BlioTextFlowPageRange.m in Sources */ = {isa = PBXBuildFile; fileRef = C90466401343627900E93027 /* BlioTextFlowPageRange.m */; };
+		A3BEFDD2152DE9E6009B4F4A /* BlioTextFlowReference.m in Sources */ = {isa = PBXBuildFile; fileRef = C90469AF134365D600E93027 /* BlioTextFlowReference.m */; };
+		A3BEFDD3152DE9E6009B4F4A /* BlioTextFlowPositionedWord.m in Sources */ = {isa = PBXBuildFile; fileRef = C90469B41343672D00E93027 /* BlioTextFlowPositionedWord.m */; };
+		A3BEFDD4152DE9E6009B4F4A /* BlioTextFlowPreParseOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = C9C2C3F2134368FD00548290 /* BlioTextFlowPreParseOperation.m */; };
+		A3BEFDD5152DE9E6009B4F4A /* BlioTextFlowParagraphWords.m in Sources */ = {isa = PBXBuildFile; fileRef = C9B083071344C40A001963D0 /* BlioTextFlowParagraphWords.m */; };
+		A3BEFDD6152DE9E6009B4F4A /* KNFBFlowEucBook.m in Sources */ = {isa = PBXBuildFile; fileRef = C9B087D91344CC1C001963D0 /* KNFBFlowEucBook.m */; };
+		A3BEFDD7152DE9E6009B4F4A /* KNFBTextFlow.m in Sources */ = {isa = PBXBuildFile; fileRef = C9B087DD1344CC1C001963D0 /* KNFBTextFlow.m */; };
+		A3BEFDD8152DE9E6009B4F4A /* KNFBTextFlowBlock.m in Sources */ = {isa = PBXBuildFile; fileRef = C9B087DF1344CC1C001963D0 /* KNFBTextFlowBlock.m */; };
+		A3BEFDD9152DE9E6009B4F4A /* KNFBTextFlowBlockCombiner.m in Sources */ = {isa = PBXBuildFile; fileRef = C9B087E11344CC1C001963D0 /* KNFBTextFlowBlockCombiner.m */; };
+		A3BEFDDA152DE9E6009B4F4A /* KNFBTextFlowCombinedBlock.m in Sources */ = {isa = PBXBuildFile; fileRef = C9B087E31344CC1C001963D0 /* KNFBTextFlowCombinedBlock.m */; };
+		A3BEFDDB152DE9E6009B4F4A /* KNFBTextFlowFlow.m in Sources */ = {isa = PBXBuildFile; fileRef = C9B087E51344CC1C001963D0 /* KNFBTextFlowFlow.m */; };
+		A3BEFDDC152DE9E6009B4F4A /* KNFBTextFlowFlowReference.m in Sources */ = {isa = PBXBuildFile; fileRef = C9B087E71344CC1C001963D0 /* KNFBTextFlowFlowReference.m */; };
+		A3BEFDDD152DE9E6009B4F4A /* KNFBTextFlowFlowTree.m in Sources */ = {isa = PBXBuildFile; fileRef = C9B087E91344CC1C001963D0 /* KNFBTextFlowFlowTree.m */; };
+		A3BEFDDE152DE9E6009B4F4A /* KNFBTextFlowPageRange.m in Sources */ = {isa = PBXBuildFile; fileRef = C9B087ED1344CC1C001963D0 /* KNFBTextFlowPageRange.m */; };
+		A3BEFDDF152DE9E6009B4F4A /* KNFBTextFlowParagraph.m in Sources */ = {isa = PBXBuildFile; fileRef = C9B087EF1344CC1C001963D0 /* KNFBTextFlowParagraph.m */; };
+		A3BEFDE0152DE9E6009B4F4A /* KNFBTextFlowParagraphSource.m in Sources */ = {isa = PBXBuildFile; fileRef = C9B087F11344CC1C001963D0 /* KNFBTextFlowParagraphSource.m */; };
+		A3BEFDE1152DE9E6009B4F4A /* KNFBTextFlowParagraphWords.m in Sources */ = {isa = PBXBuildFile; fileRef = C9B087F31344CC1C001963D0 /* KNFBTextFlowParagraphWords.m */; };
+		A3BEFDE2152DE9E6009B4F4A /* KNFBTextFlowPositionedWord.m in Sources */ = {isa = PBXBuildFile; fileRef = C9B087F51344CC1C001963D0 /* KNFBTextFlowPositionedWord.m */; };
+		A3BEFDE3152DE9E6009B4F4A /* KNFBTextFlowReference.m in Sources */ = {isa = PBXBuildFile; fileRef = C9B087F71344CC1C001963D0 /* KNFBTextFlowReference.m */; };
+		A3BEFDE4152DE9E6009B4F4A /* KNFBTextFlowXAMLTree.m in Sources */ = {isa = PBXBuildFile; fileRef = C9B087F91344CC1C001963D0 /* KNFBTextFlowXAMLTree.m */; };
+		A3BEFDE5152DE9E6009B4F4A /* KNFBTextFlowXAMLTreeNode.m in Sources */ = {isa = PBXBuildFile; fileRef = C9B087FB1344CC1C001963D0 /* KNFBTextFlowXAMLTreeNode.m */; };
+		A3BEFDE6152DE9E6009B4F4A /* KNFBTOCEntry.m in Sources */ = {isa = PBXBuildFile; fileRef = C9B087FD1344CC1C001963D0 /* KNFBTOCEntry.m */; };
+		A3BEFDE7152DE9E6009B4F4A /* KNFBTimeOrderedCache.m in Sources */ = {isa = PBXBuildFile; fileRef = C9EFAF47134DF46500ADF905 /* KNFBTimeOrderedCache.m */; };
+		A3BEFDE8152DE9E6009B4F4A /* KNFBZipArchive.m in Sources */ = {isa = PBXBuildFile; fileRef = C9EFAF52134DF59500ADF905 /* KNFBZipArchive.m */; };
+		A3BEFDE9152DE9E6009B4F4A /* KNFBXPSProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = C9EFAF57134DFFEB00ADF905 /* KNFBXPSProvider.m */; };
+		A3BEFDEA152DE9E6009B4F4A /* KNFBXPSBitmapReleaseCallback.m in Sources */ = {isa = PBXBuildFile; fileRef = C9EFAF63134E1A2500ADF905 /* KNFBXPSBitmapReleaseCallback.m */; };
+		A3BEFDEB152DE9E6009B4F4A /* BlioXPSProtocol.m in Sources */ = {isa = PBXBuildFile; fileRef = C9EFAF6E134E1BF300ADF905 /* BlioXPSProtocol.m */; };
+		A3BEFDEC152DE9E6009B4F4A /* KNFBLayoutHyperlink.m in Sources */ = {isa = PBXBuildFile; fileRef = C9EFAF74134E2BEA00ADF905 /* KNFBLayoutHyperlink.m */; };
+		A3BEFDED152DE9E6009B4F4A /* KNFBPageMarker.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DE274991382DD6A00641A54 /* KNFBPageMarker.m */; };
+		A3BEFDEE152DE9E6009B4F4A /* Blio.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = DCABAC8013B4CC9700BE0FE3 /* Blio.xcdatamodeld */; };
+		A3BEFDEF152DE9E6009B4F4A /* BlioStoreTabViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A32EEDA413B37CFA001D6170 /* BlioStoreTabViewController.m */; };
+		A3BEFDF0152DE9E6009B4F4A /* KNFBXPSEPubInfoParserDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D1C969013F136D900DCFD02 /* KNFBXPSEPubInfoParserDelegate.m */; };
+		A3BEFDF1152DE9E6009B4F4A /* KNFBXPSPageNumbersParserDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D1C969513F136F100DCFD02 /* KNFBXPSPageNumbersParserDelegate.m */; };
+		A3BEFDF2152DE9E6009B4F4A /* BlioVOTipsSettingsController.m in Sources */ = {isa = PBXBuildFile; fileRef = A323E75A1427A64F0043E78E /* BlioVOTipsSettingsController.m */; };
+		A3BEFDF3152DE9E6009B4F4A /* BlioVoiceOverTextController.m in Sources */ = {isa = PBXBuildFile; fileRef = DC824D95143E0A7D006AC7F3 /* BlioVoiceOverTextController.m */; };
+		A3BEFDF4152DE9E6009B4F4A /* BlioVoiceOverHelpSettingsController.m in Sources */ = {isa = PBXBuildFile; fileRef = A3F24EB6143F7733007565C2 /* BlioVoiceOverHelpSettingsController.m */; };
+		A3BEFDF5152DE9E6009B4F4A /* BlioBookView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DE0D55C147AC3E2005FD319 /* BlioBookView.m */; };
+		A3BEFDF6152DE9E6009B4F4A /* BlioViewSettingsFontAndSizeContentsView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D5B0C47147AD3D0007E3865 /* BlioViewSettingsFontAndSizeContentsView.m */; };
+		A3BEFDF7152DE9E6009B4F4A /* BlioCenterableTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D00FBAA147BC7C600008261 /* BlioCenterableTableViewCell.m */; };
+		A3BEFDF8152DE9E6009B4F4A /* BlioPDFFont.m in Sources */ = {isa = PBXBuildFile; fileRef = C9A289DB14DEC10900E0AD1E /* BlioPDFFont.m */; };
+		A3BEFDF9152DE9E6009B4F4A /* BlioPDFPageParser.m in Sources */ = {isa = PBXBuildFile; fileRef = C9A289E214DEC1F800E0AD1E /* BlioPDFPageParser.m */; };
+		A3BEFDFA152DE9E6009B4F4A /* KNFBXMLParserLock.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D8AD3FA14A4B6CD002F5393 /* KNFBXMLParserLock.m */; };
+		A3BEFDFB152DE9E6009B4F4A /* BlioSocialManager.m in Sources */ = {isa = PBXBuildFile; fileRef = DC92D68C14FEC2BF002AF222 /* BlioSocialManager.m */; };
+		A3BEFDFC152DE9E6009B4F4A /* FBFrictionlessRequestSettings.m in Sources */ = {isa = PBXBuildFile; fileRef = DC92D6A715047804002AF222 /* FBFrictionlessRequestSettings.m */; };
+		A3BEFDFD152DE9E6009B4F4A /* FBRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = DC92D6B31504782F002AF222 /* FBRequest.m */; };
+		A3BEFDFE152DE9E6009B4F4A /* Facebook.m in Sources */ = {isa = PBXBuildFile; fileRef = DC92D6B41504782F002AF222 /* Facebook.m */; };
+		A3BEFDFF152DE9E6009B4F4A /* FBLoginDialog.m in Sources */ = {isa = PBXBuildFile; fileRef = DC92D6B71504782F002AF222 /* FBLoginDialog.m */; };
+		A3BEFE00152DE9E6009B4F4A /* FBDialog.m in Sources */ = {isa = PBXBuildFile; fileRef = DC92D6B91504782F002AF222 /* FBDialog.m */; };
+		A3BEFE01152DE9E6009B4F4A /* NSObject+SBJSON.m in Sources */ = {isa = PBXBuildFile; fileRef = DC92D6CD1504785A002AF222 /* NSObject+SBJSON.m */; };
+		A3BEFE02152DE9E6009B4F4A /* NSString+SBJSON.m in Sources */ = {isa = PBXBuildFile; fileRef = DC92D6CF1504785A002AF222 /* NSString+SBJSON.m */; };
+		A3BEFE03152DE9E6009B4F4A /* SBJSON.m in Sources */ = {isa = PBXBuildFile; fileRef = DC92D6D11504785A002AF222 /* SBJSON.m */; };
+		A3BEFE04152DE9E6009B4F4A /* SBJsonBase.m in Sources */ = {isa = PBXBuildFile; fileRef = DC92D6D31504785A002AF222 /* SBJsonBase.m */; };
+		A3BEFE05152DE9E6009B4F4A /* SBJsonParser.m in Sources */ = {isa = PBXBuildFile; fileRef = DC92D6D51504785A002AF222 /* SBJsonParser.m */; };
+		A3BEFE06152DE9E6009B4F4A /* SBJsonWriter.m in Sources */ = {isa = PBXBuildFile; fileRef = DC92D6D71504785A002AF222 /* SBJsonWriter.m */; };
+		A3BEFE07152DE9E6009B4F4A /* BlioEPubMetadataReader.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D86609A150508F200B68A84 /* BlioEPubMetadataReader.m */; };
+		A3BEFE09152DE9E6009B4F4A /* libEucalyptusIOSUI.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D381B4B10D92E81008D34E2 /* libEucalyptusIOSUI.a */; };
+		A3BEFE0A152DE9E6009B4F4A /* libEucalyptusModel.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DE15F66141E76CD00D37CA2 /* libEucalyptusModel.a */; };
+		A3BEFE0B152DE9E6009B4F4A /* libEucalyptusEPubIOSUI.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DE15F68141E76CD00D37CA2 /* libEucalyptusEPubIOSUI.a */; };
+		A3BEFE0C152DE9E6009B4F4A /* libEucalyptusEPub.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D68AF481150F39A00430710 /* libEucalyptusEPub.a */; };
+		A3BEFE0D152DE9E6009B4F4A /* libEucalyptusCSS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D68AF4A1150F39A00430710 /* libEucalyptusCSS.a */; };
+		A3BEFE0E152DE9E6009B4F4A /* libEucalyptusBase.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D3F504A11EF3DDA0065A5F7 /* libEucalyptusBase.a */; };
+		A3BEFE0F152DE9E6009B4F4A /* libcss.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D68AF501150F39A00430710 /* libcss.a */; };
+		A3BEFE10152DE9E6009B4F4A /* libparserutils.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D68AF4E1150F39A00430710 /* libparserutils.a */; };
+		A3BEFE11152DE9E6009B4F4A /* libwapcaplet.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D68AF4C1150F39A00430710 /* libwapcaplet.a */; };
+		A3BEFE12152DE9E6009B4F4A /* libhyphenate.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D381B4D10D92E81008D34E2 /* libhyphenate.a */; };
+		A3BEFE13152DE9E6009B4F4A /* libexpat.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D381B5110D92E81008D34E2 /* libexpat.a */; };
+		A3BEFE14152DE9E6009B4F4A /* libminiunzip.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D229E8512F98D0D0037D93D /* libminiunzip.a */; };
+		A3BEFE15152DE9E6009B4F4A /* libBabTTSFat.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A37FC32E10EA781700F3DC5A /* libBabTTSFat.a */; };
+		A3BEFE16152DE9E6009B4F4A /* libMobilityStaticFat.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A3B16AC11104F65C00E2EA97 /* libMobilityStaticFat.a */; };
+		A3BEFE17152DE9E6009B4F4A /* libXpsSDKipad.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C9EFAF4C134DF4B800ADF905 /* libXpsSDKipad.a */; };
+		A3BEFE18152DE9E6009B4F4A /* libPlayReadyPK.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A32D895911FE4C3D00D2AE17 /* libPlayReadyPK.a */; };
+		A3BEFE19152DE9E6009B4F4A /* libxml2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DDCC00D132E88C800FE8201 /* libxml2.dylib */; };
+		A3BEFE1A152DE9E6009B4F4A /* libstdc++.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D662007132E7E9B00242F63 /* libstdc++.dylib */; };
+		A3BEFE1B152DE9E6009B4F4A /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D30AB110D05D00D00671497 /* Foundation.framework */; };
+		A3BEFE1C152DE9E6009B4F4A /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1DF5F4DF0D08C38300B7A737 /* UIKit.framework */; };
+		A3BEFE1D152DE9E6009B4F4A /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2892E40F0DC94CBA00A64D0F /* CoreGraphics.framework */; };
+		A3BEFE1E152DE9E6009B4F4A /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D381B9410D92F14008D34E2 /* OpenGLES.framework */; };
+		A3BEFE1F152DE9E6009B4F4A /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D381B9610D92F14008D34E2 /* QuartzCore.framework */; };
+		A3BEFE20152DE9E6009B4F4A /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C9C5467510F77EDD00ECE126 /* CoreData.framework */; };
+		A3BEFE21152DE9E6009B4F4A /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = C9B61FF41137AF840012CE7E /* libz.dylib */; };
+		A3BEFE22152DE9E6009B4F4A /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C974F221113C1AA0007B5868 /* CFNetwork.framework */; };
+		A3BEFE23152DE9E6009B4F4A /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C974F225113C1AB1007B5868 /* SystemConfiguration.framework */; };
+		A3BEFE24152DE9E6009B4F4A /* libiconv.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DAA30C311512B1C006634CC /* libiconv.dylib */; };
+		A3BEFE25152DE9E6009B4F4A /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A349F11B110E34DE009A8F89 /* AVFoundation.framework */; };
+		A3BEFE26152DE9E6009B4F4A /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DC5320DE11C09EF40042D3EA /* AudioToolbox.framework */; };
+		A3BEFE27152DE9E6009B4F4A /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A32D885911FE04DA00D2AE17 /* Security.framework */; };
+		A3BEFE28152DE9E6009B4F4A /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DCA1BD681222FD080022D410 /* StoreKit.framework */; };
+		A3BEFE29152DE9E6009B4F4A /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D2711AD124931D40087C4E3 /* Accelerate.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
+		A3BEFE2A152DE9E6009B4F4A /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DCA224612F890460016C0B9 /* MobileCoreServices.framework */; };
+		A3BEFE2B152DE9E6009B4F4A /* MediaPlayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C9A9B9AD130EC9CA009B950F /* MediaPlayer.framework */; };
+		A3BEFE2C152DE9E6009B4F4A /* CoreText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D39D40413EABD2E0029EDCB /* CoreText.framework */; };
+		A3BEFE2D152DE9E6009B4F4A /* Twitter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DC92D68214FA7AC6002AF222 /* Twitter.framework */; };
+		A3BEFE2E152DE9E6009B4F4A /* ImageIO.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DE8C14C14D07DD3000D0A3C /* ImageIO.framework */; };
+		A3BEFE61152F7EEF009B4F4A /* ToshibaApp-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = A3BEFE60152F7EEE009B4F4A /* ToshibaApp-Info.plist */; };
 		A3C66F2E1242A63700C61BDA /* BlioCreateAccountViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DCE78E3B123CB9960038970C /* BlioCreateAccountViewController.m */; };
+		A3C6ABF11540A192003C9B90 /* Icon-Large-Toshiba.png in Resources */ = {isa = PBXBuildFile; fileRef = A3C6ABEE1540A192003C9B90 /* Icon-Large-Toshiba.png */; };
+		A3C6ABF21540A192003C9B90 /* Icon-Toshiba.png in Resources */ = {isa = PBXBuildFile; fileRef = A3C6ABEF1540A192003C9B90 /* Icon-Toshiba.png */; };
+		A3C6ABF31540A192003C9B90 /* Icon-Toshiba@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A3C6ABF01540A192003C9B90 /* Icon-Toshiba@2x.png */; };
+		A3C6ABFA1540A1EB003C9B90 /* Icon-iPad-Toshiba.png in Resources */ = {isa = PBXBuildFile; fileRef = A3C6ABF81540A1EB003C9B90 /* Icon-iPad-Toshiba.png */; };
+		A3C6ABFB1540A1EC003C9B90 /* Icon-iPad-Toshiba@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A3C6ABF91540A1EB003C9B90 /* Icon-iPad-Toshiba@2x.png */; };
+		A3C6AC001540A812003C9B90 /* Default-Toshiba-Landscape.png in Resources */ = {isa = PBXBuildFile; fileRef = A3C6ABFC1540A812003C9B90 /* Default-Toshiba-Landscape.png */; };
+		A3C6AC011540A812003C9B90 /* Default-Toshiba-Landscape@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A3C6ABFD1540A812003C9B90 /* Default-Toshiba-Landscape@2x.png */; };
+		A3C6AC021540A812003C9B90 /* Default-Toshiba-Portrait.png in Resources */ = {isa = PBXBuildFile; fileRef = A3C6ABFE1540A812003C9B90 /* Default-Toshiba-Portrait.png */; };
+		A3C6AC031540A812003C9B90 /* Default-Toshiba-Portrait@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A3C6ABFF1540A812003C9B90 /* Default-Toshiba-Portrait@2x.png */; };
+		A3C6AC061541A789003C9B90 /* Default-Toshiba.png in Resources */ = {isa = PBXBuildFile; fileRef = A3C6AC041541A789003C9B90 /* Default-Toshiba.png */; };
+		A3C6AC071541A789003C9B90 /* Default-Toshiba@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A3C6AC051541A789003C9B90 /* Default-Toshiba@2x.png */; };
+		A3C6AC0A1541C9AB003C9B90 /* logo-white-Toshiba.png in Resources */ = {isa = PBXBuildFile; fileRef = A3C6AC081541C9AB003C9B90 /* logo-white-Toshiba.png */; };
+		A3C6AC0B1541C9AB003C9B90 /* logo-white-Toshiba@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A3C6AC091541C9AB003C9B90 /* logo-white-Toshiba@2x.png */; };
 		A3C7437011CAC178005A2219 /* icon-freebooks@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A3C7436011CAC178005A2219 /* icon-freebooks@2x.png */; };
 		A3C7437111CAC178005A2219 /* icon-cart@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A3C7436111CAC178005A2219 /* icon-cart@2x.png */; };
 		A3C7437211CAC178005A2219 /* icon-contents@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A3C7436211CAC178005A2219 /* icon-contents@2x.png */; };
@@ -1340,6 +1782,10 @@
 		A3F24EBA143F7733007565C2 /* BlioVoiceOverHelpSettingsController.m in Sources */ = {isa = PBXBuildFile; fileRef = A3F24EB6143F7733007565C2 /* BlioVoiceOverHelpSettingsController.m */; };
 		A3F46D0D1295B0D00015A50A /* speedreaderBackgroundImages in Resources */ = {isa = PBXBuildFile; fileRef = 553D5B16126F6B6B00A1CE83 /* speedreaderBackgroundImages */; };
 		A3F46D101295B1EE0015A50A /* speedreaderBackgroundImages in Resources */ = {isa = PBXBuildFile; fileRef = 553D5B16126F6B6B00A1CE83 /* speedreaderBackgroundImages */; };
+		A3FBC52F1562D91E00F14FE4 /* userdoc-Toshiba.html in Resources */ = {isa = PBXBuildFile; fileRef = A3FBC52E1562D91E00F14FE4 /* userdoc-Toshiba.html */; };
+		A3FBC5311562D93000F14FE4 /* userdoc-ipad-Toshiba.html in Resources */ = {isa = PBXBuildFile; fileRef = A3FBC5301562D93000F14FE4 /* userdoc-ipad-Toshiba.html */; };
+		A3FBC5341562E81000F14FE4 /* voiceover-quickstart-Toshiba.html in Resources */ = {isa = PBXBuildFile; fileRef = A3FBC5321562E81000F14FE4 /* voiceover-quickstart-Toshiba.html */; };
+		A3FBC5351562E81000F14FE4 /* voiceover-tips-Toshiba.html in Resources */ = {isa = PBXBuildFile; fileRef = A3FBC5331562E81000F14FE4 /* voiceover-tips-Toshiba.html */; };
 		A3FE55B112074EBD0038DA0C /* BlioEULATextController.m in Sources */ = {isa = PBXBuildFile; fileRef = A3FE55AB12074EBD0038DA0C /* BlioEULATextController.m */; };
 		A3FE55B212074EBD0038DA0C /* BlioHelpSettingsController.m in Sources */ = {isa = PBXBuildFile; fileRef = A3FE55AD12074EBD0038DA0C /* BlioHelpSettingsController.m */; };
 		A3FE55B312074EBD0038DA0C /* BlioVersionController.m in Sources */ = {isa = PBXBuildFile; fileRef = A3FE55AF12074EBD0038DA0C /* BlioVersionController.m */; };
@@ -1935,6 +2381,13 @@
 			remoteGlobalIDString = D2AAC07D0554694100DB518D;
 			remoteInfo = libEucalyptus;
 		};
+		A3BEFC6A152DE9E6009B4F4A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 7D00D5B910D90FC5002D06E7 /* libEucalyptus.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = D2AAC07D0554694100DB518D;
+			remoteInfo = libEucalyptus;
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
@@ -2142,6 +2595,7 @@
 		A3169288111488C9005AAE5E /* BlioAudioManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioAudioManager.m; sourceTree = "<group>"; };
 		A31CC8A713FEA07E0010BFC5 /* SamsClubApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SamsClubApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A31CC8A913FEA28F0010BFC5 /* SamsClubApp-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "SamsClubApp-Info.plist"; sourceTree = "<group>"; };
+		A320D446154F187E002671FB /* credits-toshiba.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = "credits-toshiba.html"; sourceTree = "<group>"; };
 		A323E7591427A64F0043E78E /* BlioVOTipsSettingsController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioVOTipsSettingsController.h; sourceTree = "<group>"; };
 		A323E75A1427A64F0043E78E /* BlioVOTipsSettingsController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioVOTipsSettingsController.m; sourceTree = "<group>"; };
 		A323E75F1427A6D10043E78E /* voiceover-tips.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = "voiceover-tips.html"; sourceTree = "<group>"; };
@@ -2355,6 +2809,21 @@
 		A3B0B2B0126E088500FC3D18 /* icon-import@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-import@2x.png"; sourceTree = "<group>"; };
 		A3B16AC11104F65C00E2EA97 /* libMobilityStaticFat.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libMobilityStaticFat.a; path = Libraries/TTS/libMobilityStaticFat.a; sourceTree = "<group>"; };
 		A3B6F6F2120C5E2E00D48E04 /* BlioViewSettingsSheet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioViewSettingsSheet.m; sourceTree = "<group>"; };
+		A3BEFE33152DE9E6009B4F4A /* Book Place.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Book Place.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		A3BEFE60152F7EEE009B4F4A /* ToshibaApp-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "ToshibaApp-Info.plist"; sourceTree = "<group>"; };
+		A3C6ABEE1540A192003C9B90 /* Icon-Large-Toshiba.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-Large-Toshiba.png"; sourceTree = "<group>"; };
+		A3C6ABEF1540A192003C9B90 /* Icon-Toshiba.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-Toshiba.png"; sourceTree = "<group>"; };
+		A3C6ABF01540A192003C9B90 /* Icon-Toshiba@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-Toshiba@2x.png"; sourceTree = "<group>"; };
+		A3C6ABF81540A1EB003C9B90 /* Icon-iPad-Toshiba.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-iPad-Toshiba.png"; sourceTree = "<group>"; };
+		A3C6ABF91540A1EB003C9B90 /* Icon-iPad-Toshiba@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-iPad-Toshiba@2x.png"; sourceTree = "<group>"; };
+		A3C6ABFC1540A812003C9B90 /* Default-Toshiba-Landscape.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-Toshiba-Landscape.png"; sourceTree = "<group>"; };
+		A3C6ABFD1540A812003C9B90 /* Default-Toshiba-Landscape@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-Toshiba-Landscape@2x.png"; sourceTree = "<group>"; };
+		A3C6ABFE1540A812003C9B90 /* Default-Toshiba-Portrait.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-Toshiba-Portrait.png"; sourceTree = "<group>"; };
+		A3C6ABFF1540A812003C9B90 /* Default-Toshiba-Portrait@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-Toshiba-Portrait@2x.png"; sourceTree = "<group>"; };
+		A3C6AC041541A789003C9B90 /* Default-Toshiba.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-Toshiba.png"; sourceTree = "<group>"; };
+		A3C6AC051541A789003C9B90 /* Default-Toshiba@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-Toshiba@2x.png"; sourceTree = "<group>"; };
+		A3C6AC081541C9AB003C9B90 /* logo-white-Toshiba.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "logo-white-Toshiba.png"; sourceTree = "<group>"; };
+		A3C6AC091541C9AB003C9B90 /* logo-white-Toshiba@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "logo-white-Toshiba@2x.png"; sourceTree = "<group>"; };
 		A3C7436011CAC178005A2219 /* icon-freebooks@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-freebooks@2x.png"; sourceTree = "<group>"; };
 		A3C7436111CAC178005A2219 /* icon-cart@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-cart@2x.png"; sourceTree = "<group>"; };
 		A3C7436211CAC178005A2219 /* icon-contents@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-contents@2x.png"; sourceTree = "<group>"; };
@@ -2392,6 +2861,10 @@
 		A3F9387E116BD63500E53BD3 /* CellTextField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CellTextField.m; sourceTree = "<group>"; };
 		A3F9387F116BD63500E53BD3 /* EditableTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EditableTableViewCell.h; sourceTree = "<group>"; };
 		A3F93880116BD63500E53BD3 /* EditableTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EditableTableViewCell.m; sourceTree = "<group>"; };
+		A3FBC52E1562D91E00F14FE4 /* userdoc-Toshiba.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = "userdoc-Toshiba.html"; sourceTree = "<group>"; };
+		A3FBC5301562D93000F14FE4 /* userdoc-ipad-Toshiba.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = "userdoc-ipad-Toshiba.html"; sourceTree = "<group>"; };
+		A3FBC5321562E81000F14FE4 /* voiceover-quickstart-Toshiba.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = "voiceover-quickstart-Toshiba.html"; sourceTree = "<group>"; };
+		A3FBC5331562E81000F14FE4 /* voiceover-tips-Toshiba.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = "voiceover-tips-Toshiba.html"; sourceTree = "<group>"; };
 		A3FE55AA12074EBD0038DA0C /* BlioEULATextController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioEULATextController.h; sourceTree = "<group>"; };
 		A3FE55AB12074EBD0038DA0C /* BlioEULATextController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioEULATextController.m; sourceTree = "<group>"; };
 		A3FE55AC12074EBD0038DA0C /* BlioHelpSettingsController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioHelpSettingsController.h; sourceTree = "<group>"; };
@@ -2911,6 +3384,51 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		A3BEFE08152DE9E6009B4F4A /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A3BEFE09152DE9E6009B4F4A /* libEucalyptusIOSUI.a in Frameworks */,
+				A3BEFE0A152DE9E6009B4F4A /* libEucalyptusModel.a in Frameworks */,
+				A3BEFE0B152DE9E6009B4F4A /* libEucalyptusEPubIOSUI.a in Frameworks */,
+				A3BEFE0C152DE9E6009B4F4A /* libEucalyptusEPub.a in Frameworks */,
+				A3BEFE0D152DE9E6009B4F4A /* libEucalyptusCSS.a in Frameworks */,
+				A3BEFE0E152DE9E6009B4F4A /* libEucalyptusBase.a in Frameworks */,
+				A3BEFE0F152DE9E6009B4F4A /* libcss.a in Frameworks */,
+				A3BEFE10152DE9E6009B4F4A /* libparserutils.a in Frameworks */,
+				A3BEFE11152DE9E6009B4F4A /* libwapcaplet.a in Frameworks */,
+				A3BEFE12152DE9E6009B4F4A /* libhyphenate.a in Frameworks */,
+				A3BEFE13152DE9E6009B4F4A /* libexpat.a in Frameworks */,
+				A3BEFE14152DE9E6009B4F4A /* libminiunzip.a in Frameworks */,
+				A3BEFE15152DE9E6009B4F4A /* libBabTTSFat.a in Frameworks */,
+				A3BEFE16152DE9E6009B4F4A /* libMobilityStaticFat.a in Frameworks */,
+				A3BEFE17152DE9E6009B4F4A /* libXpsSDKipad.a in Frameworks */,
+				A3BEFE18152DE9E6009B4F4A /* libPlayReadyPK.a in Frameworks */,
+				A3BEFE19152DE9E6009B4F4A /* libxml2.dylib in Frameworks */,
+				A3BEFE1A152DE9E6009B4F4A /* libstdc++.dylib in Frameworks */,
+				A3BEFE1B152DE9E6009B4F4A /* Foundation.framework in Frameworks */,
+				A3BEFE1C152DE9E6009B4F4A /* UIKit.framework in Frameworks */,
+				A3BEFE1D152DE9E6009B4F4A /* CoreGraphics.framework in Frameworks */,
+				A3BEFE1E152DE9E6009B4F4A /* OpenGLES.framework in Frameworks */,
+				A3BEFE1F152DE9E6009B4F4A /* QuartzCore.framework in Frameworks */,
+				A3BEFE20152DE9E6009B4F4A /* CoreData.framework in Frameworks */,
+				A3BEFE21152DE9E6009B4F4A /* libz.dylib in Frameworks */,
+				A3BEFE22152DE9E6009B4F4A /* CFNetwork.framework in Frameworks */,
+				A3BEFE23152DE9E6009B4F4A /* SystemConfiguration.framework in Frameworks */,
+				A3BEFE24152DE9E6009B4F4A /* libiconv.dylib in Frameworks */,
+				A3BEFE25152DE9E6009B4F4A /* AVFoundation.framework in Frameworks */,
+				A3BEFE26152DE9E6009B4F4A /* AudioToolbox.framework in Frameworks */,
+				A3BEFE27152DE9E6009B4F4A /* Security.framework in Frameworks */,
+				A3BEFE28152DE9E6009B4F4A /* StoreKit.framework in Frameworks */,
+				A3BEFE29152DE9E6009B4F4A /* Accelerate.framework in Frameworks */,
+				A3BEFE2A152DE9E6009B4F4A /* MobileCoreServices.framework in Frameworks */,
+				A3BEFE2B152DE9E6009B4F4A /* MediaPlayer.framework in Frameworks */,
+				A3BEFE2C152DE9E6009B4F4A /* CoreText.framework in Frameworks */,
+				A3BEFE2D152DE9E6009B4F4A /* Twitter.framework in Frameworks */,
+				A3BEFE2E152DE9E6009B4F4A /* ImageIO.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -2969,6 +3487,7 @@
 				A36D35F9120B136700E1A035 /* Blio.app */,
 				A30E1044123EA5B400D31157 /* Blio.app */,
 				A31CC8A713FEA07E0010BFC5 /* SamsClubApp.app */,
+				A3BEFE33152DE9E6009B4F4A /* Book Place.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -3002,6 +3521,18 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				A3FBC5321562E81000F14FE4 /* voiceover-quickstart-Toshiba.html */,
+				A3FBC5331562E81000F14FE4 /* voiceover-tips-Toshiba.html */,
+				A3FBC52E1562D91E00F14FE4 /* userdoc-Toshiba.html */,
+				A320D446154F187E002671FB /* credits-toshiba.html */,
+				A3C6AC081541C9AB003C9B90 /* logo-white-Toshiba.png */,
+				A3C6AC091541C9AB003C9B90 /* logo-white-Toshiba@2x.png */,
+				A3C6AC041541A789003C9B90 /* Default-Toshiba.png */,
+				A3C6AC051541A789003C9B90 /* Default-Toshiba@2x.png */,
+				A3C6ABEE1540A192003C9B90 /* Icon-Large-Toshiba.png */,
+				A3C6ABEF1540A192003C9B90 /* Icon-Toshiba.png */,
+				A3C6ABF01540A192003C9B90 /* Icon-Toshiba@2x.png */,
+				A3BEFE60152F7EEE009B4F4A /* ToshibaApp-Info.plist */,
 				A3EB90931525F8A000C2E35D /* iTunesArtwork */,
 				A365921A146C1C0500B23AAA /* icon-wrench.png */,
 				A365921B146C1C0500B23AAA /* icon-wrench@2x.png */,
@@ -4088,6 +4619,13 @@
 		DCB0363E11BDC42C00B341D4 /* Resources-iPad */ = {
 			isa = PBXGroup;
 			children = (
+				A3FBC5301562D93000F14FE4 /* userdoc-ipad-Toshiba.html */,
+				A3C6ABFC1540A812003C9B90 /* Default-Toshiba-Landscape.png */,
+				A3C6ABFD1540A812003C9B90 /* Default-Toshiba-Landscape@2x.png */,
+				A3C6ABFE1540A812003C9B90 /* Default-Toshiba-Portrait.png */,
+				A3C6ABFF1540A812003C9B90 /* Default-Toshiba-Portrait@2x.png */,
+				A3C6ABF81540A1EB003C9B90 /* Icon-iPad-Toshiba.png */,
+				A3C6ABF91540A1EB003C9B90 /* Icon-iPad-Toshiba@2x.png */,
 				A3EB90971525F8F100C2E35D /* Default-Landscape@2x.png */,
 				A3EB90981525F8F100C2E35D /* Default-Portrait@2x.png */,
 				A3EB90991525F8F100C2E35D /* Icon-iPad@2x.png */,
@@ -4204,6 +4742,24 @@
 			productReference = A36D35F9120B136700E1A035 /* Blio.app */;
 			productType = "com.apple.product-type.application";
 		};
+		A3BEFC68152DE9E6009B4F4A /* ToshibaApp */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A3BEFE2F152DE9E6009B4F4A /* Build configuration list for PBXNativeTarget "ToshibaApp" */;
+			buildPhases = (
+				A3BEFC6B152DE9E6009B4F4A /* Resources */,
+				A3BEFD60152DE9E6009B4F4A /* Sources */,
+				A3BEFE08152DE9E6009B4F4A /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				A3BEFC69152DE9E6009B4F4A /* PBXTargetDependency */,
+			);
+			name = ToshibaApp;
+			productName = BlioApp;
+			productReference = A3BEFE33152DE9E6009B4F4A /* Book Place.app */;
+			productType = "com.apple.product-type.application";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -4234,6 +4790,7 @@
 				A36D34BD120B136700E1A035 /* BlioApp */,
 				A30E0EF5123EA5B400D31157 /* BlioApp Release */,
 				A31CC6FE13FEA07E0010BFC5 /* SamsClubApp */,
+				A3BEFC68152DE9E6009B4F4A /* ToshibaApp */,
 			);
 		};
 /* End PBXProject section */
@@ -4882,7 +5439,6 @@
 				A31CC71D13FEA07E0010BFC5 /* icon-play.png in Resources */,
 				A31CC71E13FEA07E0010BFC5 /* icon-plus.png in Resources */,
 				A31CC71F13FEA07E0010BFC5 /* icon-search.png in Resources */,
-				A31CC72013FEA07E0010BFC5 /* logo-white.png in Resources */,
 				A31CC72113FEA07E0010BFC5 /* booktextureandshadowsubtle.png in Resources */,
 				A31CC72213FEA07E0010BFC5 /* LibraryGridViewController.png in Resources */,
 				A31CC72313FEA07E0010BFC5 /* Icon.png in Resources */,
@@ -4919,9 +5475,6 @@
 				A31CC74313FEA07E0010BFC5 /* MainNavControllerAndLibraryView-iPad.xib in Resources */,
 				A31CC74413FEA07E0010BFC5 /* Default@2x.png in Resources */,
 				A31CC74513FEA07E0010BFC5 /* Icon@2x.png in Resources */,
-				A31CC74613FEA07E0010BFC5 /* Default-Landscape.png in Resources */,
-				A31CC74713FEA07E0010BFC5 /* Default-Portrait.png in Resources */,
-				A31CC74813FEA07E0010BFC5 /* Icon-iPad.png in Resources */,
 				A31CC74913FEA07E0010BFC5 /* DRM in Resources */,
 				A31CC74A13FEA07E0010BFC5 /* icon-freebooks@2x.png in Resources */,
 				A31CC74B13FEA07E0010BFC5 /* icon-cart@2x.png in Resources */,
@@ -4993,7 +5546,6 @@
 				A31CC78E13FEA07E0010BFC5 /* SelectionKnob.png in Resources */,
 				A31CC78F13FEA07E0010BFC5 /* SelectionKnob@2x.png in Resources */,
 				A31CC79013FEA07E0010BFC5 /* button-buybooks.png in Resources */,
-				A31CC79113FEA07E0010BFC5 /* logo-white@2x.png in Resources */,
 				A31CC79213FEA07E0010BFC5 /* buttonBarArrowDownSmall.png in Resources */,
 				A31CC79313FEA07E0010BFC5 /* buttonBarArrowDownSmall@2x.png in Resources */,
 				A31CC79413FEA07E0010BFC5 /* buttonBarArrowUpSmall.png in Resources */,
@@ -5004,8 +5556,6 @@
 				A31CC79913FEA07E0010BFC5 /* library-pausebutton@2x.png in Resources */,
 				A31CC79A13FEA07E0010BFC5 /* library-resumebutton@2x.png in Resources */,
 				A31CC79B13FEA07E0010BFC5 /* library-progress-background@2x.png in Resources */,
-				A31CC79C13FEA07E0010BFC5 /* eula.html in Resources */,
-				A31CC79D13FEA07E0010BFC5 /* userdoc.html in Resources */,
 				A31CC79E13FEA07E0010BFC5 /* booktexture-nocover.png in Resources */,
 				A31CC79F13FEA07E0010BFC5 /* BlioFeatureCompatibility.plist in Resources */,
 				A31CC7A113FEA07E0010BFC5 /* button-delete-red@2x.png in Resources */,
@@ -5345,6 +5895,261 @@
 				A3EB909B1525F8F100C2E35D /* Default-Landscape@2x.png in Resources */,
 				A3EB909E1525F8F100C2E35D /* Default-Portrait@2x.png in Resources */,
 				A3EB90A11525F8F100C2E35D /* Icon-iPad@2x.png in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A3BEFC6B152DE9E6009B4F4A /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A3BEFC6C152DE9E6009B4F4A /* XPS-Starters in Resources */,
+				A3BEFC6D152DE9E6009B4F4A /* speedreaderBackgroundImages in Resources */,
+				A3BEFC6E152DE9E6009B4F4A /* credits.html in Resources */,
+				A3BEFC6F152DE9E6009B4F4A /* MainNavControllerAndLibraryView.xib in Resources */,
+				A3BEFC70152DE9E6009B4F4A /* RootViewController.xib in Resources */,
+				A3BEFC71152DE9E6009B4F4A /* BookEdge.pvrtc in Resources */,
+				A3BEFC72152DE9E6009B4F4A /* booktextureandshadow.png in Resources */,
+				A3BEFC73152DE9E6009B4F4A /* row-dark.png in Resources */,
+				A3BEFC74152DE9E6009B4F4A /* row-light.png in Resources */,
+				A3BEFC75152DE9E6009B4F4A /* icon-speedread.png in Resources */,
+				A3BEFC76152DE9E6009B4F4A /* icon-page.png in Resources */,
+				A3BEFC77152DE9E6009B4F4A /* icon-layout.png in Resources */,
+				A3BEFC78152DE9E6009B4F4A /* done-button-down.png in Resources */,
+				A3BEFC79152DE9E6009B4F4A /* done-button-up.png in Resources */,
+				A3BEFC7A152DE9E6009B4F4A /* paper-black.png in Resources */,
+				A3BEFC7B152DE9E6009B4F4A /* paper-neutral.png in Resources */,
+				A3BEFC7C152DE9E6009B4F4A /* paper-white.png in Resources */,
+				A3BEFC7D152DE9E6009B4F4A /* icon-lock.png in Resources */,
+				A3BEFC7E152DE9E6009B4F4A /* icon-finger.png in Resources */,
+				A3BEFC80152DE9E6009B4F4A /* librarybackground.png in Resources */,
+				A3BEFC81152DE9E6009B4F4A /* button-list.png in Resources */,
+				A3BEFC82152DE9E6009B4F4A /* button-grid.png in Resources */,
+				A3BEFC83152DE9E6009B4F4A /* icon-contents.png in Resources */,
+				A3BEFC84152DE9E6009B4F4A /* icon-pause.png in Resources */,
+				A3BEFC85152DE9E6009B4F4A /* icon-play.png in Resources */,
+				A3BEFC86152DE9E6009B4F4A /* icon-plus.png in Resources */,
+				A3BEFC87152DE9E6009B4F4A /* icon-search.png in Resources */,
+				A3BEFC89152DE9E6009B4F4A /* booktextureandshadowsubtle.png in Resources */,
+				A3BEFC8A152DE9E6009B4F4A /* LibraryGridViewController.png in Resources */,
+				A3BEFC8C152DE9E6009B4F4A /* scrubber-icon.png in Resources */,
+				A3BEFC8D152DE9E6009B4F4A /* Lighting.xib in Resources */,
+				A3BEFC8E152DE9E6009B4F4A /* speedread-thumb.png in Resources */,
+				A3BEFC8F152DE9E6009B4F4A /* roundedcorners.png in Resources */,
+				A3BEFC90152DE9E6009B4F4A /* BlioStoreBookView.xib in Resources */,
+				A3BEFC91152DE9E6009B4F4A /* downloadButton.png in Resources */,
+				A3BEFC92152DE9E6009B4F4A /* downloadButtonPressed.png in Resources */,
+				A3BEFC93152DE9E6009B4F4A /* back-black.png in Resources */,
+				A3BEFC94152DE9E6009B4F4A /* forward-black.png in Resources */,
+				A3BEFC95152DE9E6009B4F4A /* check.png in Resources */,
+				A3BEFC96152DE9E6009B4F4A /* shadow-bottom.png in Resources */,
+				A3BEFC97152DE9E6009B4F4A /* shadow-right.png in Resources */,
+				A3BEFC98152DE9E6009B4F4A /* shadow-left.png in Resources */,
+				A3BEFC99152DE9E6009B4F4A /* shadow-top.png in Resources */,
+				A3BEFC9A152DE9E6009B4F4A /* SearchCellDivider.png in Resources */,
+				A3BEFC9B152DE9E6009B4F4A /* icon-categories.png in Resources */,
+				A3BEFC9C152DE9E6009B4F4A /* icon-vault.png in Resources */,
+				A3BEFC9D152DE9E6009B4F4A /* icon-cart.png in Resources */,
+				A3BEFC9E152DE9E6009B4F4A /* Localizable.strings in Resources */,
+				A3BEFC9F152DE9E6009B4F4A /* library-progress-background.png in Resources */,
+				A3BEFCA0152DE9E6009B4F4A /* button-delete-red.png in Resources */,
+				A3BEFCA1152DE9E6009B4F4A /* button-delete-black.png in Resources */,
+				A3BEFCA2152DE9E6009B4F4A /* library-resumebutton.png in Resources */,
+				A3BEFCA3152DE9E6009B4F4A /* library-pausebutton.png in Resources */,
+				A3BEFCA4152DE9E6009B4F4A /* BlioVoiceData.plist in Resources */,
+				A3BEFCA5152DE9E6009B4F4A /* voice-sample-play-button.png in Resources */,
+				A3BEFCA6152DE9E6009B4F4A /* voiceSamples in Resources */,
+				A3BEFCA7152DE9E6009B4F4A /* icon-noTTS.png in Resources */,
+				A3BEFCA8152DE9E6009B4F4A /* button-tts-pause.png in Resources */,
+				A3BEFCA9152DE9E6009B4F4A /* icon-freebooks.png in Resources */,
+				A3BEFCAA152DE9E6009B4F4A /* MainNavControllerAndLibraryView-iPad.xib in Resources */,
+				A3BEFCB0152DE9E6009B4F4A /* DRM in Resources */,
+				A3BEFCB1152DE9E6009B4F4A /* icon-freebooks@2x.png in Resources */,
+				A3BEFCB2152DE9E6009B4F4A /* icon-cart@2x.png in Resources */,
+				A3BEFCB3152DE9E6009B4F4A /* icon-contents@2x.png in Resources */,
+				A3BEFCB4152DE9E6009B4F4A /* icon-layout@2x.png in Resources */,
+				A3BEFCB5152DE9E6009B4F4A /* icon-lock@2x.png in Resources */,
+				A3BEFCB6152DE9E6009B4F4A /* icon-page@2x.png in Resources */,
+				A3BEFCB7152DE9E6009B4F4A /* icon-pause@2x.png in Resources */,
+				A3BEFCB8152DE9E6009B4F4A /* icon-play@2x.png in Resources */,
+				A3BEFCB9152DE9E6009B4F4A /* icon-plus@2x.png in Resources */,
+				A3BEFCBA152DE9E6009B4F4A /* icon-search@2x.png in Resources */,
+				A3BEFCBB152DE9E6009B4F4A /* icon-speedread@2x.png in Resources */,
+				A3BEFCBC152DE9E6009B4F4A /* icon-vault@2x.png in Resources */,
+				A3BEFCBD152DE9E6009B4F4A /* paper-black@2x.png in Resources */,
+				A3BEFCBE152DE9E6009B4F4A /* paper-neutral@2x.png in Resources */,
+				A3BEFCBF152DE9E6009B4F4A /* paper-white@2x.png in Resources */,
+				A3BEFCC0152DE9E6009B4F4A /* librarybackground-iPad.png in Resources */,
+				A3BEFCC1152DE9E6009B4F4A /* iPodLikeSliderBlueLeftCap.png in Resources */,
+				A3BEFCC2152DE9E6009B4F4A /* iPodLikeSliderBlueLeftCap@2x.png in Resources */,
+				A3BEFCC3152DE9E6009B4F4A /* iPodLikeSliderKnob-Small.png in Resources */,
+				A3BEFCC4152DE9E6009B4F4A /* iPodLikeSliderKnob-Small@2x.png in Resources */,
+				A3BEFCC5152DE9E6009B4F4A /* iPodLikeSliderKnob.png in Resources */,
+				A3BEFCC6152DE9E6009B4F4A /* iPodLikeSliderKnob@2x.png in Resources */,
+				A3BEFCC7152DE9E6009B4F4A /* iPodLikeSliderWhiteRightCap.png in Resources */,
+				A3BEFCC8152DE9E6009B4F4A /* iPodLikeSliderWhiteRightCap@2x.png in Resources */,
+				A3BEFCC9152DE9E6009B4F4A /* LineLoupeHigh.png in Resources */,
+				A3BEFCCA152DE9E6009B4F4A /* LineLoupeHigh@2x.png in Resources */,
+				A3BEFCCB152DE9E6009B4F4A /* LineLoupeLow.png in Resources */,
+				A3BEFCCC152DE9E6009B4F4A /* LineLoupeLow@2x.png in Resources */,
+				A3BEFCCD152DE9E6009B4F4A /* LineLoupeMask.png in Resources */,
+				A3BEFCCE152DE9E6009B4F4A /* LineLoupeMask@2x.png in Resources */,
+				A3BEFCCF152DE9E6009B4F4A /* MagnificationLoupeHigh.png in Resources */,
+				A3BEFCD0152DE9E6009B4F4A /* MagnificationLoupeHigh@2x.png in Resources */,
+				A3BEFCD1152DE9E6009B4F4A /* MagnificationLoupeLow.png in Resources */,
+				A3BEFCD2152DE9E6009B4F4A /* MagnificationLoupeLow@2x.png in Resources */,
+				A3BEFCD3152DE9E6009B4F4A /* MagnificationLoupeMask.png in Resources */,
+				A3BEFCD4152DE9E6009B4F4A /* MagnificationLoupeMask@2x.png in Resources */,
+				A3BEFCD5152DE9E6009B4F4A /* MenuArrowBottom.png in Resources */,
+				A3BEFCD6152DE9E6009B4F4A /* MenuArrowBottom@2x.png in Resources */,
+				A3BEFCD7152DE9E6009B4F4A /* MenuArrowBottomHighlighted.png in Resources */,
+				A3BEFCD8152DE9E6009B4F4A /* MenuArrowBottomHighlighted@2x.png in Resources */,
+				A3BEFCD9152DE9E6009B4F4A /* MenuArrowTop.png in Resources */,
+				A3BEFCDA152DE9E6009B4F4A /* MenuArrowTop@2x.png in Resources */,
+				A3BEFCDB152DE9E6009B4F4A /* MenuArrowTopHighlighted.png in Resources */,
+				A3BEFCDC152DE9E6009B4F4A /* MenuArrowTopHighlighted@2x.png in Resources */,
+				A3BEFCDD152DE9E6009B4F4A /* MenuBackground.png in Resources */,
+				A3BEFCDE152DE9E6009B4F4A /* MenuBackground@2x.png in Resources */,
+				A3BEFCDF152DE9E6009B4F4A /* MenuBackgroundHighlighted.png in Resources */,
+				A3BEFCE0152DE9E6009B4F4A /* MenuBackgroundHighlighted@2.png in Resources */,
+				A3BEFCE1152DE9E6009B4F4A /* MenuBottomShadowLeft.png in Resources */,
+				A3BEFCE2152DE9E6009B4F4A /* MenuBottomShadowLeft@2x.png in Resources */,
+				A3BEFCE3152DE9E6009B4F4A /* MenuBottomShadowMiddle.png in Resources */,
+				A3BEFCE4152DE9E6009B4F4A /* MenuBottomShadowMiddle@2x.png in Resources */,
+				A3BEFCE5152DE9E6009B4F4A /* MenuBottomShadowRight.png in Resources */,
+				A3BEFCE6152DE9E6009B4F4A /* MenuBottomShadowRight@2x.png in Resources */,
+				A3BEFCE7152DE9E6009B4F4A /* MenuRidge.png in Resources */,
+				A3BEFCE8152DE9E6009B4F4A /* MenuRidge@2x.png in Resources */,
+				A3BEFCE9152DE9E6009B4F4A /* PurchaseButton.png in Resources */,
+				A3BEFCEA152DE9E6009B4F4A /* PurchaseButtonPressed.png in Resources */,
+				A3BEFCEB152DE9E6009B4F4A /* PurchaseConfirmButton.png in Resources */,
+				A3BEFCEC152DE9E6009B4F4A /* PurchaseConfirmButtonPressed.png in Resources */,
+				A3BEFCED152DE9E6009B4F4A /* rightButtonBlackOpaque.png in Resources */,
+				A3BEFCEE152DE9E6009B4F4A /* rightButtonBlackOpaque@2x.png in Resources */,
+				A3BEFCEF152DE9E6009B4F4A /* rightButtonBlackTranslucent.png in Resources */,
+				A3BEFCF0152DE9E6009B4F4A /* rightButtonBlackTranslucent@2x.png in Resources */,
+				A3BEFCF1152DE9E6009B4F4A /* rightButtonBlue.png in Resources */,
+				A3BEFCF2152DE9E6009B4F4A /* rightButtonBlue@2x.png in Resources */,
+				A3BEFCF3152DE9E6009B4F4A /* SelectionEnd.png in Resources */,
+				A3BEFCF4152DE9E6009B4F4A /* SelectionKnob.png in Resources */,
+				A3BEFCF5152DE9E6009B4F4A /* SelectionKnob@2x.png in Resources */,
+				A3BEFCF6152DE9E6009B4F4A /* button-buybooks.png in Resources */,
+				A3BEFCF8152DE9E6009B4F4A /* buttonBarArrowDownSmall.png in Resources */,
+				A3BEFCF9152DE9E6009B4F4A /* buttonBarArrowDownSmall@2x.png in Resources */,
+				A3BEFCFA152DE9E6009B4F4A /* buttonBarArrowUpSmall.png in Resources */,
+				A3BEFCFB152DE9E6009B4F4A /* buttonBarArrowUpSmall@2x.png in Resources */,
+				A3BEFCFC152DE9E6009B4F4A /* navigationBarBlackTranslucentButton.png in Resources */,
+				A3BEFCFD152DE9E6009B4F4A /* navigationBarBlackTranslucentButton@2x.png in Resources */,
+				A3BEFCFE152DE9E6009B4F4A /* button-delete-black@2x.png in Resources */,
+				A3BEFCFF152DE9E6009B4F4A /* library-pausebutton@2x.png in Resources */,
+				A3BEFD00152DE9E6009B4F4A /* library-resumebutton@2x.png in Resources */,
+				A3BEFD01152DE9E6009B4F4A /* library-progress-background@2x.png in Resources */,
+				A3BEFD04152DE9E6009B4F4A /* booktexture-nocover.png in Resources */,
+				A3BEFD05152DE9E6009B4F4A /* BlioFeatureCompatibility.plist in Resources */,
+				A3BEFD06152DE9E6009B4F4A /* button-delete-red@2x.png in Resources */,
+				A3BEFD07152DE9E6009B4F4A /* button-tts-pause@2x.png in Resources */,
+				A3BEFD08152DE9E6009B4F4A /* downloadButton@2x.png in Resources */,
+				A3BEFD09152DE9E6009B4F4A /* downloadButtonPressed@2x.png in Resources */,
+				A3BEFD0A152DE9E6009B4F4A /* voice-sample-play-button@2x.png in Resources */,
+				A3BEFD0B152DE9E6009B4F4A /* badge-audiobook.png in Resources */,
+				A3BEFD0C152DE9E6009B4F4A /* badge-notsupported.png in Resources */,
+				A3BEFD0D152DE9E6009B4F4A /* badge-tts.png in Resources */,
+				A3BEFD0E152DE9E6009B4F4A /* badge-tts@2x.png in Resources */,
+				A3BEFD0F152DE9E6009B4F4A /* badge-notsupported@2x.png in Resources */,
+				A3BEFD10152DE9E6009B4F4A /* badge-audiobook@2x.png in Resources */,
+				A3BEFD11152DE9E6009B4F4A /* icon-back.png in Resources */,
+				A3BEFD12152DE9E6009B4F4A /* icon-back@2x.png in Resources */,
+				A3BEFD13152DE9E6009B4F4A /* table-headerbar-background.png in Resources */,
+				A3BEFD14152DE9E6009B4F4A /* table-headerbar-background@2x.png in Resources */,
+				A3BEFD15152DE9E6009B4F4A /* searchBarBorder.png in Resources */,
+				A3BEFD16152DE9E6009B4F4A /* searchBarBorder@2x.png in Resources */,
+				A3BEFD17152DE9E6009B4F4A /* searchFieldIcon.png in Resources */,
+				A3BEFD18152DE9E6009B4F4A /* searchFieldIcon@2x.png in Resources */,
+				A3BEFD19152DE9E6009B4F4A /* greyButton.png in Resources */,
+				A3BEFD1A152DE9E6009B4F4A /* greyButton@2x.png in Resources */,
+				A3BEFD1B152DE9E6009B4F4A /* greyButtonPressed.png in Resources */,
+				A3BEFD1C152DE9E6009B4F4A /* greyButtonPressed@2x.png in Resources */,
+				A3BEFD1D152DE9E6009B4F4A /* icon-add@2x.png in Resources */,
+				A3BEFD1E152DE9E6009B4F4A /* icon-bookmarked@2x.png in Resources */,
+				A3BEFD1F152DE9E6009B4F4A /* icon-bookmarked.png in Resources */,
+				A3BEFD20152DE9E6009B4F4A /* icon-add.png in Resources */,
+				A3BEFD21152DE9E6009B4F4A /* icon-import.png in Resources */,
+				A3BEFD22152DE9E6009B4F4A /* icon-import@2x.png in Resources */,
+				A3BEFD23152DE9E6009B4F4A /* icon-title@2x.png in Resources */,
+				A3BEFD24152DE9E6009B4F4A /* icon-title.png in Resources */,
+				A3BEFD25152DE9E6009B4F4A /* icon-list@2x.png in Resources */,
+				A3BEFD26152DE9E6009B4F4A /* icon-list.png in Resources */,
+				A3BEFD27152DE9E6009B4F4A /* icon-grid@2x.png in Resources */,
+				A3BEFD28152DE9E6009B4F4A /* icon-grid.png in Resources */,
+				A3BEFD29152DE9E6009B4F4A /* icon-author@2x.png in Resources */,
+				A3BEFD2A152DE9E6009B4F4A /* icon-author.png in Resources */,
+				A3BEFD2B152DE9E6009B4F4A /* icon-arbitrary@2x.png in Resources */,
+				A3BEFD2C152DE9E6009B4F4A /* icon-arbitrary.png in Resources */,
+				A3BEFD2D152DE9E6009B4F4A /* webstore-screenshot-ipad.png in Resources */,
+				A3BEFD2E152DE9E6009B4F4A /* webstore-screenshot-ipad@2x.png in Resources */,
+				A3BEFD2F152DE9E6009B4F4A /* webstore-screenshot-phone.png in Resources */,
+				A3BEFD30152DE9E6009B4F4A /* webstore-screenshot-phone@2x.png in Resources */,
+				A3BEFD31152DE9E6009B4F4A /* button-background-graygradient.png in Resources */,
+				A3BEFD32152DE9E6009B4F4A /* button-background-graygradient@2x.png in Resources */,
+				A3BEFD33152DE9E6009B4F4A /* DRM-iPad in Resources */,
+				A3BEFD34152DE9E6009B4F4A /* paper-black~ipad.png in Resources */,
+				A3BEFD35152DE9E6009B4F4A /* paper-neutral~ipad.png in Resources */,
+				A3BEFD36152DE9E6009B4F4A /* paper-white~ipad.png in Resources */,
+				A3BEFD37152DE9E6009B4F4A /* back-black@2x.png in Resources */,
+				A3BEFD38152DE9E6009B4F4A /* forward-black@2x.png in Resources */,
+				A3BEFD39152DE9E6009B4F4A /* apache2-license.html in Resources */,
+				A3BEFD3A152DE9E6009B4F4A /* gnulesser-license.html in Resources */,
+				A3BEFD3B152DE9E6009B4F4A /* mit-license.html in Resources */,
+				A3BEFD3C152DE9E6009B4F4A /* openfont-license.html in Resources */,
+				A3BEFD3D152DE9E6009B4F4A /* badge-preview.png in Resources */,
+				A3BEFD3E152DE9E6009B4F4A /* badge-preview@2x.png in Resources */,
+				A3BEFD3F152DE9E6009B4F4A /* userdoc-ipad.html in Resources */,
+				A3BEFD40152DE9E6009B4F4A /* sfhf-license.html in Resources */,
+				A3BEFD41152DE9E6009B4F4A /* minizip-license.html in Resources */,
+				A3BEFD42152DE9E6009B4F4A /* playButton.png in Resources */,
+				A3BEFD43152DE9E6009B4F4A /* paper-black-quartered~ipad.png in Resources */,
+				A3BEFD44152DE9E6009B4F4A /* paper-neutral-quartered~ipad.png in Resources */,
+				A3BEFD45152DE9E6009B4F4A /* paper-white-quartered~ipad.png in Resources */,
+				A3BEFD46152DE9E6009B4F4A /* ePubBaseOverrides.css in Resources */,
+				A3BEFD47152DE9E6009B4F4A /* TextFlowCover.xhtml in Resources */,
+				A3BEFD48152DE9E6009B4F4A /* TextFlowFlow.css in Resources */,
+				A3BEFD49152DE9E6009B4F4A /* TextFlowXAML.css in Resources */,
+				A3BEFD4A152DE9E6009B4F4A /* TextFlowXAMLOverrides.css in Resources */,
+				A3BEFD4B152DE9E6009B4F4A /* book-overlay@2x.png in Resources */,
+				A3BEFD4C152DE9E6009B4F4A /* book-overlay.png in Resources */,
+				A3BEFD4D152DE9E6009B4F4A /* THFonts in Resources */,
+				A3BEFD4E152DE9E6009B4F4A /* voiceover-tips.html in Resources */,
+				A3BEFD4F152DE9E6009B4F4A /* brightness-sun-bright.png in Resources */,
+				A3BEFD50152DE9E6009B4F4A /* brightness-sun-bright@2x.png in Resources */,
+				A3BEFD51152DE9E6009B4F4A /* brightness-sun-dim.png in Resources */,
+				A3BEFD52152DE9E6009B4F4A /* brightness-sun-dim@2x.png in Resources */,
+				A3BEFD53152DE9E6009B4F4A /* voiceover-quickstart.html in Resources */,
+				A3BEFD54152DE9E6009B4F4A /* icon-wrench.png in Resources */,
+				A3BEFD55152DE9E6009B4F4A /* icon-wrench@2x.png in Resources */,
+				A3BEFD56152DE9E6009B4F4A /* BlioFonts.plist in Resources */,
+				A3BEFD57152DE9E6009B4F4A /* FlowViewEucPageOptions.plist in Resources */,
+				A3BEFD58152DE9E6009B4F4A /* badge-daysleft@2x.png in Resources */,
+				A3BEFD59152DE9E6009B4F4A /* badge-daysleft.png in Resources */,
+				A3BEFD5A152DE9E6009B4F4A /* FBDialog.bundle in Resources */,
+				A3BEFD5B152DE9E6009B4F4A /* BlioEPUB3Overrides.css in Resources */,
+				A3BEFE61152F7EEF009B4F4A /* ToshibaApp-Info.plist in Resources */,
+				A3C6ABF11540A192003C9B90 /* Icon-Large-Toshiba.png in Resources */,
+				A3C6ABF21540A192003C9B90 /* Icon-Toshiba.png in Resources */,
+				A3C6ABF31540A192003C9B90 /* Icon-Toshiba@2x.png in Resources */,
+				A3C6ABFA1540A1EB003C9B90 /* Icon-iPad-Toshiba.png in Resources */,
+				A3C6ABFB1540A1EC003C9B90 /* Icon-iPad-Toshiba@2x.png in Resources */,
+				A3C6AC001540A812003C9B90 /* Default-Toshiba-Landscape.png in Resources */,
+				A3C6AC011540A812003C9B90 /* Default-Toshiba-Landscape@2x.png in Resources */,
+				A3C6AC021540A812003C9B90 /* Default-Toshiba-Portrait.png in Resources */,
+				A3C6AC031540A812003C9B90 /* Default-Toshiba-Portrait@2x.png in Resources */,
+				A3C6AC061541A789003C9B90 /* Default-Toshiba.png in Resources */,
+				A3C6AC071541A789003C9B90 /* Default-Toshiba@2x.png in Resources */,
+				A3C6AC0A1541C9AB003C9B90 /* logo-white-Toshiba.png in Resources */,
+				A3C6AC0B1541C9AB003C9B90 /* logo-white-Toshiba@2x.png in Resources */,
+				A320D447154F187E002671FB /* credits-toshiba.html in Resources */,
+				A3FBC52F1562D91E00F14FE4 /* userdoc-Toshiba.html in Resources */,
+				A3FBC5311562D93000F14FE4 /* userdoc-ipad-Toshiba.html in Resources */,
+				A3FBC5341562E81000F14FE4 /* voiceover-quickstart-Toshiba.html in Resources */,
+				A3FBC5351562E81000F14FE4 /* voiceover-tips-Toshiba.html in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -6046,6 +6851,180 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		A3BEFD60152DE9E6009B4F4A /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A3BEFD61152DE9E6009B4F4A /* NSArray+BlioAdditions.m in Sources */,
+				A3BEFD62152DE9E6009B4F4A /* BlioViewSettingsContentsView.m in Sources */,
+				A3BEFD63152DE9E6009B4F4A /* BlioViewSettingsPopover.m in Sources */,
+				A3BEFD64152DE9E6009B4F4A /* BlioModalPopoverController.m in Sources */,
+				A3BEFD65152DE9E6009B4F4A /* BlioBookSearchPopoverController.m in Sources */,
+				A3BEFD66152DE9E6009B4F4A /* BlioBookSearchResultsTableViewController.m in Sources */,
+				A3BEFD67152DE9E6009B4F4A /* BlioBookSearchResult.m in Sources */,
+				A3BEFD68152DE9E6009B4F4A /* main.m in Sources */,
+				A3BEFD69152DE9E6009B4F4A /* BlioAppAppDelegate.m in Sources */,
+				A3BEFD6A152DE9E6009B4F4A /* BlioLibraryViewController.m in Sources */,
+				A3BEFD6B152DE9E6009B4F4A /* BlioLayoutView.m in Sources */,
+				A3BEFD6C152DE9E6009B4F4A /* BlioBook.m in Sources */,
+				A3BEFD6D152DE9E6009B4F4A /* BlioAcapelaAudioManager.m in Sources */,
+				A3BEFD6E152DE9E6009B4F4A /* BlioNotesView.m in Sources */,
+				A3BEFD6F152DE9E6009B4F4A /* BlioBookViewController.m in Sources */,
+				A3BEFD70152DE9E6009B4F4A /* BlioFlowView.m in Sources */,
+				A3BEFD71152DE9E6009B4F4A /* BlioUIImageAdditions.m in Sources */,
+				A3BEFD72152DE9E6009B4F4A /* BlioCoverView.m in Sources */,
+				A3BEFD73152DE9E6009B4F4A /* BlioContentsTabViewController.m in Sources */,
+				A3BEFD74152DE9E6009B4F4A /* BlioBookmark.m in Sources */,
+				A3BEFD75152DE9E6009B4F4A /* BlioLightSettingsViewController.m in Sources */,
+				A3BEFD76152DE9E6009B4F4A /* BlioSpeedReadView.m in Sources */,
+				A3BEFD77152DE9E6009B4F4A /* BlioTextFlow.m in Sources */,
+				A3BEFD78152DE9E6009B4F4A /* BlioAudioBookManager.m in Sources */,
+				A3BEFD79152DE9E6009B4F4A /* BlioAudioManager.m in Sources */,
+				A3BEFD7A152DE9E6009B4F4A /* BlioStoreArchiveViewController.m in Sources */,
+				A3BEFD7B152DE9E6009B4F4A /* BlioAppSettingsController.m in Sources */,
+				A3BEFD7C152DE9E6009B4F4A /* BlioReadingVoiceSettingsViewController.m in Sources */,
+				A3BEFD7D152DE9E6009B4F4A /* BlioWebToolsViewController.m in Sources */,
+				A3BEFD7E152DE9E6009B4F4A /* BlioProcessingManager.m in Sources */,
+				A3BEFD7F152DE9E6009B4F4A /* BlioProcessingStandardOperations.m in Sources */,
+				A3BEFD80152DE9E6009B4F4A /* BlioProcessing.m in Sources */,
+				A3BEFD81152DE9E6009B4F4A /* ZipArchive.mm in Sources */,
+				A3BEFD82152DE9E6009B4F4A /* BlioWebToolSettingsController.m in Sources */,
+				A3BEFD83152DE9E6009B4F4A /* UIDevice+BlioAdditions.m in Sources */,
+				A3BEFD84152DE9E6009B4F4A /* BlioFlowAnalyzeOperation.m in Sources */,
+				A3BEFD85152DE9E6009B4F4A /* BlioTextFlowFlow.m in Sources */,
+				A3BEFD86152DE9E6009B4F4A /* BlioTextFlowParagraph.m in Sources */,
+				A3BEFD87152DE9E6009B4F4A /* BlioTextFlowFlowTree.m in Sources */,
+				A3BEFD88152DE9E6009B4F4A /* BlioFlowEucBook.m in Sources */,
+				A3BEFD89152DE9E6009B4F4A /* Reachability.m in Sources */,
+				A3BEFD8A152DE9E6009B4F4A /* MRGridView.m in Sources */,
+				A3BEFD8B152DE9E6009B4F4A /* MRGridViewCell.m in Sources */,
+				A3BEFD8C152DE9E6009B4F4A /* MRGridViewController.m in Sources */,
+				A3BEFD8D152DE9E6009B4F4A /* BlioBookVault.m in Sources */,
+				A3BEFD8E152DE9E6009B4F4A /* NSDate+ISO8601Parsing.m in Sources */,
+				A3BEFD8F152DE9E6009B4F4A /* NSDate+ISO8601Unparsing.m in Sources */,
+				A3BEFD90152DE9E6009B4F4A /* USAdditions.m in Sources */,
+				A3BEFD91152DE9E6009B4F4A /* USGlobals.m in Sources */,
+				A3BEFD92152DE9E6009B4F4A /* xsd.m in Sources */,
+				A3BEFD93152DE9E6009B4F4A /* BlioOnlineStoreHelper.m in Sources */,
+				A3BEFD94152DE9E6009B4F4A /* BlioLoginViewController.m in Sources */,
+				A3BEFD95152DE9E6009B4F4A /* CellTextField.m in Sources */,
+				A3BEFD96152DE9E6009B4F4A /* EditableTableViewCell.m in Sources */,
+				A3BEFD97152DE9E6009B4F4A /* BlioStoreWebsiteViewController.m in Sources */,
+				A3BEFD98152DE9E6009B4F4A /* BlioContentCafe.m in Sources */,
+				A3BEFD99152DE9E6009B4F4A /* BlioTextFlowParagraphSource.m in Sources */,
+				A3BEFD9A152DE9E6009B4F4A /* BlioAccessibilitySegmentedControl.m in Sources */,
+				A3BEFD9B152DE9E6009B4F4A /* BlioEPubParagraphSource.m in Sources */,
+				A3BEFD9C152DE9E6009B4F4A /* BlioAlertManager.m in Sources */,
+				A3BEFD9D152DE9E6009B4F4A /* BlioStoreManager.m in Sources */,
+				A3BEFD9E152DE9E6009B4F4A /* BlioStoreHelper.m in Sources */,
+				A3BEFD9F152DE9E6009B4F4A /* BlioSelectableBookView.m in Sources */,
+				A3BEFDA0152DE9E6009B4F4A /* BlioDownloadVoicesViewController.m in Sources */,
+				A3BEFDA1152DE9E6009B4F4A /* BlioBookSearchController.m in Sources */,
+				A3BEFDA2152DE9E6009B4F4A /* BlioLicenseClient.m in Sources */,
+				A3BEFDA3152DE9E6009B4F4A /* BlioBookSearchViewController.m in Sources */,
+				A3BEFDA4152DE9E6009B4F4A /* BlioBookSearchToolbar.m in Sources */,
+				A3BEFDA5152DE9E6009B4F4A /* BlioSplitViewController.m in Sources */,
+				A3BEFDA6152DE9E6009B4F4A /* BlioSplitView.m in Sources */,
+				A3BEFDA7152DE9E6009B4F4A /* BlioBookManager.m in Sources */,
+				A3BEFDA8152DE9E6009B4F4A /* BlioEPubBook.m in Sources */,
+				A3BEFDA9152DE9E6009B4F4A /* NSObject+BlioAdditions.m in Sources */,
+				A3BEFDAA152DE9E6009B4F4A /* BlioXPSProvider.m in Sources */,
+				A3BEFDAB152DE9E6009B4F4A /* BlioTextFlowXAMLTree.m in Sources */,
+				A3BEFDAC152DE9E6009B4F4A /* BlioTextFlowXAMLTreeNode.m in Sources */,
+				A3BEFDAD152DE9E6009B4F4A /* NSData+MBBase64.m in Sources */,
+				A3BEFDAE152DE9E6009B4F4A /* NSString+BlioAdditions.m in Sources */,
+				A3BEFDAF152DE9E6009B4F4A /* BlioEULATextController.m in Sources */,
+				A3BEFDB0152DE9E6009B4F4A /* BlioHelpSettingsController.m in Sources */,
+				A3BEFDB1152DE9E6009B4F4A /* BlioVersionController.m in Sources */,
+				A3BEFDB2152DE9E6009B4F4A /* BlioViewSettingsSheet.m in Sources */,
+				A3BEFDB3152DE9E6009B4F4A /* BlioBeveledView.m in Sources */,
+				A3BEFDB4152DE9E6009B4F4A /* BlioDrmSessionManager.m in Sources */,
+				A3BEFDB5152DE9E6009B4F4A /* DigitalLockerGateway.m in Sources */,
+				A3BEFDB6152DE9E6009B4F4A /* BlioCreateAccountViewController.m in Sources */,
+				A3BEFDB7152DE9E6009B4F4A /* BlioRoundedRectActivityView.m in Sources */,
+				A3BEFDB8152DE9E6009B4F4A /* BlioTextFlowBlockCombiner.m in Sources */,
+				A3BEFDB9152DE9E6009B4F4A /* BlioInAppPurchaseManager.m in Sources */,
+				A3BEFDBA152DE9E6009B4F4A /* CCInAppPurchaseService.m in Sources */,
+				A3BEFDBB152DE9E6009B4F4A /* BlioPurchaseVoicesViewController.m in Sources */,
+				A3BEFDBC152DE9E6009B4F4A /* BlioGetBooksImportViewController.m in Sources */,
+				A3BEFDBD152DE9E6009B4F4A /* BlioImportManager.m in Sources */,
+				A3BEFDBE152DE9E6009B4F4A /* levenshtein_distance.c in Sources */,
+				A3BEFDBF152DE9E6009B4F4A /* BlioLayoutHyperlink.m in Sources */,
+				A3BEFDC0152DE9E6009B4F4A /* BlioLayoutPDFDataSource.m in Sources */,
+				A3BEFDC1152DE9E6009B4F4A /* BlioMyAccountViewController.m in Sources */,
+				A3BEFDC2152DE9E6009B4F4A /* BlioTOCEntry.m in Sources */,
+				A3BEFDC3152DE9E6009B4F4A /* SKProduct+LocalizedPrice.m in Sources */,
+				A3BEFDC4152DE9E6009B4F4A /* BlioDefaultViewController.m in Sources */,
+				A3BEFDC5152DE9E6009B4F4A /* THNSDataAdditions.m in Sources */,
+				A3BEFDC6152DE9E6009B4F4A /* BlioWelcomeViewController.m in Sources */,
+				A3BEFDC7152DE9E6009B4F4A /* UIButton+BlioAdditions.m in Sources */,
+				A3BEFDC8152DE9E6009B4F4A /* SFHFKeychainUtils.m in Sources */,
+				A3BEFDC9152DE9E6009B4F4A /* BlioEPubXPSDataProvider.m in Sources */,
+				A3BEFDCA152DE9E6009B4F4A /* BlioMediaView.m in Sources */,
+				A3BEFDCB152DE9E6009B4F4A /* BlioBlendView.m in Sources */,
+				A3BEFDCC152DE9E6009B4F4A /* BlioGestureSuppressingView.m in Sources */,
+				A3BEFDCD152DE9E6009B4F4A /* BlioTextFlowCombinedBlock.m in Sources */,
+				A3BEFDCE152DE9E6009B4F4A /* BlioTextFlowFlowReference.m in Sources */,
+				A3BEFDCF152DE9E6009B4F4A /* BlioTextFlowBlock.m in Sources */,
+				A3BEFDD0152DE9E6009B4F4A /* BlioTextFlowPageMarker.m in Sources */,
+				A3BEFDD1152DE9E6009B4F4A /* BlioTextFlowPageRange.m in Sources */,
+				A3BEFDD2152DE9E6009B4F4A /* BlioTextFlowReference.m in Sources */,
+				A3BEFDD3152DE9E6009B4F4A /* BlioTextFlowPositionedWord.m in Sources */,
+				A3BEFDD4152DE9E6009B4F4A /* BlioTextFlowPreParseOperation.m in Sources */,
+				A3BEFDD5152DE9E6009B4F4A /* BlioTextFlowParagraphWords.m in Sources */,
+				A3BEFDD6152DE9E6009B4F4A /* KNFBFlowEucBook.m in Sources */,
+				A3BEFDD7152DE9E6009B4F4A /* KNFBTextFlow.m in Sources */,
+				A3BEFDD8152DE9E6009B4F4A /* KNFBTextFlowBlock.m in Sources */,
+				A3BEFDD9152DE9E6009B4F4A /* KNFBTextFlowBlockCombiner.m in Sources */,
+				A3BEFDDA152DE9E6009B4F4A /* KNFBTextFlowCombinedBlock.m in Sources */,
+				A3BEFDDB152DE9E6009B4F4A /* KNFBTextFlowFlow.m in Sources */,
+				A3BEFDDC152DE9E6009B4F4A /* KNFBTextFlowFlowReference.m in Sources */,
+				A3BEFDDD152DE9E6009B4F4A /* KNFBTextFlowFlowTree.m in Sources */,
+				A3BEFDDE152DE9E6009B4F4A /* KNFBTextFlowPageRange.m in Sources */,
+				A3BEFDDF152DE9E6009B4F4A /* KNFBTextFlowParagraph.m in Sources */,
+				A3BEFDE0152DE9E6009B4F4A /* KNFBTextFlowParagraphSource.m in Sources */,
+				A3BEFDE1152DE9E6009B4F4A /* KNFBTextFlowParagraphWords.m in Sources */,
+				A3BEFDE2152DE9E6009B4F4A /* KNFBTextFlowPositionedWord.m in Sources */,
+				A3BEFDE3152DE9E6009B4F4A /* KNFBTextFlowReference.m in Sources */,
+				A3BEFDE4152DE9E6009B4F4A /* KNFBTextFlowXAMLTree.m in Sources */,
+				A3BEFDE5152DE9E6009B4F4A /* KNFBTextFlowXAMLTreeNode.m in Sources */,
+				A3BEFDE6152DE9E6009B4F4A /* KNFBTOCEntry.m in Sources */,
+				A3BEFDE7152DE9E6009B4F4A /* KNFBTimeOrderedCache.m in Sources */,
+				A3BEFDE8152DE9E6009B4F4A /* KNFBZipArchive.m in Sources */,
+				A3BEFDE9152DE9E6009B4F4A /* KNFBXPSProvider.m in Sources */,
+				A3BEFDEA152DE9E6009B4F4A /* KNFBXPSBitmapReleaseCallback.m in Sources */,
+				A3BEFDEB152DE9E6009B4F4A /* BlioXPSProtocol.m in Sources */,
+				A3BEFDEC152DE9E6009B4F4A /* KNFBLayoutHyperlink.m in Sources */,
+				A3BEFDED152DE9E6009B4F4A /* KNFBPageMarker.m in Sources */,
+				A3BEFDEE152DE9E6009B4F4A /* Blio.xcdatamodeld in Sources */,
+				A3BEFDEF152DE9E6009B4F4A /* BlioStoreTabViewController.m in Sources */,
+				A3BEFDF0152DE9E6009B4F4A /* KNFBXPSEPubInfoParserDelegate.m in Sources */,
+				A3BEFDF1152DE9E6009B4F4A /* KNFBXPSPageNumbersParserDelegate.m in Sources */,
+				A3BEFDF2152DE9E6009B4F4A /* BlioVOTipsSettingsController.m in Sources */,
+				A3BEFDF3152DE9E6009B4F4A /* BlioVoiceOverTextController.m in Sources */,
+				A3BEFDF4152DE9E6009B4F4A /* BlioVoiceOverHelpSettingsController.m in Sources */,
+				A3BEFDF5152DE9E6009B4F4A /* BlioBookView.m in Sources */,
+				A3BEFDF6152DE9E6009B4F4A /* BlioViewSettingsFontAndSizeContentsView.m in Sources */,
+				A3BEFDF7152DE9E6009B4F4A /* BlioCenterableTableViewCell.m in Sources */,
+				A3BEFDF8152DE9E6009B4F4A /* BlioPDFFont.m in Sources */,
+				A3BEFDF9152DE9E6009B4F4A /* BlioPDFPageParser.m in Sources */,
+				A3BEFDFA152DE9E6009B4F4A /* KNFBXMLParserLock.m in Sources */,
+				A3BEFDFB152DE9E6009B4F4A /* BlioSocialManager.m in Sources */,
+				A3BEFDFC152DE9E6009B4F4A /* FBFrictionlessRequestSettings.m in Sources */,
+				A3BEFDFD152DE9E6009B4F4A /* FBRequest.m in Sources */,
+				A3BEFDFE152DE9E6009B4F4A /* Facebook.m in Sources */,
+				A3BEFDFF152DE9E6009B4F4A /* FBLoginDialog.m in Sources */,
+				A3BEFE00152DE9E6009B4F4A /* FBDialog.m in Sources */,
+				A3BEFE01152DE9E6009B4F4A /* NSObject+SBJSON.m in Sources */,
+				A3BEFE02152DE9E6009B4F4A /* NSString+SBJSON.m in Sources */,
+				A3BEFE03152DE9E6009B4F4A /* SBJSON.m in Sources */,
+				A3BEFE04152DE9E6009B4F4A /* SBJsonBase.m in Sources */,
+				A3BEFE05152DE9E6009B4F4A /* SBJsonParser.m in Sources */,
+				A3BEFE06152DE9E6009B4F4A /* SBJsonWriter.m in Sources */,
+				A3BEFE07152DE9E6009B4F4A /* BlioEPubMetadataReader.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -6068,6 +7047,11 @@
 			isa = PBXTargetDependency;
 			name = libEucalyptus;
 			targetProxy = A36D34BF120B136700E1A035 /* PBXContainerItemProxy */;
+		};
+		A3BEFC69152DE9E6009B4F4A /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = libEucalyptus;
+			targetProxy = A3BEFC6A152DE9E6009B4F4A /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -6193,7 +7177,8 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CODE_SIGN_ENTITLEMENTS = "$(SRCROOT)/Entitlements.plist";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Distribution: K-NFB Reading Technology Inc.";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: K-NFB Reading Technology Inc.";
 				COPY_PHASE_STRIP = YES;
 				CURRENT_PROJECT_VERSION = 6;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -6215,7 +7200,8 @@
 					"-fobjc-arc",
 				);
 				PRODUCT_NAME = Blio;
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
+				PROVISIONING_PROFILE = "308F14CC-3406-42F3-AA0D-363A4E4AC5DD";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "308F14CC-3406-42F3-AA0D-363A4E4AC5DD";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
@@ -6249,8 +7235,8 @@
 					"-fobjc-arc",
 				);
 				PRODUCT_NAME = Blio;
-				PROVISIONING_PROFILE = "65475B68-F414-4377-BEFA-9809B2D6E957";
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "65475B68-F414-4377-BEFA-9809B2D6E957";
+				PROVISIONING_PROFILE = "5371D97A-F72A-480E-B8BC-87D4B17A6A7E";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "5371D97A-F72A-480E-B8BC-87D4B17A6A7E";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
@@ -6521,11 +7507,122 @@
 			};
 			name = Distribution;
 		};
+		A3BEFE30152DE9E6009B4F4A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CODE_SIGN_ENTITLEMENTS = "$(SRCROOT)/Entitlements.plist";
+				CODE_SIGN_IDENTITY = "iPhone Developer: Arnold Chien (4XCU87FX68)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Arnold Chien (4XCU87FX68)";
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 6;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = Sources/BlioApp_Prefix.pch;
+				INFOPLIST_FILE = "Resources/ToshibaApp-Info.plist";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/Libraries/DRM\"",
+					"\"$(SRCROOT)/Libraries/TTS\"",
+					"\"$(SRCROOT)/libKNFBReader/Pagemark\"",
+				);
+				OTHER_CFLAGS = (
+					"-DNOUNCRYPT",
+					"-DNOCRYPT",
+					"-DTOSHIBA",
+				);
+				OTHER_LDFLAGS = (
+					"-ObjC",
+					"-all_load",
+					"-fobjc-arc",
+				);
+				PRODUCT_NAME = "Book Place";
+				PROVISIONING_PROFILE = "FCBACA87-81EF-4EAE-998C-AE17FC9526F9";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "FCBACA87-81EF-4EAE-998C-AE17FC9526F9";
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VERSIONING_SYSTEM = "apple-generic";
+			};
+			name = Debug;
+		};
+		A3BEFE31152DE9E6009B4F4A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CODE_SIGN_ENTITLEMENTS = "$(SRCROOT)/Entitlements.plist";
+				CODE_SIGN_IDENTITY = "iPhone Developer: Arnold Chien (4XCU87FX68)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Arnold Chien (4XCU87FX68)";
+				COPY_PHASE_STRIP = YES;
+				CURRENT_PROJECT_VERSION = 6;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = Sources/BlioApp_Prefix.pch;
+				INFOPLIST_FILE = "Resources/ToshibaApp-Info.plist";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/Libraries/DRM\"",
+					"\"$(SRCROOT)/Libraries/TTS\"",
+					"\"$(SRCROOT)/libKNFBReader/Pagemark\"",
+				);
+				OTHER_CFLAGS = (
+					"-DNOUNCRYPT",
+					"-DNOCRYPT",
+					"-DTOSHIBA",
+				);
+				OTHER_LDFLAGS = (
+					"-ObjC",
+					"-all_load",
+					"-fobjc-arc",
+				);
+				PRODUCT_NAME = "Book Place";
+				PROVISIONING_PROFILE = "FCBACA87-81EF-4EAE-998C-AE17FC9526F9";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "FCBACA87-81EF-4EAE-998C-AE17FC9526F9";
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VERSIONING_SYSTEM = "apple-generic";
+			};
+			name = Release;
+		};
+		A3BEFE32152DE9E6009B4F4A /* Distribution */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CODE_SIGN_ENTITLEMENTS = "$(SRCROOT)/Entitlements.plist";
+				CODE_SIGN_IDENTITY = "iPhone Distribution: K-NFB Reading Technology Inc.";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: K-NFB Reading Technology Inc.";
+				COPY_PHASE_STRIP = YES;
+				CURRENT_PROJECT_VERSION = 6;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = Sources/BlioApp_Prefix.pch;
+				INFOPLIST_FILE = "Resources/ToshibaApp-Info.plist";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/Libraries/DRM\"",
+					"\"$(SRCROOT)/Libraries/TTS\"",
+					"\"$(SRCROOT)/libKNFBReader/Pagemark\"",
+				);
+				OTHER_CFLAGS = (
+					"-DNOUNCRYPT",
+					"-DNOCRYPT",
+					"-DTOSHIBA",
+				);
+				OTHER_LDFLAGS = (
+					"-ObjC",
+					"-all_load",
+					"-fobjc-arc",
+				);
+				PRODUCT_NAME = "Book Place";
+				PROVISIONING_PROFILE = "5371D97A-F72A-480E-B8BC-87D4B17A6A7E";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "5371D97A-F72A-480E-B8BC-87D4B17A6A7E";
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VERSIONING_SYSTEM = "apple-generic";
+			};
+			name = Distribution;
+		};
 		C01FCF4F08A954540054247B /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(ARCHS_UNIVERSAL_IPHONE_OS)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Developer: Arnold Chien (4XCU87FX68)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Arnold Chien (4XCU87FX68)";
 				CURRENT_PROJECT_VERSION = 6;
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
@@ -6541,7 +7638,8 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 4.0;
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_CFLAGS = "-DDRM_INLINING_SUPPORTED";
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
+				PROVISIONING_PROFILE = "AC1D1D11-3C0F-4832-BD7C-F014554D0316";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "AC1D1D11-3C0F-4832-BD7C-F014554D0316";
 				SDKROOT = iphoneos5.1;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
@@ -6615,6 +7713,16 @@
 				A36D35F6120B136700E1A035 /* Debug */,
 				A36D35F7120B136700E1A035 /* Release */,
 				A36D35F8120B136700E1A035 /* Distribution */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		A3BEFE2F152DE9E6009B4F4A /* Build configuration list for PBXNativeTarget "ToshibaApp" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A3BEFE30152DE9E6009B4F4A /* Debug */,
+				A3BEFE31152DE9E6009B4F4A /* Release */,
+				A3BEFE32152DE9E6009B4F4A /* Distribution */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

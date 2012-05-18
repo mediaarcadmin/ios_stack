@@ -21,7 +21,11 @@
 	{
 		self.title = NSLocalizedString(@"VoiceOver Tips",@"\"VoiceOver Tips\" view controller title.");
 		NSString* helpFilepath;
+#ifdef TOSHIBA
+		helpFilepath = @"/voiceover-tips-Toshiba.html";
+#else
 		helpFilepath = @"/voiceover-tips.html";
+#endif
         
 		NSString* helpText = [NSString stringWithContentsOfFile:[[[NSBundle mainBundle] resourcePath] stringByAppendingString:helpFilepath] encoding:NSUTF8StringEncoding error:NULL];
 		textView = [[UIWebView alloc] initWithFrame:[[UIScreen mainScreen] applicationFrame]];

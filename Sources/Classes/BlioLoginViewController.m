@@ -27,7 +27,11 @@
 //            logoImage = [UIImage imageWithData:[NSData dataWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"Icon-iPad@2x" ofType:@"png"]]];
 //        else
 //            logoImage = [UIImage imageWithData:[NSData dataWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"Icon@2x" ofType:@"png"]]];
+#ifdef TOSHIBA
+        logoImage = [UIImage imageWithData:[NSData dataWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"Icon-Large-Toshiba" ofType:@"png"]]];
+#else
         logoImage = [UIImage imageWithData:[NSData dataWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"iTunesArtwork" ofType:@""]]];
+#endif
 
         logoImage = [UIImage imageWithCGImage:logoImage.CGImage scale:[[UIScreen mainScreen] scale] orientation:UIImageOrientationUp];
 
@@ -51,7 +55,11 @@
 		loginHeaderLabel.lineBreakMode = UILineBreakModeWordWrap;
 		loginHeaderLabel.numberOfLines = 0;
         loginHeaderLabel.backgroundColor = [UIColor clearColor];
+#ifdef TOSHIBA
+		loginHeaderLabel.text = NSLocalizedString(@"Sync your reading list via your ToshibaBookplace.com account.\n\nIf you are new, please visit our website to sign up.",@"Existing user message on welcome view controller.");
+#else
 		loginHeaderLabel.text = NSLocalizedString(@"Log in to your Blio.com account to sync your reading list.\n\nIf you are a new customer, please visit our website to sign up.",@"Existing user message on welcome view controller.");
+#endif
 		[self addSubview:loginHeaderLabel];
 		[loginHeaderLabel release];
 
@@ -203,6 +211,7 @@
 	CGFloat activityIndicatorDiameter = 50.0f;
 	self.activityIndicatorView = [[[BlioRoundedRectActivityView alloc] initWithFrame:CGRectMake((mainScreenBounds.size.width-activityIndicatorDiameter)/2, (mainScreenBounds.size.height-activityIndicatorDiameter)/2, activityIndicatorDiameter, activityIndicatorDiameter)] autorelease];
     NSLog(@"self.view.bounds.size.height: %f",self.view.bounds.size.height);
+#ifndef TOSHIBA
     self.copyrightLabel = [[[UILabel alloc] initWithFrame:CGRectMake(10, self.view.bounds.size.height - 40, self.view.bounds.size.width - 20, 40)] autorelease];
     copyrightLabel.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleTopMargin;
     copyrightLabel.textAlignment = UITextAlignmentRight;
@@ -211,6 +220,7 @@
     copyrightLabel.textColor = [UIColor colorWithRed:76.0f/255.0f green:76.0f/255.0f blue:76.0f/255.0f alpha:1.0f];
     copyrightLabel.backgroundColor = [UIColor clearColor];
     [self.view addSubview:copyrightLabel];
+#endif
 }
 -(void)viewDidUnload {
 	[activityIndicatorView removeFromSuperview];

@@ -95,6 +95,10 @@
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
 	if (section == 1) 
 		return 1;
+#ifdef TOSHIBA
+	if (section == 3) 
+		return 1;
+#endif
 	return 2;
 }
 /*
@@ -174,8 +178,10 @@
 				//				case 1:
 				//					[cell.textLabel setText:NSLocalizedString(@"Navigation",@"\"Navigation\" text label for App Settings cell")];
 				//					break;
+#ifndef TOSHIBA
 				case 1:
 					[cell.textLabel setText:NSLocalizedString(@"Terms of Use",@"\"Terms of Use\" text label for App Settings cell")];
+#endif
 				default:
 					break;
 			}

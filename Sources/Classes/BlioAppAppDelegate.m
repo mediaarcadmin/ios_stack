@@ -454,7 +454,9 @@ static void *background_init_thread(void * arg) {
     [window sendSubviewToBack:navigationController.view];
     
     [realDefaultImageViewController fadeOutCompletly];
+#ifndef TOSHIBA
     [realDefaultImageViewController release];
+#endif
     
     if(!openedBook) {
         [self performSelector:@selector(switchStatusBar) withObject:nil afterDelay:0];

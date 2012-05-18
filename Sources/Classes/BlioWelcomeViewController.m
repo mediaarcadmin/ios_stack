@@ -140,10 +140,15 @@
 
 		blioLabel = [[UILabel alloc] initWithFrame:CGRectZero];
 		blioLabel.lineBreakMode = UILineBreakModeClip;
-		blioLabel.numberOfLines = 1;
-		blioLabel.font = [UIFont systemFontOfSize:65.0f];
 		blioLabel.textColor = [UIColor colorWithRed:54.0f/255.0f green:54.0f/255.0f blue:54.0f/255.0f alpha:1];
+		blioLabel.numberOfLines = 1;
+#ifdef TOSHIBA
+		blioLabel.font = [UIFont systemFontOfSize:30.0f];
+		blioLabel.text = NSLocalizedString(@"Book Place",@"\"Book Place\" header on welcome view controller.");
+#else
+		blioLabel.font = [UIFont systemFontOfSize:65.0f];
 		blioLabel.text = NSLocalizedString(@"Blio",@"\"Blio\" header on welcome view controller.");
+#endif
 		[self addSubview:blioLabel];
 		[blioLabel release];
 		
@@ -216,7 +221,11 @@
 		existingUserTextView = [[UILabel alloc] initWithFrame:CGRectZero];
 		existingUserTextView.lineBreakMode = UILineBreakModeWordWrap;
 		existingUserTextView.numberOfLines = 0;
+#ifdef TOSHIBA  
+		existingUserTextView.text = NSLocalizedString(@"Log in to your ToshibaBookplace.com account to sync your reading list. If you are a new customer, please visit our website to sign up.",@"Existing user message on welcome view controller.");
+#else
 		existingUserTextView.text = NSLocalizedString(@"Log in to your Blio.com account to sync your reading list. If you are a new customer, please visit our website to sign up.",@"Existing user message on welcome view controller.");
+#endif
 		//existingUserTextView.text = NSLocalizedStringWithDefaultValue(nil@"EXISTING_USER_TEXT",nil,[NSBundle mainBundle],@"Log in to your Blio.com account to sync your reading //list.\n\n If you are a new customer, please visit our website to sign up.",@"Existing user message on welcome view controller.");
 		[self addSubview:existingUserTextView];
 		[existingUserTextView release];
@@ -373,7 +382,11 @@
     self = [super init];
     if (self) {
 		self.sourceID = aSourceID;
+#ifdef TOSHIBA
+		self.title = NSLocalizedString(@"Welcome to Book Place",@"\"Welcome to Book Place\" view controller title");
+#else
 		self.title = NSLocalizedString(@"Welcome to Blio",@"\"Welcome to Blio\" view controller title");
+#endif
     }
     return self;
 }
@@ -405,7 +418,11 @@
         UIGraphicsBeginImageContextWithOptions(CGSizeMake(100, 100), NO, [[UIScreen mainScreen] scale]);
         CGContextRef context = UIGraphicsGetCurrentContext();
 //        UIImage *logoImage = [UIImage imageWithData:[NSData dataWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"Icon@2x" ofType:@"png"]]];
+#ifdef TOSHIBA
+        UIImage *logoImage = [UIImage imageWithData:[NSData dataWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"Icon-Large-Toshiba" ofType:@"png"]]];
+#else
         UIImage *logoImage = [UIImage imageWithData:[NSData dataWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"iTunesArtwork" ofType:@""]]];
+#endif
         logoImage = [UIImage imageWithCGImage:logoImage.CGImage scale:[[UIScreen mainScreen] scale] orientation:UIImageOrientationUp];
         // Mask off the outside of the icon like the device does.
         CGContextMoveToPoint(context, 0, 50);
@@ -432,7 +449,12 @@
         welcomeTextView.autoresizingMask = UIViewAutoresizingFlexibleWidth;
         welcomeTextView.lineBreakMode = UILineBreakModeWordWrap;
         welcomeTextView.numberOfLines = 0;
+#ifdef TOSHIBA
+        // TODO: change WELCOME_TEXT
+        welcomeTextView.text = NSLocalizedString(@"With Book Place, books are more than just words: there's style, presentation, and a world of color. Now you can read books with the same layout, fonts, and full-color images that you enjoy in the print version of your favorite titles.",@"Toshiba welcome message on welcome view controller.");
+#else
         welcomeTextView.text = NSLocalizedStringWithDefaultValue(@"WELCOME_TEXT",nil,[NSBundle mainBundle],@"With Blio, books are more than just words: there's style, presentation, and a world of color. Now you can read books with the same layout, fonts, and full-color images that you enjoy in the print version of your favorite titles.",@"Welcome message on welcome view controller.");
+#endif
         [self.view addSubview:welcomeTextView];
         
         logoView.frame = CGRectMake(138, contentMargin/2, 100, 100);
@@ -446,7 +468,11 @@
     
     self.cell1 = [[[BlioWelcomeTableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:@"cell"] autorelease];
     cell1.titleLabel.text = NSLocalizedString(@"Log In",@"\"Log In\" existing user title for welcome view controller.");
+#ifdef TOSHIBA
+    cell1.descriptionText = NSLocalizedString(@"Sync your reading list via your ToshibaBookplace.com account. If you are new, please visit our website to sign up.",@"Existing user message on welcome view controller.");
+#else
     cell1.descriptionText = NSLocalizedString(@"Log in to your Blio.com account to sync your reading list. If you are a new customer, please visit our website to sign up.",@"Existing user message on welcome view controller.");
+#endif
     cell1.frame = CGRectMake(kBlioWelcomeCellMargin, kBlioWelcomeCellMargin, self.cellContainerView.frame.size.width - (kBlioWelcomeCellMargin*2), self.cellContainerView.frame.size.height/3.0f);
     cell1.delegate = self;
     [cell1 setAccessibilityLabel:[NSString stringWithFormat:@"%@. %@",cell1.titleLabel.text,cell1.descriptionText]];

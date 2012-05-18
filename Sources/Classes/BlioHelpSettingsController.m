@@ -21,10 +21,17 @@
 	{
 		self.title = NSLocalizedString(@"Help",@"\"Help\" view controller title.");
 		NSString* helpFilepath;
+#ifdef TOSHIBA
+		if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) 
+			helpFilepath = @"/userdoc-ipad-Toshiba.html";
+		else
+			helpFilepath = @"/userdoc-Toshiba.html";
+#else
 		if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) 
 			helpFilepath = @"/userdoc-ipad.html";
 		else
 			helpFilepath = @"/userdoc.html";
+#endif
 
 		NSString* helpText = [NSString stringWithContentsOfFile:[[[NSBundle mainBundle] resourcePath] stringByAppendingString:helpFilepath] encoding:NSUTF8StringEncoding error:NULL];
 		textView = [[UIWebView alloc] initWithFrame:[[UIScreen mainScreen] applicationFrame]];
