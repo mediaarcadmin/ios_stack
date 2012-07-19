@@ -131,14 +131,30 @@
 }
 
 - (UIImage *)nonDynamicDefaultImageForOrientation:(UIInterfaceOrientation)orientation {
+    NSString *basename = nil;
+    
+    NSDictionary *infoDict = [[NSBundle mainBundle] infoDictionary];
+    if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+        basename = [infoDict objectForKey:@"UILaunchImageFile~ipad"];
+    }
+    if(!basename) {
+        basename = [infoDict objectForKey:@"UILaunchImageFile~iphone"];
+    }
+    if(!basename) {
+        basename = [infoDict objectForKey:@"UILaunchImageFile"];
+    }
+    if(!basename) {
+        basename = @"Default";
+    }
+
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
         if (UIInterfaceOrientationIsLandscape(orientation)) {
-            return [UIImage imageNamed:@"Default-Landscape.png"];
+            return [UIImage imageNamed:[basename stringByAppendingString:@"-Landscape.png"]];
         } else {
-            return [UIImage imageNamed:@"Default-Portrait.png"];
+            return [UIImage imageNamed:[basename stringByAppendingString:@"-Portrait.png"]];
         }
     } else {
-        return [UIImage imageNamed:@"Default.png"];
+        return [UIImage imageNamed:[basename stringByAppendingString:@".png"]];
     }
 }
 

@@ -21,7 +21,11 @@
 	if (self)
 	{
 		self.title = NSLocalizedString(@"VoiceOver Quick Start",@"\"VoiceOver Quick Start\" view controller title.");
+#ifdef TOSHIBA
+		NSString* quickstartText = [NSString stringWithContentsOfFile:[[[NSBundle mainBundle] resourcePath] stringByAppendingString:@"/voiceover-quickstart-Toshiba.html"] encoding:NSUTF8StringEncoding error:NULL];
+#else
 		NSString* quickstartText = [NSString stringWithContentsOfFile:[[[NSBundle mainBundle] resourcePath] stringByAppendingString:@"/voiceover-quickstart.html"] encoding:NSUTF8StringEncoding error:NULL];
+#endif
 		textView = [[UIWebView alloc] initWithFrame:[[UIScreen mainScreen] applicationFrame]];
 		[textView loadHTMLString:quickstartText baseURL:nil];
 		[textView setScalesPageToFit:YES];

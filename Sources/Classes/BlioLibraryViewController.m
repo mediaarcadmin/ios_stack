@@ -150,8 +150,11 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 	
 	MRGridView *aGridView = [[MRGridView alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     self.gridView = aGridView;
-    
+#ifdef TOSHIBA
+    UIImage *logoImage = [UIImage appleLikeBeveledImage:[UIImage imageNamed:@"logo-white-Toshiba.png"]];
+#else
     UIImage *logoImage = [UIImage appleLikeBeveledImage:[UIImage imageNamed:@"logo-white.png"]];
+#endif
     BlioLogoView *aLogoView = [[BlioLogoView alloc] initWithFrame:CGRectMake(0, 0, logoImage.size.width, logoImage.size.height)];
     aLogoView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleHeight;
     [aLogoView setImage:logoImage];
@@ -174,7 +177,16 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 
 - (void)viewDidLoad {
     // N.B. on iOS 4.0 it is important to set the toolbar tint before adding the UIBarButtonItems
+#ifdef TOSHIBA
+    // light gray
+	//self.tintColor = [UIColor colorWithRed:188.0f / 256.0f green:190.0f / 256.0f  blue:192.0f / 256.0f  alpha:1.0f];
+    // dark gray
+	self.tintColor = [UIColor colorWithRed:177.0f / 256.0f green:179.0f / 256.0f  blue:182.0f / 256.0f  alpha:1.0f];
+    // darkest gray
+	//self.tintColor = [UIColor colorWithRed:167.0f / 256.0f green:169.0f / 256.0f  blue:172.0f / 256.0f  alpha:1.0f];
+#else
 	self.tintColor = [UIColor colorWithRed:160.0f / 256.0f green:190.0f / 256.0f  blue:190.0f / 256.0f  alpha:1.0f];
+#endif
 
 	BlioLibraryLayout loadedLibraryLayout = [[NSUserDefaults standardUserDefaults] integerForKey:@"kBlioLastLibraryLayoutDefaultsKey"];
 	
