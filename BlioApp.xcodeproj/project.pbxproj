@@ -92,6 +92,9 @@
 		7D2711AE124931D40087C4E3 /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D2711AD124931D40087C4E3 /* Accelerate.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		7D2711AF124931DA0087C4E3 /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D2711AD124931D40087C4E3 /* Accelerate.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		7D2711B0124931E40087C4E3 /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D2711AD124931D40087C4E3 /* Accelerate.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
+		7D31BFD015B85A4800FEA167 /* libots.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D9A40A0150E50FE007D9A3E /* libots.a */; };
+		7D31BFD115B85A5400FEA167 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DD5836C1545B9FD00D59B95 /* CoreMedia.framework */; };
+		7D31BFD215B85A5900FEA167 /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D9A40A2150E5B37007D9A3E /* CoreVideo.framework */; };
 		7D381B5C10D92E86008D34E2 /* libEucalyptusIOSUI.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D381B4B10D92E81008D34E2 /* libEucalyptusIOSUI.a */; };
 		7D381B5D10D92E86008D34E2 /* libhyphenate.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D381B4D10D92E81008D34E2 /* libhyphenate.a */; };
 		7D381B5F10D92E86008D34E2 /* libexpat.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D381B5110D92E81008D34E2 /* libexpat.a */; };
@@ -1687,7 +1690,6 @@
 		A3BEFE07152DE9E6009B4F4A /* BlioEPubMetadataReader.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D86609A150508F200B68A84 /* BlioEPubMetadataReader.m */; };
 		A3BEFE09152DE9E6009B4F4A /* libEucalyptusIOSUI.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D381B4B10D92E81008D34E2 /* libEucalyptusIOSUI.a */; };
 		A3BEFE0A152DE9E6009B4F4A /* libEucalyptusModel.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DE15F66141E76CD00D37CA2 /* libEucalyptusModel.a */; };
-		A3BEFE0B152DE9E6009B4F4A /* libEucalyptusEPubIOSUI.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DE15F68141E76CD00D37CA2 /* libEucalyptusEPubIOSUI.a */; };
 		A3BEFE0C152DE9E6009B4F4A /* libEucalyptusEPub.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D68AF481150F39A00430710 /* libEucalyptusEPub.a */; };
 		A3BEFE0D152DE9E6009B4F4A /* libEucalyptusCSS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D68AF4A1150F39A00430710 /* libEucalyptusCSS.a */; };
 		A3BEFE0E152DE9E6009B4F4A /* libEucalyptusBase.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D3F504A11EF3DDA0065A5F7 /* libEucalyptusBase.a */; };
@@ -3399,9 +3401,11 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7D31BFD115B85A5400FEA167 /* CoreMedia.framework in Frameworks */,
+				7D31BFD015B85A4800FEA167 /* libots.a in Frameworks */,
+				7D31BFD215B85A5900FEA167 /* CoreVideo.framework in Frameworks */,
 				A3BEFE09152DE9E6009B4F4A /* libEucalyptusIOSUI.a in Frameworks */,
 				A3BEFE0A152DE9E6009B4F4A /* libEucalyptusModel.a in Frameworks */,
-				A3BEFE0B152DE9E6009B4F4A /* libEucalyptusEPubIOSUI.a in Frameworks */,
 				A3BEFE0C152DE9E6009B4F4A /* libEucalyptusEPub.a in Frameworks */,
 				A3BEFE0D152DE9E6009B4F4A /* libEucalyptusCSS.a in Frameworks */,
 				A3BEFE0E152DE9E6009B4F4A /* libEucalyptusBase.a in Frameworks */,
