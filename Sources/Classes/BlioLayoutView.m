@@ -254,6 +254,8 @@
         aPageTurningView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
         aPageTurningView.zoomHandlingKind = EucPageTurningViewZoomHandlingKindZoom;
 		aPageTurningView.vibratesOnInvalidTurn = NO;
+        aPageTurningView.backgroundColor = [UIColor blackColor];
+        aPageTurningView.opaque = YES;
         
         BOOL hasEnhancedContent = NO;
         if ([(NSObject *)self.dataSource respondsToSelector:@selector(hasEnhancedContent)]) {
@@ -466,7 +468,6 @@
 
 - (void)setPageTexture:(UIImage *)aPageTexture isDark:(BOOL)isDarkIn { 
     [self.pageTurningView setPageTexture:aPageTexture isDark:isDarkIn];
-    [self.pageTurningView setNeedsDraw];
     [self clearOverlayCaches];
     [self updateOverlay];
 }
@@ -1149,7 +1150,6 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
                 [self.pageTurningView refreshHighlightsForPageAtIndex:i];
             }
             
-			[self.pageTurningView drawView];
             return [highlightRange.color colorWithAlphaComponent:0.3f];
         }
     }
@@ -1179,8 +1179,6 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 	for (int i = startIndex; i <= endIndex; i++) {
 		[self.pageTurningView refreshHighlightsForPageAtIndex:i];
 	}
-	
-	[self.pageTurningView drawView];
 }
 
 - (UIView *)viewForMenuForEucSelector:(EucSelector *)selector {
@@ -1580,8 +1578,6 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
     for (int i = startPage; i <= endPage; i++) {
         [self.pageTurningView refreshHighlightsForPageAtIndex:i - 1];
     }
-    
-    [self.pageTurningView drawView];
 }
 
 - (NSArray *)rectsFromBlocksAtPageIndex:(NSInteger)pageIndex inBookmarkRange:(BlioBookmarkRange *)bookmarkRange {
