@@ -292,7 +292,7 @@ ErrorExit:
 		return NO;
 	}
 	
-	DRM_CHAR* customData = (DRM_CHAR*)[[[[NSString stringWithString:@"<CustomData><AuthToken>"] 
+	DRM_CHAR* customData = (DRM_CHAR*)[[[@"<CustomData><AuthToken>"
 										 stringByAppendingString:token] 
 										stringByAppendingString:@"</AuthToken></CustomData>"]
 									   UTF8String];
@@ -397,7 +397,7 @@ ErrorExit:
 		return NO;
 	}
 	
-	DRM_CHAR* customData = (DRM_CHAR*)[[[[[[NSString stringWithString:@"<CustomData><AuthToken>"] 
+	DRM_CHAR* customData = (DRM_CHAR*)[[[[[@"<CustomData><AuthToken>"
 										   stringByAppendingString:token] 
 										  stringByAppendingString:@"</AuthToken><Category>"]
 										 stringByAppendingString:name]
@@ -580,7 +580,7 @@ ErrorExit:
 		return DRM_E_FAIL;
 	}
 	
-	DRM_CHAR* customData = (DRM_CHAR*)[[[[[[NSString stringWithString:@"<CustomData><AuthToken>"] 
+	DRM_CHAR* customData = (DRM_CHAR*)[[[[[@"<CustomData><AuthToken>" 
 										   stringByAppendingString:token] 
 										  stringByAppendingString:@"</AuthToken><Version>"]
 										 stringByAppendingString:@"2.0"]

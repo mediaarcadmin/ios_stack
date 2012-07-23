@@ -17,7 +17,6 @@
 #import "BlioLayoutView.h"
 #import "BlioSpeedReadView.h"
 #import "BlioContentsTabViewController.h"
-#import "BlioLightSettingsViewController.h"
 #import "BlioBookmark.h"
 #import "BlioAppSettingsConstants.h"
 #import "BlioAlertManager.h"
