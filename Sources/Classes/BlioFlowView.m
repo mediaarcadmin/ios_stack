@@ -68,7 +68,8 @@
            animated:(BOOL)animated 
 {
     if((self = [super initWithFrame:frame])) {
-        self.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;        
+        self.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+        self.backgroundColor = [UIColor blackColor];
         self.opaque = YES;
         self.bookID = aBookID;
         
