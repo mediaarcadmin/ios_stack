@@ -13,7 +13,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-int minimum(int a, int b, int c);
+static int minimum(int a, int b, int c);
 
 /****************************************/
 /*Implementation of Levenshtein distance*/
@@ -63,7 +63,7 @@ int levenshtein_distance_with_bytes(const char *s, int n, const char *t, int m)
     
 }
 
-int minimum(int a, int b, int c)
+static int minimum(int a, int b, int c)
 /*Gets the minimum of three values*/
 {
     int min=a;
