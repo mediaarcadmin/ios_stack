@@ -590,11 +590,10 @@
     return [bookmarkRange autorelease];
 }
 
-
-- (BlioBookmarkRange *)selectedRange 
+- (BlioBookmarkRange *)bookmarkRangeFromSelectorRange:(EucSelectorRange *)range
 {
-    EucBookPageIndexPointRange *selectedRange = (EucBookPageIndexPointRange *)[super selectedRange];
-        
+    EucBookPageIndexPointRange *selectedRange = [_eucBookView pageIndexPointRangeFromSelectorRange:range];
+    
     if(selectedRange) {
         return [self bookmarkRangeFromIndexPointRange:selectedRange];
     } else {
@@ -607,6 +606,11 @@
         
         return [bookmarkRange autorelease];
     }
+}
+
+- (BlioBookmarkRange *)selectedRange 
+{
+    return [self bookmarkRangeFromSelectorRange:_eucBookView.selector.selectedRange];
 }
 
 - (void)bookView:(EucBookView *)bookView didUpdateHighlightAtRange:(EucHighlightRange *)fromRange toRange:(EucHighlightRange *)toRange
