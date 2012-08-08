@@ -23,6 +23,8 @@
 
 - (id)initWithBookID:(NSManagedObjectID *)aBookID
 {
+    BOOL initted = NO;
+    
     BlioBook *book = [[BlioBookManager sharedBookManager] bookWithID:aBookID];
     id<EucEPubDataProvider> dataProvider = nil;
     if([book hasEPub]) {
@@ -50,11 +52,14 @@
             if ((self = [super initWithBookReference:bookReference 
                                  cacheDirectoryPath:[book.bookCacheDirectory stringByAppendingPathComponent:BlioBookEucalyptusCacheDir]])) {
                 self.blioBookID = aBookID;
+                initted = YES;
             }
             [bookReference release];
         }
         [dataProvider release];
-    } else {
+    }
+    
+    if(!initted) {
         [self release];
         self = nil;
     }
@@ -77,7 +82,7 @@
 
 - (NSArray *)userCSSDatasForDocumentTree:(id<EucCSSDocumentTree>)documentTree
 {
-    NSMutableArray *ret = [[[super userAgentCSSDatasForDocumentTree:documentTree] mutableCopy] autorelease];
+    NSMutableArray *ret = [[[super userCSSDatasForDocumentTree:documentTree] mutableCopy] autorelease];
     
     NSMutableString *cssString = [NSMutableString stringWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"BlioEPUB3Overrides" ofType:@"css"] 
                                                                   encoding:NSUTF8StringEncoding error:NULL];
