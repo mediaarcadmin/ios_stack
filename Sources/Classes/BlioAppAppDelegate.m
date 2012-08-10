@@ -7,6 +7,7 @@
 //
 #import <QuartzCore/QuartzCore.h>
 #import <AVFoundation/AVFoundation.h>
+#import <AudioToolbox/AudioToolbox.h>
 #import <libEucalyptus/EucSharedHyphenator.h>
 #import <pthread.h>
 #import "BlioAppAppDelegate.h"
@@ -386,10 +387,11 @@ static void *background_init_thread(void * arg) {
     [[NSBundle mainBundle] loadNibNamed:@"MainNavControllerAndLibraryView" owner:self options:nil];
     
     NSError * audioError = nil;
-	[[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPlayback error:&audioError];
-	if (audioError) {
+	if (![[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPlayback error:&audioError]) {
 		NSLog(@"[ERROR: could not set AVAudioSessionCategory with error: %@, %@", audioError, [audioError userInfo]);
-	}
+	} else {
+        AudioSessionSetProperty(kAudioSessionProperty_OverrideCategoryMixWithOthers, sizeof(UInt32), (UInt32[]){1});
+    }
     
     [self ensureApplicationSupportAvailable];
     
