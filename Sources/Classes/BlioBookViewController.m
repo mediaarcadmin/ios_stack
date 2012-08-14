@@ -9,6 +9,7 @@
 #import "BlioBookViewController.h"
 #import <libEucalyptus/THNavigationButton.h>
 #import <libEucalyptus/THUIDeviceAdditions.h>
+#import <libEucalyptus/THUIImageAdditions.h>
 #import <libEucalyptus/THPair.h>
 #import <libEucalyptus/THEventCapturingWindow.h>
 #import <libEucalyptus/EucBookTitleView.h>
@@ -1673,17 +1674,11 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         _pageJumpSlider = slider;
         
         UIImage *leftCapImage = [UIImage imageNamed:@"iPodLikeSliderBlueLeftCap.png"];
-        leftCapImage = [leftCapImage stretchableImageWithLeftCapWidth:leftCapImage.size.width - 1 topCapHeight:0];
+        leftCapImage = [leftCapImage midpointStretchableImage];
         [slider setMinimumTrackImage:leftCapImage forState:UIControlStateNormal];
         
         UIImage *rightCapImage = [UIImage imageNamed:@"iPodLikeSliderWhiteRightCap.png"];
-        if([[UIDevice currentDevice] compareSystemVersion:@"3.2"] >= NSOrderedSame) {
-            // Work around a bug in 3.2+ where the cap is used as a right cap in
-            // the image when it's used in a slider.
-            rightCapImage = [rightCapImage stretchableImageWithLeftCapWidth:rightCapImage.size.width - 1 topCapHeight:0];
-        } else {
-            rightCapImage = [rightCapImage stretchableImageWithLeftCapWidth:1 topCapHeight:0];
-        }
+        rightCapImage = [rightCapImage midpointStretchableImage];
         [slider setMaximumTrackImage:rightCapImage forState:UIControlStateNormal];
         
         UIImage *thumbImage = [UIImage imageNamed:@"iPodLikeSliderKnob-Small.png"];

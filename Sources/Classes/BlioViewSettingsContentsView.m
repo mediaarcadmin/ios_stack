@@ -8,6 +8,7 @@
 
 #import "BlioViewSettings.h"
 #import "BlioViewSettingsContentsView.h"
+#import <libEucalyptus/THUIImageAdditions.h>
 #import <libEucalyptus/EucPageTurningView.h>
 #import "BlioUIImageAdditions.h"
 
@@ -461,11 +462,11 @@
             slider.accessibilityLabel = NSLocalizedString(@"Brightness", @"Accessibility label for screen brightness slider");
             
             UIImage *leftCapImage = [UIImage imageNamed:@"iPodLikeSliderBlueLeftCap.png"];
-            leftCapImage = [leftCapImage stretchableImageWithLeftCapWidth:leftCapImage.size.width - 1 topCapHeight:0];
+            leftCapImage = [leftCapImage midpointStretchableImage];
             [slider setMinimumTrackImage:leftCapImage forState:UIControlStateNormal];
             
             UIImage *rightCapImage = [UIImage imageNamed:@"iPodLikeSliderWhiteRightCap.png"];
-            rightCapImage = [rightCapImage stretchableImageWithLeftCapWidth:rightCapImage.size.width - 1 topCapHeight:0];
+            rightCapImage = [rightCapImage midpointStretchableImage];
             [slider setMaximumTrackImage:rightCapImage forState:UIControlStateNormal];
                         
             slider.minimumValueImage = [UIImage imageNamed:@"brightness-sun-dim.png"];
