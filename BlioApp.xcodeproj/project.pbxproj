@@ -981,6 +981,7 @@
 		A32EEDA613B37CFA001D6170 /* BlioStoreTabViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A32EEDA413B37CFA001D6170 /* BlioStoreTabViewController.m */; };
 		A32EEDA713B37CFA001D6170 /* BlioStoreTabViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A32EEDA413B37CFA001D6170 /* BlioStoreTabViewController.m */; };
 		A349F11C110E34DE009A8F89 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A349F11B110E34DE009A8F89 /* AVFoundation.framework */; };
+		A35CEEAD15D1B06E00A3AB21 /* BlioWebTextController.m in Sources */ = {isa = PBXBuildFile; fileRef = A35CEEAC15D1B06E00A3AB21 /* BlioWebTextController.m */; };
 		A365921C146C1C0500B23AAA /* icon-wrench.png in Resources */ = {isa = PBXBuildFile; fileRef = A365921A146C1C0500B23AAA /* icon-wrench.png */; };
 		A365921D146C1C0500B23AAA /* icon-wrench.png in Resources */ = {isa = PBXBuildFile; fileRef = A365921A146C1C0500B23AAA /* icon-wrench.png */; };
 		A365921E146C1C0500B23AAA /* icon-wrench.png in Resources */ = {isa = PBXBuildFile; fileRef = A365921A146C1C0500B23AAA /* icon-wrench.png */; };
@@ -2606,6 +2607,8 @@
 		A32EEDA413B37CFA001D6170 /* BlioStoreTabViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioStoreTabViewController.m; sourceTree = "<group>"; };
 		A349F067110E31CC009A8F89 /* AudioBooks */ = {isa = PBXFileReference; lastKnownFileType = folder; path = AudioBooks; sourceTree = "<group>"; };
 		A349F11B110E34DE009A8F89 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
+		A35CEEAB15D1B06D00A3AB21 /* BlioWebTextController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioWebTextController.h; sourceTree = "<group>"; };
+		A35CEEAC15D1B06E00A3AB21 /* BlioWebTextController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioWebTextController.m; sourceTree = "<group>"; };
 		A365921A146C1C0500B23AAA /* icon-wrench.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-wrench.png"; sourceTree = "<group>"; };
 		A365921B146C1C0500B23AAA /* icon-wrench@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-wrench@2x.png"; sourceTree = "<group>"; };
 		A3689AF2116E3D1A0039FD35 /* BlioStoreWebsiteViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioStoreWebsiteViewController.h; sourceTree = "<group>"; };
@@ -4490,6 +4493,8 @@
 				A323E75A1427A64F0043E78E /* BlioVOTipsSettingsController.m */,
 				A3F24EB5143F7733007565C2 /* BlioVoiceOverHelpSettingsController.h */,
 				A3F24EB6143F7733007565C2 /* BlioVoiceOverHelpSettingsController.m */,
+				A35CEEAB15D1B06D00A3AB21 /* BlioWebTextController.h */,
+				A35CEEAC15D1B06E00A3AB21 /* BlioWebTextController.m */,
 			);
 			name = "App Settings Screens";
 			sourceTree = "<group>";
@@ -7022,6 +7027,7 @@
 				A3BEFE05152DE9E6009B4F4A /* SBJsonParser.m in Sources */,
 				A3BEFE06152DE9E6009B4F4A /* SBJsonWriter.m in Sources */,
 				A3BEFE07152DE9E6009B4F4A /* BlioEPubMetadataReader.m in Sources */,
+				A35CEEAD15D1B06E00A3AB21 /* BlioWebTextController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -7144,6 +7150,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CODE_SIGN_ENTITLEMENTS = "$(SRCROOT)/Entitlements.plist";
+				CODE_SIGN_IDENTITY = "iPhone Developer: Arnold Chien (4XCU87FX68)";
 				COPY_PHASE_STRIP = NO;
 				CURRENT_PROJECT_VERSION = 6;
 				GCC_DYNAMIC_NO_PIC = NO;
@@ -7167,6 +7174,7 @@
 					"-fobjc-arc",
 				);
 				PRODUCT_NAME = Blio;
+				PROVISIONING_PROFILE = "502B0524-F40F-44A0-BD8E-30E68C3900EE";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
@@ -7177,8 +7185,8 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CODE_SIGN_ENTITLEMENTS = "$(SRCROOT)/Entitlements.plist";
-				CODE_SIGN_IDENTITY = "iPhone Distribution: K-NFB Reading Technology Inc.";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: K-NFB Reading Technology Inc.";
+				CODE_SIGN_IDENTITY = "iPhone Developer: Arnold Chien (4XCU87FX68)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Arnold Chien (4XCU87FX68)";
 				COPY_PHASE_STRIP = YES;
 				CURRENT_PROJECT_VERSION = 6;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -7200,8 +7208,8 @@
 					"-fobjc-arc",
 				);
 				PRODUCT_NAME = Blio;
-				PROVISIONING_PROFILE = "308F14CC-3406-42F3-AA0D-363A4E4AC5DD";
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "308F14CC-3406-42F3-AA0D-363A4E4AC5DD";
+				PROVISIONING_PROFILE = "502B0524-F40F-44A0-BD8E-30E68C3900EE";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "502B0524-F40F-44A0-BD8E-30E68C3900EE";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
@@ -7212,7 +7220,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CODE_SIGN_ENTITLEMENTS = "$(SRCROOT)/Entitlements.plist";
-				CODE_SIGN_IDENTITY = "iPhone Distribution: K-NFB Reading Technology Inc.";
+				CODE_SIGN_IDENTITY = "iPhone Developer: Arnold Chien (4XCU87FX68)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: K-NFB Reading Technology Inc.";
 				COPY_PHASE_STRIP = YES;
 				CURRENT_PROJECT_VERSION = 6;
@@ -7235,7 +7243,7 @@
 					"-fobjc-arc",
 				);
 				PRODUCT_NAME = Blio;
-				PROVISIONING_PROFILE = "5371D97A-F72A-480E-B8BC-87D4B17A6A7E";
+				PROVISIONING_PROFILE = "502B0524-F40F-44A0-BD8E-30E68C3900EE";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "5371D97A-F72A-480E-B8BC-87D4B17A6A7E";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
@@ -7538,8 +7546,8 @@
 					"-fobjc-arc",
 				);
 				PRODUCT_NAME = "Book Place";
-				PROVISIONING_PROFILE = "FCBACA87-81EF-4EAE-998C-AE17FC9526F9";
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "FCBACA87-81EF-4EAE-998C-AE17FC9526F9";
+				PROVISIONING_PROFILE = "502B0524-F40F-44A0-BD8E-30E68C3900EE";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "502B0524-F40F-44A0-BD8E-30E68C3900EE";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
@@ -7574,8 +7582,8 @@
 					"-fobjc-arc",
 				);
 				PRODUCT_NAME = "Book Place";
-				PROVISIONING_PROFILE = "FCBACA87-81EF-4EAE-998C-AE17FC9526F9";
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "FCBACA87-81EF-4EAE-998C-AE17FC9526F9";
+				PROVISIONING_PROFILE = "502B0524-F40F-44A0-BD8E-30E68C3900EE";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "502B0524-F40F-44A0-BD8E-30E68C3900EE";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
@@ -7610,8 +7618,8 @@
 					"-fobjc-arc",
 				);
 				PRODUCT_NAME = "Book Place";
-				PROVISIONING_PROFILE = "5371D97A-F72A-480E-B8BC-87D4B17A6A7E";
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "5371D97A-F72A-480E-B8BC-87D4B17A6A7E";
+				PROVISIONING_PROFILE = "15004136-091B-4FF6-89BE-969382FD5869";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "15004136-091B-4FF6-89BE-969382FD5869";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
@@ -7638,8 +7646,8 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 4.0;
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_CFLAGS = "-DDRM_INLINING_SUPPORTED";
-				PROVISIONING_PROFILE = "AC1D1D11-3C0F-4832-BD7C-F014554D0316";
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "AC1D1D11-3C0F-4832-BD7C-F014554D0316";
+				PROVISIONING_PROFILE = "502B0524-F40F-44A0-BD8E-30E68C3900EE";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "502B0524-F40F-44A0-BD8E-30E68C3900EE";
 				SDKROOT = iphoneos5.1;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";

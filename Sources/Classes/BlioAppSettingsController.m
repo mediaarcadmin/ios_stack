@@ -15,6 +15,7 @@
 #import "BlioEULATextController.h"
 #import "BlioVersionController.h"
 #import "BlioVoiceOverHelpSettingsController.h"
+#import "BlioWebTextController.h"
 
 @implementation BlioAppSettingsController
 
@@ -97,7 +98,7 @@
 		return 1;
 #ifdef TOSHIBA
 	if (section == 3) 
-		return 1;
+		return 3;
 #endif
 	return 2;
 }
@@ -178,9 +179,13 @@
 				//				case 1:
 				//					[cell.textLabel setText:NSLocalizedString(@"Navigation",@"\"Navigation\" text label for App Settings cell")];
 				//					break;
-#ifndef TOSHIBA
 				case 1:
 					[cell.textLabel setText:NSLocalizedString(@"Terms of Use",@"\"Terms of Use\" text label for App Settings cell")];
+                    break;
+#ifdef TOSHIBA
+				case 2:
+					[cell.textLabel setText:NSLocalizedString(@"Privacy",@"\"Privacy\" text label for App Settings cell")];
+                    break;
 #endif
 				default:
 					break;
@@ -201,8 +206,12 @@
 	BlioHelpSettingsController *helpController;
 	BlioVersionController *versionController;
 	BlioMyAccountViewController *myAccountController;
-	BlioEULATextController *eulaController;
     BlioVoiceOverHelpSettingsController *voController;
+#ifdef TOSHIBA
+    BlioWebTextController* webTextController;
+#else
+	BlioEULATextController *eulaController;
+#endif
     
 	switch ( [indexPath section] ) {
 		case 0:
@@ -255,11 +264,24 @@
 					[self.navigationController pushViewController:versionController animated:YES];
 					[versionController release];
 					break;
+#ifdef TOSHIBA
+				case 1:
+					webTextController = [[BlioWebTextController alloc] initWithURL:@"https://www.toshibabookplace.com/terms-conditions"];
+					[self.navigationController pushViewController:webTextController animated:YES];
+					[webTextController release];
+					break;
+				case 2:
+					webTextController = [[BlioWebTextController alloc] initWithURL:@"https://www.toshibabookplace.com/privacy-policy"];
+					[self.navigationController pushViewController:webTextController animated:YES];
+					[webTextController release];
+					break;
+#else
 				case 1:
 					eulaController = [[BlioEULATextController alloc] init];
 					[self.navigationController pushViewController:eulaController animated:YES];
 					[eulaController release];
 					break;
+#endif
 			}
 			break;
 		default:
