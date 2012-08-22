@@ -1492,22 +1492,37 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 			}
 			
             if(maskPath) {
-                CAShapeLayer *alphaMaskLayer = [CAShapeLayer layer];
-                alphaMaskLayer.frame = self.overlay.bounds;
-                alphaMaskLayer.backgroundColor = [UIColor clearColor].CGColor;
-                                
+                CGRect overlayBounds = self.overlay.bounds;
+                
+                UIImage *alphaMaskImage = self.pageAlphaMask;
+                
                 CALayer *alphaLayer = [CALayer layer];
                 alphaLayer.backgroundColor = [UIColor clearColor].CGColor;
-                alphaLayer.contents = (id)self.pageAlphaMask.CGImage;
-                alphaLayer.contentsGravity = kCAGravityResizeAspect;
+                alphaLayer.contents = (id)alphaMaskImage.CGImage;
+                alphaLayer.contentsGravity = kCAGravityResize;
                 alphaLayer.opaque = NO;
-                alphaLayer.frame = self.overlay.bounds;
-                alphaMaskLayer.path = maskPath;
-                CGPathRelease(maskPath);
-				maskPath = nil;
-                alphaLayer.mask = alphaMaskLayer;
+                alphaLayer.bounds = (CGRect){ {0, 0}, alphaMaskImage.size };
                 
                 [self.overlay.layer addSublayer:alphaLayer];
+                alphaLayer.position = CGPointMake(overlayBounds.size.width * 0.5, overlayBounds.size.height * 0.5);
+
+                
+                CGRect alphaLayerFrame = alphaLayer.frame;
+                
+                CAShapeLayer *alphaMaskLayer = [CAShapeLayer layer];
+                alphaMaskLayer.frame = overlayBounds;
+                alphaMaskLayer.backgroundColor = [UIColor clearColor].CGColor;
+            
+                CGAffineTransform maskTransform = CGAffineTransformMakeTranslation(-alphaLayerFrame.origin.x,
+                                                                                   -alphaLayerFrame.origin.y);
+                CGPathRef offsetMaskPath = CGPathCreateCopyByTransformingPath(maskPath, &maskTransform);
+                alphaMaskLayer.path = offsetMaskPath;
+                CGPathRelease(offsetMaskPath);
+                                
+                alphaLayer.mask = alphaMaskLayer;
+                
+                CGPathRelease(maskPath);
+				maskPath = nil;
             }
 		}
     }
@@ -1515,8 +1530,8 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 
 - (UIColor *)pageMultiplyColor {
 	if (!pageMultiplyColor) {
-		[self.pageTurningView pagesAlphaMaskGetAverageColor:&pageMultiplyColor];
-		[pageMultiplyColor retain];
+        NSParameterAssert(!pageAlphaMask);
+        [self pageAlphaMask];
 	}
 	
 	return pageMultiplyColor;
@@ -1524,8 +1539,9 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 
 - (UIImage *)pageAlphaMask {
 	if (!pageAlphaMask) {
-		pageAlphaMask = [self.pageTurningView pagesAlphaMaskGetAverageColor:&(UIColor *){nil}];
-		[pageAlphaMask retain];
+        NSParameterAssert(!pageMultiplyColor);
+		pageAlphaMask = [[self.pageTurningView pagesAlphaMaskGetAverageColor:&pageMultiplyColor] retain];
+        [pageMultiplyColor retain];
 	}
 	
 	return pageAlphaMask;
