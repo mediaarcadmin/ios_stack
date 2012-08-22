@@ -216,12 +216,12 @@
 	{
 		case 0:
 		{
-			title = NSLocalizedString(@"You may register up to five devices for reading books purchased from the Blio bookstore.",@"\"Registration text\" table header in Paid Books Settings View");
+			title = NSLocalizedString(@"You may register up to five devices for reading your purchased books.",@"\"Registration text\" table header in Paid Books Settings View");
 			break;
 		}
         case 1:
         {
-            title = NSLocalizedStringWithDefaultValue(@"AUTO_DOWNLOAD_EXPLANATION_FOOTER",nil,[NSBundle mainBundle],@"Blio can automatically download new book purchases.  When Auto-Download is off, you can manually download titles from the Archive tab in the Get Books section.",@"Explanatory message that appears at the bottom of the Auto-Download table section within Archive Settings View.");
+            title = NSLocalizedStringWithDefaultValue(@"AUTO_DOWNLOAD_EXPLANATION_FOOTER",nil,[NSBundle mainBundle],@"Your new book purchases can be downloaded automatically.  When Auto-Download is off, you can manually download titles from the Archive tab in the Get Books section.",@"Explanatory message that appears at the bottom of the Auto-Download table section within Archive Settings View.");
             break;
         }
 	}
