@@ -509,6 +509,16 @@
     return uuid;
 }
 
+- (void)goToContentsSectionIdentifier:(id)identifier animated:(BOOL)animated;
+{
+    [self goToUuid:identifier animated:YES];
+}
+
+- (id)currentContentsSectionIdentifier
+{
+    return self.currentUuid;
+}
+
 - (void)goToBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint animated:(BOOL)animated {
     [self goToBookmarkPoint:bookmarkPoint animated:animated saveToHistory:YES];
 }
@@ -596,7 +606,7 @@
 	} else {
 		uuid = [self.textFlow sectionUuidForPageIndex:pageIndex];
 	}
-    NSString *chapterName = [self.contentsDataSource contentsTableViewController:nil presentationNameAndSubTitleForSectionUuid:uuid].first;
+    NSString *chapterName = [self.contentsDataSource contentsTableViewController:nil presentationNameAndSubTitleForSectionIdentifier:uuid].first;
     
     NSString *pageLabel = nil;
 

@@ -125,6 +125,9 @@ extern NSString * const kBlioOriginalFontName;
 - (BlioBookmarkRange *)bookmarkRangeForCurrentPage;
 
 @property (nonatomic, readonly) id<EucBookContentsTableViewControllerDataSource> contentsDataSource;
+@property (nonatomic, readonly) id currentContentsSectionIdentifier;
+- (void)goToContentsSectionIdentifier:(id)identifier animated:(BOOL)animated;
+
 
 @property (nonatomic, readonly) CGRect firstPageRect;
 

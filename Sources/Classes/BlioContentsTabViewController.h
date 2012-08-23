@@ -14,7 +14,7 @@
 
 @protocol BlioContentsTabViewControllerDelegate <NSObject, UINavigationControllerDelegate>
 
-@optional
+- (id)currentContentsSectionIdentifier;
 
 - (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration;
 - (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation;
@@ -22,7 +22,7 @@
 
 - (void)displayNote:(NSManagedObject *)note atRange:(BlioBookmarkRange *)range animated:(BOOL)animated;
 - (void)goToContentsBookmarkRange:bookmarkRange animated:(BOOL)animated;
-- (void)goToContentsUuid:(NSString *)sectionUuid animated:(BOOL)animated;
+- (void)goToContentsSectionIdentifier:(id)identifier animated:(BOOL)animated;
 - (void)deleteBookmark:(NSManagedObject *)bookmark;
 - (void)deleteNote:(NSManagedObject *)note;
 - (BOOL)isRotationLocked;
@@ -54,6 +54,6 @@
 @property (nonatomic, retain) UISegmentedControl *tabSegment;
 @property (nonatomic, assign) UIPopoverController *popoverController;
 
-- (id)initWithBookView:(UIView<BlioBookView> *)aBookView book:(BlioBook *)aBook;
+- (id)initWithBookView:(UIView<BlioBookView> *)aBookView book:(BlioBook *)aBook delegate:(id<BlioContentsTabViewControllerDelegate>)aDelegate;
 
 @end

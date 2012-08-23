@@ -2207,8 +2207,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
         if (![self.contentsPopover isPopoverVisible]) {
-            BlioContentsTabViewController *aContentsTabView = [[BlioContentsTabViewController alloc] initWithBookView:self.bookView book:self.book];
-            aContentsTabView.delegate = self;
+            BlioContentsTabViewController *aContentsTabView = [[BlioContentsTabViewController alloc] initWithBookView:self.bookView book:self.book delegate:self];
             BlioModalPopoverController *aContentsPopover = [[BlioModalPopoverController alloc] initWithContentViewController:aContentsTabView];
             aContentsPopover.delegate = aContentsTabView;
             aContentsTabView.popoverController = aContentsPopover;
@@ -2220,8 +2219,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
             [[UIApplication sharedApplication] endIgnoringInteractionEvents];
         }
     } else {
-        BlioContentsTabViewController *aContentsTabView = [[BlioContentsTabViewController alloc] initWithBookView:self.bookView book:self.book];
-        aContentsTabView.delegate = self;
+        BlioContentsTabViewController *aContentsTabView = [[BlioContentsTabViewController alloc] initWithBookView:self.bookView book:self.book delegate:self];
         [self presentModalViewController:aContentsTabView animated:YES];
         [aContentsTabView release];  
     }
@@ -3028,13 +3026,19 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     [self.bookView goToBookmarkPoint:aBookMarkPoint animated:animated];
 }
 
-- (void)goToContentsUuid:(NSString *)sectionUuid animated:(BOOL)animated {
+- (id)currentContentsSectionIdentifier
+{
+    return _bookView.currentContentsSectionIdentifier;
+}
+
+- (void)goToContentsSectionIdentifier:(id)identifier animated:(BOOL)animated
+{
  /*   BlioBookmarkPoint *aBookMarkPoint = [_book bookm;
 
     [self updatePageJumpPanelForPage:newPageNumber animated:animated];
     [self updatePieButtonForPage:newPageNumber animated:animated];
 */
-    [_bookView goToUuid:sectionUuid animated:animated];
+    [_bookView goToContentsSectionIdentifier:identifier animated:animated];
 }
 
 - (void)deleteNote:(NSManagedObject *)note {

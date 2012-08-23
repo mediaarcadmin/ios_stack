@@ -74,7 +74,7 @@ typedef enum {
     [super dealloc];
 }
 
-- (id)initWithBookView:(UIView<BlioBookView> *)aBookView book:(BlioBook *)aBook {
+- (id)initWithBookView:(UIView<BlioBookView> *)aBookView book:(BlioBook *)aBook delegate:(id<BlioContentsTabViewControllerDelegate>)aDelegate {
     
     isTOCActive = [aBook hasTOC];
 
@@ -84,7 +84,6 @@ typedef enum {
     BlioContentsTabContentsViewController *aContentsController = [[BlioContentsTabContentsViewController alloc] init];
     aContentsController.tableView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     aContentsController.contentsDataSource = aBookView.contentsDataSource; // N.B. this needs to be set before the dataSource
-    aContentsController.currentSectionUuid = aBookView.currentUuid;
     aContentsController.contentSizeForViewInPopover = CGSizeMake(320, MINPOPOVERHEIGHT);
     
     BlioContentsTabBookmarksViewController *aBookmarksController = [[BlioContentsTabBookmarksViewController alloc] initWithStyle:UITableViewStylePlain];
@@ -96,6 +95,7 @@ typedef enum {
     aNotesController.contentSizeForViewInPopover = CGSizeMake(320, MINPOPOVERHEIGHT);
 
 	if ((self = [super initWithRootViewController:aRootVC])) {
+        self.delegate = aDelegate;
         self.bookView = aBookView;
         self.book = aBook;
         
@@ -197,23 +197,27 @@ typedef enum {
     delegate = newDelegate;
 }
 
-- (void)bookContentsTableViewController:(EucBookContentsTableViewController *)controller didSelectSectionWithUuid:(NSString *)uuid {
+- (void)bookContentsTableViewController:(EucBookContentsTableViewController *)controller didSelectSectionWithIdentifier:(id)identifier {
     [self performSelector:@selector(dismissTabView:) withObject:self];
+}
+
+- (id)bookContentsTableViewControllerCurrentSectionIdentifier:(EucBookContentsTableViewController *)contentsTableViewController {
+    return [self.delegate currentContentsSectionIdentifier];
 }
 
 - (void)dismissTabView:(id)sender {
     BlioContentsTabViewTab selectedTab = (BlioContentsTabViewTab)[self.tabSegment selectedSegmentIndex];
     switch (selectedTab) {
         case kBlioContentsTabViewTabContents: {
-            NSString *selectedUuid = [self.contentsController selectedUuid];
-            if (nil != selectedUuid) {
-                if ([self.delegate respondsToSelector:@selector(goToContentsUuid:animated:)]) {
+            id selectedContentsIdentifier = [self.contentsController selectedIdentifier];
+            if (nil != selectedContentsIdentifier) {
+                if ([self.delegate respondsToSelector:@selector(goToContentsSectionIdentifier:animated:)]) {
                     BOOL animated = YES;
-                    NSMethodSignature * mySignature = [[self.delegate class] instanceMethodSignatureForSelector:@selector(goToContentsUuid:animated:)];
+                    NSMethodSignature * mySignature = [[self.delegate class] instanceMethodSignatureForSelector:@selector(goToContentsSectionIdentifier:animated:)];
                     NSInvocation * myInvocation = [NSInvocation invocationWithMethodSignature:mySignature];    
                     [myInvocation setTarget:self.delegate];  
-                    [myInvocation setSelector:@selector(goToContentsUuid:animated:)];
-                    [myInvocation setArgument:&selectedUuid atIndex:2];
+                    [myInvocation setSelector:@selector(goToContentsSectionIdentifier:animated:)];
+                    [myInvocation setArgument:&selectedContentsIdentifier atIndex:2];
                     [myInvocation setArgument:&animated atIndex:3];
                     [myInvocation retainArguments];
                     [myInvocation performSelector:@selector(invoke) withObject:nil afterDelay:0.2f];
@@ -372,23 +376,23 @@ typedef enum {
 
 #pragma mark - EucBookContentsTableViewControllerDataSource
 
-- (NSArray *)contentsTableViewControllerSectionUuids:(EucBookContentsTableViewController *)contentsTableViewController {
+- (NSArray *)contentsTableViewControllerSectionIdentifiers:(EucBookContentsTableViewController *)contentsTableViewController {
     
-    return [self.contentsDataSource contentsTableViewControllerSectionUuids:contentsTableViewController];
+    return [self.contentsDataSource contentsTableViewControllerSectionIdentifiers:contentsTableViewController];
 }
 
 - (THPair *)contentsTableViewController:(EucBookContentsTableViewController *)contentsTableViewController
-presentationNameAndSubTitleForSectionUuid:(NSString *)sectionUuid {
+presentationNameAndSubTitleForSectionIdentifier:(id)sectionIdentifier {
     
     return [self.contentsDataSource contentsTableViewController:contentsTableViewController
-                      presentationNameAndSubTitleForSectionUuid:sectionUuid];
+                presentationNameAndSubTitleForSectionIdentifier:sectionIdentifier];
 }
 
 - (NSUInteger)contentsTableViewController:(EucBookContentsTableViewController *)contentsTableViewController
-                  pageIndexForSectionUuid:(NSString *)sectionUuid {
+                  pageIndexForSectionIdentifier:(id)sectionIdentifier {
     
     return [self.contentsDataSource contentsTableViewController:contentsTableViewController
-                                        pageIndexForSectionUuid:sectionUuid];
+                                  pageIndexForSectionIdentifier:sectionIdentifier];
 }
 
 // A "display number" i.e. cover -> nil, 2 -> @"1" etc;
@@ -400,16 +404,16 @@ presentationNameAndSubTitleForSectionUuid:(NSString *)sectionUuid {
         return [self.bookView displayPageNumberForPageAtIndex:pageNumber];
     } else {
         return [self.contentsDataSource contentsTableViewController:contentsTableViewController
-                                    displayPageNumberForPageIndex:pageNumber];
+                                      displayPageNumberForPageIndex:pageNumber];
     }
 }
 
 - (NSUInteger)contentsTableViewController:(EucBookContentsTableViewController *)contentsTableViewController
-                      levelForSectionUuid:(NSString *)sectionUuid {
+                      levelForSectionIdentifier:(id)sectionIdentifier {
     
     if ([self.contentsDataSource respondsToSelector:@selector(contentsTableViewController:levelForSectionUuid:)]) {
         return [self.contentsDataSource contentsTableViewController:contentsTableViewController
-                                            levelForSectionUuid:sectionUuid];
+                                          levelForSectionIdentifier:sectionIdentifier];
     } else {
         return 0;
     }

@@ -688,11 +688,11 @@ parse_outline_items(int indent, CGPDFDocumentRef document,
 #pragma mark -
 #pragma mark EucBookContentsTableViewControllerDataSource
 
-- (NSArray *)contentsTableViewControllerSectionUuids:(EucBookContentsTableViewController *)contentsTableViewController {
+- (NSArray *)contentsTableViewControllerSectionIdentifiers:(EucBookContentsTableViewController *)contentsTableViewController {
 	NSUInteger sectionCount = self.tableOfContents.count;
     NSMutableArray *array = [[NSMutableArray alloc] initWithCapacity:sectionCount];
     for(NSUInteger i = 0; i < sectionCount; ++i) {
-        [array addObject:[[NSNumber numberWithUnsignedInteger:i] stringValue]];
+        [array addObject:[NSNumber numberWithUnsignedInteger:i]];
     }
     return [array autorelease];
 }
@@ -717,8 +717,8 @@ parse_outline_items(int indent, CGPDFDocumentRef document,
 }
 
 - (THPair *)contentsTableViewController:(EucBookContentsTableViewController *)contentsTableViewController
-presentationNameAndSubTitleForSectionUuid:(NSString *)sectionUuid {
-	NSUInteger sectionIndex = [sectionUuid integerValue];
+presentationNameAndSubTitleForSectionIdentifier:(id)sectionIdentifier {
+	NSUInteger sectionIndex = [sectionIdentifier unsignedIntegerValue];
     NSString *sectionName = [[self.tableOfContents objectAtIndex:sectionIndex] name];
     if (sectionName) {
         return [sectionName splitAndFormattedChapterName];
@@ -735,14 +735,14 @@ presentationNameAndSubTitleForSectionUuid:(NSString *)sectionUuid {
 }
 
 - (NSUInteger)contentsTableViewController:(EucBookContentsTableViewController *)contentsTableViewController
-                  pageIndexForSectionUuid:(NSString *)sectionUuid {
-	NSUInteger sectionIndex = [sectionUuid integerValue];
+                  pageIndexForSectionIdentifier:(id)sectionIdentifier {
+	NSUInteger sectionIndex = [sectionIdentifier unsignedIntegerValue];
     return [[self.tableOfContents objectAtIndex:sectionIndex] startPage];
 }
 
 - (NSUInteger)contentsTableViewController:(EucBookContentsTableViewController *)contentsTableViewController
-                      levelForSectionUuid:(NSString *)sectionUuid{
-	NSUInteger sectionIndex = [sectionUuid integerValue];
+                      levelForSectionIdentifier:(id)sectionIdentifier {
+	NSUInteger sectionIndex = [sectionIdentifier unsignedIntegerValue];
     return [[self.tableOfContents objectAtIndex:sectionIndex] level];
 }
 

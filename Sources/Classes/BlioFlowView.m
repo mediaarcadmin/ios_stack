@@ -23,6 +23,7 @@
 #import <libEucalyptus/EucSelectorRange.h>
 #import <libEucalyptus/EucOTFIndex.h>
 #import <libEucalyptus/EucPageOptions.h>
+#import <libEucalyptus/EucBookNavPoint.h>
 #import <libEucalyptus/THPair.h>
 #import "NSArray+BlioAdditions.h"
 
@@ -195,6 +196,17 @@
 - (NSString *)currentUuid
 {
     return [_eucBookView previousNavPointUuid];
+}
+
+- (void)goToContentsSectionIdentifier:(id)identifier animated:(BOOL)animated
+{
+    [self goToUuid:((EucBookNavPoint *)identifier).uuid
+          animated:animated];
+}
+
+- (id)currentContentsSectionIdentifier
+{
+    return [_eucBook navPointWithUuid:[_eucBookView previousNavPointUuid]];
 }
 
 - (void)goToBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint animated:(BOOL)animated {
