@@ -84,7 +84,8 @@ typedef enum {
     BlioContentsTabContentsViewController *aContentsController = [[BlioContentsTabContentsViewController alloc] init];
     aContentsController.tableView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     aContentsController.contentsDataSource = aBookView.contentsDataSource; // N.B. this needs to be set before the dataSource
-    aContentsController.contentSizeForViewInPopover = CGSizeMake(320, MINPOPOVERHEIGHT);
+    aContentsController.tableView.frame = CGRectMake(0, 0, 320, MINPOPOVERHEIGHT);
+    aContentsController.maxContentHeight = MAXPOPOVERHEIGHT;
     
     BlioContentsTabBookmarksViewController *aBookmarksController = [[BlioContentsTabBookmarksViewController alloc] initWithStyle:UITableViewStylePlain];
     aBookmarksController.tableView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
