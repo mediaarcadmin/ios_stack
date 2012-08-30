@@ -1,9 +1,8 @@
 //
 //  AcapelaLicense.h
-//  HelloWorld
 //
-//  Created by Jo De Lafonteyne on 16/10/08.
-//  Copyright 2008 __MyCompanyName__. All rights reserved.
+//  Acapela Group
+//
 //
 
 #import <UIKit/UIKit.h>

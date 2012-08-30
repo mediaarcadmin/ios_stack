@@ -602,8 +602,6 @@
 		A30E1038123EA5B400D31157 /* libiconv.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DAA30C311512B1C006634CC /* libiconv.dylib */; };
 		A30E1039123EA5B400D31157 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A349F11B110E34DE009A8F89 /* AVFoundation.framework */; };
 		A30E103A123EA5B400D31157 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DC5320DE11C09EF40042D3EA /* AudioToolbox.framework */; };
-		A30E103B123EA5B400D31157 /* libMobilityStaticFat.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A3B16AC11104F65C00E2EA97 /* libMobilityStaticFat.a */; };
-		A30E103C123EA5B400D31157 /* libBabTTSFat.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A37FC32E10EA781700F3DC5A /* libBabTTSFat.a */; };
 		A30E103D123EA5B400D31157 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A32D885911FE04DA00D2AE17 /* Security.framework */; };
 		A30E103E123EA5B400D31157 /* libPlayReadyPK.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A32D895911FE4C3D00D2AE17 /* libPlayReadyPK.a */; };
 		A30E103F123EA5B400D31157 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DCA1BD681222FD080022D410 /* StoreKit.framework */; };
@@ -991,8 +989,6 @@
 		A31CC89713FEA07E0010BFC5 /* libiconv.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DAA30C311512B1C006634CC /* libiconv.dylib */; };
 		A31CC89813FEA07E0010BFC5 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A349F11B110E34DE009A8F89 /* AVFoundation.framework */; };
 		A31CC89913FEA07E0010BFC5 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DC5320DE11C09EF40042D3EA /* AudioToolbox.framework */; };
-		A31CC89A13FEA07E0010BFC5 /* libMobilityStaticFat.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A3B16AC11104F65C00E2EA97 /* libMobilityStaticFat.a */; };
-		A31CC89B13FEA07E0010BFC5 /* libBabTTSFat.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A37FC32E10EA781700F3DC5A /* libBabTTSFat.a */; };
 		A31CC89C13FEA07E0010BFC5 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A32D885911FE04DA00D2AE17 /* Security.framework */; };
 		A31CC89D13FEA07E0010BFC5 /* libPlayReadyPK.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A32D895911FE4C3D00D2AE17 /* libPlayReadyPK.a */; };
 		A31CC89E13FEA07E0010BFC5 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DCA1BD681222FD080022D410 /* StoreKit.framework */; };
@@ -1268,8 +1264,6 @@
 		A36D35ED120B136700E1A035 /* libiconv.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DAA30C311512B1C006634CC /* libiconv.dylib */; };
 		A36D35EE120B136700E1A035 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A349F11B110E34DE009A8F89 /* AVFoundation.framework */; };
 		A36D35EF120B136700E1A035 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DC5320DE11C09EF40042D3EA /* AudioToolbox.framework */; };
-		A36D35F1120B136700E1A035 /* libMobilityStaticFat.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A3B16AC11104F65C00E2EA97 /* libMobilityStaticFat.a */; };
-		A36D35F2120B136700E1A035 /* libBabTTSFat.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A37FC32E10EA781700F3DC5A /* libBabTTSFat.a */; };
 		A36D35F3120B136700E1A035 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A32D885911FE04DA00D2AE17 /* Security.framework */; };
 		A36D35F4120B136700E1A035 /* libPlayReadyPK.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A32D895911FE4C3D00D2AE17 /* libPlayReadyPK.a */; };
 		A36D809C117141DF00F93176 /* BlioContentCafe.m in Sources */ = {isa = PBXBuildFile; fileRef = A36D809B117141DF00F93176 /* BlioContentCafe.m */; };
@@ -1292,6 +1286,8 @@
 		A382D3DB11C9159000CFEB88 /* Icon-iPad.png in Resources */ = {isa = PBXBuildFile; fileRef = A382D3D811C9159000CFEB88 /* Icon-iPad.png */; };
 		A383F2441174FA7A0049ED3A /* icon-cart.png in Resources */ = {isa = PBXBuildFile; fileRef = A383F2431174FA7A0049ED3A /* icon-cart.png */; };
 		A3849B7F12E7E1FD0040B0EA /* icon-import@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A3B0B2B0126E088500FC3D18 /* icon-import@2x.png */; };
+		A38A2EC115EE6A43003398E7 /* libBabTTS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A38A2EBF15EE6A43003398E7 /* libBabTTS.a */; };
+		A38A2EC215EE6A43003398E7 /* libMobilityStatic.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A38A2EC015EE6A43003398E7 /* libMobilityStatic.a */; };
 		A39305FF12BAC01A00949150 /* apache2-license.html in Resources */ = {isa = PBXBuildFile; fileRef = A39305FE12BAC01A00949150 /* apache2-license.html */; };
 		A393060012BAC01A00949150 /* apache2-license.html in Resources */ = {isa = PBXBuildFile; fileRef = A39305FE12BAC01A00949150 /* apache2-license.html */; };
 		A393060112BAC01A00949150 /* apache2-license.html in Resources */ = {isa = PBXBuildFile; fileRef = A39305FE12BAC01A00949150 /* apache2-license.html */; };
@@ -1720,8 +1716,6 @@
 		A3BEFE12152DE9E6009B4F4A /* libhyphenate.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D381B4D10D92E81008D34E2 /* libhyphenate.a */; };
 		A3BEFE13152DE9E6009B4F4A /* libexpat.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D381B5110D92E81008D34E2 /* libexpat.a */; };
 		A3BEFE14152DE9E6009B4F4A /* libminiunzip.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D229E8512F98D0D0037D93D /* libminiunzip.a */; };
-		A3BEFE15152DE9E6009B4F4A /* libBabTTSFat.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A37FC32E10EA781700F3DC5A /* libBabTTSFat.a */; };
-		A3BEFE16152DE9E6009B4F4A /* libMobilityStaticFat.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A3B16AC11104F65C00E2EA97 /* libMobilityStaticFat.a */; };
 		A3BEFE17152DE9E6009B4F4A /* libXpsSDKipad.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C9EFAF4C134DF4B800ADF905 /* libXpsSDKipad.a */; };
 		A3BEFE18152DE9E6009B4F4A /* libPlayReadyPK.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A32D895911FE4C3D00D2AE17 /* libPlayReadyPK.a */; };
 		A3BEFE19152DE9E6009B4F4A /* libxml2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DDCC00D132E88C800FE8201 /* libxml2.dylib */; };
@@ -2062,8 +2056,6 @@
 		DC2ABE421213DC0F00E6C483 /* BlioFeatureCompatibility.plist in Resources */ = {isa = PBXBuildFile; fileRef = DC2ABE401213DC0F00E6C483 /* BlioFeatureCompatibility.plist */; };
 		DC32BF8D12248E38008DBDD8 /* voice-sample-play-button@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DC32BF8C12248E38008DBDD8 /* voice-sample-play-button@2x.png */; };
 		DC32BF8E12248E38008DBDD8 /* voice-sample-play-button@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DC32BF8C12248E38008DBDD8 /* voice-sample-play-button@2x.png */; };
-		DC41ACEF11F0DA4800D13308 /* libMobilityStaticFat.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A3B16AC11104F65C00E2EA97 /* libMobilityStaticFat.a */; };
-		DC41ACF111F0DA5100D13308 /* libBabTTSFat.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A37FC32E10EA781700F3DC5A /* libBabTTSFat.a */; };
 		DC48C4E911D3199C00C5D186 /* librarybackground-iPad.png in Resources */ = {isa = PBXBuildFile; fileRef = DC48C4E811D3199C00C5D186 /* librarybackground-iPad.png */; };
 		DC48C99011D54A0100C5D186 /* BlioSplitViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DC48C98D11D54A0100C5D186 /* BlioSplitViewController.m */; };
 		DC48C99111D54A0100C5D186 /* BlioSplitView.m in Sources */ = {isa = PBXBuildFile; fileRef = DC48C98F11D54A0100C5D186 /* BlioSplitView.m */; };
@@ -2633,7 +2625,6 @@
 		A32D895911FE4C3D00D2AE17 /* libPlayReadyPK.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libPlayReadyPK.a; path = Libraries/DRM/libPlayReadyPK.a; sourceTree = "<group>"; };
 		A32EEDA313B37CFA001D6170 /* BlioStoreTabViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioStoreTabViewController.h; sourceTree = "<group>"; };
 		A32EEDA413B37CFA001D6170 /* BlioStoreTabViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioStoreTabViewController.m; sourceTree = "<group>"; };
-		A349F067110E31CC009A8F89 /* AudioBooks */ = {isa = PBXFileReference; lastKnownFileType = folder; path = AudioBooks; sourceTree = "<group>"; };
 		A349F11B110E34DE009A8F89 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		A35CEEAB15D1B06D00A3AB21 /* BlioWebTextController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioWebTextController.h; sourceTree = "<group>"; };
 		A35CEEAC15D1B06E00A3AB21 /* BlioWebTextController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioWebTextController.m; sourceTree = "<group>"; };
@@ -2789,7 +2780,6 @@
 		A37DAE7B11B21458005F949A /* drmxmlsig.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = drmxmlsig.h; path = DRM/drmxmlsig.h; sourceTree = "<group>"; };
 		A37DAE7C11B21458005F949A /* drmxmlsigconstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = drmxmlsigconstants.h; path = DRM/drmxmlsigconstants.h; sourceTree = "<group>"; };
 		A37DAE7D11B21458005F949A /* drmxmlutilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = drmxmlutilities.h; path = DRM/drmxmlutilities.h; sourceTree = "<group>"; };
-		A37FC32E10EA781700F3DC5A /* libBabTTSFat.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libBabTTSFat.a; path = Libraries/TTS/libBabTTSFat.a; sourceTree = "<group>"; };
 		A37FC33310EA785F00F3DC5A /* BlioAcapelaAudioManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BlioAcapelaAudioManager.h; path = TTS/BlioAcapelaAudioManager.h; sourceTree = "<group>"; };
 		A37FC33410EA785F00F3DC5A /* BlioAcapelaAudioManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BlioAcapelaAudioManager.m; path = TTS/BlioAcapelaAudioManager.m; sourceTree = "<group>"; };
 		A37FC33510EA785F00F3DC5A /* TTSManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TTSManager.h; path = TTS/TTSManager.h; sourceTree = "<group>"; };
@@ -2812,6 +2802,8 @@
 		A382D3D711C9159000CFEB88 /* Default-Portrait.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-Portrait.png"; sourceTree = "<group>"; };
 		A382D3D811C9159000CFEB88 /* Icon-iPad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-iPad.png"; sourceTree = "<group>"; };
 		A383F2431174FA7A0049ED3A /* icon-cart.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-cart.png"; sourceTree = "<group>"; };
+		A38A2EBF15EE6A43003398E7 /* libBabTTS.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libBabTTS.a; path = Libraries/TTS/libBabTTS.a; sourceTree = "<group>"; };
+		A38A2EC015EE6A43003398E7 /* libMobilityStatic.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libMobilityStatic.a; path = Libraries/TTS/libMobilityStatic.a; sourceTree = "<group>"; };
 		A39305FE12BAC01A00949150 /* apache2-license.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = "apache2-license.html"; sourceTree = "<group>"; };
 		A393060212BAC03400949150 /* gnulesser-license.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = "gnulesser-license.html"; sourceTree = "<group>"; };
 		A393060312BAC03400949150 /* mit-license.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = "mit-license.html"; sourceTree = "<group>"; };
@@ -2838,7 +2830,6 @@
 		A3A6743811308D0A00138097 /* BlioAppSettingsConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioAppSettingsConstants.h; sourceTree = "<group>"; };
 		A3B0B2AF126E088400FC3D18 /* icon-import.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-import.png"; sourceTree = "<group>"; };
 		A3B0B2B0126E088500FC3D18 /* icon-import@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-import@2x.png"; sourceTree = "<group>"; };
-		A3B16AC11104F65C00E2EA97 /* libMobilityStaticFat.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libMobilityStaticFat.a; path = Libraries/TTS/libMobilityStaticFat.a; sourceTree = "<group>"; };
 		A3B6F6F2120C5E2E00D48E04 /* BlioViewSettingsSheet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioViewSettingsSheet.m; sourceTree = "<group>"; };
 		A3BEFE33152DE9E6009B4F4A /* Book Place.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Book Place.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		A3BEFE60152F7EEE009B4F4A /* ToshibaApp-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "ToshibaApp-Info.plist"; sourceTree = "<group>"; };
@@ -2965,7 +2956,6 @@
 		C976B33512A6486000D2CC05 /* BlioTOCEntry.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioTOCEntry.m; sourceTree = "<group>"; };
 		C9775AF410DFD728005E0E2B /* BlioBook.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioBook.h; sourceTree = "<group>"; };
 		C9775AF510DFD728005E0E2B /* BlioBook.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioBook.m; sourceTree = "<group>"; };
-		C9775E9A10DFE1C3005E0E2B /* MockCovers */ = {isa = PBXFileReference; lastKnownFileType = folder; path = MockCovers; sourceTree = "<group>"; };
 		C977636C10E056E2005E0E2B /* booktextureandshadow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = booktextureandshadow.png; sourceTree = "<group>"; };
 		C977649910E0E413005E0E2B /* row-dark.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "row-dark.png"; sourceTree = "<group>"; };
 		C977649A10E0E413005E0E2B /* row-light.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "row-light.png"; sourceTree = "<group>"; };
@@ -3191,7 +3181,6 @@
 		DCC451E811B042FC00CBD491 /* BlioDownloadVoicesViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioDownloadVoicesViewController.m; sourceTree = "<group>"; };
 		DCC4548811B092A800CBD491 /* voice-sample-play-button.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "voice-sample-play-button.png"; sourceTree = "<group>"; };
 		DCC45ACB11B458A400CBD491 /* voiceSamples */ = {isa = PBXFileReference; lastKnownFileType = folder; path = voiceSamples; sourceTree = "<group>"; };
-		DCC4696811B5C31400CBD491 /* TTS */ = {isa = PBXFileReference; lastKnownFileType = folder; path = TTS; sourceTree = "<group>"; };
 		DCC46B8C11B5D26F00CBD491 /* Acapela For iPhone LF USEnglish Heather */ = {isa = PBXFileReference; lastKnownFileType = folder; name = "Acapela For iPhone LF USEnglish Heather"; path = "TTS/Acapela For iPhone LF USEnglish Heather"; sourceTree = "<group>"; };
 		DCC761D112BA507200B6EFAF /* BlioWelcomeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioWelcomeViewController.h; sourceTree = "<group>"; };
 		DCC761D212BA507200B6EFAF /* BlioWelcomeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioWelcomeViewController.m; sourceTree = "<group>"; };
@@ -3254,8 +3243,6 @@
 				7D381B5D10D92E86008D34E2 /* libhyphenate.a in Frameworks */,
 				7D381B5F10D92E86008D34E2 /* libexpat.a in Frameworks */,
 				7D229EAE12F98E2C0037D93D /* libminiunzip.a in Frameworks */,
-				DC41ACF111F0DA5100D13308 /* libBabTTSFat.a in Frameworks */,
-				DC41ACEF11F0DA4800D13308 /* libMobilityStaticFat.a in Frameworks */,
 				C9EFAF4E134DF4B800ADF905 /* libXpsSDKipad.a in Frameworks */,
 				A32D895A11FE4C3D00D2AE17 /* libPlayReadyPK.a in Frameworks */,
 				7DDCC00E132E88C800FE8201 /* libxml2.dylib in Frameworks */,
@@ -3280,6 +3267,8 @@
 				7D39D40813EABE030029EDCB /* CoreText.framework in Frameworks */,
 				DC92D68414FA7AFC002AF222 /* Twitter.framework in Frameworks */,
 				7DE8C15014D07DF3000D0A3C /* ImageIO.framework in Frameworks */,
+				A38A2EC115EE6A43003398E7 /* libBabTTS.a in Frameworks */,
+				A38A2EC215EE6A43003398E7 /* libMobilityStatic.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3301,8 +3290,6 @@
 				A30E1026123EA5B400D31157 /* libhyphenate.a in Frameworks */,
 				A30E1029123EA5B400D31157 /* libexpat.a in Frameworks */,
 				7D229EAC12F98E250037D93D /* libminiunzip.a in Frameworks */,
-				A30E103C123EA5B400D31157 /* libBabTTSFat.a in Frameworks */,
-				A30E103B123EA5B400D31157 /* libMobilityStaticFat.a in Frameworks */,
 				7D31BFF115B85B2C00FEA167 /* libresolv.dylib in Frameworks */,
 				C9EFAF50134DF4B800ADF905 /* libXpsSDKipad.a in Frameworks */,
 				A30E103E123EA5B400D31157 /* libPlayReadyPK.a in Frameworks */,
@@ -3350,8 +3337,6 @@
 				A31CC88613FEA07E0010BFC5 /* libhyphenate.a in Frameworks */,
 				A31CC88913FEA07E0010BFC5 /* libexpat.a in Frameworks */,
 				A31CC88D13FEA07E0010BFC5 /* libminiunzip.a in Frameworks */,
-				A31CC89B13FEA07E0010BFC5 /* libBabTTSFat.a in Frameworks */,
-				A31CC89A13FEA07E0010BFC5 /* libMobilityStaticFat.a in Frameworks */,
 				A31CC88213FEA07E0010BFC5 /* libxml2.dylib in Frameworks */,
 				A31CC8A213FEA07E0010BFC5 /* libXpsSDKipad.a in Frameworks */,
 				A31CC88313FEA07E0010BFC5 /* libstdc++.dylib in Frameworks */,
@@ -3398,8 +3383,6 @@
 				A36D35DB120B136700E1A035 /* libhyphenate.a in Frameworks */,
 				A36D35DE120B136700E1A035 /* libexpat.a in Frameworks */,
 				7D229EAD12F98E290037D93D /* libminiunzip.a in Frameworks */,
-				A36D35F2120B136700E1A035 /* libBabTTSFat.a in Frameworks */,
-				A36D35F1120B136700E1A035 /* libMobilityStaticFat.a in Frameworks */,
 				C9EFAF4F134DF4B800ADF905 /* libXpsSDKipad.a in Frameworks */,
 				A36D35F4120B136700E1A035 /* libPlayReadyPK.a in Frameworks */,
 				7DDCC00F132E88DC00FE8201 /* libxml2.dylib in Frameworks */,
@@ -3446,8 +3429,6 @@
 				A3BEFE12152DE9E6009B4F4A /* libhyphenate.a in Frameworks */,
 				A3BEFE13152DE9E6009B4F4A /* libexpat.a in Frameworks */,
 				A3BEFE14152DE9E6009B4F4A /* libminiunzip.a in Frameworks */,
-				A3BEFE15152DE9E6009B4F4A /* libBabTTSFat.a in Frameworks */,
-				A3BEFE16152DE9E6009B4F4A /* libMobilityStaticFat.a in Frameworks */,
 				A3BEFE17152DE9E6009B4F4A /* libXpsSDKipad.a in Frameworks */,
 				A3BEFE18152DE9E6009B4F4A /* libPlayReadyPK.a in Frameworks */,
 				A3BEFE19152DE9E6009B4F4A /* libxml2.dylib in Frameworks */,
@@ -3658,11 +3639,8 @@
 				C93ECB14134B6215003B99FD /* libKNFBReader Resources */,
 				7D381CCC10D93023008D34E2 /* libEucalyptus Resources */,
 				C9E1FAA7110F26DB00999587 /* TextFlows */,
-				A349F067110E31CC009A8F89 /* AudioBooks */,
 				DCC46B8C11B5D26F00CBD491 /* Acapela For iPhone LF USEnglish Heather */,
-				DCC4696811B5C31400CBD491 /* TTS */,
 				DCC45ACB11B458A400CBD491 /* voiceSamples */,
-				C9775E9A10DFE1C3005E0E2B /* MockCovers */,
 				553D5B16126F6B6B00A1CE83 /* speedreaderBackgroundImages */,
 				5590D316111C8E7D00CE0C4F /* roundedcorners.png */,
 				553E98FA1107B8E600FB309D /* speedread-thumb.png */,
@@ -4123,8 +4101,8 @@
 		A37FC32D10EA780500F3DC5A /* TTS */ = {
 			isa = PBXGroup;
 			children = (
-				A3B16AC11104F65C00E2EA97 /* libMobilityStaticFat.a */,
-				A37FC32E10EA781700F3DC5A /* libBabTTSFat.a */,
+				A38A2EBF15EE6A43003398E7 /* libBabTTS.a */,
+				A38A2EC015EE6A43003398E7 /* libMobilityStatic.a */,
 			);
 			name = TTS;
 			sourceTree = "<group>";

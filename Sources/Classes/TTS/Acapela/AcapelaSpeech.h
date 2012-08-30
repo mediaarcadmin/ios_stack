@@ -23,11 +23,20 @@ typedef unsigned int BB_U32;
 	
 	- (BOOL)startSpeakingString:(NSString *)string;
 	- (BOOL)startSpeakingString:(NSString *)string toURL:(NSURL *)url;
-	
+
+	- (BOOL)queueSpeakingString:(NSString *)string;
+	- (BOOL)queueSpeakingString:(NSString *)string textIndex:(int*)index;
+
+	- (void)stopSpeaking;
+	- (void)stopSpeakingAtBoundary:(AcapelaSpeechBoundary)boundary;
+
+	- (void)pauseSpeakingAtBoundary:(AcapelaSpeechBoundary)boundary;
+	- (void)continueSpeaking;
+
+	- (void)skipToNextText;
+
 	- (BOOL)isSpeaking;
 	- (BOOL)isPaused;
-	- (void)stopSpeaking;
-    - (void)stopSpeakingAtBoundary:(AcapelaSpeechBoundary)boundary;
 
 	- (id)delegate;		
 	- (void)setDelegate:(id)anObject;
@@ -39,10 +48,10 @@ typedef unsigned int BB_U32;
 	- (void)setVolume:(float)volume;
 	- (int)selbreak;
 	- (void)setSelbreak:(int)selbreak;
+	- (int)voiceShaping;
+	- (void)setVoiceShaping:(int)voiceShaping;
 
-    - (void)pauseSpeakingAtBoundary:(AcapelaSpeechBoundary)boundary;
-    - (void)continueSpeaking;
-	- (BOOL)setActive:(BOOL)state;
+ 	- (BOOL)setActive:(BOOL)state;
 
 
 	- (id)objectForProperty:(NSString *)property error:(NSError **)outError;
@@ -53,17 +62,33 @@ typedef unsigned int BB_U32;
 	+ (BOOL)isAnyApplicationSpeaking;
 	+ (NSArray *)availableVoices;
 	+ (NSDictionary *)attributesForVoice:(NSString*)voice;
-	
+	- (NSDictionary*)attributesForCurrentVoice;
 
-// ================ //
-// Acapela specific //
-// ================ //
-- (BOOL)queueSpeakingString:(NSString *)string;
+	- (NSArray *)getUserDicosTitles;
+
+	- (BOOL)addUserDico:(NSString *)userDicoTitle relativePath:(NSString *)path;
+	- (BOOL)removeUserDico:(NSString *)userDicoTitle;
+
+	- (BOOL)setUserDicoEntry:(NSString *)userDicoTitle word:(NSString *)word nature:(NSString *)nature transcription:(NSString *)transcription;
+	- (BOOL)removeUserDicoEntry:(NSString *)userDicoTitle word:(NSString *)word;
+
+	- (NSString *)getUserDicoPath:(NSString *)userDicoTitle;
+	- (NSArray *)checkUserDicoContent:(NSString *)userDicoTitle;
+	- (NSDictionary *)listUserDicoContent:(NSString *)userDicoTitle;
+
+	- (NSArray *)getPhonemsList;
+	- (NSArray *)isPhoneticEntryValid:(NSString *)phoneticEntry;
+
+    - (Float32) audioPeakLevel;
+    - (Float32) audioAverageLevel;
+
+	
 @end
 
 @interface NSObject (AcapelaSpeechDelegate)
 
 - (void)speechSynthesizer:(AcapelaSpeech *)sender didFinishSpeaking:(BOOL)finishedSpeaking;
+- (void)speechSynthesizer:(AcapelaSpeech *)sender didFinishSpeaking:(BOOL)finishedSpeaking textIndex:(int)index;
 - (void)speechSynthesizer:(AcapelaSpeech *)sender willSpeakWord:(NSRange)characterRange ofString:(NSString *)string;
 - (void)speechSynthesizer:(AcapelaSpeech *)sender willSpeakPhoneme:(short)phonemeOpcode;
 - (void)speechSynthesizer:(AcapelaSpeech *)sender didEncounterSyncMessage:(NSString *)errorMessage;
@@ -79,7 +104,12 @@ extern NSString *const AcapelaVoiceLocaleIdentifier;
 extern NSString *const AcapelaVoiceSupportedCharacters;
 extern NSString *const AcapelaVoiceIndividuallySpokenCharacters;
 extern NSString *const AcapelaVoiceStringEncoding;
-extern NSString *const AcapelaVoiceVersionString;
+extern NSString *const AcapelaVoiceDataVersion;
+extern NSString *const AcapelaVoiceGlobalPath;
+extern NSString *const AcapelaVoiceRelativePathToApp;
+extern NSString *const AcapelaVoiceFrequency;
+extern NSString *const AcapelaVoiceQuality;
+
 
 // Values for AcapelaVoiceGender voice attribute
 extern NSString *const AcapelaVoiceGenderNeuter;
