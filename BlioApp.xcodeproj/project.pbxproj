@@ -1286,6 +1286,7 @@
 		A382D3DB11C9159000CFEB88 /* Icon-iPad.png in Resources */ = {isa = PBXBuildFile; fileRef = A382D3D811C9159000CFEB88 /* Icon-iPad.png */; };
 		A383F2441174FA7A0049ED3A /* icon-cart.png in Resources */ = {isa = PBXBuildFile; fileRef = A383F2431174FA7A0049ED3A /* icon-cart.png */; };
 		A3849B7F12E7E1FD0040B0EA /* icon-import@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A3B0B2B0126E088500FC3D18 /* icon-import@2x.png */; };
+		A386B27D15FE804A00C25FBA /* Acapela For iPhone LF USEnglish Tracy in Resources */ = {isa = PBXBuildFile; fileRef = A386B27C15FE804A00C25FBA /* Acapela For iPhone LF USEnglish Tracy */; };
 		A38A2EC115EE6A43003398E7 /* libBabTTS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A38A2EBF15EE6A43003398E7 /* libBabTTS.a */; };
 		A38A2EC215EE6A43003398E7 /* libMobilityStatic.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A38A2EC015EE6A43003398E7 /* libMobilityStatic.a */; };
 		A39305FF12BAC01A00949150 /* apache2-license.html in Resources */ = {isa = PBXBuildFile; fileRef = A39305FE12BAC01A00949150 /* apache2-license.html */; };
@@ -1775,7 +1776,6 @@
 		A3CF839C12E4B7E00069FA16 /* XPS-Starters in Resources */ = {isa = PBXBuildFile; fileRef = A3CF839712E4B7E00069FA16 /* XPS-Starters */; };
 		A3CF839D12E4B7E00069FA16 /* XPS-Starters in Resources */ = {isa = PBXBuildFile; fileRef = A3CF839712E4B7E00069FA16 /* XPS-Starters */; };
 		A3CF83AB12E4B85E0069FA16 /* XPS-Demo in Resources */ = {isa = PBXBuildFile; fileRef = A3CF83A612E4B85E0069FA16 /* XPS-Demo */; };
-		A3CF83B012E4B96B0069FA16 /* Acapela For iPhone LF USEnglish Heather in Resources */ = {isa = PBXBuildFile; fileRef = DCC46B8C11B5D26F00CBD491 /* Acapela For iPhone LF USEnglish Heather */; };
 		A3DDFDFF110FD1AA00EF1D44 /* BlioAudioBookManager.m in Sources */ = {isa = PBXBuildFile; fileRef = A3DDFDFE110FD1AA00EF1D44 /* BlioAudioBookManager.m */; };
 		A3E5AF1712B2FD2A008F48C6 /* back-black@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A3E5AF1612B2FD2A008F48C6 /* back-black@2x.png */; };
 		A3E5AF1812B2FD2A008F48C6 /* back-black@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A3E5AF1612B2FD2A008F48C6 /* back-black@2x.png */; };
@@ -2190,7 +2190,6 @@
 		DCC451EA11B042FC00CBD491 /* BlioDownloadVoicesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DCC451E811B042FC00CBD491 /* BlioDownloadVoicesViewController.m */; };
 		DCC4548A11B092A800CBD491 /* voice-sample-play-button.png in Resources */ = {isa = PBXBuildFile; fileRef = DCC4548811B092A800CBD491 /* voice-sample-play-button.png */; };
 		DCC45AD311B458A400CBD491 /* voiceSamples in Resources */ = {isa = PBXBuildFile; fileRef = DCC45ACB11B458A400CBD491 /* voiceSamples */; };
-		DCC46B8D11B5D26F00CBD491 /* Acapela For iPhone LF USEnglish Heather in Resources */ = {isa = PBXBuildFile; fileRef = DCC46B8C11B5D26F00CBD491 /* Acapela For iPhone LF USEnglish Heather */; };
 		DCC761D312BA507200B6EFAF /* BlioWelcomeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DCC761D212BA507200B6EFAF /* BlioWelcomeViewController.m */; };
 		DCC761D412BA507200B6EFAF /* BlioWelcomeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DCC761D212BA507200B6EFAF /* BlioWelcomeViewController.m */; };
 		DCC761D512BA507200B6EFAF /* BlioWelcomeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DCC761D212BA507200B6EFAF /* BlioWelcomeViewController.m */; };
@@ -2802,6 +2801,7 @@
 		A382D3D711C9159000CFEB88 /* Default-Portrait.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-Portrait.png"; sourceTree = "<group>"; };
 		A382D3D811C9159000CFEB88 /* Icon-iPad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-iPad.png"; sourceTree = "<group>"; };
 		A383F2431174FA7A0049ED3A /* icon-cart.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-cart.png"; sourceTree = "<group>"; };
+		A386B27C15FE804A00C25FBA /* Acapela For iPhone LF USEnglish Tracy */ = {isa = PBXFileReference; lastKnownFileType = folder; name = "Acapela For iPhone LF USEnglish Tracy"; path = "TTS/Acapela For iPhone LF USEnglish Tracy"; sourceTree = "<group>"; };
 		A38A2EBF15EE6A43003398E7 /* libBabTTS.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libBabTTS.a; path = Libraries/TTS/libBabTTS.a; sourceTree = "<group>"; };
 		A38A2EC015EE6A43003398E7 /* libMobilityStatic.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libMobilityStatic.a; path = Libraries/TTS/libMobilityStatic.a; sourceTree = "<group>"; };
 		A39305FE12BAC01A00949150 /* apache2-license.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = "apache2-license.html"; sourceTree = "<group>"; };
@@ -3181,7 +3181,6 @@
 		DCC451E811B042FC00CBD491 /* BlioDownloadVoicesViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioDownloadVoicesViewController.m; sourceTree = "<group>"; };
 		DCC4548811B092A800CBD491 /* voice-sample-play-button.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "voice-sample-play-button.png"; sourceTree = "<group>"; };
 		DCC45ACB11B458A400CBD491 /* voiceSamples */ = {isa = PBXFileReference; lastKnownFileType = folder; path = voiceSamples; sourceTree = "<group>"; };
-		DCC46B8C11B5D26F00CBD491 /* Acapela For iPhone LF USEnglish Heather */ = {isa = PBXFileReference; lastKnownFileType = folder; name = "Acapela For iPhone LF USEnglish Heather"; path = "TTS/Acapela For iPhone LF USEnglish Heather"; sourceTree = "<group>"; };
 		DCC761D112BA507200B6EFAF /* BlioWelcomeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioWelcomeViewController.h; sourceTree = "<group>"; };
 		DCC761D212BA507200B6EFAF /* BlioWelcomeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioWelcomeViewController.m; sourceTree = "<group>"; };
 		DCC762B412BA6D6500B6EFAF /* UIButton+BlioAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIButton+BlioAdditions.h"; sourceTree = "<group>"; };
@@ -3546,6 +3545,7 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				A386B27C15FE804A00C25FBA /* Acapela For iPhone LF USEnglish Tracy */,
 				A3FBC5321562E81000F14FE4 /* voiceover-quickstart-Toshiba.html */,
 				A3FBC5331562E81000F14FE4 /* voiceover-tips-Toshiba.html */,
 				A3FBC52E1562D91E00F14FE4 /* userdoc-Toshiba.html */,
@@ -3639,7 +3639,6 @@
 				C93ECB14134B6215003B99FD /* libKNFBReader Resources */,
 				7D381CCC10D93023008D34E2 /* libEucalyptus Resources */,
 				C9E1FAA7110F26DB00999587 /* TextFlows */,
-				DCC46B8C11B5D26F00CBD491 /* Acapela For iPhone LF USEnglish Heather */,
 				DCC45ACB11B458A400CBD491 /* voiceSamples */,
 				553D5B16126F6B6B00A1CE83 /* speedreaderBackgroundImages */,
 				5590D316111C8E7D00CE0C4F /* roundedcorners.png */,
@@ -4931,7 +4930,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				DCC46B8D11B5D26F00CBD491 /* Acapela For iPhone LF USEnglish Heather in Resources */,
 				A3CF839B12E4B7E00069FA16 /* XPS-Starters in Resources */,
 				A3CF83AB12E4B85E0069FA16 /* XPS-Demo in Resources */,
 				553D5B17126F6B6B00A1CE83 /* speedreaderBackgroundImages in Resources */,
@@ -5181,6 +5179,7 @@
 				7DDF8FD215D580C600CCC867 /* THAVPlayerPlay.png in Resources */,
 				7DDF8FD715D580C600CCC867 /* THAVPlayerPlay@2x.png in Resources */,
 				7D02B52015E4E6DF00B764A7 /* THAVPlayerAudioBackground.png in Resources */,
+				A386B27D15FE804A00C25FBA /* Acapela For iPhone LF USEnglish Tracy in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -5685,7 +5684,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A3CF83B012E4B96B0069FA16 /* Acapela For iPhone LF USEnglish Heather in Resources */,
 				A3CF839D12E4B7E00069FA16 /* XPS-Starters in Resources */,
 				A3F46D0D1295B0D00015A50A /* speedreaderBackgroundImages in Resources */,
 				A31E82EE120B3FD800CB6657 /* credits.html in Resources */,
@@ -7119,6 +7117,8 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CODE_SIGN_ENTITLEMENTS = "$(SRCROOT)/Entitlements.plist";
+				CODE_SIGN_IDENTITY = "iPhone Developer: Arnold Chien (4XCU87FX68)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Arnold Chien (4XCU87FX68)";
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -7143,6 +7143,8 @@
 					"-fobjc-arc",
 				);
 				PRODUCT_NAME = Blio;
+				PROVISIONING_PROFILE = "502B0524-F40F-44A0-BD8E-30E68C3900EE";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "502B0524-F40F-44A0-BD8E-30E68C3900EE";
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
