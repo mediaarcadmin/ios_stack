@@ -3148,9 +3148,9 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     }
     
     NSArray *wordStrings = [self.book wordStringsForBookmarkRange:range];
-    NSString *encodedParam = [[[wordStrings componentsJoinedByString:@" "] 
-                               stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding] 
-                              stringByTrimmingCharactersInSet:[NSCharacterSet punctuationCharacterSet]];	
+    NSString *encodedParam = [[[wordStrings componentsJoinedByString:@" "]
+                               stringByTrimmingCharactersInSet:[NSCharacterSet punctuationCharacterSet]]
+                               stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
     NSString *queryString = nil;
     NSString *titleString = nil;
     switch (type) {
