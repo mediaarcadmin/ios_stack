@@ -256,6 +256,7 @@
 		aPageTurningView.vibratesOnInvalidTurn = NO;
         aPageTurningView.backgroundColor = [UIColor blackColor];
         aPageTurningView.opaque = YES;
+        aPageTurningView.useContinuousReadingAccessibility = !self.shouldTapZoom;
         
         BOOL hasEnhancedContent = NO;
         if ([(NSObject *)self.dataSource respondsToSelector:@selector(hasEnhancedContent)]) {
@@ -342,6 +343,13 @@
 }
 
 - (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation {
+    if(self.selector) {
+        // This may be true if we get a call here during application launch.
+        [self.selector removeObserver:self forKeyPath:@"tracking"];
+        [self.selector detatch];
+        self.selector = nil;
+    }
+
 	self.lastBlock = nil;
 	self.accessibilityElements = nil;
 	if (self.textFlow) {
@@ -1805,6 +1813,12 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 #pragma mark -
 #pragma mark Touch Handling
 
+- (void)setShouldTapZoom:(BOOL)newShouldTapZoom
+{
+    shouldTapZoom = newShouldTapZoom;
+    self.pageTurningView.useContinuousReadingAccessibility = !shouldTapZoom;
+}
+
 - (BOOL)touchesShouldBeSuppressed {
 	return YES;
 }
@@ -2073,16 +2087,11 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 
 - (BOOL)useTextFlowBlockBasedAccessibility
 {
-#if TARGET_OS_IPHONE && (__IPHONE_OS_VERSION_MAX_ALLOWED >= 50000)
-    if(&UIAccessibilityTraitCausesPageTurn != NULL &&
-       [EucPageTurningView conformsToProtocol:@protocol(UIAccessibilityReadingContent)]) {
+    if(&UIAccessibilityTraitCausesPageTurn != NULL) {
         return self.shouldTapZoom;
     } else {
-        return NO;
+        return YES;
     }
-#else
-    return YES;
-#endif
 }
 
 #pragma mark TextFlow Block Based Accessibilty
@@ -2196,7 +2205,7 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
         if(pageAccessibilityElements.count == 0) {
             UIAccessibilityElement *bookPageTapZone = [[UIAccessibilityElement alloc] initWithAccessibilityContainer:self];
             bookPageTapZone.accessibilityTraits = UIAccessibilityTraitStaticText;
-            CGRect frame = self.bounds;
+            CGRect frame = [self convertRect:self.bounds toView:nil];
             frame.origin.x += tapZoneWidth;
             frame.size.width -= tapZoneWidth * 2.0f;
             

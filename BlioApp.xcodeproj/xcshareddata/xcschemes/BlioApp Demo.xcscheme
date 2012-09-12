@@ -14,7 +14,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "1D6058900D05DD3D006BFB54"
-               BuildableName = "Blio.app"
+               BuildableName = "BlioBeta.app"
                BlueprintName = "BlioApp Demo"
                ReferencedContainer = "container:BlioApp.xcodeproj">
             </BuildableReference>
@@ -32,7 +32,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "1D6058900D05DD3D006BFB54"
-            BuildableName = "Blio.app"
+            BuildableName = "BlioBeta.app"
             BlueprintName = "BlioApp Demo"
             ReferencedContainer = "container:BlioApp.xcodeproj">
          </BuildableReference>
@@ -45,17 +45,16 @@
       displayScale = "1.00"
       launchStyle = "0"
       useCustomWorkingDirectory = "NO"
-      buildConfiguration = "Debug"
+      buildConfiguration = "Release"
       ignoresPersistentStateOnLaunch = "NO"
       debugDocumentVersioning = "YES"
       enablesOpenGLESFrameCapture = "YES"
-      enableOpenGLFrameCaptureMode = "0"
       allowLocationSimulation = "YES">
       <BuildableProductRunnable>
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "1D6058900D05DD3D006BFB54"
-            BuildableName = "Blio.app"
+            BuildableName = "BlioBeta.app"
             BlueprintName = "BlioApp Demo"
             ReferencedContainer = "container:BlioApp.xcodeproj">
          </BuildableReference>
@@ -123,7 +122,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "1D6058900D05DD3D006BFB54"
-            BuildableName = "Blio.app"
+            BuildableName = "BlioBeta.app"
             BlueprintName = "BlioApp Demo"
             ReferencedContainer = "container:BlioApp.xcodeproj">
          </BuildableReference>

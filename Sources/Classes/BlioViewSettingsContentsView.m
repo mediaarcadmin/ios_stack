@@ -345,14 +345,11 @@
 		//////// TAP ZOOMS TO BLOCK
 		
         BOOL voiceOverIsRelevant = NO;
-#if TARGET_OS_IPHONE && (__IPHONE_OS_VERSION_MAX_ALLOWED >= 50000)
-        if(&UIAccessibilityTraitCausesPageTurn != NULL &&
-           [EucPageTurningView conformsToProtocol:@protocol(UIAccessibilityReadingContent)]) {
+        if(&UIAccessibilityTraitCausesPageTurn != NULL) {
             if(UIAccessibilityIsVoiceOverRunning()) {
                 voiceOverIsRelevant = YES;
             }
         }
-#endif
         
 		UILabel *aTabZoomsToBlockLabel = [[UILabel alloc] initWithFrame:CGRectZero];
         aTabZoomsToBlockLabel.font = [UIFont boldSystemFontOfSize:14.0f];

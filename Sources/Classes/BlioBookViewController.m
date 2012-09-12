@@ -861,14 +861,13 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     root.opaque = YES;    
     self.view = root;
 
-    if(&UIAccessibilityPageScrolledNotification != NULL) {
+    if(&UIAccessibilityPageScrolledNotification != NULL &&
+       [[UIDevice currentDevice] compareSystemVersion:@"5"] == NSOrderedAscending) {
         // There's a bug in the original implementation (iOS 4.2) of accessibility 
         // scrolling (i.e. supporting three-finger-swipe) in iOS that means that
         // it doesn't work unless the view that implements it is inside a 
         // UIScrollView, so we create an otherwise-inoperative UIScrollView here
         // to put our book view inside.
-        // In the future, an extra && ![[UIDevice currentDevice] compareSystemVersion:<version where bug is fixed>] < NSOrderedSame
-        // can be added to stop doing this when the bug is fixed.
         UIScrollView *fakeScrollView = [[UIScrollView alloc] initWithFrame:root.bounds];
         fakeScrollView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
         fakeScrollView.scrollEnabled = NO;
@@ -1904,14 +1903,11 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         return YES;
     }
     if ([self currentPageLayout] == kBlioPageLayoutPlainText) {
-#if TARGET_OS_IPHONE && (__IPHONE_OS_VERSION_MAX_ALLOWED >= 50000)
-        if(&UIAccessibilityTraitCausesPageTurn != NULL &&
-           [EucPageTurningView conformsToProtocol:@protocol(UIAccessibilityReadingContent)]) {
+        if(&UIAccessibilityTraitCausesPageTurn != NULL) {
             if(UIAccessibilityIsVoiceOverRunning()) {
                 return YES;
             }
         }
-#endif
     }
     return NO;
 }

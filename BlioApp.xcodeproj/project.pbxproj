@@ -2409,7 +2409,7 @@
 		1D30AB110D05D00D00671497 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		1D3623240D0F684500981E51 /* BlioAppAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioAppAppDelegate.h; sourceTree = "<group>"; };
 		1D3623250D0F684500981E51 /* BlioAppAppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioAppAppDelegate.m; sourceTree = "<group>"; };
-		1D6058910D05DD3D006BFB54 /* Blio.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Blio.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		1D6058910D05DD3D006BFB54 /* BlioBeta.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BlioBeta.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1DF5F4DF0D08C38300B7A737 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		2892E40F0DC94CBA00A64D0F /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		28A0AAE50D9B0CCF005BE974 /* BlioApp_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioApp_Prefix.pch; sourceTree = "<group>"; };
@@ -3507,7 +3507,7 @@
 		19C28FACFE9D520D11CA2CBB /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				1D6058910D05DD3D006BFB54 /* Blio.app */,
+				1D6058910D05DD3D006BFB54 /* BlioBeta.app */,
 				A36D35F9120B136700E1A035 /* Blio.app */,
 				A30E1044123EA5B400D31157 /* Blio.app */,
 				A31CC8A713FEA07E0010BFC5 /* SamsClubApp.app */,
@@ -4714,7 +4714,7 @@
 			);
 			name = "BlioApp Demo";
 			productName = BlioApp;
-			productReference = 1D6058910D05DD3D006BFB54 /* Blio.app */;
+			productReference = 1D6058910D05DD3D006BFB54 /* BlioBeta.app */;
 			productType = "com.apple.product-type.application";
 		};
 		A30E0EF5123EA5B400D31157 /* BlioApp Release */ = {
@@ -7116,6 +7116,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				BUNDLE_ID_SUFFIX = .beta;
 				CODE_SIGN_ENTITLEMENTS = "$(SRCROOT)/Entitlements.plist";
 				CODE_SIGN_IDENTITY = "iPhone Developer: Arnold Chien (4XCU87FX68)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Arnold Chien (4XCU87FX68)";
@@ -7142,9 +7143,7 @@
 					"-all_load",
 					"-fobjc-arc",
 				);
-				PRODUCT_NAME = Blio;
-				PROVISIONING_PROFILE = "502B0524-F40F-44A0-BD8E-30E68C3900EE";
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "502B0524-F40F-44A0-BD8E-30E68C3900EE";
+				PRODUCT_NAME = BlioBeta;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -7153,6 +7152,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				BUNDLE_ID_SUFFIX = .beta;
 				CODE_SIGN_ENTITLEMENTS = "$(SRCROOT)/Entitlements.plist";
 				COPY_PHASE_STRIP = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -7175,7 +7175,7 @@
 					"-all_load",
 					"-fobjc-arc",
 				);
-				PRODUCT_NAME = Blio;
+				PRODUCT_NAME = BlioBeta;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
@@ -7185,7 +7185,6 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CODE_SIGN_ENTITLEMENTS = "$(SRCROOT)/Entitlements.plist";
-				CODE_SIGN_IDENTITY = "iPhone Developer: Arnold Chien (4XCU87FX68)";
 				COPY_PHASE_STRIP = NO;
 				CURRENT_PROJECT_VERSION = 6;
 				GCC_DYNAMIC_NO_PIC = NO;
@@ -7209,7 +7208,6 @@
 					"-fobjc-arc",
 				);
 				PRODUCT_NAME = Blio;
-				PROVISIONING_PROFILE = "502B0524-F40F-44A0-BD8E-30E68C3900EE";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
@@ -7220,8 +7218,6 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CODE_SIGN_ENTITLEMENTS = "$(SRCROOT)/Entitlements.plist";
-				CODE_SIGN_IDENTITY = "iPhone Developer: Arnold Chien (4XCU87FX68)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Arnold Chien (4XCU87FX68)";
 				COPY_PHASE_STRIP = YES;
 				CURRENT_PROJECT_VERSION = 6;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -7243,8 +7239,6 @@
 					"-fobjc-arc",
 				);
 				PRODUCT_NAME = Blio;
-				PROVISIONING_PROFILE = "502B0524-F40F-44A0-BD8E-30E68C3900EE";
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "502B0524-F40F-44A0-BD8E-30E68C3900EE";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
@@ -7255,8 +7249,6 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CODE_SIGN_ENTITLEMENTS = "$(SRCROOT)/Entitlements.plist";
-				CODE_SIGN_IDENTITY = "iPhone Developer: Arnold Chien (4XCU87FX68)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: K-NFB Reading Technology Inc.";
 				COPY_PHASE_STRIP = YES;
 				CURRENT_PROJECT_VERSION = 6;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -7278,8 +7270,6 @@
 					"-fobjc-arc",
 				);
 				PRODUCT_NAME = Blio;
-				PROVISIONING_PROFILE = "502B0524-F40F-44A0-BD8E-30E68C3900EE";
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "5371D97A-F72A-480E-B8BC-87D4B17A6A7E";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
@@ -7421,6 +7411,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				BUNDLE_ID_SUFFIX = .beta;
 				CODE_SIGN_ENTITLEMENTS = "$(SRCROOT)/Entitlements.plist";
 				CODE_SIGN_IDENTITY = "iPhone Distribution: K-NFB Reading Technology Inc.";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: K-NFB Reading Technology Inc.";
@@ -7445,7 +7436,7 @@
 					"-all_load",
 					"-fobjc-arc",
 				);
-				PRODUCT_NAME = Blio;
+				PRODUCT_NAME = BlioBeta;
 				PROVISIONING_PROFILE = "308F14CC-3406-42F3-AA0D-363A4E4AC5DD";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "308F14CC-3406-42F3-AA0D-363A4E4AC5DD";
 				TARGETED_DEVICE_FAMILY = "1,2";
