@@ -9,8 +9,9 @@
 #import <UIKit/UIKit.h>
 #import "BlioAcapelaAudioManager.h"
 #import "BlioRoundedRectActivityView.h"
+#import "BlioAutorotatingViewController.h"
 
-@interface BlioReadingVoiceSettingsViewController : UITableViewController <NSFetchedResultsControllerDelegate> {
+@interface BlioReadingVoiceSettingsViewController : BlioAutorotatingTableViewController <NSFetchedResultsControllerDelegate> {
 	UISegmentedControl* voiceControl;
 	UISlider* speedControl;
 	UISlider* volumeControl;

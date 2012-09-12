@@ -284,13 +284,6 @@
 	[self createControls];	
 }
 
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
-    if ([[[[NSBundle mainBundle] infoDictionary] objectForKey:@"BlioLibraryViewDisableRotation"] boolValue])
-        return NO;
-    else if (interfaceOrientation == UIInterfaceOrientationPortraitUpsideDown && UI_USER_INTERFACE_IDIOM() != UIUserInterfaceIdiomPad) return NO;
-	return YES;
-}
-
 -(void)onVoiceListRefreshedNotification:(NSNotification*)note {
 	NSLog(@"BlioAudioSettingsController onVoiceListRefreshedNotification entered");
 	self.availableVoices = [AcapelaSpeech availableVoices];

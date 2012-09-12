@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "BlioAutorotatingViewController.h"
 
 static const NSInteger kBlioStoreBuyBooksTag = 5;
 
@@ -23,7 +24,7 @@ static const NSInteger kBlioStoreBuyBooksTag = 5;
 @end
 
 
-@interface BlioStoreWebsiteViewController : UIViewController {
+@interface BlioStoreWebsiteViewController : BlioAutorotatingViewController {
 	//UIButton* launchButton;
 	//UIButton* createAccountButton;
 	UILabel * explanationLabel;

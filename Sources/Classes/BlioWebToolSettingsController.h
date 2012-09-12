@@ -7,9 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "BlioAutorotatingViewController.h"
 
-
-@interface BlioWebToolSettingsController : UIViewController {
+@interface BlioWebToolSettingsController : BlioAutorotatingViewController {
 	UISegmentedControl* searchControl;
 	UISegmentedControl* encyclopediaControl;
 }

@@ -7,8 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "BlioAutorotatingViewController.h"
 
-@interface BlioVoiceOverTextController : UIViewController <UIWebViewDelegate> {
+@interface BlioVoiceOverTextController : BlioAutorotatingViewController <UIWebViewDelegate> {
 UIWebView *textView;
 }
 @end

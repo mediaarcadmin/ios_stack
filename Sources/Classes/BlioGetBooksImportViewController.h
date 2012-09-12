@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "BlioRoundedRectActivityView.h"
+#import "BlioAutorotatingViewController.h"
 
 static const NSInteger kBlioImportBookCellActivityIndicatorViewTag = 99;
 static const NSInteger kBlioImportBookCellActivityIndicatorViewWidth = 20;
@@ -16,7 +17,7 @@ static const NSInteger kBlioImportBookCellActivityIndicatorViewWidth = 20;
 
 static const NSInteger kBlioGetBooksImportTag = 4;
 
-@interface BlioGetBooksImportViewController : UITableViewController {
+@interface BlioGetBooksImportViewController : BlioAutorotatingTableViewController {
 	BlioRoundedRectActivityView * activityIndicatorView;
 	NSMutableArray * importableBooks;
 	id<BlioProcessingDelegate> _processingDelegate;

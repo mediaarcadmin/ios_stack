@@ -2891,14 +2891,6 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 #pragma mark -
 #pragma mark Rotation Handling
 
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation 
-{
-    if ([self isRotationLocked])
-        return NO;
-    else if (interfaceOrientation == UIInterfaceOrientationPortraitUpsideDown && UI_USER_INTERFACE_IDIOM() != UIUserInterfaceIdiomPad) return NO;
-        return YES;
-}
-
 - (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration {
     if ([self.bookView respondsToSelector:@selector(willRotateToInterfaceOrientation:duration:)])
         [self.bookView willRotateToInterfaceOrientation:toInterfaceOrientation duration:duration];

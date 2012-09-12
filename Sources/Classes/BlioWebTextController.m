@@ -58,12 +58,6 @@
     
 }
 
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
-{
-    return (interfaceOrientation == UIInterfaceOrientationPortrait);
-}
-
-
 #pragma mark - UIWebView delegate methods
 
 /*

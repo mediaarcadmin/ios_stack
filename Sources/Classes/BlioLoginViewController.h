@@ -11,6 +11,7 @@
 #import "BlioStoreManager.h"
 #import "DigitalLockerGateway.h"
 #import "BlioRoundedRectActivityView.h"
+#import "BlioAutorotatingViewController.h"
 
 @interface BlioLoginHeaderView : UIView {
 	UIImageView * logoView;
@@ -19,7 +20,7 @@
 }
 @end
 
-@interface BlioLoginViewController : UITableViewController<UITextFieldDelegate,UITableViewDelegate,UITableViewDataSource,DigitalLockerConnectionDelegate,BlioLoginResultReceiver> {
+@interface BlioLoginViewController : BlioAutorotatingTableViewController <UITextFieldDelegate,UITableViewDelegate,UITableViewDataSource,DigitalLockerConnectionDelegate,BlioLoginResultReceiver> {
 	UITextField* emailField;
 	UITextField* passwordField;
 	BlioRoundedRectActivityView * activityIndicatorView;

@@ -10,6 +10,7 @@
 #import <StoreKit/StoreKit.h>
 #import "CCInAppPurchaseService.h"
 #import "BlioRoundedRectActivityView.h"
+#import "BlioAutorotatingViewController.h"
 
 typedef enum {
 	BlioVoiceDownloadButtonStatePurchase = 0,
@@ -35,7 +36,7 @@ static const CGFloat kBlioVoiceDownloadProgressViewRightMargin = 10.0f;
 @end
 
 
-@interface BlioPurchaseVoicesViewController : UITableViewController<BlioPurchaseVoiceViewDelegate> {
+@interface BlioPurchaseVoicesViewController : BlioAutorotatingTableViewController <BlioPurchaseVoiceViewDelegate> {
 	NSMutableArray * availableVoicesForPurchase;
 	BlioRoundedRectActivityView * activityIndicatorView;
 }

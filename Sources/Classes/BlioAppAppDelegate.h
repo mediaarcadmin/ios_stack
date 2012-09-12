@@ -34,7 +34,7 @@
 	NetworkStatus networkStatus;
 	Reachability * internetReach;    
     
-    BlioDefaultViewController *realDefaultImageViewController;
+    BlioDefaultViewController *defaultImageViewController;
 
     BOOL delayedDidFinishLaunchingLaunchComplete;
     NSMutableArray *delayedURLOpens;

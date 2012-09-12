@@ -7,10 +7,11 @@
 
 #import <UIKit/UIKit.h>
 #import "BlioSplitView.h"
+#import "BlioAutorotatingViewController.h"
 
 @protocol BlioSplitViewControllerDelegate;
 
-@interface BlioSplitViewController : UIViewController {
+@interface BlioSplitViewController : BlioAutorotatingViewController {
 
 		id                      _delegate;
 		NSMutableArray          *_viewControllers;

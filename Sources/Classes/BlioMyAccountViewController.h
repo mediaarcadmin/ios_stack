@@ -9,8 +9,9 @@
 #import <UIKit/UIKit.h>
 #import "BlioDrmSessionManager.h"
 #import "BlioAppSettingsController.h"
+#import "BlioAutorotatingViewController.h"
 
-@interface BlioMyAccountViewController : UITableViewController {
+@interface BlioMyAccountViewController : BlioAutorotatingTableViewController {
     UIActivityIndicatorView *activityIndicator;
 	BOOL registrationOn;
 	BlioDrmSessionManager* drmSessionManager;

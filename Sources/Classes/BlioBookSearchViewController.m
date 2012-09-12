@@ -175,12 +175,6 @@ static NSString * const BlioBookSearchCollapseViewToToolbarAnimation = @"BlioBoo
     [self.toolbar setTintColor:tintColor];
 }
 
-// Override to allow orientations other than the default portrait orientation.
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
-    // Return YES for supported orientations
-    return YES;
-}
-
 - (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration {
     if (self.toolbar.inlineMode) {
         CGRect rotatedScreen = [self rotatedScreenRectWithOrientation:toInterfaceOrientation];

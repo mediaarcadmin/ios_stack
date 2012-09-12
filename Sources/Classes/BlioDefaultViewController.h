@@ -7,9 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "BlioAutorotatingViewController.h"
 
-
-@interface BlioDefaultViewController : UIViewController {
+@interface BlioDefaultViewController : BlioAutorotatingViewController {
     BOOL viewOnScreen;
     
     UIImage *dynamicDefault;
@@ -18,12 +18,15 @@
     UIImageView *dynamicImageView;
     UIImageView *nonDynamicImageView;
     
+    void(^doAfterFadeDefaultBlock)(void);
+    void(^doAfterFadeOutCompletlyBlock)(void);
+    
     BOOL fadesBegun;
 }
 
 + (void)saveDynamicDefaultImage:(UIImage *)image;
 
-- (void)fadeOutDefaultImageIfDynamicImageAlsoAvailable;
-- (void)fadeOutCompletly;
+- (void)fadeOutDefaultImageIfDynamicImageAlsoAvailableThenDo:(void(^)(void))doAfterwardsBlock;
+- (void)fadeOutCompletlyThenDo:(void(^)(void))doAfterwardsBlock;
 
 @end

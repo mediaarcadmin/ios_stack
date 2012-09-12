@@ -33,6 +33,9 @@
 - (void)saveBookSnapshotIfAppropriate;
 - (void)persistApplicationState;
 
+- (void)delayedApplicationDidFinishLaunchingStep1:(UIApplication *)application;
+- (void)delayedApplicationDidFinishLaunchingStep2:(UIApplication *)application;
+
 @property (nonatomic, assign) BOOL delayedDidFinishLaunchingLaunchComplete;
 @property (nonatomic, retain) NSMutableArray *delayedURLOpens;
 
@@ -48,7 +51,6 @@
 
 @synthesize delayedDidFinishLaunchingLaunchComplete;
 @synthesize delayedURLOpens;
-
 
 #pragma mark -
 #pragma mark Application lifecycle
@@ -310,8 +312,8 @@ static void *background_init_thread(void * arg) {
 
 - (void)setUpDefaultImage
 {
-    realDefaultImageViewController = [[BlioDefaultViewController alloc] initWithNibName:nil bundle:nil];
-    [self.window addSubview:realDefaultImageViewController.view];
+    defaultImageViewController = [[BlioDefaultViewController alloc] initWithNibName:nil bundle:nil];
+    self.window.rootViewController = defaultImageViewController;
 }
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
@@ -375,10 +377,9 @@ static void *background_init_thread(void * arg) {
 - (void)delayedApplicationDidFinishLaunchingStep1:(UIApplication *)application {
     // Now that the view is loaded, and in the correct orientation, show the
     // book page if one was available.
-    [realDefaultImageViewController fadeOutDefaultImageIfDynamicImageAlsoAvailable];
-    
-    // Defer again to allow the animation to start.
-    [self performSelector:@selector(delayedApplicationDidFinishLaunchingStep2:) withObject:application afterDelay:0];
+    [defaultImageViewController fadeOutDefaultImageIfDynamicImageAlsoAvailableThenDo:^{
+        [self delayedApplicationDidFinishLaunchingStep2:application];
+    }];
 }
 
 - (void)delayedApplicationDidFinishLaunchingStep2:(UIApplication *)application {
@@ -448,84 +449,87 @@ static void *background_init_thread(void * arg) {
         }
     }
     
-    // Must do the view adding in this order to get landscape support to work
-    // correctly.
-    [realDefaultImageViewController.view removeFromSuperview];
-    [window addSubview:navigationController.view];
-    [window addSubview:realDefaultImageViewController.view];
+    BOOL animationsWereEnabled = [UIView areAnimationsEnabled];
+    [UIView setAnimationsEnabled:NO];
+    window.rootViewController = navigationController;
+    [window addSubview:defaultImageViewController.view];
     [window sendSubviewToBack:navigationController.view];
+    [UIView setAnimationsEnabled:animationsWereEnabled];
     
-    [realDefaultImageViewController fadeOutCompletly];
-    [realDefaultImageViewController release];
+    [defaultImageViewController fadeOutCompletlyThenDo:^{
+        
+        // this login block must happen after the views are attached to the window
+        if ([[Reachability reachabilityWithHostName:[[BlioStoreManager sharedInstance] loginHostnameForSourceID:BlioBookSourceOnlineStore]] currentReachabilityStatus] != NotReachable) {
+            NSLog(@"[[BlioStoreManager sharedInstance] isLoggedInForSourceID:BlioBookSourceOnlineStore]: %i",[[BlioStoreManager sharedInstance] isLoggedInForSourceID:BlioBookSourceOnlineStore]);
+            if (![[BlioStoreManager sharedInstance] isLoggedInForSourceID:BlioBookSourceOnlineStore]) {
+                if ([[BlioStoreManager sharedInstance] hasLoginCredentials]) {
+                    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loginDismissed:) name:BlioLoginFinished object:[BlioStoreManager sharedInstance]];
+                    [[BlioStoreManager sharedInstance] requestLoginForSourceID:BlioBookSourceOnlineStore];
+                }
+                else if (forceLoginAfterRestore) {
+                    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loginDismissedAfterCloudRestore:) name:BlioLoginFinished object:[BlioStoreManager sharedInstance]];
+                    [[BlioStoreManager sharedInstance] requestLoginForSourceID:BlioBookSourceOnlineStore];
+                }
+                else {
+                    /* Log in screen done up temporarily for 2.4 and Apple foolishness
+                    if (![[NSUserDefaults standardUserDefaults] objectForKey:@"FirstLoginOccurred"]) {
+                        [BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Your Account",@"\"Your Account\" alert message title") 
+                                                     message:NSLocalizedStringWithDefaultValue(@"LOGIN_GUIDANCE_ALERT",nil,[NSBundle mainBundle],@"To log in to your Blio account, go to your Archive.",@"Alert message shown to end-user upon launch when a user has never logged in.")
+                                                    delegate:self 
+                                           cancelButtonTitle:nil
+                                           otherButtonTitles:NSLocalizedString(@"Cancel",@"\"Cancel\" button title"),NSLocalizedString(@"Go",@"\"Go\" button title"),nil];	
+                    }*/
+                    if ([BlioStoreManager sharedInstance].didOpenWebStore) {
+                        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loginDismissed:) name:BlioLoginFinished object:[BlioStoreManager sharedInstance]];
+                        [[BlioStoreManager sharedInstance] requestLoginForSourceID:BlioBookSourceOnlineStore];
+                    }				
+                    else [BlioStoreManager sharedInstance].initialLoginCheckFinished = YES;
+                }
+            }
+            else {
+                [BlioStoreManager sharedInstance].initialLoginCheckFinished = YES;
+    //            [[BlioStoreManager sharedInstance] retrieveBooksForSourceID:BlioBookSourceOnlineStore];
+            }
+        }
+        else [BlioStoreManager sharedInstance].initialLoginCheckFinished = YES;
+        [BlioStoreManager sharedInstance].didOpenWebStore = NO;
+        
+        [self.processingManager resumeProcessing];
+        
+        
+        self.delayedDidFinishLaunchingLaunchComplete = YES;
+        
+        for(NSURL *url in self.delayedURLOpens) {
+            [self application:[UIApplication sharedApplication] handleOpenURL:url];
+        }
+        self.delayedURLOpens = nil;
+        
+        if (![[NSUserDefaults standardUserDefaults] objectForKey:@"WelcomeScreenShown"]) { 
+            [[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithBool:YES] forKey:@"WelcomeScreenShown"]; 
+            [[NSUserDefaults standardUserDefaults] synchronize];
+             if (!forceLoginAfterRestore) [[BlioStoreManager sharedInstance] showWelcomeViewForSourceID:BlioBookSourceOnlineStore]; 
+        }
+            
+        /*
+        if (![[NSUserDefaults standardUserDefaults] objectForKey:@"FirstLaunchLoginScreenShown"]) {
+            [BlioStoreManager sharedInstance].initialLoginCheckFinished = NO;
+            [[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithBool:YES] forKey:@"FirstLaunchLoginScreenShown"];
+            [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loginDismissed:) name:BlioLoginFinished object:[BlioStoreManager sharedInstance]];
+    //		[[BlioStoreManager sharedInstance] showWelcomeViewForSourceID:BlioBookSourceOnlineStore];
+            
+            // Welcome Screen has been temporarily changed to a login screen to meet Apple's requirements.
+            
+            [[BlioStoreManager sharedInstance] requestLoginForSourceID:BlioBookSourceOnlineStore];
+        }
+        */
+        
+        [defaultImageViewController release];
+        defaultImageViewController = nil;
+    }];
     
     if(!openedBook) {
         [self performSelector:@selector(switchStatusBar) withObject:nil afterDelay:0];
     }
-    
-	// this login block must happen after the views are attached to the window
-	if ([[Reachability reachabilityWithHostName:[[BlioStoreManager sharedInstance] loginHostnameForSourceID:BlioBookSourceOnlineStore]] currentReachabilityStatus] != NotReachable) {
-        NSLog(@"[[BlioStoreManager sharedInstance] isLoggedInForSourceID:BlioBookSourceOnlineStore]: %i",[[BlioStoreManager sharedInstance] isLoggedInForSourceID:BlioBookSourceOnlineStore]);
-		if (![[BlioStoreManager sharedInstance] isLoggedInForSourceID:BlioBookSourceOnlineStore]) {
-			if ([[BlioStoreManager sharedInstance] hasLoginCredentials]) {
-				[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loginDismissed:) name:BlioLoginFinished object:[BlioStoreManager sharedInstance]];
-				[[BlioStoreManager sharedInstance] requestLoginForSourceID:BlioBookSourceOnlineStore];
-			}
-            else if (forceLoginAfterRestore) {
-				[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loginDismissedAfterCloudRestore:) name:BlioLoginFinished object:[BlioStoreManager sharedInstance]];
-				[[BlioStoreManager sharedInstance] requestLoginForSourceID:BlioBookSourceOnlineStore];
-			}
-			else {
-                /* Log in screen done up temporarily for 2.4 and Apple foolishness
-                if (![[NSUserDefaults standardUserDefaults] objectForKey:@"FirstLoginOccurred"]) {
-                    [BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Your Account",@"\"Your Account\" alert message title") 
-                                                 message:NSLocalizedStringWithDefaultValue(@"LOGIN_GUIDANCE_ALERT",nil,[NSBundle mainBundle],@"To log in to your Blio account, go to your Archive.",@"Alert message shown to end-user upon launch when a user has never logged in.")
-                                                delegate:self 
-                                       cancelButtonTitle:nil
-                                       otherButtonTitles:NSLocalizedString(@"Cancel",@"\"Cancel\" button title"),NSLocalizedString(@"Go",@"\"Go\" button title"),nil];	
-                }*/
-                if ([BlioStoreManager sharedInstance].didOpenWebStore) {
-					[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loginDismissed:) name:BlioLoginFinished object:[BlioStoreManager sharedInstance]];
-					[[BlioStoreManager sharedInstance] requestLoginForSourceID:BlioBookSourceOnlineStore];
-				}				
-				else [BlioStoreManager sharedInstance].initialLoginCheckFinished = YES;
-			}
-		}
-		else {
-            [BlioStoreManager sharedInstance].initialLoginCheckFinished = YES;
-//            [[BlioStoreManager sharedInstance] retrieveBooksForSourceID:BlioBookSourceOnlineStore];
-        }
-	}
-	else [BlioStoreManager sharedInstance].initialLoginCheckFinished = YES;
-	[BlioStoreManager sharedInstance].didOpenWebStore = NO;
-	
-	[self.processingManager resumeProcessing];
-	
-	
-    self.delayedDidFinishLaunchingLaunchComplete = YES;
-    
-    for(NSURL *url in self.delayedURLOpens) {
-        [self application:[UIApplication sharedApplication] handleOpenURL:url];
-    }
-    self.delayedURLOpens = nil;
-	
-    if (![[NSUserDefaults standardUserDefaults] objectForKey:@"WelcomeScreenShown"]) { 
-        [[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithBool:YES] forKey:@"WelcomeScreenShown"]; 
-        [[NSUserDefaults standardUserDefaults] synchronize];
-         if (!forceLoginAfterRestore) [[BlioStoreManager sharedInstance] showWelcomeViewForSourceID:BlioBookSourceOnlineStore]; 
-    }
-        
-    /*
-	if (![[NSUserDefaults standardUserDefaults] objectForKey:@"FirstLaunchLoginScreenShown"]) {
-		[BlioStoreManager sharedInstance].initialLoginCheckFinished = NO;
-		[[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithBool:YES] forKey:@"FirstLaunchLoginScreenShown"];
-		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loginDismissed:) name:BlioLoginFinished object:[BlioStoreManager sharedInstance]];
-//		[[BlioStoreManager sharedInstance] showWelcomeViewForSourceID:BlioBookSourceOnlineStore];
-        
-        // Welcome Screen has been temporarily changed to a login screen to meet Apple's requirements.
-        
-		[[BlioStoreManager sharedInstance] requestLoginForSourceID:BlioBookSourceOnlineStore];
-	}
-    */ 
 }
 
 -(void)loginDismissed:(NSNotification*)note {

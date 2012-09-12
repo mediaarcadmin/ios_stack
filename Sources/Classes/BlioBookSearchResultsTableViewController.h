@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "BlioBookSearchStatus.h"
+#import "BlioAutorotatingViewController.h"
 
 @class BlioBookSearchResultsTableViewController, BlioBookSearchStatusView, BlioBookmarkPoint, BlioBookSearchResult;
 
@@ -24,7 +25,7 @@
 
 @end
 
-@interface BlioBookSearchResultsTableViewController : UITableViewController {
+@interface BlioBookSearchResultsTableViewController : BlioAutorotatingTableViewController {
     NSMutableArray *searchResults;
     BlioBookSearchStatusView *statusView;
     UIView *dimmingView;

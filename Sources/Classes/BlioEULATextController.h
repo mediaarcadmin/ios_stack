@@ -7,9 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "BlioAutorotatingViewController.h"
 
-
-@interface BlioEULATextController : UIViewController {
+@interface BlioEULATextController : BlioAutorotatingViewController {
 	UIWebView *textView;
 
 }

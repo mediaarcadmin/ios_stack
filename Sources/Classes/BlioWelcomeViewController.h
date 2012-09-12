@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "BlioProcessing.h"
 #import "BlioStoreManager.h"
+#import "BlioAutorotatingViewController.h"
 
 static const CGFloat kBlioWelcomeCellMargin = 10.0f;
 
@@ -37,7 +38,7 @@ static const CGFloat kBlioWelcomeCellMargin = 10.0f;
 
 @end
 
-@interface BlioWelcomeViewController : UIViewController <BlioLoginResultReceiver> {
+@interface BlioWelcomeViewController : BlioAutorotatingViewController <BlioLoginResultReceiver> {
 	BlioBookSourceID sourceID;
     UIImageView * logoView;
     BlioWelcomeTitleView * welcomeTitleView;

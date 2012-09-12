@@ -20,6 +20,7 @@
 #import "BlioBookSearchController.h"
 #import "BlioBookSearchViewController.h"
 #import "BlioCoverView.h"
+#import "BlioAutorotatingViewController.h"
 
 @protocol BlioViewSettingsDelegate <NSObject>
 @required
@@ -76,7 +77,7 @@ typedef enum {
     BookViewControlleUIFadeStateFadingIn,
 } BookViewControllerUIFadeState;
 
-@interface BlioBookViewController : UIViewController <BlioBookViewDelegate, THEventCaptureObserver,UIActionSheetDelegate,UIAccelerometerDelegate, BlioNotesViewDelegate, BlioContentsTabViewControllerDelegate, BlioViewSettingsDelegate, AVAudioPlayerDelegate, UIPopoverControllerDelegate, UIAlertViewDelegate> {
+@interface BlioBookViewController : BlioAutorotatingViewController <BlioBookViewDelegate, THEventCaptureObserver,UIActionSheetDelegate,UIAccelerometerDelegate, BlioNotesViewDelegate, BlioContentsTabViewControllerDelegate, BlioViewSettingsDelegate, AVAudioPlayerDelegate, UIPopoverControllerDelegate, UIAlertViewDelegate> {
     BOOL _firstAppearance;
     
     UIView *_rootView;

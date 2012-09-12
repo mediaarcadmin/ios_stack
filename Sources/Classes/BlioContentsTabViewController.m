@@ -7,6 +7,7 @@
 //
 
 #import "BlioContentsTabViewController.h"
+#import "BlioAutorotatingViewController.h"
 
 #define MAINLABEL_TAG 1
 #define SECONDLABEL_TAG 2
@@ -32,7 +33,7 @@ typedef enum {
 @end
 
 
-@interface BlioContentsTabBookmarksViewController : UITableViewController {
+@interface BlioContentsTabBookmarksViewController : BlioAutorotatingTableViewController {
     BlioBook *book;
     NSManagedObject *selectedBookmark;
     UIView<BlioBookView> *bookView;
@@ -44,7 +45,7 @@ typedef enum {
 
 @end
 
-@interface BlioContentsTabNotesViewController : UITableViewController {
+@interface BlioContentsTabNotesViewController : BlioAutorotatingTableViewController {
     BlioBook *book;
     NSManagedObject *selectedNote;
     UIView<BlioBookView> *bookView;
@@ -285,15 +286,6 @@ typedef enum {
     [[UIApplication sharedApplication] endIgnoringInteractionEvents];
 }
 
-// Override to allow orientations other than the default portrait orientation.
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation 
-{
-    if ([self.delegate isRotationLocked]) {
-        return NO;
-    } else if (interfaceOrientation == UIInterfaceOrientationPortraitUpsideDown && UI_USER_INTERFACE_IDIOM() != UIUserInterfaceIdiomPad) return NO;
-	return YES;
-}
-
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
 }
@@ -365,14 +357,6 @@ typedef enum {
     contentSize.height += POPOVERSURROUNDHEIGHT; // Accomodates the toolbar and navbar
 
     [[(BlioContentsTabViewController *)self.navigationController popoverController] setPopoverContentSize:contentSize];
-}
-
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation {
-    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-        return NO;
-    } else {
-        return YES;
-    }
 }
 
 #pragma mark - EucBookContentsTableViewControllerDataSource
@@ -478,14 +462,6 @@ presentationNameAndSubTitleForSectionIdentifier:(id)sectionIdentifier {
  [super viewDidDisappear:animated];
  }
  */
-
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation {
-    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-        return NO;
-    } else {
-        return YES;
-    }
-}
 
 - (void)didReceiveMemoryWarning {
 	// Releases the view if it doesn't have a superview.
@@ -652,14 +628,6 @@ presentationNameAndSubTitleForSectionIdentifier:(id)sectionIdentifier {
  [super viewDidDisappear:animated];
  }
  */
-
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation {
-    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-        return NO;
-    } else {
-        return YES;
-    }
-}
 
 - (void)didReceiveMemoryWarning {
 	// Releases the view if it doesn't have a superview.

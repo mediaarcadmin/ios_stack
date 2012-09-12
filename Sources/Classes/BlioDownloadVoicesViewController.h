@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import <StoreKit/StoreKit.h>
+#import "BlioAutorotatingViewController.h"
 
 typedef enum {
 	BlioVoiceDownloadButtonStateDownload = 0,
@@ -22,7 +23,8 @@ static const CGFloat kBlioVoiceDownloadButtonRightMargin = 10.0f;
 static const CGFloat kBlioVoiceDownloadProgressViewWidth = 100.0f;
 static const CGFloat kBlioVoiceDownloadProgressViewHeight = 10.0f;
 static const CGFloat kBlioVoiceDownloadProgressViewRightMargin = 10.0f;
-@interface BlioDownloadVoicesViewController : UITableViewController {
+
+@interface BlioDownloadVoicesViewController : BlioAutorotatingTableViewController {
 	NSArray * availableVoicesForDownload;
 }
 

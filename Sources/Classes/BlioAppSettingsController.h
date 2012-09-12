@@ -7,9 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "BlioAutorotatingViewController.h"
 
-
-@interface BlioAppSettingsController : UITableViewController {
+@interface BlioAppSettingsController : BlioAutorotatingTableViewController {
     BOOL didDeregister;
 }
 @property (nonatomic, assign) BOOL didDeregister;

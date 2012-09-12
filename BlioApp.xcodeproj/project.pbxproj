@@ -283,6 +283,7 @@
 		7DCA224712F890460016C0B9 /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DCA224612F890460016C0B9 /* MobileCoreServices.framework */; };
 		7DCA224812F890530016C0B9 /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DCA224612F890460016C0B9 /* MobileCoreServices.framework */; };
 		7DCA224912F8905E0016C0B9 /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DCA224612F890460016C0B9 /* MobileCoreServices.framework */; };
+		7DCBD5B216009C0300F3F6C4 /* BlioAutorotatingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DCBD5B116009C0300F3F6C4 /* BlioAutorotatingViewController.m */; };
 		7DCD8E5511E32EFF00BA3255 /* BlioBookManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DCD8E5311E32EFF00BA3255 /* BlioBookManager.m */; };
 		7DCD8FB911E3452800BA3255 /* BlioEPubBook.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DCD8FB711E3452800BA3255 /* BlioEPubBook.m */; };
 		7DD5836D1545B9FD00D59B95 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DD5836C1545B9FD00D59B95 /* CoreMedia.framework */; };
@@ -2584,6 +2585,8 @@
 		7DBD0F731201977D009CD9DA /* BlioTextFlowXAMLTreeNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioTextFlowXAMLTreeNode.h; sourceTree = "<group>"; };
 		7DBD0F741201977D009CD9DA /* BlioTextFlowXAMLTreeNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioTextFlowXAMLTreeNode.m; sourceTree = "<group>"; };
 		7DCA224612F890460016C0B9 /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
+		7DCBD5B016009C0300F3F6C4 /* BlioAutorotatingViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioAutorotatingViewController.h; sourceTree = "<group>"; };
+		7DCBD5B116009C0300F3F6C4 /* BlioAutorotatingViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioAutorotatingViewController.m; sourceTree = "<group>"; };
 		7DCD8E5211E32EFF00BA3255 /* BlioBookManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioBookManager.h; sourceTree = "<group>"; };
 		7DCD8E5311E32EFF00BA3255 /* BlioBookManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioBookManager.m; sourceTree = "<group>"; };
 		7DCD8FB611E3452800BA3255 /* BlioEPubBook.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioEPubBook.h; sourceTree = "<group>"; };
@@ -4566,6 +4569,8 @@
 				DC48C98F11D54A0100C5D186 /* BlioSplitView.m */,
 				7D00FBA9147BC7C600008261 /* BlioCenterableTableViewCell.h */,
 				7D00FBAA147BC7C600008261 /* BlioCenterableTableViewCell.m */,
+				7DCBD5B016009C0300F3F6C4 /* BlioAutorotatingViewController.h */,
+				7DCBD5B116009C0300F3F6C4 /* BlioAutorotatingViewController.m */,
 			);
 			name = "Shared UI Components";
 			sourceTree = "<group>";
@@ -6367,6 +6372,7 @@
 				DC92D6E81504785A002AF222 /* SBJsonParser.m in Sources */,
 				DC92D6EC1504785B002AF222 /* SBJsonWriter.m in Sources */,
 				7D86609B150508F200B68A84 /* BlioEPubMetadataReader.m in Sources */,
+				7DCBD5B216009C0300F3F6C4 /* BlioAutorotatingViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -7117,8 +7123,6 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CODE_SIGN_ENTITLEMENTS = "$(SRCROOT)/Entitlements.plist";
-				CODE_SIGN_IDENTITY = "iPhone Developer: Arnold Chien (4XCU87FX68)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Arnold Chien (4XCU87FX68)";
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -7143,8 +7147,6 @@
 					"-fobjc-arc",
 				);
 				PRODUCT_NAME = Blio;
-				PROVISIONING_PROFILE = "502B0524-F40F-44A0-BD8E-30E68C3900EE";
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "502B0524-F40F-44A0-BD8E-30E68C3900EE";
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -7410,7 +7412,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 4.0;
 				OTHER_CFLAGS = "-DDRM_INLINING_SUPPORTED";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "906AF447-5F1C-4A13-9A64-ABA631581901";
-				SDKROOT = iphoneos5.1;
+				SDKROOT = iphoneos6.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
 				WARNING_CFLAGS = "-Wall";
@@ -7681,7 +7683,7 @@
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_CFLAGS = "-DDRM_INLINING_SUPPORTED";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
-				SDKROOT = iphoneos5.1;
+				SDKROOT = iphoneos6.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
 				WARNING_CFLAGS = "-Wall";
@@ -7708,7 +7710,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 4.0;
 				OTHER_CFLAGS = "-DDRM_INLINING_SUPPORTED";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
-				SDKROOT = iphoneos5.1;
+				SDKROOT = iphoneos6.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
 				WARNING_CFLAGS = "-Wall";

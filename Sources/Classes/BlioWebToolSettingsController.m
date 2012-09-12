@@ -115,13 +115,6 @@
 		[[NSUserDefaults standardUserDefaults] setInteger:[sender selectedSegmentIndex] forKey:kBlioLastEncyclopediaDefaultsKey];
 }
 
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
-    if ([[[[NSBundle mainBundle] infoDictionary] objectForKey:@"BlioLibraryViewDisableRotation"] boolValue])
-        return NO;
-    else if (interfaceOrientation == UIInterfaceOrientationPortraitUpsideDown && UI_USER_INTERFACE_IDIOM() != UIUserInterfaceIdiomPad) return NO;
-	return YES;
-}
-
 - (void)dealloc {
     [super dealloc];   
 }

@@ -12,8 +12,9 @@
 #import "BlioBookView.h"
 #import "BlioBookSearchStatus.h"
 #import "BlioBookSearchResultsTableViewController.h"
+#import "BlioAutorotatingViewController.h"
 
-@interface BlioBookSearchViewController : UIViewController <BlioBookSearchToolbarDelegate, BlioBookSearchDelegate, BlioBookSearchResultsDelegate, BlioBookSearchResultsFormatter> {
+@interface BlioBookSearchViewController : BlioAutorotatingViewController <BlioBookSearchToolbarDelegate, BlioBookSearchDelegate, BlioBookSearchResultsDelegate, BlioBookSearchResultsFormatter> {
     BlioBookSearchResultsTableViewController *resultsController;
     BlioBookSearchToolbar *toolbar;
     BlioBookSearchController *bookSearchController;

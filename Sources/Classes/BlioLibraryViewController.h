@@ -11,6 +11,7 @@
 #import "BlioBook.h"
 #import "BlioCoverView.h"
 #import "BlioAccessibilitySegmentedControl.h"
+#import "BlioAutorotatingViewController.h"
 
 @class BlioTestBlockWords;
 @class BlioBookViewController;
@@ -85,7 +86,7 @@ static const CGFloat kBlioProportionalProgressBarInsetY = 3;
 
 @end
 
-@interface BlioLibraryViewController : UIViewController <NSFetchedResultsControllerDelegate, UINavigationControllerDelegate, BlioCoverViewDelegate, UIActionSheetDelegate,UITableViewDelegate,UITableViewDataSource,MRGridViewDelegate,MRGridViewDataSource POPOVERCONTROLLER_DELEGATE_DELIMITER BLIO_POPOVERCONTROLLER_DELEGATE> {
+@interface BlioLibraryViewController : BlioAutorotatingViewController <NSFetchedResultsControllerDelegate, UINavigationControllerDelegate, BlioCoverViewDelegate, UIActionSheetDelegate,UITableViewDelegate,UITableViewDataSource,MRGridViewDelegate,MRGridViewDataSource POPOVERCONTROLLER_DELEGATE_DELIMITER BLIO_POPOVERCONTROLLER_DELEGATE> {
     BlioLibraryBookView *_currentBookView;
     BOOL _didEdit;
     BlioLibraryLayout _libraryLayout;

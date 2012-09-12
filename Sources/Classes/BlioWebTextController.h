@@ -7,8 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "BlioAutorotatingViewController.h"
 
-@interface BlioWebTextController : UIViewController<UIWebViewDelegate>
+@interface BlioWebTextController : BlioAutorotatingViewController <UIWebViewDelegate>
     @property (nonatomic, retain) UIWebView *contentView;
     @property (nonatomic, retain) UIActivityIndicatorView *activityIndicator;
     - (id)initWithURL:(NSString*)url;

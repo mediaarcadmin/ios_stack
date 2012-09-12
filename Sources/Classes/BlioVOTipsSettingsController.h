@@ -7,9 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "BlioAutorotatingViewController.h"
 
-
-@interface BlioVOTipsSettingsController : UITableViewController <UIWebViewDelegate> {
+@interface BlioVOTipsSettingsController : BlioAutorotatingTableViewController <UIWebViewDelegate> {
 	UIWebView *textView;
 }
 

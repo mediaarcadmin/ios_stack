@@ -215,40 +215,24 @@
     
     // Retained at the start of the animation.
     [self release];
-}
-
-- (CGFloat)rotationForOrientation:(UIInterfaceOrientation)orientation
-{
-    CGFloat rotation = 0.0f;
-    switch(orientation) {
-        case UIInterfaceOrientationPortraitUpsideDown:
-            rotation = (CGFloat)M_PI;
-            break;
-        case UIInterfaceOrientationLandscapeLeft:
-            rotation = -(CGFloat)M_PI_2;
-            break;
-        case UIInterfaceOrientationLandscapeRight:
-            rotation = (CGFloat)M_PI_2;
-            break;
-        default:
-            break;
+    
+    if(doAfterFadeDefaultBlock) {
+        doAfterFadeDefaultBlock();
+        [doAfterFadeDefaultBlock release];
+        doAfterFadeDefaultBlock = nil;
     }
-    return rotation;
 }
 
-- (void)fadeOutDefaultImageIfDynamicImageAlsoAvailable  {
+
+- (void)fadeOutDefaultImageIfDynamicImageAlsoAvailableThenDo:(void(^)(void))doAfterwardsBlock
+{
     // Fade and slightly zoom the default image, revealing the dynamic
     // image behind, if there is one.
     self.fadesBegun = YES;
     if(self.dynamicImageView) {
-        UIImageView *imageView = self.nonDynamicImageView;
-        UIWindow *window = self.view.window;
-        CGPoint windowCenter = [window convertPoint:imageView.center fromView:imageView];
-        [imageView removeFromSuperview];
-        imageView.center = windowCenter;
-        imageView.transform = CGAffineTransformMakeRotation([self rotationForOrientation:self.interfaceOrientation]);
-        [window addSubview:imageView];
+        doAfterFadeDefaultBlock = [doAfterwardsBlock copy];
         
+        UIImageView *imageView = self.nonDynamicImageView;
         [UIView beginAnimations:@"FadeOutRealDefault" context:nil];
         [UIView setAnimationDuration:1.0/5.0];
         [UIView setAnimationCurve:UIViewAnimationCurveEaseIn];
@@ -258,6 +242,8 @@
         imageView.transform = CGAffineTransformScale(imageView.transform, 1.2f, 1.2f);
         [UIView commitAnimations];
         [self retain];    
+    } else {
+        doAfterwardsBlock();
     }
 }
 
@@ -270,45 +256,37 @@
     
     [self.view removeFromSuperview];
     self.view = nil;
-    
+
     // Retained at the start of the animation.
     [self release];
+    
+    if(doAfterFadeOutCompletlyBlock) {
+        doAfterFadeOutCompletlyBlock();
+        [doAfterFadeOutCompletlyBlock release];
+        doAfterFadeOutCompletlyBlock = nil;
+    }
 }
 
-- (void)fadeOutCompletly {
+- (void)fadeOutCompletlyThenDo:(void(^)(void))doAfterwardsBlock {
     self.fadesBegun = YES;
+    doAfterFadeOutCompletlyBlock = [doAfterwardsBlock copy];
     if(self.dynamicImageView) {
         // Fade the dynamic image (don't zoom it - idea is that the UI behind
         // it will be similar to it).
         // The default image should already have been removed by 
         // -fadeOutDefaultImageIfDynamicImageAlsoAvailable, above.
         UIImageView *imageView = self.dynamicImageView;
-        UIWindow *window = self.view.window;
-        CGPoint windowCenter = [window convertPoint:imageView.center fromView:imageView];
-        [imageView removeFromSuperview];
-        imageView.center = windowCenter;
-        imageView.transform = CGAffineTransformMakeRotation([self rotationForOrientation:self.interfaceOrientation]);
-        [window addSubview:imageView];
-        
         [UIView beginAnimations:@"FadeOutDynamicDefault" context:nil];
         [UIView setAnimationDuration:1.0/3.0];
         [UIView setAnimationCurve:UIViewAnimationCurveEaseInOut];
         [UIView setAnimationDelegate:self];
         [UIView setAnimationDidStopSelector:@selector(fadeOutCompletlyDone)];
         imageView.alpha = 0;
-        //imageView.transform = CGAffineTransformScale(self.dynamicImageView.transform, 1.2f, 1.2f);
         [UIView commitAnimations];
         [self retain];
     } else {
         // Fade and slightly zoom the default image, revealing the UI.
         UIImageView *imageView = self.nonDynamicImageView;
-        UIWindow *window = self.view.window;
-        CGPoint windowCenter = [window convertPoint:imageView.center fromView:imageView];
-        [imageView removeFromSuperview];
-        imageView.center = windowCenter;
-        imageView.transform = CGAffineTransformMakeRotation([self rotationForOrientation:self.interfaceOrientation]);
-        [window addSubview:imageView];        
-
         [UIView beginAnimations:@"FadeOutDynamicDefault" context:nil];
         [UIView setAnimationDuration:1.0/5.0];
         [UIView setAnimationCurve:UIViewAnimationCurveEaseIn];
@@ -319,15 +297,9 @@
         [UIView commitAnimations];
         [self retain];        
     }
-}
-
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
-    if(fadesBegun) {
-        return NO;
-    } else if (interfaceOrientation == UIInterfaceOrientationPortraitUpsideDown && UI_USER_INTERFACE_IDIOM() != UIUserInterfaceIdiomPad) {
-        return NO;
+    if([UIViewController respondsToSelector:@selector(attemptRotationToDeviceOrientation)]) {
+        [UIViewController attemptRotationToDeviceOrientation];
     }
-	return YES;
 }
 
 - (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation {

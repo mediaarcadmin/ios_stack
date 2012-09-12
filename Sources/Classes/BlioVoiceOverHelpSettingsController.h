@@ -7,7 +7,8 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "BlioAutorotatingViewController.h"
 
-@interface BlioVoiceOverHelpSettingsController : UITableViewController
+@interface BlioVoiceOverHelpSettingsController : BlioAutorotatingTableViewController
 
 @end
