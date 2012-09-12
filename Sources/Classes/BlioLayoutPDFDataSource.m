@@ -718,7 +718,7 @@ parse_outline_items(int indent, CGPDFDocumentRef document,
 
 - (THPair *)contentsTableViewController:(EucBookContentsTableViewController *)contentsTableViewController
 presentationNameAndSubTitleForSectionIdentifier:(id)sectionIdentifier {
-	NSUInteger sectionIndex = [sectionIdentifier unsignedIntegerValue];
+	NSInteger sectionIndex = [sectionIdentifier integerValue];
     NSString *sectionName = [[self.tableOfContents objectAtIndex:sectionIndex] name];
     if (sectionName) {
         return [sectionName splitAndFormattedChapterName];
@@ -736,13 +736,13 @@ presentationNameAndSubTitleForSectionIdentifier:(id)sectionIdentifier {
 
 - (NSUInteger)contentsTableViewController:(EucBookContentsTableViewController *)contentsTableViewController
                   pageIndexForSectionIdentifier:(id)sectionIdentifier {
-	NSUInteger sectionIndex = [sectionIdentifier unsignedIntegerValue];
+	NSInteger sectionIndex = [sectionIdentifier integerValue];
     return [[self.tableOfContents objectAtIndex:sectionIndex] startPage];
 }
 
 - (NSUInteger)contentsTableViewController:(EucBookContentsTableViewController *)contentsTableViewController
                       levelForSectionIdentifier:(id)sectionIdentifier {
-	NSUInteger sectionIndex = [sectionIdentifier unsignedIntegerValue];
+	NSInteger sectionIndex = [sectionIdentifier integerValue];
     return [[self.tableOfContents objectAtIndex:sectionIndex] level];
 }
 
