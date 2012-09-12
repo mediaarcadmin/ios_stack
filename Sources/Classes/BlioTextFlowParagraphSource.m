@@ -346,15 +346,12 @@ static NSString * const kNoWordPlaceholder = @"NO_WORD_PLACEHOLDER";
             comparisonPoint.layoutPage = [BlioTextFlowBlock pageIndexForBlockID:word.blockID] + 1;
             comparisonPoint.blockOffset = [BlioTextFlowBlock blockIndexForBlockID:word.blockID];
             comparisonPoint.wordOffset = word.wordIndex;
-            if([comparisonPoint compare:bookmarkPoint] <= NSOrderedSame) {
+            if([comparisonPoint compare:bookmarkPoint] < NSOrderedSame) {
                 ++bestWordOffset;
             } else {
                 break;
             }
         }
-        if(bestWordOffset) {
-            bestWordOffset--;
-        }        
         if(bestWordOffset == words.count) {
             bestParagraph = nextParagraph; 
             bestWordOffset = 0;
