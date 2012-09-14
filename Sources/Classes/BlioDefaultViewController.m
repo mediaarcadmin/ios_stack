@@ -45,11 +45,18 @@
 + (NSString *)dynamicDefaultPngPathForOrientation:(UIInterfaceOrientation)orientation {
     NSString *tmpDir = [NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES) objectAtIndex:0];
     
+    UIScreen *mainScreen = [UIScreen mainScreen];
+    
     NSString *orientationString;
+    NSString *heightString = @"";
     if(UIInterfaceOrientationIsLandscape(orientation)) {
         orientationString = @"Landscape";
     } else {
         orientationString = @"Portrait";
+        CGRect mainScreenBounds = mainScreen.bounds;
+        if(mainScreenBounds.size.height != 480 && mainScreenBounds.size.height != 1024) {
+            heightString = [NSString stringWithFormat:@"-%ldh", (long)mainScreenBounds.size.height];
+        }
     }
     NSString *deviceString;
     if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
@@ -58,15 +65,12 @@
         deviceString = @"iphone";
     }
     NSString *scaleString = @"";
-    UIScreen *mainScreen = [UIScreen mainScreen];
-    if([mainScreen respondsToSelector:@selector(scale)]) {
-        CGFloat scale = [mainScreen scale];
-        if(scale != 1.0f) {
-            scaleString = [NSString stringWithFormat:@"@%fx", (float)scale];
-        }
+    CGFloat scale = [mainScreen scale];
+    if(scale != 1.0f) {
+        scaleString = [NSString stringWithFormat:@"@%fx", (float)scale];
     }
     
-    return [tmpDir stringByAppendingPathComponent:[NSString stringWithFormat:@"BlioDynamicDefault-%@%@~%@.png", orientationString, scaleString, deviceString]];
+    return [tmpDir stringByAppendingPathComponent:[NSString stringWithFormat:@"BlioDynamicDefault-%@%@%@~%@.png", orientationString, heightString, scaleString, deviceString]];
 }
 
 + (UIImage *)loadDynamicDefaultImageForOrientation:(UIInterfaceOrientation)orientation {
@@ -147,15 +151,26 @@
         basename = @"Default";
     }
 
-    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+    NSString *orientationString = @"";
+    if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
         if (UIInterfaceOrientationIsLandscape(orientation)) {
-            return [UIImage imageNamed:[basename stringByAppendingString:@"-Landscape.png"]];
+            orientationString = @"-Landscape";
         } else {
-            return [UIImage imageNamed:[basename stringByAppendingString:@"-Portrait.png"]];
+            orientationString = @"-Portrait";
         }
-    } else {
-        return [UIImage imageNamed:[basename stringByAppendingString:@".png"]];
     }
+    
+    NSString *heightString = @"";
+    UIScreen *mainScreen = [UIScreen mainScreen];
+    CGRect mainScreenBounds = mainScreen.bounds;
+    if(mainScreenBounds.size.height != 480 && mainScreenBounds.size.height != 1024) {
+        heightString = [NSString stringWithFormat:@"-%ldh", (long)mainScreenBounds.size.height];
+    }
+
+    // Don't work out the scaleFactor - UIImage will take care of that for us.
+    NSString *imageName = [NSString stringWithFormat:@"%@%@%@.png", basename, orientationString, heightString];
+    
+    return [UIImage imageNamed:imageName];
 }
 
 - (void)setUpImageForOrientation:(UIInterfaceOrientation)orientation {
