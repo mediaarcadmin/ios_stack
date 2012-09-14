@@ -15,7 +15,7 @@ static void EnsureRotationControlInitialized()
 {
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        NSArray *plistOrientations;
+        NSArray *plistOrientations = nil;
         if([UIDevice currentDevice].userInterfaceIdiom == UIUserInterfaceIdiomPad) {
             plistOrientations = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"UISupportedInterfaceOrientations~ipad"];
         }
