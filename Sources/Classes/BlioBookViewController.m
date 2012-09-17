@@ -2422,9 +2422,9 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 - (void)speechSynthesizer:(AcapelaSpeech*)synth didFinishSpeaking:(BOOL)finishedSpeaking
 {
 	//NSLog(@"%@%i", NSStringFromSelector(_cmd),finishedSpeaking);
-	if (finishedSpeaking) {
+	if (finishedSpeaking  && _acapelaAudioManager.currentWordOffset >= ([_acapelaAudioManager.blockWords count]-1)) {
 		// Reached end of block.  Start on the next.
-		[self prepareTextToSpeakWithAudioManager:_acapelaAudioManager]; 
+        [self prepareTextToSpeakWithAudioManager:_acapelaAudioManager];
 	}
 	//else stop button pushed before end of block.
 }
