@@ -240,6 +240,14 @@
 		7D9662CD1608B0790051481C /* BlioAutorotatingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DCBD5B116009C0300F3F6C4 /* BlioAutorotatingViewController.m */; };
 		7D9662CE1608B0790051481C /* BlioAutorotatingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DCBD5B116009C0300F3F6C4 /* BlioAutorotatingViewController.m */; };
 		7D9662CF1608B0E10051481C /* BlioVoiceOverTextController.m in Sources */ = {isa = PBXBuildFile; fileRef = DC824D95143E0A7D006AC7F3 /* BlioVoiceOverTextController.m */; };
+		7D9663061608B22E0051481C /* libMobilityStatic.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A38A2EC015EE6A43003398E7 /* libMobilityStatic.a */; };
+		7D9663071608B22E0051481C /* libMobilityStatic.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A38A2EC015EE6A43003398E7 /* libMobilityStatic.a */; };
+		7D9663081608B22E0051481C /* libMobilityStatic.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A38A2EC015EE6A43003398E7 /* libMobilityStatic.a */; };
+		7D9663091608B22F0051481C /* libMobilityStatic.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A38A2EC015EE6A43003398E7 /* libMobilityStatic.a */; };
+		7D96630A1608B2320051481C /* libBabTTS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A38A2EBF15EE6A43003398E7 /* libBabTTS.a */; };
+		7D96630B1608B2320051481C /* libBabTTS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A38A2EBF15EE6A43003398E7 /* libBabTTS.a */; };
+		7D96630C1608B2330051481C /* libBabTTS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A38A2EBF15EE6A43003398E7 /* libBabTTS.a */; };
+		7D96630D1608B2330051481C /* libBabTTS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A38A2EBF15EE6A43003398E7 /* libBabTTS.a */; };
 		7D9A40A3150E5B37007D9A3E /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D9A40A2150E5B37007D9A3E /* CoreVideo.framework */; };
 		7D9A40A4150E5B3D007D9A3E /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D9A40A2150E5B37007D9A3E /* CoreVideo.framework */; };
 		7D9A40A5150E5B44007D9A3E /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D9A40A2150E5B37007D9A3E /* CoreVideo.framework */; };
@@ -3330,6 +3338,8 @@
 				7D39D40613EABDF50029EDCB /* CoreText.framework in Frameworks */,
 				DC92D68514FA7AFD002AF222 /* Twitter.framework in Frameworks */,
 				7DE8C14D14D07DD3000D0A3C /* ImageIO.framework in Frameworks */,
+				7D9663071608B22E0051481C /* libMobilityStatic.a in Frameworks */,
+				7D96630B1608B2320051481C /* libBabTTS.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3376,6 +3386,8 @@
 				7D4CA236141783B400117F3A /* CoreText.framework in Frameworks */,
 				DC92D68614FA7AFE002AF222 /* Twitter.framework in Frameworks */,
 				7DE8C14E14D07DE1000D0A3C /* ImageIO.framework in Frameworks */,
+				7D9663081608B22E0051481C /* libMobilityStatic.a in Frameworks */,
+				7D96630C1608B2330051481C /* libBabTTS.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3422,6 +3434,8 @@
 				C9A9B9B1130EC9FC009B950F /* MediaPlayer.framework in Frameworks */,
 				7D39D40713EABDFF0029EDCB /* CoreText.framework in Frameworks */,
 				7DE8C14F14D07DEA000D0A3C /* ImageIO.framework in Frameworks */,
+				7D9663061608B22E0051481C /* libMobilityStatic.a in Frameworks */,
+				7D96630A1608B2320051481C /* libBabTTS.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3468,6 +3482,8 @@
 				A3BEFE2C152DE9E6009B4F4A /* CoreText.framework in Frameworks */,
 				A3BEFE2D152DE9E6009B4F4A /* Twitter.framework in Frameworks */,
 				A3BEFE2E152DE9E6009B4F4A /* ImageIO.framework in Frameworks */,
+				7D9663091608B22F0051481C /* libMobilityStatic.a in Frameworks */,
+				7D96630D1608B2330051481C /* libBabTTS.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
