@@ -110,4 +110,11 @@
     return ret;
 }
 
+- (NSURL *)fileURLForPath:(NSString *)path
+{
+    NSString *xpsPath = [self.ePubRootInXPS stringByAppendingPathComponent:path];
+    NSURL *ret = [self.xpsProvider temporaryURLForComponentAtPath:xpsPath];
+    return ret;
+}
+
 @end
