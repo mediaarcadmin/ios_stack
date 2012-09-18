@@ -362,6 +362,16 @@
 		7DF429D311E4EC5B00B8227E /* NSObject+BlioAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DF429D111E4EC5B00B8227E /* NSObject+BlioAdditions.m */; };
 		7DF4A12C11EF4DBD00F6A4DD /* libEucalyptusBase.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D3F504A11EF3DDA0065A5F7 /* libEucalyptusBase.a */; };
 		7DFA426D13A925BB0059C9B0 /* icon-back@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A3E6419812397C0400D2B85A /* icon-back@2x.png */; };
+		8783725D160908BC00EA85A4 /* icon-fontsize.png in Resources */ = {isa = PBXBuildFile; fileRef = 8783725B160908BC00EA85A4 /* icon-fontsize.png */; };
+		8783725E160908BC00EA85A4 /* icon-fontsize.png in Resources */ = {isa = PBXBuildFile; fileRef = 8783725B160908BC00EA85A4 /* icon-fontsize.png */; };
+		8783725F160908BC00EA85A4 /* icon-fontsize.png in Resources */ = {isa = PBXBuildFile; fileRef = 8783725B160908BC00EA85A4 /* icon-fontsize.png */; };
+		87837260160908BC00EA85A4 /* icon-fontsize.png in Resources */ = {isa = PBXBuildFile; fileRef = 8783725B160908BC00EA85A4 /* icon-fontsize.png */; };
+		87837261160908BC00EA85A4 /* icon-fontsize.png in Resources */ = {isa = PBXBuildFile; fileRef = 8783725B160908BC00EA85A4 /* icon-fontsize.png */; };
+		87837262160908BC00EA85A4 /* icon-fontsize@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8783725C160908BC00EA85A4 /* icon-fontsize@2x.png */; };
+		87837263160908BC00EA85A4 /* icon-fontsize@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8783725C160908BC00EA85A4 /* icon-fontsize@2x.png */; };
+		87837264160908BC00EA85A4 /* icon-fontsize@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8783725C160908BC00EA85A4 /* icon-fontsize@2x.png */; };
+		87837265160908BC00EA85A4 /* icon-fontsize@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8783725C160908BC00EA85A4 /* icon-fontsize@2x.png */; };
+		87837266160908BC00EA85A4 /* icon-fontsize@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8783725C160908BC00EA85A4 /* icon-fontsize@2x.png */; };
 		A30E0EFB123EA5B400D31157 /* credits.html in Resources */ = {isa = PBXBuildFile; fileRef = A3FE55B412074EFA0038DA0C /* credits.html */; };
 		A30E0EFC123EA5B400D31157 /* MainNavControllerAndLibraryView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 28AD735F0D9D9599002E5188 /* MainNavControllerAndLibraryView.xib */; };
 		A30E0EFD123EA5B400D31157 /* RootViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 28F335F01007B36200424DE2 /* RootViewController.xib */; };
@@ -2633,6 +2643,8 @@
 		7DF2A48E11536CA100FC2045 /* BlioFlowEucBook.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioFlowEucBook.m; sourceTree = "<group>"; };
 		7DF429D011E4EC5400B8227E /* NSObject+BlioAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSObject+BlioAdditions.h"; sourceTree = "<group>"; };
 		7DF429D111E4EC5B00B8227E /* NSObject+BlioAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSObject+BlioAdditions.m"; sourceTree = "<group>"; };
+		8783725B160908BC00EA85A4 /* icon-fontsize.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-fontsize.png"; sourceTree = "<group>"; };
+		8783725C160908BC00EA85A4 /* icon-fontsize@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-fontsize@2x.png"; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* BlioApp-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "BlioApp-Info.plist"; plistStructureDefinitionIdentifier = "com.apple.xcode.plist.structure-definition.iphone.info-plist"; sourceTree = "<group>"; };
 		A30E1044123EA5B400D31157 /* Blio.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Blio.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A3169287111488C9005AAE5E /* BlioAudioManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioAudioManager.h; sourceTree = "<group>"; };
@@ -3577,6 +3589,8 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				8783725B160908BC00EA85A4 /* icon-fontsize.png */,
+				8783725C160908BC00EA85A4 /* icon-fontsize@2x.png */,
 				A386B27C15FE804A00C25FBA /* Acapela For iPhone LF USEnglish Tracy */,
 				A3FBC5321562E81000F14FE4 /* voiceover-quickstart-Toshiba.html */,
 				A3FBC5331562E81000F14FE4 /* voiceover-tips-Toshiba.html */,
@@ -5216,6 +5230,8 @@
 				7D02B52015E4E6DF00B764A7 /* THAVPlayerAudioBackground.png in Resources */,
 				A386B27D15FE804A00C25FBA /* Acapela For iPhone LF USEnglish Tracy in Resources */,
 				7D18B94816033807002E8F0B /* Default-568h@2x.png in Resources */,
+				8783725D160908BC00EA85A4 /* icon-fontsize.png in Resources */,
+				87837262160908BC00EA85A4 /* icon-fontsize@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -5472,6 +5488,8 @@
 				7DDF8FD915D580C600CCC867 /* THAVPlayerPlay@2x.png in Resources */,
 				7D02B52215E4E6DF00B764A7 /* THAVPlayerAudioBackground.png in Resources */,
 				7D18B94A16033807002E8F0B /* Default-568h@2x.png in Resources */,
+				8783725F160908BC00EA85A4 /* icon-fontsize.png in Resources */,
+				87837264160908BC00EA85A4 /* icon-fontsize@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -5714,6 +5732,8 @@
 				7DDF8FD515D580C600CCC867 /* THAVPlayerPlay.png in Resources */,
 				7DDF8FDA15D580C600CCC867 /* THAVPlayerPlay@2x.png in Resources */,
 				7D02B52315E4E6DF00B764A7 /* THAVPlayerAudioBackground.png in Resources */,
+				87837260160908BC00EA85A4 /* icon-fontsize.png in Resources */,
+				87837265160908BC00EA85A4 /* icon-fontsize@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -5970,6 +5990,8 @@
 				7DDF8FD815D580C600CCC867 /* THAVPlayerPlay@2x.png in Resources */,
 				7D02B52115E4E6DF00B764A7 /* THAVPlayerAudioBackground.png in Resources */,
 				7D18B94916033807002E8F0B /* Default-568h@2x.png in Resources */,
+				8783725E160908BC00EA85A4 /* icon-fontsize.png in Resources */,
+				87837263160908BC00EA85A4 /* icon-fontsize@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -6229,6 +6251,8 @@
 				7DDF8FD615D580C600CCC867 /* THAVPlayerPlay.png in Resources */,
 				7DDF8FDB15D580C600CCC867 /* THAVPlayerPlay@2x.png in Resources */,
 				7D02B52415E4E6DF00B764A7 /* THAVPlayerAudioBackground.png in Resources */,
+				87837261160908BC00EA85A4 /* icon-fontsize.png in Resources */,
+				87837266160908BC00EA85A4 /* icon-fontsize@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
