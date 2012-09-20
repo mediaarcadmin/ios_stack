@@ -107,7 +107,8 @@ NSString * const BlioVoiceListRefreshedNotification = @"BlioVoiceListRefreshedNo
 	NSArray * availableVoices = [AcapelaSpeech availableVoices];
 	NSMutableArray * availableVoiceNames = [NSMutableArray arrayWithCapacity:[availableVoices count]];
 	for (NSString * voice in availableVoices) {
-		[availableVoiceNames addObject:[BlioAcapelaAudioManager voiceNameForVoice:voice]];
+        NSString * voiceName = [BlioAcapelaAudioManager voiceNameForVoice:voice];
+		if (voiceName) [availableVoiceNames addObject:voiceName];
 	}
 	return availableVoiceNames;
 }

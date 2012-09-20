@@ -2,12 +2,17 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>enu_hd_tracy_22k_lf.bvcu</key>
+	<dict>
+		<key>voiceName</key>
+		<string>Tracy</string>
+		<key>sampleFilename</key>
+		<string>Tracy-ENU.mp3</string>
+	</dict>
 	<key>enu_kenny_22k_ns.cvcu.411</key>
 	<dict>
 		<key>voiceName</key>
 		<string>Kenny</string>
-		<key>url</key>
-		<string>http://naphtali.crosscomm.net/don/kenny.zip</string>
 		<key>sampleFilename</key>
 		<string>Kenny-ENU.mp3</string>
 	</dict>
