@@ -39,10 +39,12 @@ static const CGFloat kBlioVoiceDownloadProgressViewRightMargin = 10.0f;
 @interface BlioPurchaseVoicesViewController : BlioAutorotatingTableViewController <BlioPurchaseVoiceViewDelegate> {
 	NSMutableArray * availableVoicesForPurchase;
 	BlioRoundedRectActivityView * activityIndicatorView;
+    BOOL autoDownloadPreviousPurchases;
 }
 
 @property (nonatomic, retain) NSMutableArray * availableVoicesForPurchase;
 @property (nonatomic,retain) BlioRoundedRectActivityView* activityIndicatorView;
+@property (nonatomic,assign) BOOL autoDownloadPreviousPurchases;
 
 @end
 
@@ -64,5 +66,4 @@ static const CGFloat kBlioVoiceDownloadProgressViewRightMargin = 10.0f;
 -(void)configureWithInAppPurchaseProduct:(CCInAppPurchaseProduct*)aProduct;
 -(void)setDownloadButtonState:(BlioVoiceDownloadButtonState)buttonState;
 -(NSString*)progressLabelFormattedText;
-
 @end

@@ -27,6 +27,7 @@
 #import <libEucalyptus/THEventCapturingWindow.h>
 #import <libEucalyptus/THUIDeviceAdditions.h>
 #import "BlioWelcomeViewController.h"
+#import "BlioAcapelaAudioManager.h"
 
 @interface BlioAppAppDelegate ()
 
@@ -420,6 +421,7 @@ static void *background_init_thread(void * arg) {
 	
 	[BlioStoreManager sharedInstance].rootViewController = navigationController;
 	[BlioSocialManager sharedSocialManager].rootViewController = navigationController;
+	[BlioAcapelaAudioManager sharedAcapelaAudioManager].rootViewController = navigationController;
 	
 	[self checkDevice];
 	    
@@ -509,7 +511,23 @@ static void *background_init_thread(void * arg) {
             [[NSUserDefaults standardUserDefaults] synchronize];
              if (!forceLoginAfterRestore) [[BlioStoreManager sharedInstance] showWelcomeViewForSourceID:BlioBookSourceOnlineStore]; 
         }
+        NSLog(@"Current app version number: %@",[[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"]);
+        NSDecimalNumber * appVersionNumber = [NSDecimalNumber decimalNumberWithString:[[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"]];
+        if (![[NSUserDefaults standardUserDefaults] objectForKey:@"PreviouslyLaunchedAppVersion"]) {
+            [[NSUserDefaults standardUserDefaults] setObject:appVersionNumber forKey:@"PreviouslyLaunchedAppVersion"];
+            [[NSUserDefaults standardUserDefaults] synchronize];
+            // since the first version to record LastLaunchedVersionNumber also happens to be the first version to use the new TTS engine, we also delete old TTS voices if present
+            if ([[[BlioAcapelaAudioManager sharedAcapelaAudioManager]  availableVoicesForUse] count] > 0) {
+                // prompt end-user to re-download voices
+                [[BlioAcapelaAudioManager sharedAcapelaAudioManager] promptRedownload];                
+            }
             
+        }
+        else if ([(NSNumber*)[[NSUserDefaults standardUserDefaults] objectForKey:@"PreviouslyLaunchedAppVersion"] floatValue] < [appVersionNumber floatValue]) {
+            [[NSUserDefaults standardUserDefaults] setObject:appVersionNumber forKey:@"PreviouslyLaunchedAppVersion"];
+            [[NSUserDefaults standardUserDefaults] synchronize];            
+        }
+        
         /*
         if (![[NSUserDefaults standardUserDefaults] objectForKey:@"FirstLaunchLoginScreenShown"]) {
             [BlioStoreManager sharedInstance].initialLoginCheckFinished = NO;

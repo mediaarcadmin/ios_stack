@@ -11,6 +11,8 @@
 #import "BlioAcapelaAudioManager.h"
 #import "BlioProcessingStandardOperations.h"
 #import "BlioAlertManager.h"
+#import "BlioInAppPurchaseManager.h"
+#import "BlioPurchaseVoicesViewController.h"
 
 #include "Acapela/babkurz.lic.h"
 #include "Acapela/babkurz.lic.01e560b3.password"
@@ -23,7 +25,7 @@ NSString * const BlioVoiceListRefreshedNotification = @"BlioVoiceListRefreshedNo
 
 @implementation BlioAcapelaAudioManager
 
-@synthesize downloadQueue,voiceData,sampleAudioPlayer;
+@synthesize downloadQueue,voiceData,sampleAudioPlayer, rootViewController;
 @synthesize engine, ttsLicense;
 
 +(BlioAcapelaAudioManager*)sharedAcapelaAudioManager
@@ -312,6 +314,59 @@ NSString * const BlioVoiceListRefreshedNotification = @"BlioVoiceListRefreshedNo
 		}
 	}
 }
+-(void)deleteVoices {
+    if ([[AcapelaSpeech availableVoices] count] > 0) {
+        NSArray *paths = NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES);
+        NSString *docsPath = ([paths count] > 0) ? [paths objectAtIndex:0] : nil;
+        
+        NSError * error = nil;
+        NSArray * files = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:[docsPath stringByAppendingPathComponent:@"TTS"] error:&error];
+		if (files == nil) {
+			NSLog(@"Error reading contents of TTS Directory: %@", [error localizedDescription]);
+			return;
+		}
+        for (NSString * file in files) {
+            NSError * removeError = nil;
+            if (![[NSFileManager defaultManager] removeItemAtPath:[[docsPath stringByAppendingPathComponent:@"TTS"] stringByAppendingPathComponent:file] error:&removeError]) {
+                NSLog(@"ERROR: could not remove file at path: %@",file);
+            }
+        }
+    }
+    [AcapelaSpeech refreshVoiceList];
+    [[NSNotificationCenter defaultCenter] postNotificationName:BlioVoiceListRefreshedNotification object:self];
+}
+-(void)promptRedownload {
+    if ([[AcapelaSpeech availableVoices] count] > 0) {
+        
+        [BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Download Required",@"\"Download Required\" alert message title")
+									 message:NSLocalizedStringWithDefaultValue(@"REDOWNLOADING_VOICE_EXPLANATION",nil,[NSBundle mainBundle],@"This version of Blio requires newer versions of your purchased voices in order to use text-to-speech. Would you like to download these newer versions now?",@"alert message explaining to the end-user that this version of Blio requires voice re-downloading")
+									delegate:self
+						   cancelButtonTitle:NSLocalizedString(@"Not Now",@"\"Not Now\" label for button used to cancel/dismiss alertview")
+						   otherButtonTitles: @"OK", nil];
+
+    }
+}
+-(void)reDownloadVoices {
+    [self deleteVoices];
+    
+    [[BlioInAppPurchaseManager sharedInAppPurchaseManager] restoreCompletedTransactions];
+    
+    BlioPurchaseVoicesViewController * vc = [[[BlioPurchaseVoicesViewController alloc] initWithStyle:UITableViewStyleGrouped] autorelease];
+    vc.navigationItem.rightBarButtonItem = [[[UIBarButtonItem alloc]
+                                              initWithTitle:NSLocalizedString(@"Close",@"\"Close\" bar button")
+                                              style:UIBarButtonItemStyleDone
+                                              target:self
+                                              action:@selector(dismissModalView:)]
+                                             autorelease];		
+    vc.autoDownloadPreviousPurchases = YES;
+    UINavigationController * purchaseVoicesNavigationController = [[[UINavigationController alloc] initWithRootViewController:vc] autorelease];
+    purchaseVoicesNavigationController.title = @"Restore Voices";
+    purchaseVoicesNavigationController.modalPresentationStyle = UIModalPresentationFormSheet;
+    [self.rootViewController presentModalViewController:purchaseVoicesNavigationController animated:YES];
+}
+-(void)dismissModalView:(id)sender {
+    [self.rootViewController dismissModalViewControllerAnimated:YES];
+}
 - (void)onProcessingCompleteNotification:(NSNotification*)note {
     if (![NSThread isMainThread]) {
         [self performSelectorOnMainThread:_cmd withObject:note waitUntilDone:NO];
@@ -351,4 +406,22 @@ NSString * const BlioVoiceListRefreshedNotification = @"BlioVoiceListRefreshedNo
 	}
 	return nil;	
 }
+
+#pragma mark UIAlertViewDelegate methods
+
+// Called when a button is clicked. The view will be automatically dismissed after this call returns
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
+    switch (buttonIndex) {
+        case 0:
+            [self deleteVoices];
+            break;
+        case 1:
+            NSLog(@"Re-downloading voices...");
+            [self reDownloadVoices];
+            break;
+        default:
+            break;
+    }
+}
+
 @end

@@ -40,9 +40,11 @@ static NSString * const BlioInAppPurchaseNotificationTransactionKey = @"BlioInAp
 @interface BlioInAppPurchaseManager : NSObject<CCInAppPurchaseConnectionDelegate,SKProductsRequestDelegate,SKPaymentTransactionObserver> {
 	NSMutableArray * inAppProducts;
 	BOOL isFetchingProducts;
+	BOOL isRestoringTransactions;
 }
 @property (nonatomic, retain) NSMutableArray * inAppProducts;
-@property (nonatomic, assign) BOOL isFetchingProducts;
+@property (nonatomic, readonly) BOOL isFetchingProducts;
+@property (nonatomic, readonly) BOOL isRestoringTransactions;
 +(BlioInAppPurchaseManager*)sharedInAppPurchaseManager;
 - (BOOL)canMakePurchases;
 -(void)restoreProductWithID:(NSString*)anID;

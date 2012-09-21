@@ -16,7 +16,7 @@
 
 @implementation BlioPurchaseVoicesViewController
 
-@synthesize availableVoicesForPurchase,activityIndicatorView;
+@synthesize availableVoicesForPurchase,activityIndicatorView,autoDownloadPreviousPurchases;
 
 #pragma mark -
 #pragma mark Initialization
@@ -59,13 +59,34 @@
 
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(inAppPurchaseTransactionDone:) name:BlioInAppPurchaseTransactionFailedNotification object:[BlioInAppPurchaseManager sharedInAppPurchaseManager]];
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(inAppPurchaseTransactionDone:) name:BlioInAppPurchaseTransactionRestoredNotification object:[BlioInAppPurchaseManager sharedInAppPurchaseManager]];
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(inAppPurchaseTransactionDone:) name:BlioInAppPurchaseTransactionPurchasedNotification object:[BlioInAppPurchaseManager sharedInAppPurchaseManager]];		
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(inAppPurchaseTransactionDone:) name:BlioInAppPurchaseTransactionPurchasedNotification object:[BlioInAppPurchaseManager sharedInAppPurchaseManager]];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(inAppPurchaseRestoreTransactionsStarted:) name:BlioInAppPurchaseRestoreTransactionsStartedNotification object:[BlioInAppPurchaseManager sharedInAppPurchaseManager]];
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(inAppPurchaseRestoreTransactionsFinished:) name:BlioInAppPurchaseRestoreTransactionsFinishedNotification object:[BlioInAppPurchaseManager sharedInAppPurchaseManager]];
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(inAppPurchaseRestoreTransactionsFailed:) name:BlioInAppPurchaseRestoreTransactionsFailedNotification object:[BlioInAppPurchaseManager sharedInAppPurchaseManager]];
+
 	
-	if (![BlioInAppPurchaseManager sharedInAppPurchaseManager].isFetchingProducts) {
+    if (![BlioInAppPurchaseManager sharedInAppPurchaseManager].isFetchingProducts) {
 		[[BlioInAppPurchaseManager sharedInAppPurchaseManager] fetchProductsFromProductServer];
 		[self.tableView reloadData];
 	}
-	else [self.activityIndicatorView startAnimating];
+	else if ([BlioInAppPurchaseManager sharedInAppPurchaseManager].isFetchingProducts || [BlioInAppPurchaseManager sharedInAppPurchaseManager].isRestoringTransactions) [self.activityIndicatorView startAnimating];
+}
+-(void)inAppPurchaseRestoreTransactionsStarted:(NSNotification*)notification {
+	[self.activityIndicatorView startAnimating];
+}
+-(void)inAppPurchaseRestoreTransactionsFinished:(NSNotification*)notification {
+	if (![BlioInAppPurchaseManager sharedInAppPurchaseManager].isFetchingProducts && ![BlioInAppPurchaseManager sharedInAppPurchaseManager].isRestoringTransactions) [self.activityIndicatorView stopAnimating];
+    [self.tableView reloadData];
+}
+-(void)inAppPurchaseRestoreTransactionsFailed:(NSNotification*)notification {
+	if (![BlioInAppPurchaseManager sharedInAppPurchaseManager].isFetchingProducts && ![BlioInAppPurchaseManager sharedInAppPurchaseManager].isRestoringTransactions) [self.activityIndicatorView stopAnimating];
+    [BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Voice Restoration Error",@"\"Voice Restoration Error\" alert message title")
+                                 message:NSLocalizedStringWithDefaultValue(@"RESTORE_TRANSACTIONS_FOR_VOICES_FAILED",nil,[NSBundle mainBundle],@"Restoration of voice purchases failed; please try again later.",@"Alert message when voice purchase transaction restoration failed.")
+                                delegate:nil
+                       cancelButtonTitle:NSLocalizedString(@"OK",@"\"OK\" label for button used to cancel/dismiss alertview")
+                       otherButtonTitles: nil];		
+    [self dismissModalViewControllerAnimated:YES];
 }
 -(void)viewDidUnload {
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
@@ -79,14 +100,22 @@
 	[self.activityIndicatorView startAnimating];
 }
 -(void)didReceiveInAppPurchaseProductsFetchFailed:(NSNotification*)note {
-	[self.activityIndicatorView stopAnimating];
+	if (![BlioInAppPurchaseManager sharedInAppPurchaseManager].isFetchingProducts && ![BlioInAppPurchaseManager sharedInAppPurchaseManager].isRestoringTransactions) [self.activityIndicatorView stopAnimating];
 }
 -(void)didReceiveInAppPurchaseProductsFetchFinished:(NSNotification*)note {
-	[self.activityIndicatorView stopAnimating];
+	if (![BlioInAppPurchaseManager sharedInAppPurchaseManager].isFetchingProducts && ![BlioInAppPurchaseManager sharedInAppPurchaseManager].isRestoringTransactions) [self.activityIndicatorView stopAnimating];
+    if (self.autoDownloadPreviousPurchases) {
+        for (CCInAppPurchaseProduct * inAppPurchaseProduct in self.availableVoicesForPurchase) {
+            BlioProcessingDownloadAndUnzipVoiceOperation * voiceOp = [[BlioAcapelaAudioManager sharedAcapelaAudioManager] downloadVoiceOperationByVoice:inAppPurchaseProduct.name];
+            if (!voiceOp && [[BlioInAppPurchaseManager sharedInAppPurchaseManager] hasPreviouslyPurchasedProductWithID:inAppPurchaseProduct.productId]) {
+                [self restoreProductWithID:inAppPurchaseProduct.productId];
+            }
+        }
+    }
 }
 -(void)didReceiveInAppPurchaseProductsUpdated:(NSNotification*)note {
 	NSLog(@"%@", NSStringFromSelector(_cmd));
-	[self.activityIndicatorView stopAnimating];
+	if (![BlioInAppPurchaseManager sharedInAppPurchaseManager].isFetchingProducts && ![BlioInAppPurchaseManager sharedInAppPurchaseManager].isRestoringTransactions) [self.activityIndicatorView stopAnimating];
 	self.availableVoicesForPurchase = [BlioInAppPurchaseManager sharedInAppPurchaseManager].inAppProducts;
 //	NSArray * availableVoicesForUse = [[BlioAcapelaAudioManager sharedAcapelaAudioManager] availableVoicesForUse];
 //	for (SKProduct * product in [BlioInAppPurchaseManager sharedInAppPurchaseManager].products) {
@@ -148,7 +177,8 @@
 }
 
 - (NSString *)tableView:(UITableView *)tableView titleForFooterInSection:(NSInteger)section {
-	if ([BlioInAppPurchaseManager sharedInAppPurchaseManager].isFetchingProducts) return NSLocalizedStringWithDefaultValue(@"CHECKING_FOR_VOICES_AVAILABLE_FOR_PURCHASE",nil,[NSBundle mainBundle],@"Blio is checking the App Store for available voices. Please wait a moment...",@"Explanatory message that informs the end-user the Blio app is checking the App Store for available voices in the Purchase Voices View.");
+	if ([BlioInAppPurchaseManager sharedInAppPurchaseManager].isRestoringTransactions) return NSLocalizedStringWithDefaultValue(@"CHECKING_FOR_PREVIOUS_VOICES_AVAILABLE_FOR_DOWNLOAD",nil,[NSBundle mainBundle],@"Blio is checking the App Store for your previously purchased voices. Please wait a moment...",@"Explanatory message that informs the end-user the Blio app is checking the App Store for previously purchased voices in the Purchase Voices View.");
+	else if ([BlioInAppPurchaseManager sharedInAppPurchaseManager].isFetchingProducts) return NSLocalizedStringWithDefaultValue(@"CHECKING_FOR_VOICES_AVAILABLE_FOR_PURCHASE",nil,[NSBundle mainBundle],@"Blio is checking the App Store for available voices. Please wait a moment...",@"Explanatory message that informs the end-user the Blio app is checking the App Store for available voices in the Purchase Voices View.");
 	else if (!self.availableVoicesForPurchase || [self.availableVoicesForPurchase count] == 0) return NSLocalizedStringWithDefaultValue(@"NO_AVAILABLE_VOICES_FOR_PURCHASE",nil,[NSBundle mainBundle],@"There are no new voices available for you to purchase at this time.",@"Explanatory message that informs the end-user the Blio app is checking the App Store for available voices in the Purchase Voices View.");
 	return NSLocalizedStringWithDefaultValue(@"PURCHASE_VOICES_EXPLANATION_FOOTER",nil,[NSBundle mainBundle],@"Voices take approximately 50MB of storage each, and may take time to download.",@"Explanatory message that appears at the bottom of the Available Voices table within Purchase Voices View.");
 }
@@ -157,7 +187,7 @@
 	return 80;
 }
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    // Return the number of rows in the section.
+    if ([BlioInAppPurchaseManager sharedInAppPurchaseManager].isRestoringTransactions) return 0;
     return [self.availableVoicesForPurchase count];
 }
 
@@ -380,6 +410,7 @@
 }
 -(void)configureWithInAppPurchaseProduct:(CCInAppPurchaseProduct*)aProduct {
 	self.product = aProduct;
+    NSLog(@"configuring cell for: %@",self.product.name);
     self.textLabel.text = self.product.name;
 	if ([[BlioInAppPurchaseManager sharedInAppPurchaseManager] hasPreviouslyPurchasedProductWithID:self.product.productId]) [self.downloadButton setTitle:NSLocalizedString(@"Install",@"\"Install\" button label in purchase voices view") forState:UIControlStateNormal];
 	else [self.downloadButton setTitle:[NSString stringWithFormat:@"%@",self.product.product.localizedPrice] forState:UIControlStateNormal];
@@ -487,5 +518,6 @@
 	}
 }
  */
+
 @end
 

@@ -22,6 +22,7 @@ extern NSString * const BlioVoiceListRefreshedNotification;
 	NSDictionary * voiceData;
     CFAttributedStringRef currentStringWithWordOffsets;
 	AVAudioPlayer * sampleAudioPlayer;
+    UIViewController * rootViewController;
 }
 
 @property (nonatomic, retain) AcapelaSpeech* engine;
@@ -29,6 +30,7 @@ extern NSString * const BlioVoiceListRefreshedNotification;
 @property (nonatomic, retain) NSOperationQueue *downloadQueue;
 @property (nonatomic, retain) NSDictionary *voiceData;
 @property (nonatomic, retain) AVAudioPlayer *sampleAudioPlayer;
+@property (nonatomic, retain) UIViewController * rootViewController;
 
 
 // These look like they refer to properties, but no.
@@ -57,6 +59,8 @@ extern NSString * const BlioVoiceListRefreshedNotification;
 -(void)playSampleForVoice:(NSString *)aVoice;
 -(void)playSampleForVoiceName:(NSString *)aVoiceName;
 -(void)downloadVoice:(NSString *)aVoice;
+-(void)deleteVoices;
+-(void)promptRedownload;
 
 -(BlioProcessingDownloadAndUnzipVoiceOperation*)downloadVoiceOperationByVoice:(NSString*)aVoice;
 

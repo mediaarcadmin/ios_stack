@@ -27,7 +27,7 @@
 
 @implementation BlioInAppPurchaseManager
 
-@synthesize inAppProducts,isFetchingProducts;
+@synthesize inAppProducts,isFetchingProducts,isRestoringTransactions;
 
 +(BlioInAppPurchaseManager*)sharedInAppPurchaseManager
 {
@@ -52,6 +52,7 @@
 	[super dealloc];
 }
 -(void)restoreCompletedTransactions {
+    isRestoringTransactions = YES;
     [[NSNotificationCenter defaultCenter] postNotificationName:BlioInAppPurchaseRestoreTransactionsStartedNotification object:self userInfo:nil];
     [[SKPaymentQueue defaultQueue] restoreCompletedTransactions];
 }
@@ -356,11 +357,13 @@
 		}
 	}
 }
-- (void)paymentQueueRestoreCompletedTransactionsFinished:(SKPaymentQueue *)queue {    
+- (void)paymentQueueRestoreCompletedTransactionsFinished:(SKPaymentQueue *)queue {
+    isRestoringTransactions = NO;
     [[NSNotificationCenter defaultCenter] postNotificationName:BlioInAppPurchaseRestoreTransactionsFinishedNotification object:self userInfo:nil];
 
 }
 - (void)paymentQueue:(SKPaymentQueue *)queue restoreCompletedTransactionsFailedWithError:(NSError *)error {
+    isRestoringTransactions = NO;
     [BlioAlertManager showAlertWithTitle:NSLocalizedString(@"iTunes Error",@"\"iTunes Error\" alert message title")
                                  message:[NSString stringWithFormat:NSLocalizedString(@"An iTunes error was encountered (%@). Please try again later",@"iTunes Restore Transactions Error message preface."),[error localizedDescription]]
                                 delegate:nil 
