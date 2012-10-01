@@ -337,6 +337,12 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 - (void)initialiseBookView {
     BlioPageLayout lastLayout = [[NSUserDefaults standardUserDefaults] integerForKey:kBlioLastLayoutDefaultsKey];
     
+    if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad &&
+       lastLayout == kBlioPageLayoutSpeedRead) {
+        // No speedread on iPad - this must be a backed up iPhone/iPod install.
+        lastLayout = kBlioPageLayoutPlainText;
+    }
+    
     if (!([self.book hasEPub] || [self.book hasTextFlow]) && (lastLayout == kBlioPageLayoutSpeedRead)) {
         lastLayout = kBlioPageLayoutPlainText;
     }            
