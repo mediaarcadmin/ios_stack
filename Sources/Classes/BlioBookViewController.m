@@ -652,23 +652,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     item = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
     [readingItems addObject:item];
     [item release];
-	
-    item = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"icon-fontsize.png"]
-                                            style:UIBarButtonItemStylePlain
-                                           target:self
-                                           action:@selector(showFontSettings:forEvent:)];
-    
-    [item setAccessibilityLabel:NSLocalizedString(@"Font Settings", @"Accessibility label for Book View Controller Back button")];
-    
-    [readingItems addObject:item];
-    item.enabled = [self shouldShowFontSettings];
-    self.fontSettingsButton = item;
-    [item release];
-    
-    item = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
-    [readingItems addObject:item];
-    [item release];
-    
+	    
     if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
         item = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"icon-back.png"]
                                                 style:UIBarButtonItemStylePlain
@@ -686,6 +670,22 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         [readingItems addObject:item];
         [item release];
     }
+    
+    item = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"icon-fontsize.png"]
+                                            style:UIBarButtonItemStylePlain
+                                           target:self
+                                           action:@selector(showFontSettings:forEvent:)];
+    
+    [item setAccessibilityLabel:NSLocalizedString(@"Font Settings", @"Accessibility label for Book View Controller Back button")];
+    
+    [readingItems addObject:item];
+    item.enabled = [self shouldShowFontSettings];
+    self.fontSettingsButton = item;
+    [item release];
+    
+    item = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
+    [readingItems addObject:item];
+    [item release];
     
     item = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"icon-contents.png"]
                                             style:UIBarButtonItemStylePlain
