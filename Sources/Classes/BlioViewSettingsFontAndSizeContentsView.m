@@ -438,10 +438,10 @@
     CGSize size;
     if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
         size.width = kBlioViewSettingsWidthIPhone;
-        size.height = self.rowHeight * 8.5;
+        size.height = roundf(self.rowHeight * 8.5f);
     } else {
         size.width = kBlioViewSettingsWidthIPad;
-        size.height = self.rowHeight * 10;
+        size.height = roundf(self.rowHeight * 11.5f);
     }
 
     return size;
