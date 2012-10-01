@@ -6,16 +6,16 @@
 //  Copyright (c) 2011 Things Made Out Of Other Things. All rights reserved.
 //
 
-#import "BlioViewSettings.h"
 #import "BlioViewSettingsFontAndSizeContentsView.h"
 #import "BlioCenterableTableViewCell.h"
+#import "BlioViewSettingsMetrics.h"
 
 #import "BlioUIImageAdditions.h"
 #import <libEucalyptus/THUIDeviceAdditions.h>
 
 @interface BlioViewSettingsFontAndSizeContentsView ()
 
-@property (nonatomic, assign) id<BlioViewSettingsDelegate> delegate;
+@property (nonatomic, assign) id<BlioViewSettingsContentsViewDelegate> delegate;
 
 @property (nonatomic, assign) BOOL refreshingSettings;
 
@@ -28,14 +28,14 @@
 @property (nonatomic, retain) UIView *fontTableViewContainer;
 @property (nonatomic, retain) UITableView *fontTableView;
 
+@property (nonatomic, assign, readonly) CGFloat rowHeight;
+
 - (NSInteger)currentSelectedFontRowIndex;
 
 @end
 
 
 @implementation BlioViewSettingsFontAndSizeContentsView
-
-@synthesize delegate;
 
 @synthesize refreshingSettings;
 
@@ -50,8 +50,6 @@
 
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
-    
-    self.delegate = nil;
     
     self.fontSizeLabel = nil;
     self.justificationLabel = nil;
@@ -136,9 +134,7 @@
 
 - (id)initWithDelegate:(id)newDelegate {
     
-	if ((self = [super initWithFrame:CGRectZero])) {
-        self.delegate = newDelegate;
-		
+	if ((self = [super initWithDelegate:newDelegate])) {
         UIColor *whiteColor = [UIColor whiteColor];
         UIColor *clearColor = [UIColor clearColor];
         UIColor *tintColor;
@@ -360,9 +356,26 @@
 }
 
 - (void)dismiss:(id)sender {
-    [self.delegate dismissViewSettings:self];
+    [self.delegate dismissViewSettingsInterface:self];
 }
 
+- (CGSize)preferredSize {
+    CGSize size;
+    if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
+        size.width = kBlioViewSettingsWidthIPhone;
+        size.height = 320;
+    } else {
+        size.width = kBlioViewSettingsWidthIPad;
+        size.height = self.rowHeight * 10;
+    }
+
+    return size;
+}
+
+- (NSString *)navigationItemTitle
+{
+    return NSLocalizedString(@"Font Settings", "Title for Font Settings Popover");
+}
 
 - (void)flashScrollIndicators
 {

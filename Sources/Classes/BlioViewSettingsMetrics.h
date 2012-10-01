@@ -19,3 +19,6 @@ static const CGFloat kBlioViewSettingsYInsetIPhone = 6;
 
 static const CGFloat kBlioViewSettingsSegmentButtonHeight = 36;
 static const CGFloat kBlioViewSettingsLabelWidth = 93;
+
+static const CGFloat kBlioViewSettingsWidthIPad = 360;
+static const CGFloat kBlioViewSettingsWidthIPhone = 289;

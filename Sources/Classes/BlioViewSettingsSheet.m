@@ -7,8 +7,8 @@
 //
 
 #import "BlioViewSettingsSheet.h"
-#import "BlioViewSettings.h"
-#import "BlioViewSettingsContentsView.h"
+#import "BlioViewSettingsInterface.h"
+#import "BlioViewSettingsGeneralContentsView.h"
 #import "BlioViewSettingsFontAndSizeContentsView.h"
 #import "BlioUIImageAdditions.h"
 
@@ -48,18 +48,18 @@
 @end
 
 @interface BlioViewSettingsSheet()
-
+/*
 @property (nonatomic, retain) EucMenuView *menuView;
 @property (nonatomic, retain) UIView *containerView;
-@property (nonatomic, retain) BlioViewSettingsContentsView *settingsContentsView;
+@property (nonatomic, retain) BlioViewSettingsGeneralContentsView *settingsContentsView;
 @property (nonatomic, retain) UIControl *screenMask;
 
 - (void)dismiss;
-
+*/
 @end
 
 @implementation BlioViewSettingsSheet
-
+/*
 @synthesize delegate, settingsContentsView, menuView, containerView, screenMask;
 
 - (void)dealloc {
@@ -73,7 +73,7 @@
     [super dealloc];
 }
 
-- (id)initWithDelegate:(id<BlioViewSettingsDelegate>)newDelegate {
+- (id)initWithDelegate:(id<BlioViewSettingsContentsViewDelegate>)newDelegate {
 	if ((self = [super init])) {
         self.delegate = newDelegate;
     }
@@ -101,7 +101,7 @@
     aContainerView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     [aContainerContainerView addSubview:aContainerView];
     
-    BlioViewSettingsContentsView *aContentsView = [[BlioViewSettingsContentsView alloc] initWithDelegate:self.delegate];
+    BlioViewSettingsGeneralContentsView *aContentsView = [[BlioViewSettingsGeneralContentsView alloc] initWithDelegate:self.delegate];
     aContentsView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     [aContainerView addSubview:aContentsView];
     
@@ -256,6 +256,6 @@
     transition.delegate = self;
     [self.containerView.layer addAnimation:transition forKey:@"pushFontsIn"];
     [transition release];
-}
+}*/
 
 @end

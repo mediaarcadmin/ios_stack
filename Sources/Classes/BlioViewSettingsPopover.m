@@ -1,4 +1,4 @@
-    //
+//
 //  BlioViewSettingsPopover.m
 //  BlioApp
 //
@@ -8,58 +8,78 @@
 
 #import "BlioViewSettingsPopover.h"
 #import "BlioViewSettingsContentsView.h"
-#import "BlioViewSettingsFontAndSizeContentsView.h"
 
-@interface BlioViewSettingsPopover()
+@interface BlioViewSettingsPopover() <UIPopoverControllerDelegate, UINavigationControllerDelegate>
 
-@property (nonatomic, retain) BlioViewSettingsContentsView *settingsContentsView;
-@property (nonatomic, assign) id<BlioViewSettingsDelegate> viewSettingsDelegate;
+@property (nonatomic, retain) BlioModalPopoverController *popoverController;
 
 @end
 
 @implementation BlioViewSettingsPopover
 
-@synthesize settingsContentsView, viewSettingsDelegate;
-
-- (void)dealloc {
-    self.settingsContentsView = nil;
-    [super dealloc];
-}
-
-- (id)initWithDelegate:(id)newDelegate {
+- (void)presentFromBarButtonItem:(UIBarButtonItem *)item
+{
+    BlioViewSettingsContentsView *contentsView = self.contentsView;
     
-    BlioViewSettingsContentsView *aContentsView = [[BlioViewSettingsContentsView alloc] initWithDelegate:newDelegate];
     UIViewController *contentController = [[UIViewController alloc] init];
-    contentController.contentSizeForViewInPopover = CGSizeMake(360, [aContentsView contentsHeight]);
-    contentController.view = aContentsView;
-    contentController.navigationItem.title = NSLocalizedString(@"Reading Settings", "Title for Reading Settings Popover");
+    if(contentController) {
+        contentController.contentSizeForViewInPopover = contentsView.preferredSize;
+        contentController.navigationItem.title = contentsView.navigationItemTitle;
+        contentController.view = contentsView;
+        
+        UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:contentController];
+        if(navController) {
+            navController.delegate = self;
+            
+            BlioModalPopoverController *popoverController = [[BlioModalPopoverController alloc] initWithContentViewController:navController];
+            if(popoverController) {
+                popoverController.delegate = self;
+                self.popoverController = popoverController;
 
-    UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:contentController];
-    navController.delegate = self;
-    
-    if ((self = [super initWithContentViewController:navController])) {
-        // Custom initialization
-        self.settingsContentsView = aContentsView;
-        self.delegate = self;
-        self.viewSettingsDelegate = newDelegate;
+                [popoverController presentPopoverFromBarButtonItem:item permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];
+                
+                [popoverController release];
+            }
+            [navController release];
+        }
+        [contentController release];
     }
-    
-    [aContentsView release];
-    [contentController release];
-    [navController release];
-
-    return self;
 }
 
 - (void)popoverControllerDidDismissPopover:(UIPopoverController *)popoverController {
-    [self.viewSettingsDelegate viewSettingsDidDismiss:self];
-    
-    self.settingsContentsView.delegate = nil;
-    self.settingsContentsView  = nil;
+    self.popoverController = nil;
+    [self.delegate viewSettingsInterfaceDidDismiss:self];
 }
 
+- (void)dismissAnimated:(BOOL)animated
+{
+    [self.popoverController dismissPopoverAnimated:YES];
+}
+
+- (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration
+{
+    [self.popoverController willRotateToInterfaceOrientation:toInterfaceOrientation duration:duration];
+}
+
+- (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation
+{
+    [self.contentsView refreshSettings];
+    
+    [self.popoverController didRotateFromInterfaceOrientation:fromInterfaceOrientation];
+    
+    // Need to hide and show nav bar to workaround bug when rotating which hides the nav bar
+    [(UINavigationController *)self.popoverController.contentViewController setNavigationBarHidden:YES];
+    [(UINavigationController *)self.popoverController.contentViewController setNavigationBarHidden:NO];
+}
+
+- (void)navigationController:(UINavigationController *)navigationController didShowViewController:(UIViewController *)viewController animated:(BOOL)animated
+{
+    [self.contentsView flashScrollIndicators];
+}
+
+/*
 - (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation {
-    [((BlioViewSettingsContentsView *)self.settingsContentsView) refreshSettings];
+    [((BlioViewSettingsGeneralContentsView *)self.settingsContentsView) refreshSettings];
     [super didRotateFromInterfaceOrientation:fromInterfaceOrientation];
     // Need to hide and show nav bar to workaround bug when rotating which hides the nav bar
     [(UINavigationController *)self.contentViewController setNavigationBarHidden:YES];
@@ -81,18 +101,14 @@
     [aFontSettingsView release];
 }
 
+
 - (void)navigationController:(UINavigationController *)navigationController willShowViewController:(UIViewController *)viewController animated:(BOOL)animated
 {
-    if([viewController.view isKindOfClass:[BlioViewSettingsContentsView class]]) {
-        [((BlioViewSettingsContentsView *)viewController.view) refreshSettings];
+    if([viewController.view isKindOfClass:[BlioViewSettingsGeneralContentsView class]]) {
+        [((BlioViewSettingsGeneralContentsView *)viewController.view) refreshSettings];
     }
 }
+*/
 
-- (void)navigationController:(UINavigationController *)navigationController didShowViewController:(UIViewController *)viewController animated:(BOOL)animated
-{
-    if([viewController.view isKindOfClass:[BlioViewSettingsFontAndSizeContentsView class]]) {
-        [((BlioViewSettingsFontAndSizeContentsView *)viewController.view) flashScrollIndicators];
-    }
-}
 
 @end

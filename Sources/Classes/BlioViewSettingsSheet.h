@@ -7,26 +7,27 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "BlioViewSettingsInterface.h"
 
-@protocol BlioViewSettingsDelegate;
-@class BlioViewSettingsContentsView, EucMenuView;
+@protocol BlioViewSettingsContentsViewDelegate;
+@class BlioViewSettingsGeneralContentsView, EucMenuView;
 
-@interface BlioViewSettingsSheet : NSObject {
-    id<BlioViewSettingsDelegate> delegate;
+@interface BlioViewSettingsSheet : BlioViewSettingsInterface/* {
+    id<BlioViewSettingsContentsViewDelegate> delegate;
     UIControl *screenMask;
     
     EucMenuView *menuView;
     UIView *containerView;
-    BlioViewSettingsContentsView *settingsContentsView;
+    BlioViewSettingsGeneralContentsView *settingsContentsView;
 }
 
-@property (nonatomic, assign) id<BlioViewSettingsDelegate> delegate;
+@property (nonatomic, assign) id<BlioViewSettingsContentsViewDelegate> delegate;
 
-- (id)initWithDelegate:(id<BlioViewSettingsDelegate>)delegate;
+- (id)initWithDelegate:(id<BlioViewSettingsContentsViewDelegate>)delegate;
 - (void)showFromToolbar:(UIToolbar *)toolbar;
 - (void)dismiss;
 - (void)dismissAnimated:(BOOL)animated;
 
 - (void)pushFontSettings;
-
+*/
 @end

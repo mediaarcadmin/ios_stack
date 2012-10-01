@@ -197,13 +197,23 @@
 		7D69C36114293D6500136CFB /* brightness-sun-dim@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D69C35314293D6500136CFB /* brightness-sun-dim@2x.png */; };
 		7D69C36214293D6500136CFB /* brightness-sun-dim@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D69C35314293D6500136CFB /* brightness-sun-dim@2x.png */; };
 		7D69C36314293D6500136CFB /* brightness-sun-dim@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D69C35314293D6500136CFB /* brightness-sun-dim@2x.png */; };
-		7D6D9FF1124E9DC5005FD8CE /* BlioViewSettingsContentsView.m in Sources */ = {isa = PBXBuildFile; fileRef = C9C37B9B122D278800DD350F /* BlioViewSettingsContentsView.m */; };
+		7D6C65A51619A0B000B15BA4 /* BlioViewSettingsInterface.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D6C65A41619A0B000B15BA4 /* BlioViewSettingsInterface.m */; };
+		7D6C65A61619A0B000B15BA4 /* BlioViewSettingsInterface.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D6C65A41619A0B000B15BA4 /* BlioViewSettingsInterface.m */; };
+		7D6C65A71619A0B000B15BA4 /* BlioViewSettingsInterface.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D6C65A41619A0B000B15BA4 /* BlioViewSettingsInterface.m */; };
+		7D6C65A81619A0B000B15BA4 /* BlioViewSettingsInterface.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D6C65A41619A0B000B15BA4 /* BlioViewSettingsInterface.m */; };
+		7D6C65A91619A0B000B15BA4 /* BlioViewSettingsInterface.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D6C65A41619A0B000B15BA4 /* BlioViewSettingsInterface.m */; };
+		7D6C65AC1619A36F00B15BA4 /* BlioViewSettingsContentsView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D6C65AB1619A36E00B15BA4 /* BlioViewSettingsContentsView.m */; };
+		7D6C65AD1619A36F00B15BA4 /* BlioViewSettingsContentsView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D6C65AB1619A36E00B15BA4 /* BlioViewSettingsContentsView.m */; };
+		7D6C65AE1619A36F00B15BA4 /* BlioViewSettingsContentsView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D6C65AB1619A36E00B15BA4 /* BlioViewSettingsContentsView.m */; };
+		7D6C65AF1619A36F00B15BA4 /* BlioViewSettingsContentsView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D6C65AB1619A36E00B15BA4 /* BlioViewSettingsContentsView.m */; };
+		7D6C65B01619A36F00B15BA4 /* BlioViewSettingsContentsView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D6C65AB1619A36E00B15BA4 /* BlioViewSettingsContentsView.m */; };
+		7D6D9FF1124E9DC5005FD8CE /* BlioViewSettingsGeneralContentsView.m in Sources */ = {isa = PBXBuildFile; fileRef = C9C37B9B122D278800DD350F /* BlioViewSettingsGeneralContentsView.m */; };
 		7D6D9FF2124E9DC5005FD8CE /* BlioViewSettingsPopover.m in Sources */ = {isa = PBXBuildFile; fileRef = C9C37C2D122D3F5900DD350F /* BlioViewSettingsPopover.m */; };
 		7D6D9FF3124E9DC5005FD8CE /* BlioModalPopoverController.m in Sources */ = {isa = PBXBuildFile; fileRef = C9221744123504E500992E2E /* BlioModalPopoverController.m */; };
 		7D6D9FF4124E9DC5005FD8CE /* BlioBookSearchPopoverController.m in Sources */ = {isa = PBXBuildFile; fileRef = C95FC84A123A3D1100859B92 /* BlioBookSearchPopoverController.m */; };
 		7D6D9FF5124E9DC5005FD8CE /* BlioBookSearchResultsTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C95FCCFF123BCED600859B92 /* BlioBookSearchResultsTableViewController.m */; };
 		7D6D9FF6124E9DC5005FD8CE /* BlioBookSearchResult.m in Sources */ = {isa = PBXBuildFile; fileRef = C95FCD0D123BDB1300859B92 /* BlioBookSearchResult.m */; };
-		7D6D9FF7124E9DEE005FD8CE /* BlioViewSettingsContentsView.m in Sources */ = {isa = PBXBuildFile; fileRef = C9C37B9B122D278800DD350F /* BlioViewSettingsContentsView.m */; };
+		7D6D9FF7124E9DEE005FD8CE /* BlioViewSettingsGeneralContentsView.m in Sources */ = {isa = PBXBuildFile; fileRef = C9C37B9B122D278800DD350F /* BlioViewSettingsGeneralContentsView.m */; };
 		7D6D9FF8124E9DEE005FD8CE /* BlioViewSettingsPopover.m in Sources */ = {isa = PBXBuildFile; fileRef = C9C37C2D122D3F5900DD350F /* BlioViewSettingsPopover.m */; };
 		7D6D9FF9124E9DEE005FD8CE /* BlioModalPopoverController.m in Sources */ = {isa = PBXBuildFile; fileRef = C9221744123504E500992E2E /* BlioModalPopoverController.m */; };
 		7D6D9FFA124E9DEE005FD8CE /* BlioBookSearchPopoverController.m in Sources */ = {isa = PBXBuildFile; fileRef = C95FC84A123A3D1100859B92 /* BlioBookSearchPopoverController.m */; };
@@ -853,7 +863,7 @@
 		A31CC7EA13FEA07E0010BFC5 /* TextFlowXAML.css in Resources */ = {isa = PBXBuildFile; fileRef = C93ECB18134B6215003B99FD /* TextFlowXAML.css */; };
 		A31CC7EB13FEA07E0010BFC5 /* TextFlowXAMLOverrides.css in Resources */ = {isa = PBXBuildFile; fileRef = C93ECB19134B6215003B99FD /* TextFlowXAMLOverrides.css */; };
 		A31CC7ED13FEA07E0010BFC5 /* NSArray+BlioAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DB7029E1248D38E00BC3272 /* NSArray+BlioAdditions.m */; };
-		A31CC7EE13FEA07E0010BFC5 /* BlioViewSettingsContentsView.m in Sources */ = {isa = PBXBuildFile; fileRef = C9C37B9B122D278800DD350F /* BlioViewSettingsContentsView.m */; };
+		A31CC7EE13FEA07E0010BFC5 /* BlioViewSettingsGeneralContentsView.m in Sources */ = {isa = PBXBuildFile; fileRef = C9C37B9B122D278800DD350F /* BlioViewSettingsGeneralContentsView.m */; };
 		A31CC7EF13FEA07E0010BFC5 /* BlioViewSettingsPopover.m in Sources */ = {isa = PBXBuildFile; fileRef = C9C37C2D122D3F5900DD350F /* BlioViewSettingsPopover.m */; };
 		A31CC7F013FEA07E0010BFC5 /* BlioModalPopoverController.m in Sources */ = {isa = PBXBuildFile; fileRef = C9221744123504E500992E2E /* BlioModalPopoverController.m */; };
 		A31CC7F113FEA07E0010BFC5 /* BlioBookSearchPopoverController.m in Sources */ = {isa = PBXBuildFile; fileRef = C95FC84A123A3D1100859B92 /* BlioBookSearchPopoverController.m */; };
@@ -1572,7 +1582,7 @@
 		A3BEFD5A152DE9E6009B4F4A /* FBDialog.bundle in Resources */ = {isa = PBXBuildFile; fileRef = DC92D6A815047804002AF222 /* FBDialog.bundle */; };
 		A3BEFD5B152DE9E6009B4F4A /* BlioEPUB3Overrides.css in Resources */ = {isa = PBXBuildFile; fileRef = 7DB1248414FFEB0500DB7666 /* BlioEPUB3Overrides.css */; };
 		A3BEFD61152DE9E6009B4F4A /* NSArray+BlioAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DB7029E1248D38E00BC3272 /* NSArray+BlioAdditions.m */; };
-		A3BEFD62152DE9E6009B4F4A /* BlioViewSettingsContentsView.m in Sources */ = {isa = PBXBuildFile; fileRef = C9C37B9B122D278800DD350F /* BlioViewSettingsContentsView.m */; };
+		A3BEFD62152DE9E6009B4F4A /* BlioViewSettingsGeneralContentsView.m in Sources */ = {isa = PBXBuildFile; fileRef = C9C37B9B122D278800DD350F /* BlioViewSettingsGeneralContentsView.m */; };
 		A3BEFD63152DE9E6009B4F4A /* BlioViewSettingsPopover.m in Sources */ = {isa = PBXBuildFile; fileRef = C9C37C2D122D3F5900DD350F /* BlioViewSettingsPopover.m */; };
 		A3BEFD64152DE9E6009B4F4A /* BlioModalPopoverController.m in Sources */ = {isa = PBXBuildFile; fileRef = C9221744123504E500992E2E /* BlioModalPopoverController.m */; };
 		A3BEFD65152DE9E6009B4F4A /* BlioBookSearchPopoverController.m in Sources */ = {isa = PBXBuildFile; fileRef = C95FC84A123A3D1100859B92 /* BlioBookSearchPopoverController.m */; };
@@ -2019,7 +2029,7 @@
 		C9C2C3F3134368FD00548290 /* BlioTextFlowPreParseOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = C9C2C3F2134368FD00548290 /* BlioTextFlowPreParseOperation.m */; };
 		C9C2C3F4134368FD00548290 /* BlioTextFlowPreParseOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = C9C2C3F2134368FD00548290 /* BlioTextFlowPreParseOperation.m */; };
 		C9C2C3F5134368FD00548290 /* BlioTextFlowPreParseOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = C9C2C3F2134368FD00548290 /* BlioTextFlowPreParseOperation.m */; };
-		C9C37B9C122D278800DD350F /* BlioViewSettingsContentsView.m in Sources */ = {isa = PBXBuildFile; fileRef = C9C37B9B122D278800DD350F /* BlioViewSettingsContentsView.m */; };
+		C9C37B9C122D278800DD350F /* BlioViewSettingsGeneralContentsView.m in Sources */ = {isa = PBXBuildFile; fileRef = C9C37B9B122D278800DD350F /* BlioViewSettingsGeneralContentsView.m */; };
 		C9C37C2E122D3F5900DD350F /* BlioViewSettingsPopover.m in Sources */ = {isa = PBXBuildFile; fileRef = C9C37C2D122D3F5900DD350F /* BlioViewSettingsPopover.m */; };
 		C9C5467610F77EDD00ECE126 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C9C5467510F77EDD00ECE126 /* CoreData.framework */; };
 		C9CEBD761211959B0040CEFF /* booktexture-nocover.png in Resources */ = {isa = PBXBuildFile; fileRef = C9CEBD751211959B0040CEFF /* booktexture-nocover.png */; };
@@ -2555,12 +2565,16 @@
 		7D55C4CE14C061DD009C5F1E /* Blio 2-5.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Blio 2-5.xcdatamodel"; sourceTree = "<group>"; };
 		7D5B0C46147AD3D0007E3865 /* BlioViewSettingsFontAndSizeContentsView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioViewSettingsFontAndSizeContentsView.h; sourceTree = "<group>"; };
 		7D5B0C47147AD3D0007E3865 /* BlioViewSettingsFontAndSizeContentsView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioViewSettingsFontAndSizeContentsView.m; sourceTree = "<group>"; };
-		7D5B0C4C147AD743007E3865 /* BlioViewSettings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioViewSettings.h; sourceTree = "<group>"; };
+		7D5B0C4C147AD743007E3865 /* BlioViewSettingsMetrics.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioViewSettingsMetrics.h; sourceTree = "<group>"; };
 		7D662007132E7E9B00242F63 /* libstdc++.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libstdc++.dylib"; path = "usr/lib/libstdc++.dylib"; sourceTree = SDKROOT; };
 		7D69C35014293D6500136CFB /* brightness-sun-bright.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "brightness-sun-bright.png"; sourceTree = "<group>"; };
 		7D69C35114293D6500136CFB /* brightness-sun-bright@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "brightness-sun-bright@2x.png"; sourceTree = "<group>"; };
 		7D69C35214293D6500136CFB /* brightness-sun-dim.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "brightness-sun-dim.png"; sourceTree = "<group>"; };
 		7D69C35314293D6500136CFB /* brightness-sun-dim@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "brightness-sun-dim@2x.png"; sourceTree = "<group>"; };
+		7D6C65A31619A07B00B15BA4 /* BlioViewSettingsInterface.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioViewSettingsInterface.h; sourceTree = "<group>"; };
+		7D6C65A41619A0B000B15BA4 /* BlioViewSettingsInterface.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioViewSettingsInterface.m; sourceTree = "<group>"; };
+		7D6C65AA1619A36E00B15BA4 /* BlioViewSettingsContentsView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioViewSettingsContentsView.h; sourceTree = "<group>"; };
+		7D6C65AB1619A36E00B15BA4 /* BlioViewSettingsContentsView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioViewSettingsContentsView.m; sourceTree = "<group>"; };
 		7D71550A13E99F2700A593A9 /* THFonts */ = {isa = PBXFileReference; lastKnownFileType = folder; path = THFonts; sourceTree = "<group>"; };
 		7D7917F410F21CD400C4D839 /* BlioBookViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioBookViewController.h; sourceTree = "<group>"; };
 		7D7917F510F21CD400C4D839 /* BlioBookViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioBookViewController.m; sourceTree = "<group>"; };
@@ -3067,8 +3081,8 @@
 		C9B620CB1137BE170012CE7E /* ZipArchive.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ZipArchive.mm; sourceTree = "<group>"; };
 		C9C2C3F1134368FD00548290 /* BlioTextFlowPreParseOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioTextFlowPreParseOperation.h; sourceTree = "<group>"; };
 		C9C2C3F2134368FD00548290 /* BlioTextFlowPreParseOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioTextFlowPreParseOperation.m; sourceTree = "<group>"; };
-		C9C37B9A122D278800DD350F /* BlioViewSettingsContentsView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioViewSettingsContentsView.h; sourceTree = "<group>"; };
-		C9C37B9B122D278800DD350F /* BlioViewSettingsContentsView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioViewSettingsContentsView.m; sourceTree = "<group>"; };
+		C9C37B9A122D278800DD350F /* BlioViewSettingsGeneralContentsView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioViewSettingsGeneralContentsView.h; sourceTree = "<group>"; };
+		C9C37B9B122D278800DD350F /* BlioViewSettingsGeneralContentsView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioViewSettingsGeneralContentsView.m; sourceTree = "<group>"; };
 		C9C37C2C122D3F5900DD350F /* BlioViewSettingsPopover.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioViewSettingsPopover.h; sourceTree = "<group>"; };
 		C9C37C2D122D3F5900DD350F /* BlioViewSettingsPopover.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioViewSettingsPopover.m; sourceTree = "<group>"; };
 		C9C5467510F77EDD00ECE126 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
@@ -3914,13 +3928,17 @@
 		7D5B0C4D147AD748007E3865 /* View Settings */ = {
 			isa = PBXGroup;
 			children = (
-				C932AF9210EBCFBD00B8286A /* BlioViewSettingsSheet.h */,
-				A3B6F6F2120C5E2E00D48E04 /* BlioViewSettingsSheet.m */,
+				7D6C65A31619A07B00B15BA4 /* BlioViewSettingsInterface.h */,
+				7D6C65A41619A0B000B15BA4 /* BlioViewSettingsInterface.m */,
 				C9C37C2C122D3F5900DD350F /* BlioViewSettingsPopover.h */,
 				C9C37C2D122D3F5900DD350F /* BlioViewSettingsPopover.m */,
-				7D5B0C4C147AD743007E3865 /* BlioViewSettings.h */,
-				C9C37B9A122D278800DD350F /* BlioViewSettingsContentsView.h */,
-				C9C37B9B122D278800DD350F /* BlioViewSettingsContentsView.m */,
+				C932AF9210EBCFBD00B8286A /* BlioViewSettingsSheet.h */,
+				A3B6F6F2120C5E2E00D48E04 /* BlioViewSettingsSheet.m */,
+				7D5B0C4C147AD743007E3865 /* BlioViewSettingsMetrics.h */,
+				7D6C65AA1619A36E00B15BA4 /* BlioViewSettingsContentsView.h */,
+				7D6C65AB1619A36E00B15BA4 /* BlioViewSettingsContentsView.m */,
+				C9C37B9A122D278800DD350F /* BlioViewSettingsGeneralContentsView.h */,
+				C9C37B9B122D278800DD350F /* BlioViewSettingsGeneralContentsView.m */,
 				7D5B0C46147AD3D0007E3865 /* BlioViewSettingsFontAndSizeContentsView.h */,
 				7D5B0C47147AD3D0007E3865 /* BlioViewSettingsFontAndSizeContentsView.m */,
 			);
@@ -6264,7 +6282,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				7D6D9FFE124E9E1A005FD8CE /* NSArray+BlioAdditions.m in Sources */,
-				7D6D9FF7124E9DEE005FD8CE /* BlioViewSettingsContentsView.m in Sources */,
+				7D6D9FF7124E9DEE005FD8CE /* BlioViewSettingsGeneralContentsView.m in Sources */,
 				7D6D9FF8124E9DEE005FD8CE /* BlioViewSettingsPopover.m in Sources */,
 				7D6D9FF9124E9DEE005FD8CE /* BlioModalPopoverController.m in Sources */,
 				7D6D9FFA124E9DEE005FD8CE /* BlioBookSearchPopoverController.m in Sources */,
@@ -6431,6 +6449,8 @@
 				7D86609B150508F200B68A84 /* BlioEPubMetadataReader.m in Sources */,
 				7DCBD5B216009C0300F3F6C4 /* BlioAutorotatingViewController.m in Sources */,
 				7D9662CA1608B0710051481C /* BlioWebTextController.m in Sources */,
+				7D6C65A51619A0B000B15BA4 /* BlioViewSettingsInterface.m in Sources */,
+				7D6C65AC1619A36F00B15BA4 /* BlioViewSettingsContentsView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -6439,7 +6459,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				7DB7029F1248D38E00BC3272 /* NSArray+BlioAdditions.m in Sources */,
-				7D6D9FF1124E9DC5005FD8CE /* BlioViewSettingsContentsView.m in Sources */,
+				7D6D9FF1124E9DC5005FD8CE /* BlioViewSettingsGeneralContentsView.m in Sources */,
 				7D6D9FF2124E9DC5005FD8CE /* BlioViewSettingsPopover.m in Sources */,
 				7D6D9FF3124E9DC5005FD8CE /* BlioModalPopoverController.m in Sources */,
 				7D6D9FF4124E9DC5005FD8CE /* BlioBookSearchPopoverController.m in Sources */,
@@ -6606,6 +6626,8 @@
 				7D86609D150508F200B68A84 /* BlioEPubMetadataReader.m in Sources */,
 				7D9662C81608B0710051481C /* BlioWebTextController.m in Sources */,
 				7D9662CD1608B0790051481C /* BlioAutorotatingViewController.m in Sources */,
+				7D6C65A71619A0B000B15BA4 /* BlioViewSettingsInterface.m in Sources */,
+				7D6C65AE1619A36F00B15BA4 /* BlioViewSettingsContentsView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -6614,7 +6636,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				A31CC7ED13FEA07E0010BFC5 /* NSArray+BlioAdditions.m in Sources */,
-				A31CC7EE13FEA07E0010BFC5 /* BlioViewSettingsContentsView.m in Sources */,
+				A31CC7EE13FEA07E0010BFC5 /* BlioViewSettingsGeneralContentsView.m in Sources */,
 				A31CC7EF13FEA07E0010BFC5 /* BlioViewSettingsPopover.m in Sources */,
 				A31CC7F013FEA07E0010BFC5 /* BlioModalPopoverController.m in Sources */,
 				A31CC7F113FEA07E0010BFC5 /* BlioBookSearchPopoverController.m in Sources */,
@@ -6781,6 +6803,8 @@
 				7D9662C71608B0700051481C /* BlioWebTextController.m in Sources */,
 				7D9662CC1608B0790051481C /* BlioAutorotatingViewController.m in Sources */,
 				7D9662CF1608B0E10051481C /* BlioVoiceOverTextController.m in Sources */,
+				7D6C65A81619A0B000B15BA4 /* BlioViewSettingsInterface.m in Sources */,
+				7D6C65AF1619A36F00B15BA4 /* BlioViewSettingsContentsView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -6864,7 +6888,7 @@
 				A3B6F6F4120C5E2E00D48E04 /* BlioViewSettingsSheet.m in Sources */,
 				7D8A8020121A99FB00A54E16 /* BlioBeveledView.m in Sources */,
 				A3729AF61225A18800E68C25 /* BlioDrmSessionManager.m in Sources */,
-				C9C37B9C122D278800DD350F /* BlioViewSettingsContentsView.m in Sources */,
+				C9C37B9C122D278800DD350F /* BlioViewSettingsGeneralContentsView.m in Sources */,
 				C9C37C2E122D3F5900DD350F /* BlioViewSettingsPopover.m in Sources */,
 				C9221746123504E500992E2E /* BlioModalPopoverController.m in Sources */,
 				C95FC84B123A3D1100859B92 /* BlioBookSearchPopoverController.m in Sources */,
@@ -6956,6 +6980,8 @@
 				7D86609C150508F200B68A84 /* BlioEPubMetadataReader.m in Sources */,
 				7D9662C91608B0710051481C /* BlioWebTextController.m in Sources */,
 				7D9662CE1608B0790051481C /* BlioAutorotatingViewController.m in Sources */,
+				7D6C65A61619A0B000B15BA4 /* BlioViewSettingsInterface.m in Sources */,
+				7D6C65AD1619A36F00B15BA4 /* BlioViewSettingsContentsView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -6964,7 +6990,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				A3BEFD61152DE9E6009B4F4A /* NSArray+BlioAdditions.m in Sources */,
-				A3BEFD62152DE9E6009B4F4A /* BlioViewSettingsContentsView.m in Sources */,
+				A3BEFD62152DE9E6009B4F4A /* BlioViewSettingsGeneralContentsView.m in Sources */,
 				A3BEFD63152DE9E6009B4F4A /* BlioViewSettingsPopover.m in Sources */,
 				A3BEFD64152DE9E6009B4F4A /* BlioModalPopoverController.m in Sources */,
 				A3BEFD65152DE9E6009B4F4A /* BlioBookSearchPopoverController.m in Sources */,
@@ -7131,6 +7157,8 @@
 				A3BEFE07152DE9E6009B4F4A /* BlioEPubMetadataReader.m in Sources */,
 				A35CEEAD15D1B06E00A3AB21 /* BlioWebTextController.m in Sources */,
 				7D9662CB1608B0780051481C /* BlioAutorotatingViewController.m in Sources */,
+				7D6C65A91619A0B000B15BA4 /* BlioViewSettingsInterface.m in Sources */,
+				7D6C65B01619A36F00B15BA4 /* BlioViewSettingsContentsView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

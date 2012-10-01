@@ -23,8 +23,9 @@
 #import "BlioAlertManager.h"
 #import "BlioBookManager.h"
 #import "BlioBeveledView.h"
-#import "BlioViewSettingsPopover.h"
-#import "BlioViewSettingsContentsView.h"
+#import "BlioViewSettingsInterface.h"
+#import "BlioViewSettingsGeneralContentsView.h"
+#import "BlioViewSettingsFontAndSizeContentsView.h"
 #import "BlioModalPopoverController.h"
 #import "BlioBookSearchPopoverController.h"
 #import "Reachability.h"
@@ -79,12 +80,12 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 @property (nonatomic, retain) UIView *rootView;
 
 @property (nonatomic, retain) BlioBookSearchViewController *searchViewController;
-@property (nonatomic, retain) BlioViewSettingsSheet *viewSettingsSheet;
-@property (nonatomic, retain) BlioViewSettingsPopover*viewSettingsPopover;
+@property (nonatomic, retain) BlioViewSettingsInterface *viewSettingsInterface;
 @property (nonatomic, retain) BlioModalPopoverController *contentsPopover;
 @property (nonatomic, retain) BlioModalPopoverController *searchPopover;
 @property (nonatomic, retain) UIBarButtonItem *contentsButton;
 @property (nonatomic, retain) UIBarButtonItem *viewSettingsButton;
+@property (nonatomic, retain) UIBarButtonItem *fontSettingsButton;
 @property (nonatomic, retain) UIBarButtonItem *searchButton;
 @property (nonatomic, retain) UIBarButtonItem *backButton;
 @property (nonatomic, retain) NSMutableArray *historyStack;
@@ -170,7 +171,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 @synthesize coverView;
 @synthesize historyStack;
 @synthesize thumbPreview;
-@synthesize viewSettingsSheet, viewSettingsPopover, contentsPopover, searchPopover, contentsButton, viewSettingsButton, searchButton, backButton;
+@synthesize viewSettingsInterface, contentsPopover, searchPopover, contentsButton, viewSettingsButton, fontSettingsButton, searchButton, backButton;
 
 @synthesize wordToolPopoverController;
 
@@ -645,21 +646,39 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     [readingItems addObject:item];
     [item release];
 	
-    item = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"icon-back.png"]
+    item = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"icon-fontsize.png"]
                                             style:UIBarButtonItemStylePlain
-                                           target:self 
-                                           action:@selector(goBackInHistory)];
+                                           target:self
+                                           action:@selector(showFontSettings:)];
     
-    [item setAccessibilityLabel:NSLocalizedString(@"Back", @"Accessibility label for Book View Controller Back button")];
-	
+    [item setAccessibilityLabel:NSLocalizedString(@"Font Settings", @"Accessibility label for Book View Controller Back button")];
+    
     [readingItems addObject:item];
-	item.enabled = NO;
-	self.backButton = item;
-    [item release]; 
-	
+    item.enabled = [self shouldShowFontSettings];
+    self.fontSettingsButton = item;
+    [item release];
+    
     item = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
     [readingItems addObject:item];
     [item release];
+    
+    if(!UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+        item = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"icon-back.png"]
+                                                style:UIBarButtonItemStylePlain
+                                               target:self 
+                                               action:@selector(goBackInHistory)];
+        
+        [item setAccessibilityLabel:NSLocalizedString(@"Back", @"Accessibility label for Book View Controller Back button")];
+
+        [readingItems addObject:item];
+        item.enabled = NO;
+        self.backButton = item;
+        [item release]; 
+        
+        item = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
+        [readingItems addObject:item];
+        [item release];
+    }
     
     item = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"icon-contents.png"]
                                             style:UIBarButtonItemStylePlain
@@ -824,6 +843,8 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
                            options:NSKeyValueObservingOptionNew
                            context:nil];   
         }
+        
+        self.fontSettingsButton.enabled = [self shouldShowFontSettings];
     }
 }
 
@@ -1270,12 +1291,12 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     self.managedObjectContext = nil;
     self.delegate = nil;
     self.coverView = nil;
-    self.viewSettingsSheet = nil;
-    self.viewSettingsPopover = nil;
+    self.viewSettingsInterface = nil;
     self.contentsPopover = nil;
     self.searchPopover = nil;
     self.contentsButton = nil;
     self.viewSettingsButton = nil;
+    self.fontSettingsButton = nil;
     self.searchButton = nil;
 	self.backButton = nil;
     self.historyStack = nil;
@@ -1781,7 +1802,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     if(![currentAccessibilityValue isEqualToString:newLabel]) {
         [_pageJumpSlider setAccessibilityValue:newLabel];
         if(self.toolbarsVisible && !_pageJumpView.isHidden && 
-           !self.viewSettingsPopover && !self.viewSettingsSheet) {
+           !self.viewSettingsInterface) {
             if([[UIDevice currentDevice] compareSystemVersion:@"4.0"] >= NSOrderedSame) {
                 UIAccessibilityPostNotification(UIAccessibilityAnnouncementNotification, newLabel);
             }
@@ -2212,56 +2233,38 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     }
 }
 
-- (void)showViewSettings:(id)sender {    
-    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-        if (![self.viewSettingsPopover isPopoverVisible]) {
-            BlioViewSettingsPopover *aSettingsPopover = [[BlioViewSettingsPopover alloc] initWithDelegate:self];
-            self.viewSettingsPopover = aSettingsPopover;
-            [aSettingsPopover presentPopoverFromBarButtonItem:(UIBarButtonItem *)sender permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];
-            [aSettingsPopover release];
-        }
-    } else {
-        if (!self.viewSettingsSheet) {
-            BlioViewSettingsSheet *aSettingsSheet = [[BlioViewSettingsSheet alloc] initWithDelegate:self];
-            self.viewSettingsSheet = aSettingsSheet;
-            [aSettingsSheet showFromToolbar:self.navigationController.toolbar];
-            [aSettingsSheet release];
+- (void)_showViewSettingsInterfaceWithContentsView:(BlioViewSettingsContentsView *)aContentsView
+                                 fromBarButtonItem:(UIBarButtonItem *)barButtonItem;
+{
+    if(aContentsView) {
+        aContentsView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+        BlioViewSettingsInterface *aViewSettingsInterface = [[BlioViewSettingsInterface alloc] initWithDelegate:self contentsView:aContentsView];
+        if(aViewSettingsInterface) {
+            self.viewSettingsInterface = aViewSettingsInterface;
+            [aViewSettingsInterface presentFromBarButtonItem:barButtonItem];
+            [aViewSettingsInterface release];
         }
     }
 }
 
-- (void)dismissViewSettings:(id)sender {
-    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-        [self.viewSettingsPopover dismissPopoverAnimated:YES];
-    } else {
-        [self.viewSettingsSheet dismissAnimated:YES];
-    }
+- (void)showViewSettings:(id)sender {
+    BlioViewSettingsContentsView *aContentsView = [[BlioViewSettingsGeneralContentsView alloc] initWithDelegate:self];
+    [self _showViewSettingsInterfaceWithContentsView:aContentsView fromBarButtonItem:(UIBarButtonItem *)sender];
+    [aContentsView release];
 }
 
-- (void)viewSettingsDidDismiss:(id)sender {
-    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-        self.viewSettingsPopover = nil;
-    } else {
-        self.viewSettingsSheet = nil;
-    }
+- (void)showFontSettings:(id)sender {
+    BlioViewSettingsContentsView *aContentsView = [[BlioViewSettingsFontAndSizeContentsView alloc] initWithDelegate:self];
+    [self _showViewSettingsInterfaceWithContentsView:aContentsView fromBarButtonItem:(UIBarButtonItem *)sender];
+    [aContentsView release];
 }
 
-- (void)viewSettingsShowFontSettings:(id)sender {
-    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-        [self.viewSettingsPopover pushFontSettings];
-    } else {
-        [self.viewSettingsSheet pushFontSettings];
-    }
-
+- (void)dismissViewSettingsInterface:(id)sender {
+    [self.viewSettingsInterface dismissAnimated:YES];
 }
 
-- (void)viewSettingsDismissFontSettings:(id)sender {
-    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-        // Navigation is handled by the popover/nav controller,
-        // no need to do anything here.
-    } else {
-        
-    }
+- (void)viewSettingsInterfaceDidDismiss:(BlioViewSettingsInterface *)sender {
+    self.viewSettingsInterface = nil;
 }
 
 - (void)buyBook:(id)sender {
@@ -2895,12 +2898,8 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     
     [self.searchViewController willRotateToInterfaceOrientation:toInterfaceOrientation duration:duration];
     [self.contentsPopover willRotateToInterfaceOrientation:toInterfaceOrientation duration:duration];
-    [self.viewSettingsPopover willRotateToInterfaceOrientation:toInterfaceOrientation duration:duration];
-    
-    if(self.viewSettingsSheet) {
-        [self.viewSettingsSheet dismissAnimated:NO];
-    }
-    
+    [self.viewSettingsInterface willRotateToInterfaceOrientation:toInterfaceOrientation duration:duration];
+        
     [self setNavigationBarButtonsForInterfaceOrientation:toInterfaceOrientation];
     
     [self.bookView setNeedsLayout];
@@ -2915,8 +2914,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     [self.contentsPopover presentPopoverFromBarButtonItem:self.contentsButton permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];
     [self.contentsPopover didRotateFromInterfaceOrientation:fromInterfaceOrientation];
     
-    [self.viewSettingsPopover presentPopoverFromBarButtonItem:self.viewSettingsButton permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];
-    [self.viewSettingsPopover didRotateFromInterfaceOrientation:fromInterfaceOrientation];
+    [self.viewSettingsInterface didRotateFromInterfaceOrientation:fromInterfaceOrientation];
     
     if (shouldDisplaySearchAfterRotation) {
         shouldDisplaySearchAfterRotation = NO;

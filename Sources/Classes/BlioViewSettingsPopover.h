@@ -7,18 +7,12 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "BlioViewSettingsInterface.h"
 #import "BlioModalPopoverController.h"
 
-@class BlioViewSettingsContentsView;
-@protocol BlioViewSettingsDelegate;
+@class BlioViewSettingsGeneralContentsView;
+@protocol BlioViewSettingsContentsViewDelegate;
 
-@interface BlioViewSettingsPopover : BlioModalPopoverController <UIPopoverControllerDelegate, UINavigationControllerDelegate> {
-    BlioViewSettingsContentsView *settingsContentsView;
-    id<BlioViewSettingsDelegate> viewSettingsDelegate;
-}
-
-- (id)initWithDelegate:(id)newDelegate;
-
-- (void)pushFontSettings;
+@interface BlioViewSettingsPopover : BlioViewSettingsInterface
 
 @end

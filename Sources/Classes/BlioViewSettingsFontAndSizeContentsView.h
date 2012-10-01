@@ -10,11 +10,9 @@
 #import "BlioAccessibilitySegmentedControl.h"
 #import "BlioBookViewController.h"
 
-@protocol BlioViewSettingsDelegate;
+@protocol BlioViewSettingsContentsViewDelegate;
 
-@interface BlioViewSettingsFontAndSizeContentsView : UIView <UITableViewDelegate, UITableViewDataSource> {
-    id<BlioViewSettingsDelegate> delegate;
-    
+@interface BlioViewSettingsFontAndSizeContentsView : BlioViewSettingsContentsView <UITableViewDelegate, UITableViewDataSource> {
     BOOL refreshingSettings;
 
     UILabel *fontSizeLabel;
@@ -27,11 +25,6 @@
     UITableView *fontTableView;
 }
 
-@property (nonatomic, assign, readonly) id<BlioViewSettingsDelegate> delegate;
-@property (nonatomic, assign, readonly) CGFloat rowHeight;
-
-- (id)initWithDelegate:(id<BlioViewSettingsDelegate>)newDelegate;
-- (void)refreshSettings;
 - (void)flashScrollIndicators;
 
 @end

@@ -13,7 +13,6 @@
 #import "BlioAudioBookManager.h"
 #import "BlioBook.h"
 #import "BlioBookView.h"
-#import "BlioViewSettingsSheet.h"
 #import "BlioNotesView.h"
 #import "BlioContentsTabViewController.h"
 #import "BlioWebToolsViewController.h"
@@ -21,50 +20,8 @@
 #import "BlioBookSearchViewController.h"
 #import "BlioCoverView.h"
 #import "BlioAutorotatingViewController.h"
-
-@protocol BlioViewSettingsDelegate <NSObject>
-@required
-- (BOOL)shouldShowFontSettings;
-- (BOOL)shouldShowFontSizeSettings;
-- (BOOL)shouldShowJustificationSettings;
-- (BOOL)shouldShowPageColorSettings;
-- (BOOL)shouldShowtapZoomsSettings;
-- (BOOL)shouldShowTwoUpLandscapeSettings;
-
-- (BOOL)shouldPresentBrightnessSliderVerticallyInPageSettings;
-- (BOOL)shouldShowDoneButtonInPageSettings;
-
-- (void)changePageLayout:(BlioPageLayout)newLayout;
-- (void)changeFontName:(NSString *)fontName;
-- (void)changeFontSizeIndex:(NSUInteger)newSize;
-- (void)changeJustification:(BlioJustification)sender;
-- (void)changePageColor:(BlioPageColor)sender;
-- (void)changeTapZooms:(BOOL)newTabZooms;
-- (void)changeTwoUpLandscape:(BOOL)shouldBeTwoUp;
-
-- (BOOL)reflowEnabled;
-- (BOOL)fixedViewEnabled;
-
-- (BlioPageLayout)currentPageLayout;
-- (NSString *)currentFontName;
-- (NSUInteger)fontSizeCount;
-- (NSUInteger)currentFontSizeIndex;
-- (BlioJustification)currentJustification;
-- (BlioPageColor)currentPageColor;
-- (BOOL)currentTapZooms;
-- (BOOL)currentTwoUpLandscape;
-
-- (void)dismissViewSettings:(id)sender;
-- (void)viewSettingsDidDismiss:(id)sender;
-
-- (void)viewSettingsShowFontSettings:(id)sender;
-- (void)viewSettingsDismissFontSettings:(id)sender;
-
-- (NSArray *)fontDisplayNames;
-- (NSString *)fontDisplayNameToFontName:(NSString *)fontDisplayName;
-- (NSString *)fontNameToFontDisplayName:(NSString *)fontDisplayName;
-
-@end
+#import "BlioViewSettingsInterface.h"
+#import "BlioViewSettingsContentsView.h"
 
 @class BlioModalPopoverController, BlioBookSlider, BlioBookSliderPreview, BlioViewSettingsPopover;
 @protocol EucBook, BlioBookView;
@@ -75,7 +32,7 @@ typedef enum {
     BookViewControlleUIFadeStateFadingIn,
 } BookViewControllerUIFadeState;
 
-@interface BlioBookViewController : BlioAutorotatingViewController <BlioBookViewDelegate, THEventCaptureObserver,UIActionSheetDelegate,UIAccelerometerDelegate, BlioNotesViewDelegate, BlioContentsTabViewControllerDelegate, BlioViewSettingsDelegate, AVAudioPlayerDelegate, UIPopoverControllerDelegate, UIAlertViewDelegate> {
+@interface BlioBookViewController : BlioAutorotatingViewController <BlioBookViewDelegate, THEventCaptureObserver,UIActionSheetDelegate,UIAccelerometerDelegate, BlioNotesViewDelegate, BlioContentsTabViewControllerDelegate, BlioViewSettingsContentsViewDelegate, BlioViewSettingsInterfaceDelegate, AVAudioPlayerDelegate, UIPopoverControllerDelegate, UIAlertViewDelegate> {
     BOOL _firstAppearance;
     
     UIView *_rootView;
@@ -136,8 +93,7 @@ typedef enum {
     BOOL coverReady;
     BOOL coverOpened;
     
-    BlioViewSettingsSheet *viewSettingsSheet;
-    BlioViewSettingsPopover *viewSettingsPopover;
+    BlioViewSettingsInterface *viewSettingsInterface;
     BlioModalPopoverController *contentsPopover;
     BlioModalPopoverController *searchPopover;
     UIBarButtonItem* contentsButton;
