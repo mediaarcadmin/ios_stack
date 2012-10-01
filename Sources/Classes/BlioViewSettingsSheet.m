@@ -23,8 +23,6 @@
 
 @implementation BlioViewSettingsSheetMask
 
-@synthesize settingsSheet;
-
 - (id)init
 {
     if((self = [super init])) {
@@ -47,112 +45,99 @@
 
 @end
 
-@interface BlioViewSettingsSheet()
-/*
+@interface BlioViewSettingsSheet ()
+
+@property (nonatomic, retain) UIControl *screenMask;
 @property (nonatomic, retain) EucMenuView *menuView;
+
+- (void)dismiss;
+
+
+/*
 @property (nonatomic, retain) UIView *containerView;
 @property (nonatomic, retain) BlioViewSettingsGeneralContentsView *settingsContentsView;
-@property (nonatomic, retain) UIControl *screenMask;
 
 - (void)dismiss;
 */
 @end
 
 @implementation BlioViewSettingsSheet
-/*
-@synthesize delegate, settingsContentsView, menuView, containerView, screenMask;
 
-- (void)dealloc {
-    // Just in case...
-    [self.menuView removeFromSuperview];
-    self.menuView = nil;
-    [self.screenMask removeFromSuperview];
-    self.screenMask = nil;
-    
-    self.settingsContentsView = nil;
-    [super dealloc];
-}
-
-- (id)initWithDelegate:(id<BlioViewSettingsContentsViewDelegate>)newDelegate {
-	if ((self = [super init])) {
-        self.delegate = newDelegate;
-    }
-	return self;
-}
-
-- (void)showFromToolbar:(UIToolbar *)toolbar
+- (void)presentFromBarButtonItem:(UIBarButtonItem *)item
+                       inToolbar:(UIToolbar *)toolbar
+                        forEvent:(UIEvent *)event
 {
     UIWindow *window = toolbar.window;
+    BlioViewSettingsContentsView *contentsView = self.contentsView;
     
-    BlioViewSettingsSheetMask *invisibleDismissButton = [[BlioViewSettingsSheetMask alloc] init];
-    invisibleDismissButton.frame = window.bounds;
-    [invisibleDismissButton addTarget:self action:@selector(dismiss) forControlEvents:UIControlEventTouchUpInside];
-    [window addSubview:invisibleDismissButton];
+    BlioViewSettingsSheetMask *screenMask = [[BlioViewSettingsSheetMask alloc] init];
+    screenMask.frame = window.bounds;
+    [screenMask addTarget:self action:@selector(dismiss) forControlEvents:UIControlEventTouchUpInside];
+    [window addSubview:screenMask];
+    self.screenMask = screenMask;
+    [screenMask release];
     
-    EucMenuView *newMenuView = [[EucMenuView alloc] init];
-    [invisibleDismissButton addSubview:newMenuView];
+    EucMenuView *menuView = [[EucMenuView alloc] init];
+    [screenMask addSubview:menuView];
+
+    UIView *containerContainerView = [[UIView alloc] initWithFrame:CGRectZero];
+    containerContainerView.layer.cornerRadius = 6.0f;
+    containerContainerView.layer.masksToBounds = YES;
+    menuView.containedView = containerContainerView;
+    [containerContainerView release];
     
-    UIView *aContainerContainerView = [[UIView alloc] initWithFrame:CGRectZero];
-    aContainerContainerView.layer.cornerRadius = 6.0f;
-    aContainerContainerView.layer.masksToBounds = YES;
-    newMenuView.containedView = aContainerContainerView;
+    CGRect preferredContentsFrame = (CGRect){ CGPointZero, contentsView.preferredSize };
+
+    containerContainerView.frame = preferredContentsFrame;
+    contentsView.frame = preferredContentsFrame;
+
+    [containerContainerView addSubview:contentsView];
     
-    UIView *aContainerView = [[UIView alloc] initWithFrame:CGRectZero];
-    aContainerView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-    [aContainerContainerView addSubview:aContainerView];
-    
-    BlioViewSettingsGeneralContentsView *aContentsView = [[BlioViewSettingsGeneralContentsView alloc] initWithDelegate:self.delegate];
-    aContentsView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-    [aContainerView addSubview:aContentsView];
-    
-    CGFloat desiredContentsHeight = aContentsView.contentsHeight;
-    if(toolbar.bounds.size.width <= 320) {
-        aContainerContainerView.frame = CGRectMake(0, 0, 289, desiredContentsHeight);
-        [newMenuView positionAndResizeForAttachingToRect:CGRectMake(279, 15, 1, 1) fromView:toolbar];
-    } else {
-        if(aContentsView.hasScreenBrightnessSlider && [self.delegate shouldPresentBrightnessSliderVerticallyInPageSettings]) {
-            aContainerContainerView.frame = CGRectMake(0, 0, 319, desiredContentsHeight);
-        } else {
-            aContainerContainerView.frame = CGRectMake(0, 0, 289, desiredContentsHeight);
+    CGRect presentationRect = [toolbar frame];
+    for(UITouch* touch in [event allTouches]) {
+        if(touch.phase == UITouchPhaseEnded) {
+            presentationRect = [toolbar convertRect:touch.view.bounds fromView:touch.view];
+            break;
         }
-        [newMenuView positionAndResizeForAttachingToRect:CGRectMake(408, 13, 1, 1) fromView:toolbar];
     }
+    presentationRect = CGRectIntegral(CGRectInset(presentationRect, presentationRect.size.width * 0.33f, presentationRect.size.height * 0.33f));
+    [menuView positionAndResizeForAttachingToRect:presentationRect fromView:toolbar];
     
-    self.containerView = aContainerView;
-    self.settingsContentsView = aContentsView;
-    self.menuView = newMenuView;
-    self.screenMask = invisibleDismissButton;
-
-    [newMenuView release];
-    [aContainerContainerView release];
-    [aContainerView release];
-    [aContentsView release];
-    [invisibleDismissButton release];
-
+    self.menuView = menuView;
+    [menuView release];
+    
+    [contentsView performSelector:@selector(flashScrollIndicators) withObject:nil afterDelay:0.0];
+    
     UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, nil);
 }
 
 - (void)dismissAnimated:(BOOL)animated
 {
+    UIView *transitionView = [self.screenMask.superview retain];
+    
+    void(^removalBlock)(void) = ^{
+        [self.menuView removeFromSuperview];
+        self.menuView = nil;
+        [self.screenMask removeFromSuperview];
+        self.screenMask = nil;
+    };
+    
+    void(^completionBlock)(BOOL) = ^(BOOL finished){
+        [self.delegate viewSettingsInterfaceDidDismiss:self];
+        UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, nil);
+        [transitionView release];
+    };
+    
     if(animated) {
-        CATransition *animation = [CATransition animation];
-        [animation setType:kCATransitionFade];
-        [animation setDuration:0.3f];
-        [animation setTimingFunction:[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut]];
-        [[self.screenMask.superview layer] addAnimation:animation forKey:@"ViewSettingsFade"];
+        [UIView transitionWithView:self.screenMask.superview
+                          duration:1.0f / 3.0f
+                           options:UIViewAnimationOptionTransitionCrossDissolve
+                        animations:removalBlock
+                        completion:completionBlock];
+    } else {
+        removalBlock();
+        completionBlock(YES);
     }
-    
-    [self.menuView removeFromSuperview];
-    self.menuView = nil;
-    [self.screenMask removeFromSuperview];
-    self.screenMask = nil;
-    
-    self.settingsContentsView.delegate = nil;
-    self.settingsContentsView  = nil;
-    
-    [self.delegate viewSettingsDidDismiss:self];
-    
-    UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, nil);
 }
 
 - (void)dismiss
@@ -160,102 +145,12 @@
     [self dismissAnimated:YES];
 }
 
-- (void)animationDidStop:(CAAnimation *)anim finished:(BOOL)flag
+- (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration
 {
-    UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, nil);
+    // Would be nice to re-place ourselved after a rotation, like a UIPopover,
+    // but I can't see a non-sketchy way to find the rect of the toolbar item
+    // after the rotation.
+    [self dismissAnimated:NO];
 }
-
-- (void)popFontSettings
-{
-    while(self.containerView.subviews.count) {
-        [[self.containerView.subviews lastObject] removeFromSuperview];
-    }
-    
-    [self.settingsContentsView refreshSettings];
-    
-    [self.containerView addSubview:self.settingsContentsView];
-    
-    CATransition *transition = [[CATransition alloc] init];
-    transition.type = kCATransitionPush;
-    transition.subtype = kCATransitionFromLeft;
-    transition.delegate = self;
-    [self.containerView.layer addAnimation:transition forKey:@"pushFontsOut"];
-    [transition release];
-}
-
-- (void)pushFontSettings
-{
-    while(self.containerView.subviews.count) {
-        [[self.containerView.subviews lastObject] removeFromSuperview];
-    }
-    
-    BlioViewSettingsFontAndSizeContentsView *aFontSettingsView = [[BlioViewSettingsFontAndSizeContentsView alloc] initWithDelegate:self.delegate];
-    
-    CGFloat rowHeight = aFontSettingsView.rowHeight;
-    CGRect availableFrame = self.settingsContentsView.frame;
-    
-    UIImage *arrowImage = [[UIImage imageNamed:@"rightButtonBlackOpaque.png"] blioImageByFlippingHorizontally];
-    CGSize arrowImageSize = arrowImage.size;
-    arrowImage = [arrowImage stretchableImageWithLeftCapWidth:arrowImageSize.width * 0.5f topCapHeight:arrowImageSize.height * 0.5f];
-   
-    UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
-    [button setBackgroundImage:arrowImage forState:UIControlStateNormal];
-    button.titleEdgeInsets = UIEdgeInsetsMake(0, 14, 0, 8);
-    
-    [button setTitle:NSLocalizedString(@"Settings", "Title for button in Font Options popover to return to the reading settings screen (iPhone)")
-            forState:UIControlStateNormal];
-    
-    button.titleLabel.font = [UIFont boldSystemFontOfSize:[UIFont smallSystemFontSize]];
-    button.titleLabel.textColor = [UIColor whiteColor];
-    button.titleLabel.shadowColor = [UIColor colorWithWhite:0.0 alpha:0.5];
-    button.titleLabel.shadowOffset = CGSizeMake(0, -1);
-    button.titleLabel.textAlignment = UITextAlignmentCenter;
-    
-    button.accessibilityHint = NSLocalizedString(@"Back to Reading Settings.", "Accessibility hint for button on font and size settings popover (iPhone only)");
-    
-    [button sizeToFit];
-    button.frame = CGRectMake(kBlioViewSettingsXInsetIPhone, kBlioViewSettingsYInsetIPhone,
-                              button.frame.size.width + 22, rowHeight);
-    [button addTarget:self action:@selector(popFontSettings) forControlEvents:UIControlEventTouchUpInside];
-    [self.containerView addSubview:button];    
-
-    
-    CGRect labelFrame = availableFrame;
-    labelFrame.origin.y += kBlioViewSettingsXInsetIPhone;
-    labelFrame.size.height = rowHeight - 6;
-    UILabel *label = [[UILabel alloc] initWithFrame:labelFrame];
-    label.font = [UIFont boldSystemFontOfSize: 18.0f];
-    label.backgroundColor = [UIColor clearColor];
-    label.textColor = [UIColor whiteColor];
-    label.shadowColor = [UIColor colorWithWhite:0.0 alpha:0.5];
-    label.textAlignment = UITextAlignmentCenter;
-    
-    label.text = NSLocalizedString(@"Font Options", "Title for Font Options Popover");
-    [label sizeToFit];
-    labelFrame.size.width = label.frame.size.width;
-    labelFrame.origin.x = ceilf((availableFrame.size.width - labelFrame.size.width) * 0.5f);
-    label.frame = labelFrame;
-    
-    [self.containerView addSubview:label];    
-    [label release];
-    
-    CGRect fontSettingsFrame = availableFrame;
-    fontSettingsFrame.origin.y += rowHeight + kBlioViewSettingsRowSpacingIPhone;
-    fontSettingsFrame.size.height -= rowHeight + kBlioViewSettingsRowSpacingIPhone;
-    aFontSettingsView.frame = fontSettingsFrame;
-    aFontSettingsView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
-    
-    [self.settingsContentsView removeFromSuperview];
-    [self.containerView addSubview:aFontSettingsView];
-    
-    [aFontSettingsView release];
-    
-    CATransition *transition = [[CATransition alloc] init];
-    transition.type = kCATransitionPush;
-    transition.subtype = kCATransitionFromRight;
-    transition.delegate = self;
-    [self.containerView.layer addAnimation:transition forKey:@"pushFontsIn"];
-    [transition release];
-}*/
 
 @end

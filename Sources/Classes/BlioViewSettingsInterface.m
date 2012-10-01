@@ -46,7 +46,7 @@
     [super dealloc];
 }
 
-- (void)presentFromBarButtonItem:(UIBarButtonItem *)item {}
+- (void)presentFromBarButtonItem:(UIBarButtonItem *)item inToolbar:(UIToolbar *)toolbar forEvent:(UIEvent *)event {}
 - (void)dismissAnimated:(BOOL)animated {}
 - (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration {}
 - (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation {}

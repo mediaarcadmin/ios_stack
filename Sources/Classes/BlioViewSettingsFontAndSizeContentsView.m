@@ -363,7 +363,7 @@
     CGSize size;
     if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
         size.width = kBlioViewSettingsWidthIPhone;
-        size.height = 320;
+        size.height = self.rowHeight * 8;
     } else {
         size.width = kBlioViewSettingsWidthIPad;
         size.height = self.rowHeight * 10;

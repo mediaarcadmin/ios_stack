@@ -9,7 +9,7 @@
 #import "BlioViewSettingsPopover.h"
 #import "BlioViewSettingsContentsView.h"
 
-@interface BlioViewSettingsPopover() <UIPopoverControllerDelegate, UINavigationControllerDelegate>
+@interface BlioViewSettingsPopover () <UIPopoverControllerDelegate, UINavigationControllerDelegate>
 
 @property (nonatomic, retain) BlioModalPopoverController *popoverController;
 
@@ -18,6 +18,8 @@
 @implementation BlioViewSettingsPopover
 
 - (void)presentFromBarButtonItem:(UIBarButtonItem *)item
+                       inToolbar:(UIToolbar *)toolbar
+                        forEvent:(UIEvent *)event
 {
     BlioViewSettingsContentsView *contentsView = self.contentsView;
     

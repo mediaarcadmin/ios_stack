@@ -649,7 +649,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     item = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"icon-fontsize.png"]
                                             style:UIBarButtonItemStylePlain
                                            target:self
-                                           action:@selector(showFontSettings:)];
+                                           action:@selector(showFontSettings:forEvent:)];
     
     [item setAccessibilityLabel:NSLocalizedString(@"Font Settings", @"Accessibility label for Book View Controller Back button")];
     
@@ -758,7 +758,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     item = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"icon-wrench.png"]
                                             style:UIBarButtonItemStylePlain
                                            target:self 
-                                           action:@selector(showViewSettings:)];
+                                           action:@selector(showViewSettings:forEvent:)];
     
     [item setAccessibilityLabel:NSLocalizedString(@"Reading Settings", @"Accessibility label for Book View Controller Reading Settings button")];
     self.viewSettingsButton = item;
@@ -2234,28 +2234,29 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 }
 
 - (void)_showViewSettingsInterfaceWithContentsView:(BlioViewSettingsContentsView *)aContentsView
-                                 fromBarButtonItem:(UIBarButtonItem *)barButtonItem;
+                                 fromBarButtonItem:(UIBarButtonItem *)barButtonItem
+                                          forEvent:(UIEvent *)event
 {
     if(aContentsView) {
         aContentsView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
         BlioViewSettingsInterface *aViewSettingsInterface = [[BlioViewSettingsInterface alloc] initWithDelegate:self contentsView:aContentsView];
         if(aViewSettingsInterface) {
             self.viewSettingsInterface = aViewSettingsInterface;
-            [aViewSettingsInterface presentFromBarButtonItem:barButtonItem];
+            [aViewSettingsInterface presentFromBarButtonItem:barButtonItem inToolbar:self.navigationController.toolbar forEvent:event];
             [aViewSettingsInterface release];
         }
     }
 }
 
-- (void)showViewSettings:(id)sender {
+- (void)showViewSettings:(id)sender forEvent:(UIEvent *)event {
     BlioViewSettingsContentsView *aContentsView = [[BlioViewSettingsGeneralContentsView alloc] initWithDelegate:self];
-    [self _showViewSettingsInterfaceWithContentsView:aContentsView fromBarButtonItem:(UIBarButtonItem *)sender];
+    [self _showViewSettingsInterfaceWithContentsView:aContentsView fromBarButtonItem:(UIBarButtonItem *)sender forEvent:event];
     [aContentsView release];
 }
 
-- (void)showFontSettings:(id)sender {
+- (void)showFontSettings:(id)sender forEvent:(UIEvent *)event {
     BlioViewSettingsContentsView *aContentsView = [[BlioViewSettingsFontAndSizeContentsView alloc] initWithDelegate:self];
-    [self _showViewSettingsInterfaceWithContentsView:aContentsView fromBarButtonItem:(UIBarButtonItem *)sender];
+    [self _showViewSettingsInterfaceWithContentsView:aContentsView fromBarButtonItem:(UIBarButtonItem *)sender forEvent:event];
     [aContentsView release];
 }
 

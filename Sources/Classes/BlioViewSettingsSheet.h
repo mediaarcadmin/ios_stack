@@ -12,22 +12,6 @@
 @protocol BlioViewSettingsContentsViewDelegate;
 @class BlioViewSettingsGeneralContentsView, EucMenuView;
 
-@interface BlioViewSettingsSheet : BlioViewSettingsInterface/* {
-    id<BlioViewSettingsContentsViewDelegate> delegate;
-    UIControl *screenMask;
-    
-    EucMenuView *menuView;
-    UIView *containerView;
-    BlioViewSettingsGeneralContentsView *settingsContentsView;
-}
+@interface BlioViewSettingsSheet : BlioViewSettingsInterface
 
-@property (nonatomic, assign) id<BlioViewSettingsContentsViewDelegate> delegate;
-
-- (id)initWithDelegate:(id<BlioViewSettingsContentsViewDelegate>)delegate;
-- (void)showFromToolbar:(UIToolbar *)toolbar;
-- (void)dismiss;
-- (void)dismissAnimated:(BOOL)animated;
-
-- (void)pushFontSettings;
-*/
 @end
