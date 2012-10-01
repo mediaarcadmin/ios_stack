@@ -79,38 +79,4 @@
     [self.contentsView flashScrollIndicators];
 }
 
-/*
-- (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation {
-    [((BlioViewSettingsGeneralContentsView *)self.settingsContentsView) refreshSettings];
-    [super didRotateFromInterfaceOrientation:fromInterfaceOrientation];
-    // Need to hide and show nav bar to workaround bug when rotating which hides the nav bar
-    [(UINavigationController *)self.contentViewController setNavigationBarHidden:YES];
-    [(UINavigationController *)self.contentViewController setNavigationBarHidden:NO];
-}
-
-- (void)pushFontSettings
-{
-    BlioViewSettingsFontAndSizeContentsView *aFontSettingsView = [[BlioViewSettingsFontAndSizeContentsView alloc] initWithDelegate:self.viewSettingsDelegate];
-    
-    UIViewController *fontSettingsController = [[UIViewController alloc] init];
-    fontSettingsController.contentSizeForViewInPopover = ((UINavigationController *)self.contentViewController).topViewController.contentSizeForViewInPopover;
-    fontSettingsController.view = aFontSettingsView;
-    fontSettingsController.navigationItem.title = NSLocalizedString(@"Font Options", "Title for Font Options Popover");
-    
-    [((UINavigationController *)self.contentViewController) pushViewController:fontSettingsController animated:YES];
-    
-    [fontSettingsController release];
-    [aFontSettingsView release];
-}
-
-
-- (void)navigationController:(UINavigationController *)navigationController willShowViewController:(UIViewController *)viewController animated:(BOOL)animated
-{
-    if([viewController.view isKindOfClass:[BlioViewSettingsGeneralContentsView class]]) {
-        [((BlioViewSettingsGeneralContentsView *)viewController.view) refreshSettings];
-    }
-}
-*/
-
-
 @end
