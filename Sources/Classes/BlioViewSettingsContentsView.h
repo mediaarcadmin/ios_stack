@@ -30,6 +30,7 @@
 - (BOOL)shouldShowFontSettings;
 - (BOOL)shouldShowFontSizeSettings;
 - (BOOL)shouldShowJustificationSettings;
+- (BOOL)shouldShowExtraBoldnessSettings;
 - (BOOL)shouldShowPageColorSettings;
 - (BOOL)shouldShowtapZoomsSettings;
 - (BOOL)shouldShowTwoUpLandscapeSettings;
@@ -40,6 +41,7 @@
 - (void)changePageLayout:(BlioPageLayout)newLayout;
 - (void)changeFontName:(NSString *)fontName;
 - (void)changeFontSizeIndex:(NSUInteger)newSize;
+- (void)changeExtraBoldness:(BlioExtraBoldness)newSize;
 - (void)changeJustification:(BlioJustification)sender;
 - (void)changePageColor:(BlioPageColor)sender;
 - (void)changeTapZooms:(BOOL)newTabZooms;
@@ -52,6 +54,7 @@
 - (NSString *)currentFontName;
 - (NSUInteger)fontSizeCount;
 - (NSUInteger)currentFontSizeIndex;
+- (BlioExtraBoldness)currentExtraBoldness;
 - (BlioJustification)currentJustification;
 - (BlioPageColor)currentPageColor;
 - (BOOL)currentTapZooms;

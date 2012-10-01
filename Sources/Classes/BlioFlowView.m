@@ -23,6 +23,7 @@
 #import <libEucalyptus/EucSelectorRange.h>
 #import <libEucalyptus/EucOTFIndex.h>
 #import <libEucalyptus/EucPageOptions.h>
+#import <libEucalyptus/EucCSSPageOptions.h>
 #import <libEucalyptus/EucBookNavPoint.h>
 #import <libEucalyptus/THPair.h>
 #import "NSArray+BlioAdditions.h"
@@ -780,6 +781,19 @@
     }
 }
 
+- (void)changeEucPageOptionValue:(id)value forKey:(id)key
+{
+    NSDictionary *oldPageOptions = _eucBookView.pageOptions;
+    id oldValue = [oldPageOptions objectForKey:key];
+    if(!oldValue || ![value isEqual:[oldPageOptions objectForKey:key]]) {
+        NSMutableDictionary *newPageOptions = oldPageOptions ? [oldPageOptions mutableCopy] : [[NSMutableDictionary alloc] init];
+        [newPageOptions setObject:value
+                           forKey:key];
+        _eucBookView.pageOptions = newPageOptions;
+        [newPageOptions release];
+    }
+}
+
 - (void)setJustification:(BlioJustification)justification;
 {
     EucJustification eucJustification;
@@ -796,15 +810,7 @@
             break;
     }
     
-    NSDictionary *oldPageOptions = _eucBookView.pageOptions;
-    if(eucJustification != [[oldPageOptions objectForKey:EucPageOptionsJustificationKey] integerValue]) {
-        NSMutableDictionary *newPageOptions = oldPageOptions ? [oldPageOptions mutableCopy] : [[NSMutableDictionary alloc] init];
-        [newPageOptions setObject:[NSNumber numberWithInteger:eucJustification]
-                           forKey:EucPageOptionsJustificationKey];
-        _eucBookView.pageOptions = newPageOptions;
-        [newPageOptions release];
-    }
-    
+    [self changeEucPageOptionValue:[NSNumber numberWithInteger:eucJustification] forKey:EucPageOptionsJustificationKey];
 }
 
 - (BlioTwoUp)twoUp
@@ -825,6 +831,24 @@
 - (void)setShouldTapZoom:(BOOL)shouldTapZoom
 {
     _eucBookView.useContinuousReadingAccessibility = !shouldTapZoom;
+}
+
+- (BlioExtraBoldness)extraBoldness
+{
+    if([[_eucBookView.pageOptions objectForKey:EucCSSPageOptionsExtraBoldnessKey] integerValue] <= 0) {
+        return kBlioExtraBoldnessNone;
+    } else {
+        return kBlioExtraBoldnessExtra;
+    }
+}
+
+- (void)setExtraBoldness:(BlioExtraBoldness)extraBoldness
+{
+    // 300 extra CSS 'boldness units' will make normal 400-weight text
+    // into bold 700-weight text.
+    NSInteger extraCSSBoldness = extraBoldness == kBlioExtraBoldnessExtra ? 300 : 0;
+    [self changeEucPageOptionValue:[NSNumber numberWithInteger:extraCSSBoldness]
+                            forKey:EucCSSPageOptionsExtraBoldnessKey];
 }
 
 - (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration

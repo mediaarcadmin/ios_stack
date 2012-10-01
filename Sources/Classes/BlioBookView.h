@@ -41,6 +41,10 @@ typedef enum BlioTwoUp {
     kBlioTwoUpAlways = 2,
 } BlioTwoUp;
 
+typedef enum BlioExtraBoldness {
+    kBlioExtraBoldnessNone = 0,
+    kBlioExtraBoldnessExtra = 1,
+} BlioExtraBoldness;
 
 extern NSString * const kBlioOriginalFontName;
 
@@ -142,6 +146,7 @@ extern NSString * const kBlioOriginalFontName;
 
 @property (nonatomic, assign) BlioTwoUp twoUp;
 @property (nonatomic, assign) BOOL shouldTapZoom;
+@property (nonatomic, assign) BlioExtraBoldness extraBoldness;
 
 - (NSString *)displayPageNumberForPageAtIndex:(NSUInteger)pageIndex;
 // Implement if pageLabelForBookmarkPoint: is expensive for smooth slider operation.

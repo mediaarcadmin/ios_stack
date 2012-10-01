@@ -12,6 +12,7 @@
 
 #import "BlioUIImageAdditions.h"
 #import <libEucalyptus/THUIDeviceAdditions.h>
+#import <CoreText/CoreText.h>
 
 @interface BlioViewSettingsFontAndSizeContentsView ()
 
@@ -20,9 +21,11 @@
 @property (nonatomic, assign) BOOL refreshingSettings;
 
 @property (nonatomic, retain) UILabel *fontSizeLabel;
+@property (nonatomic, retain) UILabel *fontBoldnessLabel;
 @property (nonatomic, retain) UILabel *justificationLabel;
 
 @property (nonatomic, retain) BlioAccessibilitySegmentedControl *fontSizeSegment;
+@property (nonatomic, retain) BlioAccessibilitySegmentedControl *fontBoldnessSegment;
 @property (nonatomic, retain) BlioAccessibilitySegmentedControl *justificationSegment;
 
 @property (nonatomic, retain) UIView *fontTableViewContainer;
@@ -40,9 +43,11 @@
 @synthesize refreshingSettings;
 
 @synthesize fontSizeLabel;
+@synthesize fontBoldnessLabel;
 @synthesize justificationLabel;
 
 @synthesize fontSizeSegment;
+@synthesize fontBoldnessSegment;
 @synthesize justificationSegment;
 
 @synthesize fontTableViewContainer;
@@ -52,9 +57,11 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     
     self.fontSizeLabel = nil;
+    self.fontBoldnessLabel = nil;
     self.justificationLabel = nil;
     
     self.fontSizeSegment = nil;
+    self.fontBoldnessSegment = nil;
     self.justificationSegment = nil;
     
     self.fontTableViewContainer = nil;
@@ -90,6 +97,27 @@
         
         [self.fontSizeSegment setSelectedSegmentIndex:UISegmentedControlNoSegment];
 	}
+    
+    if ([self.delegate shouldShowExtraBoldnessSettings]) {
+        self.fontBoldnessLabel.enabled = YES;
+        self.fontBoldnessLabel.accessibilityTraits &= ~UIAccessibilityTraitNotEnabled;
+        
+        self.fontBoldnessSegment.enabled = YES;
+        self.fontBoldnessSegment.alpha = 1.0f;
+        self.fontBoldnessSegment.accessibilityTraits &= ~UIAccessibilityTraitNotEnabled;
+        
+        [self.fontBoldnessSegment setSelectedSegmentIndex:[self.delegate currentExtraBoldness]];
+    } else {
+        self.fontBoldnessLabel.enabled = NO;
+        self.fontBoldnessLabel.accessibilityTraits |= UIAccessibilityTraitNotEnabled;
+        
+        self.fontBoldnessSegment.enabled = NO;
+        self.fontBoldnessSegment.alpha = 0.35f;
+        self.fontBoldnessSegment.accessibilityTraits |= UIAccessibilityTraitNotEnabled;
+        
+        [self.fontBoldnessSegment setSelectedSegmentIndex:UISegmentedControlNoSegment];
+	}
+
     
     if ([self.delegate shouldShowJustificationSettings]) {
         self.justificationLabel.enabled = YES;
@@ -238,6 +266,32 @@
         
         [self.fontSizeSegment addTarget:self action:@selector(changeFontSize:) forControlEvents:UIControlEventValueChanged];
         
+        //////// FONT BOLDNESS
+        
+        UILabel *aFontBoldnessLabel = [[UILabel alloc] initWithFrame:CGRectZero];
+        aFontBoldnessLabel.font = [UIFont boldSystemFontOfSize:14.0f];
+        aFontBoldnessLabel.textColor = whiteColor;
+        aFontBoldnessLabel.backgroundColor = clearColor;
+        aFontBoldnessLabel.text = NSLocalizedString(@"Boldness",@"Settings Label for Boldness segmented control.");
+        [self addSubview:aFontBoldnessLabel];
+        self.fontBoldnessLabel = aFontBoldnessLabel;
+        [aFontBoldnessLabel release];
+        
+        NSArray *fontBoldnessTitles = [NSArray arrayWithObjects:
+                                       NSLocalizedString(@"Original",@"\"Original\" segment label (for Reading Settings font boldness control)"),
+                                       NSLocalizedString(@"Bolder",@"\"Bolder\" segment label (for Reading Settings font boldness control)"),
+                                       nil];
+        
+        BlioAccessibilitySegmentedControl *aFontBoldnessSegmentedControl = [[BlioAccessibilitySegmentedControl alloc] initWithItems:fontBoldnessTitles];
+        aFontBoldnessSegmentedControl.segmentedControlStyle = UISegmentedControlStyleBar;
+        aFontBoldnessSegmentedControl.tintColor = tintColor;
+        
+        [self addSubview:aFontBoldnessSegmentedControl];
+        self.fontBoldnessSegment = aFontBoldnessSegmentedControl;
+        [aFontBoldnessSegmentedControl release];
+        
+        [self.fontBoldnessSegment addTarget:self action:@selector(changeFontBoldness:) forControlEvents:UIControlEventValueChanged];
+        
         //////// JUSTIFICATION
 		
         UILabel *aJustificationLabel = [[UILabel alloc] initWithFrame:CGRectZero];
@@ -316,6 +370,10 @@
     [self.justificationSegment setFrame:CGRectMake(segmentX, currentY, segmentWidth, rowHeight)];
 
     currentY -= rowStride;
+    [self.fontBoldnessLabel setFrame:CGRectMake(xInset, currentY, labelWidth, rowHeight)];
+    [self.fontBoldnessSegment setFrame:CGRectMake(segmentX, currentY, segmentWidth, rowHeight)];
+    
+    currentY -= rowStride;
     [self.fontSizeLabel setFrame:CGRectMake(xInset, currentY, labelWidth, rowHeight)];
     [self.fontSizeSegment setFrame:CGRectMake(segmentX, currentY, segmentWidth, rowHeight)];
     
@@ -333,6 +391,23 @@
 - (void)changeFontSize:(id)sender {
     if(!self.refreshingSettings) {
         [self.delegate changeFontSizeIndex:((UISegmentedControl*)sender).selectedSegmentIndex];
+    }
+}
+
+- (void)changeFontBoldness:(id)sender {
+    if(!self.refreshingSettings) {
+        BlioExtraBoldness newBoldness;
+        switch(((UISegmentedControl*)sender).selectedSegmentIndex) {
+            default:
+            case 0:
+                newBoldness = kBlioExtraBoldnessNone;
+                break;
+            case 1:
+                newBoldness = kBlioExtraBoldnessExtra;
+                break;
+        }
+        [self.delegate changeExtraBoldness:newBoldness];
+        [self refreshSettings];
     }
 }
 
@@ -363,7 +438,7 @@
     CGSize size;
     if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
         size.width = kBlioViewSettingsWidthIPhone;
-        size.height = self.rowHeight * 8;
+        size.height = self.rowHeight * 8.5;
     } else {
         size.width = kBlioViewSettingsWidthIPad;
         size.height = self.rowHeight * 10;
@@ -441,7 +516,7 @@
     }
 
     BOOL isSelected = indexPath.row == [self currentSelectedFontRowIndex];
-    
+
     NSString *cellIdentifier;
     if(isOriginal) {
         cellIdentifier = @"original";
@@ -477,7 +552,22 @@
     }
             
     cell.textLabel.text = fontDisplayName;
-    cell.textLabel.font = [UIFont fontWithName:fontUseName size:isOriginal ? 18 : 24];
+    
+    NSUInteger fontSize = isOriginal ? 18 : 24;
+    if([self.delegate shouldShowExtraBoldnessSettings] &&
+       self.delegate.currentExtraBoldness == kBlioExtraBoldnessExtra) {
+        CTFontRef nonBoldFont = CTFontCreateWithName((CFStringRef)fontUseName, fontSize, NULL);
+        CTFontRef boldFont = CTFontCreateCopyWithSymbolicTraits(nonBoldFont, fontSize, &CGAffineTransformIdentity, kCTFontBoldTrait, kCTFontBoldTrait);
+        if(boldFont) {
+            CFRelease(nonBoldFont);
+        } else {
+            boldFont = nonBoldFont;
+        }
+        fontUseName = [(NSString *)CTFontCopyName(boldFont, kCTFontPostScriptNameKey) autorelease];
+        CFRelease(boldFont);
+    }
+    UIFont *font = [UIFont fontWithName:fontUseName size:fontSize];
+    cell.textLabel.font = font;
     
     return cell;
 }

@@ -49,6 +49,7 @@ static const NSUInteger kBlioMaxBookmarkTextLength = 50;
 static NSString * const kBlioLastLayoutDefaultsKey = @"lastLayout";
 static NSString * const kBlioLastFontNameDefaultsKey = @"lastFontName";
 static NSString * const kBlioLastFontSizeIndexDefaultsKey = @"lastFontSize";
+static NSString * const kBlioLastExtraBoldnessDefaultsKey = @"extraBoldness";
 static NSString * const kBlioLastJustificationDefaultsKey = @"lastJustification";
 static NSString * const kBlioLastPageColorDefaultsKey = @"lastPageColor";
 
@@ -805,6 +806,9 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
             if([_bookView respondsToSelector:@selector(setFontSizeIndex:)]) {
                 NSUInteger fontSizeIndex = [[NSUserDefaults standardUserDefaults] integerForKey:kBlioLastFontSizeIndexDefaultsKey];
                 _bookView.fontSizeIndex = MIN([self fontSizeCount] - 1, fontSizeIndex);
+            }
+            if([_bookView respondsToSelector:@selector(setExtraBoldness:)]) {
+                _bookView.extraBoldness = [[NSUserDefaults standardUserDefaults] integerForKey:kBlioLastExtraBoldnessDefaultsKey];
             }
             if([_bookView respondsToSelector:@selector(setJustification:)]) {
                 _bookView.justification = [[NSUserDefaults standardUserDefaults] integerForKey:kBlioLastJustificationDefaultsKey];
@@ -1912,6 +1916,10 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     return [self.bookView respondsToSelector:@selector(setJustification:)];
 }
 
+- (BOOL)shouldShowExtraBoldnessSettings {
+    return [self.bookView respondsToSelector:@selector(setExtraBoldness:)];
+}
+
 - (BOOL)shouldShowPageColorSettings {        
     return YES;
 }
@@ -2038,6 +2046,14 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 - (NSUInteger)fontSizeCount
 {
     return UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone ? 5 : 6;
+}
+
+- (void)changeExtraBoldness:(BlioExtraBoldness)newExtraBoldness {
+    [[NSUserDefaults standardUserDefaults] setInteger:newExtraBoldness forKey:kBlioLastExtraBoldnessDefaultsKey];
+    self.bookView.extraBoldness = newExtraBoldness;
+}
+- (BlioExtraBoldness)currentExtraBoldness {
+    return [[NSUserDefaults standardUserDefaults] integerForKey:kBlioLastExtraBoldnessDefaultsKey];
 }
 
 - (NSArray *)fontSizesForBlioBookView:(id<BlioBookView>)bookView
