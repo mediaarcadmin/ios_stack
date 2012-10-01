@@ -25,7 +25,6 @@
 - (void)goToContentsSectionIdentifier:(id)identifier animated:(BOOL)animated;
 - (void)deleteBookmark:(NSManagedObject *)bookmark;
 - (void)deleteNote:(NSManagedObject *)note;
-- (BOOL)isRotationLocked;
 
 @end
 

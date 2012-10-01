@@ -32,9 +32,6 @@
     UISlider *screenBrightnessSlider;
     
     UIButton *doneButton;
-    
-    UIImage *lockRotationImage;
-    UIImage *unlockRotationImage;   
 }
 
 @property (nonatomic, assign) id<BlioViewSettingsDelegate> delegate;

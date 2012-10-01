@@ -31,9 +31,6 @@
 
 @property (nonatomic, assign) BOOL refreshingSettings;
 
-@property (nonatomic, retain) UIImage *lockRotationImage;
-@property (nonatomic, retain) UIImage *unlockRotationImage;
-
 - (void)dismiss:(id)sender;
 - (void)screenBrightnessDidChange:(NSNotification *)notification;
 - (void)screenBrightnessSliderSlid:(UISlider *)slider;
@@ -62,8 +59,6 @@
 
 @synthesize doneButton;
 
-@synthesize lockRotationImage, unlockRotationImage;
-
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 
@@ -82,9 +77,6 @@
     self.screenBrightnessSlider = nil;
 
     self.doneButton = nil;
-    
-    self.lockRotationImage = nil;
-    self.unlockRotationImage = nil;
     
     [super dealloc];
 }
@@ -419,36 +411,7 @@
         [self.twoUpLandscapeSegment addTarget:self action:@selector(changeTwoUpLandscape:) forControlEvents:UIControlEventValueChanged];
 		
 		//////// ORIENTATION LOCK
-
-        if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
-            
-            BlioAccessibilitySegmentedControl *aLockButtonSegmentedControl = [[BlioAccessibilitySegmentedControl alloc] initWithItems:nil];
-            aLockButtonSegmentedControl.segmentedControlStyle = UISegmentedControlStyleBar;
-            aLockButtonSegmentedControl.tintColor = tintColor;
-            aLockButtonSegmentedControl.momentary = YES;
-//          [self addSubview:aLockButtonSegmentedControl];
-            self.lockButtonSegment = aLockButtonSegmentedControl;
-            [aLockButtonSegmentedControl release];
-            
-            self.unlockRotationImage = [UIImage imageWithIcon:[UIImage imageNamed:@"icon-lock.png"] string:NSLocalizedString(@"Unlock Rotation",@"\"Unlock Rotation\" label for Lock button") font:defaultFont color:whiteColor textInset:inset];
-            self.lockRotationImage = [UIImage imageWithIcon:[UIImage imageNamed:@"icon-lock.png"] string:NSLocalizedString(@"Lock Rotation",@"\"Lock Rotation\" label for Lock button") font:defaultFont color:whiteColor textInset:inset];
-            
-            BOOL currentLock = [self.delegate isRotationLocked];
-            if (currentLock) {
-                [aLockButtonSegmentedControl insertSegmentWithImage:self.unlockRotationImage atIndex:0 animated:NO];
-                [aLockButtonSegmentedControl setTintColor:kBlioViewSettingsGreenButton];
-                [[aLockButtonSegmentedControl imageForSegmentAtIndex:0] setAccessibilityLabel:NSLocalizedString(@"Unlock rotation", @"Accessibility label for View Settings Unlock Rotation button")];
-                [[aLockButtonSegmentedControl imageForSegmentAtIndex:0] setAccessibilityTraits:UIAccessibilityTraitButton | UIAccessibilityTraitSelected];
-            } else {
-                [aLockButtonSegmentedControl insertSegmentWithImage:self.lockRotationImage atIndex:0 animated:NO];
-                [[aLockButtonSegmentedControl imageForSegmentAtIndex:0] setAccessibilityLabel:NSLocalizedString(@"Lock Rotation", @"Accessibility label for View Settings Lock Rotation button")];
-                [[aLockButtonSegmentedControl imageForSegmentAtIndex:0] setAccessibilityTraits:UIAccessibilityTraitButton];
-            }
-            
-            
-            [self.lockButtonSegment addTarget:self action:@selector(changeLockRotation:) forControlEvents:UIControlEventValueChanged];  
-        }
-                
+        
         UIScreen *mainScreen = [UIScreen mainScreen];
         if([mainScreen respondsToSelector:@selector(setBrightness:)]) {
             // Weird valueForKey stuff to allow compilation with iOS SDK 4.3
@@ -647,29 +610,6 @@
 - (void)changeTwoUpLandscape:(id)sender {
     if(!self.refreshingSettings) {
         [self.delegate changeTwoUpLandscape:((UISegmentedControl*)sender).selectedSegmentIndex == 1];
-    }
-}
-
-- (void)changeLockRotation:(id)sender {
-    if(!self.refreshingSettings) {
-        [self.delegate toggleRotationLock];
-        
-        BOOL currentLock = [self.delegate isRotationLocked];
-        if (currentLock) {
-            [sender setImage:self.unlockRotationImage forSegmentAtIndex:0];
-            [sender setTintColor:kBlioViewSettingsGreenButton];
-            [[sender imageForSegmentAtIndex:0] setAccessibilityLabel:NSLocalizedString(@"Unlock rotation", @"Accessibility label for View Settings Unlock Rotation button")];
-            [[sender imageForSegmentAtIndex:0] setAccessibilityTraits:UIAccessibilityTraitButton | UIAccessibilityTraitSelected];
-        } else {
-            [sender setImage:self.lockRotationImage forSegmentAtIndex:0];
-            if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
-                [sender setTintColor:[UIColor darkGrayColor]];
-            } else {
-                [sender setTintColor:kBlioViewSettingsPopverBlueButton];
-            }
-            [[sender imageForSegmentAtIndex:0] setAccessibilityLabel:NSLocalizedString(@"Lock Rotation", @"Accessibility label for View Settings Lock Rotation button")];
-            [[sender imageForSegmentAtIndex:0] setAccessibilityTraits:UIAccessibilityTraitButton];
-        }
     }
 }
 

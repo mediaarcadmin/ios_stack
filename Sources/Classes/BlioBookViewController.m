@@ -50,7 +50,6 @@ static NSString * const kBlioLastFontNameDefaultsKey = @"lastFontName";
 static NSString * const kBlioLastFontSizeIndexDefaultsKey = @"lastFontSize";
 static NSString * const kBlioLastJustificationDefaultsKey = @"lastJustification";
 static NSString * const kBlioLastPageColorDefaultsKey = @"lastPageColor";
-static NSString * const kBlioLastLockRotationDefaultsKey = @"lastLockRotation";
 
 static NSString * const kBlioBookViewControllerCoverPopAnimation = @"BlioBookViewControllerCoverPopAnimation";
 static NSString * const kBlioBookViewControllerCoverFadeAnimation = @"BlioBookViewControllerCoverFadeAnimation";
@@ -165,8 +164,6 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 @synthesize audioPlaying = _audioPlaying;
 @synthesize audioEnabled = _audioEnabled;
 @synthesize managedObjectContext = _managedObjectContext;
-
-@synthesize rotationLocked;
 
 @synthesize searchViewController;
 @synthesize delegate;
@@ -2131,12 +2128,6 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 - (BOOL)currentTwoUpLandscape
 {
     return self.bookView.twoUp != kBlioTwoUpNever;
-}
-
-
-- (void)toggleRotationLock {
-    [self setRotationLocked:![self isRotationLocked]];
-    [[NSUserDefaults standardUserDefaults] setInteger:[self isRotationLocked] forKey:kBlioLastLockRotationDefaultsKey];
 }
 
 #pragma mark -

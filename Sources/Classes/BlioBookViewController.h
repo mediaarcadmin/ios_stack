@@ -41,7 +41,6 @@
 - (void)changePageColor:(BlioPageColor)sender;
 - (void)changeTapZooms:(BOOL)newTabZooms;
 - (void)changeTwoUpLandscape:(BOOL)shouldBeTwoUp;
-- (void)toggleRotationLock;
 
 - (BOOL)reflowEnabled;
 - (BOOL)fixedViewEnabled;
@@ -54,7 +53,6 @@
 - (BlioPageColor)currentPageColor;
 - (BOOL)currentTapZooms;
 - (BOOL)currentTwoUpLandscape;
-- (BOOL)isRotationLocked;
 
 - (void)dismissViewSettings:(id)sender;
 - (void)viewSettingsDidDismiss:(id)sender;
@@ -126,7 +124,6 @@ typedef enum {
     BlioBookSlider* _pageJumpSlider;
     UIButton *_bookmarkButton;
     NSManagedObjectContext *_managedObjectContext;
-    BOOL rotationLocked;
     
     NSUInteger _toolbarState;
     NSUInteger _beforeModalOverlayToolbarState;
@@ -177,8 +174,6 @@ typedef enum {
 @property (nonatomic, retain) UIView *pauseMask;
 @property (nonatomic, retain) UIButton *pauseButton;
 @property (nonatomic, retain) NSManagedObjectContext *managedObjectContext;
-
-@property (nonatomic, getter=isRotationLocked) BOOL rotationLocked;
 
 @property (nonatomic, assign) id <BlioCoverViewDelegate> delegate;
 @property (nonatomic, retain) BlioCoverView *coverView;
