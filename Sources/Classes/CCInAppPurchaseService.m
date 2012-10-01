@@ -82,7 +82,7 @@
 
 
 -(NSURLRequest*)URLRequest {
-	NSString * fullURL = [NSString stringWithFormat:@"%@activeproducts?testMode=%i",CCInAppPurchaseURL,testMode];
+	NSString * fullURL = [NSString stringWithFormat:@"%@activeproducts?version=3.4",CCInAppPurchaseURL];
 	NSLog(@"fetch products URL: %@",fullURL);
 	return[[[NSMutableURLRequest alloc] initWithURL:[NSURL URLWithString:fullURL]] autorelease];
 }
@@ -200,7 +200,7 @@
 }
 -(NSURLRequest*)URLRequest {
 	if (hardwareId && productId) {
-		NSString * parameteredURL = [NSString stringWithFormat:@"%@purchase?hardwareId=%@&productId=%@&testMode=%i",CCInAppPurchaseURL,hardwareId,productId,testMode];
+		NSString * parameteredURL = [NSString stringWithFormat:@"%@purchase?hardwareId=%@&productId=%@&version=3.4&testMode=%i",CCInAppPurchaseURL,hardwareId,productId,testMode];
 		NSMutableURLRequest * urlRequest = [[[NSMutableURLRequest alloc] initWithURL:[NSURL URLWithString:parameteredURL]] autorelease];
 		[urlRequest setHTTPMethod:@"POST"];
 		if (HTTPBody) [urlRequest setHTTPBody:HTTPBody];

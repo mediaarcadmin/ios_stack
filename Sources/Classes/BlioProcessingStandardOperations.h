@@ -58,6 +58,8 @@
 	
 	long long expectedContentLength;	
 	NSData * requestHTTPBody;
+    
+    NSInteger statusCode;
 }
 
 @property (nonatomic, retain) NSURL *url;
@@ -74,6 +76,7 @@
 @property (nonatomic, copy) NSString *serverFilename;
 @property (nonatomic, copy) NSString *serverMimetype;
 
+@property (nonatomic, assign) NSInteger statusCode;
 
 - (id)initWithUrl:(NSURL *)aURL;
 - (void)downloadDidFinishSuccessfully:(BOOL)success;

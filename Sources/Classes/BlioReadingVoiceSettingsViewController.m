@@ -382,6 +382,7 @@
 	}
 	else {
 		cell.textLabel.text = [self.availableVoices objectAtIndex:indexPath.row];
+        NSLog(@"cell.textLabel.text: %@",cell.textLabel.text);
 		NSString * voiceName = [BlioAcapelaAudioManager voiceNameForVoice:cell.textLabel.text];
 		if (voiceName) cell.textLabel.text = voiceName;
 		if ([[self.availableVoices objectAtIndex:indexPath.row] isEqualToString:[[NSUserDefaults standardUserDefaults] stringForKey:kBlioLastVoiceDefaultsKey]]) 

@@ -9,46 +9,38 @@
 		<key>sampleFilename</key>
 		<string>Tracy-ENU.mp3</string>
 	</dict>
-	<key>enu_kenny_22k_ns.cvcu.411</key>
+	<key>enu_hd_kenny_22k_lf.bvcu</key>
 	<dict>
 		<key>voiceName</key>
 		<string>Kenny</string>
 		<key>sampleFilename</key>
 		<string>Kenny-ENU.mp3</string>
 	</dict>
-	<key>enu_laura_22k_ns.cvcu.411</key>
+	<key>enu_hd_laura_22k_lf.bvcu</key>
 	<dict>
 		<key>voiceName</key>
 		<string>Laura</string>
-		<key>url</key>
-		<string>http://naphtali.crosscomm.net/don/laura.zip</string>
 		<key>sampleFilename</key>
 		<string>Laura-ENU.mp3</string>
 	</dict>
-	<key>enu_nelly_22k_ns.cvcu.411</key>
+	<key>enu_hd_nelly_22k_lf.bvcu</key>
 	<dict>
 		<key>voiceName</key>
 		<string>Nelly</string>
-		<key>url</key>
-		<string>http://naphtali.crosscomm.net/don/nelly.zip</string>
 		<key>sampleFilename</key>
 		<string>Nelly-ENU.mp3</string>
 	</dict>
-	<key>enu_ryan_22k_ns.cvcu.411</key>
+	<key>enu_hd_ryan_22k_lf.bvcu</key>
 	<dict>
 		<key>voiceName</key>
 		<string>Ryan</string>
-		<key>url</key>
-		<string>http://naphtali.crosscomm.net/don/ryan.zip</string>
 		<key>sampleFilename</key>
 		<string>Ryan-ENU.mp3</string>
 	</dict>
-	<key>enu_heather_22k_lf.bvcu.411</key>
+	<key>enu_hd_heather_22k_lf.bvcu</key>
 	<dict>
 		<key>voiceName</key>
 		<string>Heather</string>
-		<key>url</key>
-		<string>http://naphtali.crosscomm.net/don/heather.zip</string>
 		<key>sampleFilename</key>
 		<string>Heather-ENU.mp3</string>
 	</dict>

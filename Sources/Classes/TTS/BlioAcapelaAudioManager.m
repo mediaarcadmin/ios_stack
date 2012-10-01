@@ -82,6 +82,10 @@ NSString * const BlioVoiceListRefreshedNotification = @"BlioVoiceListRefreshedNo
 }
 
 +(NSString*)voiceNameForVoice:(NSString*)voice {
+    NSDictionary * voiceAtrributes = [AcapelaSpeech attributesForVoice:voice];
+    if (voiceAtrributes && [voiceAtrributes objectForKey:AcapelaVoiceName]) {
+    	return [voiceAtrributes objectForKey:AcapelaVoiceName];
+    }
 	if ([[BlioAcapelaAudioManager sharedAcapelaAudioManager].voiceData objectForKey:voice]) {
 		NSDictionary * voiceFields = [[BlioAcapelaAudioManager sharedAcapelaAudioManager].voiceData objectForKey:voice];
 		return [voiceFields objectForKey:BlioVoiceDataVoiceNameKey];

@@ -309,7 +309,7 @@
 
 @implementation BlioProcessingDownloadOperation
 
-@synthesize url, filenameKey, localFilename, tempFilename, connection, headConnection, downloadFile,resume,expectedContentLength,requestHTTPBody,serverMimetype,serverFilename;
+@synthesize url, filenameKey, localFilename, tempFilename, connection, headConnection, downloadFile,resume,expectedContentLength,requestHTTPBody,serverMimetype,serverFilename, statusCode;
 
 - (void) dealloc {
 //	NSLog(@"BlioProcessingDownloadOperation %@ dealloc entered.",self);
@@ -578,7 +578,8 @@
 	self.expectedContentLength = [response expectedContentLength];
 
 	NSHTTPURLResponse * httpResponse = (NSHTTPURLResponse *) response;
-	
+    self.statusCode = httpResponse.statusCode;
+
 	if ([httpResponse isKindOfClass:[NSHTTPURLResponse class]] && theConnection == headConnection) {		
 //		NSLog(@"headConnection httpResponse.statusCode: %i",httpResponse.statusCode);
 		if (httpResponse.statusCode/100 != 2) {
@@ -688,8 +689,16 @@
 - (void)connectionDidFinishLoading:(NSURLConnection *)aConnection {
     if (self.connection == aConnection) {
 //		NSLog(@"Finished downloading URL: %@",[self.url absoluteString]);
-		[self downloadDidFinishSuccessfully:YES];
-		[self finish];		
+        if (self.statusCode == 500) {
+            NSData * serverErrorData = [NSData dataWithContentsOfURL:[NSURL fileURLWithPath:self.temporaryPath]];
+            NSString *responseString = [[NSString alloc] initWithData:serverErrorData encoding: NSUTF8StringEncoding];
+            NSLog(@"500 responseString: %@",responseString);
+            [responseString release];
+        }
+        else {
+            [self downloadDidFinishSuccessfully:YES];
+            [self finish];
+        }
 	}
 }
 - (void)connection:(NSURLConnection *)aConnection didFailWithError:(NSError *)error {

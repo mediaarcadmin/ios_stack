@@ -196,7 +196,7 @@
 #endif
         
         
-        urlString = [NSString stringWithFormat:@"%@purchase?hardwareId=%@&productId=%@&testMode=%i",CCInAppPurchaseURL, hardwareId, productId,testMode];
+        urlString = [NSString stringWithFormat:@"%@purchase?hardwareId=%@&productId=%@&version=3.4&testMode=%i",CCInAppPurchaseURL, hardwareId, productId,testMode];
         
     }
 	
