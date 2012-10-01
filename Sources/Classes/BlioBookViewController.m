@@ -662,7 +662,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     [readingItems addObject:item];
     [item release];
     
-    if(!UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+    if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
         item = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"icon-back.png"]
                                                 style:UIBarButtonItemStylePlain
                                                target:self 
