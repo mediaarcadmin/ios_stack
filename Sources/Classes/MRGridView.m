@@ -353,7 +353,7 @@
 //	NSLog(@"activateCellDragging");
 //	NSLog(@"cellIndices count: %i, subviews count: %i",[cellIndices count],[[gridView subviews] count]);
 	cellDragging = YES;
-//	[self setScrollEnabled:NO];
+	[self setScrollEnabled:NO];
 	[gridView bringSubviewToFront:currDraggedCell];
 	[self animateCellPickupForCell:currDraggedCell];
 }
