@@ -236,7 +236,9 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     }
     
     if ((self = [super initWithNibName:nil bundle:nil])) {
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onProcessingWillDeleteBookNotification:) name:BlioProcessingWillDeleteBookNotification object:nil];
+        NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
+        
+        [notificationCenter addObserver:self selector:@selector(onProcessingWillDeleteBookNotification:) name:BlioProcessingWillDeleteBookNotification object:nil];
         self.book = newBook;
         self.delegate = aDelegate;
         self.wantsFullScreenLayout = YES;
@@ -255,11 +257,11 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
             [self setToolbarsVisibleAfterAppearance:YES];
         }
         
-        if([[UIDevice currentDevice] compareSystemVersion:@"4.0"] >= NSOrderedSame) {
-            [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationDidEnterBackground:) name:UIApplicationDidEnterBackgroundNotification object:nil];
-        }
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationWillTerminate:) name:UIApplicationWillTerminateNotification object:nil];
-    } 
+        [notificationCenter addObserver:self selector:@selector(applicationDidEnterBackground:) name:UIApplicationDidEnterBackgroundNotification object:nil];
+        [notificationCenter addObserver:self selector:@selector(applicationWillEnterForeground:) name:UIApplicationWillEnterForegroundNotification object:nil];
+        
+        [notificationCenter addObserver:self selector:@selector(applicationWillTerminate:) name:UIApplicationWillTerminateNotification object:nil];
+    }
     
     return self;
 } 
@@ -1262,6 +1264,14 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 
 - (void)applicationDidEnterBackground:(NSNotification *)notification {
 	[self stopAudio];
+}
+
+- (void)applicationWillEnterForeground:(NSNotification *)notification {
+    if([_bookView respondsToSelector:@selector(highlightWordAtBookmarkPoint:animated:)]) {
+        [_bookView highlightWordAtBookmarkPoint:_lastPointAudioPlayedForInBackground animated:NO];
+        [_lastPointAudioPlayedForInBackground release];
+        _lastPointAudioPlayedForInBackground = nil;
+    }
 }
 
 - (void)applicationWillTerminate:(NSNotification *)notification {
@@ -2454,10 +2464,15 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         NSUInteger wordOffset = [_acapelaAudioManager wordOffsetForCharacterRange:characterRange];
         
         id<BlioBookView> bookView = self.bookView;
-        if([bookView respondsToSelector:@selector(highlightWordAtBookmarkPoint:)]) {
+        if([bookView respondsToSelector:@selector(highlightWordAtBookmarkPoint:animated:)]) {
             BlioBookmarkPoint *point = [_audioParagraphSource bookmarkPointFromParagraphID:_acapelaAudioManager.currentBlock
                                                                                 wordOffset:wordOffset];
-            [bookView highlightWordAtBookmarkPoint:point];
+            if([UIApplication sharedApplication].applicationState == UIApplicationStateActive) {
+                [bookView highlightWordAtBookmarkPoint:point animated:YES];
+            } else {
+                [_lastPointAudioPlayedForInBackground release];
+                _lastPointAudioPlayedForInBackground = [point retain];
+            }
         }
         [_acapelaAudioManager setCurrentWordOffset:wordOffset];
     }
@@ -2626,11 +2641,16 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     
     if ( highlightShouldMove ) {
         id<BlioBookView> bookView = self.bookView;
-        if([bookView respondsToSelector:@selector(highlightWordAtBookmarkPoint:)]) {
+        if([bookView respondsToSelector:@selector(highlightWordAtBookmarkPoint:animated:)]) {
             //NSLog(@"%@, %d", moveToBlockID, moveToWordOffset);
             BlioBookmarkPoint *point = [_audioParagraphSource bookmarkPointFromParagraphID:moveToBlockID
                                                                                 wordOffset:moveToWordOffset];
-            [bookView highlightWordAtBookmarkPoint:point];
+            if([UIApplication sharedApplication].applicationState == UIApplicationStateActive) {
+                [bookView highlightWordAtBookmarkPoint:point animated:YES];
+            } else {
+                [_lastPointAudioPlayedForInBackground release];
+                _lastPointAudioPlayedForInBackground = [point retain];
+            }
         }
     }
     

@@ -1731,13 +1731,13 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 #pragma mark -
 #pragma mark TTS
 
-- (void)highlightWordAtBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint {
-    [self highlightWordAtBookmarkPoint:bookmarkPoint saveToHistory:YES];
+- (void)highlightWordAtBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint animated:(BOOL)animated {
+    [self highlightWordAtBookmarkPoint:bookmarkPoint animated:animated saveToHistory:YES];
 }
 
-- (void)highlightWordAtBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint saveToHistory:(BOOL)save {
+- (void)highlightWordAtBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint animated:(BOOL)animated saveToHistory:(BOOL)save {
     BlioBookmarkRange *range = [BlioBookmarkRange bookmarkRangeWithBookmarkPoint:bookmarkPoint];
-    [self highlightWordsInBookmarkRange:range animated:YES saveToHistory:save];
+    [self highlightWordsInBookmarkRange:range animated:animated saveToHistory:save];
 }
 
 - (void)highlightWordsInBookmarkRange:(BlioBookmarkRange *)bookmarkRange animated:(BOOL)animated {

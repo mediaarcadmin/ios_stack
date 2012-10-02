@@ -163,8 +163,8 @@ static NSString * const BlioBookSearchCollapseViewToToolbarAnimation = @"BlioBoo
         [self displayOffScreen:animated removedOnCompletion:YES];
     }
     
-    if ([self.bookView respondsToSelector:@selector(highlightWordAtBookmarkPoint:)]) {
-        [self.bookView highlightWordAtBookmarkPoint:nil];
+    if ([self.bookView respondsToSelector:@selector(highlightWordAtBookmarkPoint:animated:)]) {
+        [self.bookView highlightWordAtBookmarkPoint:nil animated:NO];
     }
 }
 

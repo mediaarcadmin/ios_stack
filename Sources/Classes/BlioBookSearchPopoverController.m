@@ -98,8 +98,8 @@
 }
 
 - (void)removeHighlights {
-    if ([self.bookView respondsToSelector:@selector(highlightWordAtBookmarkPoint:)]) {
-        [self.bookView highlightWordAtBookmarkPoint:nil];
+    if ([self.bookView respondsToSelector:@selector(highlightWordAtBookmarkPoint:animated:)]) {
+        [self.bookView highlightWordAtBookmarkPoint:nil animated:NO];
     }
 }
 

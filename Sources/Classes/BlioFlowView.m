@@ -354,11 +354,11 @@
     return _pageViewIsTurning || self.selector.tracking || self.selector.selectedRange;
 }
 
-- (void)highlightWordAtBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint {
-    [self highlightWordAtBookmarkPoint:bookmarkPoint saveToHistory:NO];
+- (void)highlightWordAtBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint animated:(BOOL)animated {
+    [self highlightWordAtBookmarkPoint:bookmarkPoint animated:animated saveToHistory:NO];
 }
 
-- (void)highlightWordAtBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint saveToHistory:(BOOL)save
+- (void)highlightWordAtBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint animated:(BOOL)animated saveToHistory:(BOOL)save
 {
    
 	if (save) {
@@ -371,9 +371,9 @@
 	_suppressHistory = YES;
 
 	if (bookmarkPoint) {
-		[_eucBookView highlightWordAtIndexPoint:[self bookPageIndexPointFromBookmarkPoint:bookmarkPoint] animated:YES];
+		[_eucBookView highlightWordAtIndexPoint:[self bookPageIndexPointFromBookmarkPoint:bookmarkPoint] animated:animated];
 	} else {
-		[_eucBookView highlightWordAtIndexPoint:nil animated:YES];
+		[_eucBookView highlightWordAtIndexPoint:nil animated:animated];
 		_suppressHistory = NO;
 	}
 }

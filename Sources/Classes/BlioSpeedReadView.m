@@ -591,10 +591,10 @@
     }
 }
 
-- (void)highlightWordAtBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint
+- (void)highlightWordAtBookmarkPoint:(BlioBookmarkPoint *)bookmarkPoint animated:(BOOL)animated
 {
     if(bookmarkPoint) {
-        [self goToBookmarkPoint:bookmarkPoint animated:NO];
+        [self goToBookmarkPoint:bookmarkPoint animated:animated];
     }
 }
 

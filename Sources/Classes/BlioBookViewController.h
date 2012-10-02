@@ -72,6 +72,7 @@ typedef enum {
 	BlioAudioBookManager* _audioBookManager;
     BOOL _audioPlaying;
 	BOOL _audioEnabled;
+    BlioBookmarkPoint* _lastPointAudioPlayedForInBackground;
     
     id<BlioParagraphSource> _audioParagraphSource;
 
