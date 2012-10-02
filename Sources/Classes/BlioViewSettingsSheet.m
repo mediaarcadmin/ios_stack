@@ -71,6 +71,7 @@
     BlioViewSettingsContentsView *contentsView = self.contentsView;
     
     BlioViewSettingsSheetMask *screenMask = [[BlioViewSettingsSheetMask alloc] init];
+    screenMask.settingsSheet = self;
     screenMask.frame = window.bounds;
     [screenMask addTarget:self action:@selector(dismiss) forControlEvents:UIControlEventTouchUpInside];
     [window addSubview:screenMask];

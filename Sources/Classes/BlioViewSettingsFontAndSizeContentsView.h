@@ -23,6 +23,8 @@
     
     UIView *fontTableViewShadow;
     UITableView *fontTableView;
+    
+    UIButton *doneButton;
 }
 
 - (void)flashScrollIndicators;

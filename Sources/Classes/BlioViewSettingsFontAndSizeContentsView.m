@@ -31,6 +31,8 @@
 @property (nonatomic, retain) UIView *fontTableViewContainer;
 @property (nonatomic, retain) UITableView *fontTableView;
 
+@property (nonatomic, retain) UIButton *doneButton;
+
 @property (nonatomic, assign, readonly) CGFloat rowHeight;
 
 - (NSInteger)currentSelectedFontRowIndex;
@@ -52,6 +54,8 @@
 
 @synthesize fontTableViewContainer;
 @synthesize fontTableView;
+
+@synthesize doneButton;
 
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
@@ -324,7 +328,23 @@
         
         [self.justificationSegment addTarget:self action:@selector(changeJustification:) forControlEvents:UIControlEventValueChanged];
         
-
+        if([newDelegate shouldShowDoneButtonInPageSettings]) {
+            UIButton *aDoneButton = [UIButton buttonWithType:UIButtonTypeCustom];
+            aDoneButton.showsTouchWhenHighlighted = NO;
+            [aDoneButton setTitle:NSLocalizedString(@"Done",@"\"Done\" bar button title") forState:UIControlStateNormal];
+            [aDoneButton.titleLabel setFont:[UIFont boldSystemFontOfSize:20.0f]];
+            [aDoneButton setTitleShadowColor:whiteColor forState:UIControlStateNormal];
+            [aDoneButton setTitleShadowColor:clearColor forState:UIControlStateHighlighted];
+            [aDoneButton.titleLabel setShadowOffset:CGSizeMake(0.0f, 1.0f)];
+            [aDoneButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+            [aDoneButton setTitleColor:whiteColor forState:UIControlStateHighlighted];
+            [aDoneButton setBackgroundImage:[[UIImage imageNamed:@"done-button-up.png"] stretchableImageWithLeftCapWidth:12 topCapHeight:0] forState:UIControlStateNormal];
+            [aDoneButton setBackgroundImage:[[UIImage imageNamed:@"done-button-down.png"] stretchableImageWithLeftCapWidth:12 topCapHeight:0] forState:UIControlStateHighlighted];
+            [aDoneButton addTarget:self action:@selector(dismiss:) forControlEvents:UIControlEventTouchUpInside];
+            [self addSubview:aDoneButton];
+            self.doneButton = aDoneButton;
+        }
+        
         [self refreshSettings];
 	}
 	return self;
@@ -364,20 +384,30 @@
     
     CGFloat rowStride = rowSpacing + rowHeight;
     CGFloat currentY = CGRectGetHeight(bounds) - yInset;
-        
+    
     currentY -= rowHeight;
+    
+    if(self.doneButton) {
+        [self.doneButton setFrame:CGRectMake(xInset, currentY, innerWidth,  rowHeight)];
+        
+        currentY -= rowStride;
+    }
+
     [self.justificationLabel setFrame:CGRectMake(xInset, currentY, labelWidth, rowHeight)];
     [self.justificationSegment setFrame:CGRectMake(segmentX, currentY, segmentWidth, rowHeight)];
 
     currentY -= rowStride;
+    
     [self.fontBoldnessLabel setFrame:CGRectMake(xInset, currentY, labelWidth, rowHeight)];
     [self.fontBoldnessSegment setFrame:CGRectMake(segmentX, currentY, segmentWidth, rowHeight)];
     
     currentY -= rowStride;
+    
     [self.fontSizeLabel setFrame:CGRectMake(xInset, currentY, labelWidth, rowHeight)];
     [self.fontSizeSegment setFrame:CGRectMake(segmentX, currentY, segmentWidth, rowHeight)];
     
     currentY -= rowSpacing;
+    
     [self.fontTableViewContainer setFrame:CGRectMake(xInset, yInset, innerWidth, currentY - yInset)];
     
     [self.fontTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:[self currentSelectedFontRowIndex] inSection:0]
@@ -439,9 +469,15 @@
     if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
         size.width = kBlioViewSettingsWidthIPhone;
         size.height = roundf(self.rowHeight * 8.5f);
+        if(self.doneButton) {
+            size.height += self.rowHeight + kBlioViewSettingsRowSpacingIPhone;
+        }
     } else {
         size.width = kBlioViewSettingsWidthIPad;
         size.height = roundf(self.rowHeight * 11.5f);
+        if(self.doneButton) {
+            size.height += self.rowHeight + kBlioViewSettingsRowSpacingIPad;
+        }
     }
 
     return size;
