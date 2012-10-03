@@ -1263,7 +1263,9 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 }
 
 - (void)applicationDidEnterBackground:(NSNotification *)notification {
-	[self stopAudio];
+    // Continue to play in background.
+    // For #181, this behavior would depend on a user setting.
+	//[self stopAudio];
 }
 
 - (void)applicationWillEnterForeground:(NSNotification *)notification {

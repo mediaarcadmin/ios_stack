@@ -343,7 +343,7 @@ NSString * const BlioVoiceListRefreshedNotification = @"BlioVoiceListRefreshedNo
     if ([[AcapelaSpeech availableVoices] count] > 0) {
         
         [BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Download Required",@"\"Download Required\" alert message title")
-									 message:NSLocalizedStringWithDefaultValue(@"REDOWNLOADING_VOICE_EXPLANATION",nil,[NSBundle mainBundle],@"This version of Blio requires newer versions of your purchased voices in order to use text-to-speech. Would you like to download these newer versions now?",@"alert message explaining to the end-user that this version of Blio requires voice re-downloading")
+									 message:NSLocalizedStringWithDefaultValue(@"REDOWNLOADING_VOICE_EXPLANATION",nil,[NSBundle mainBundle],@"This version of Blio requires new versions of your purchased voices. Would you like to download them now?",@"alert message explaining to the end user that this version of Blio requires voice redownloading")
 									delegate:self
 						   cancelButtonTitle:NSLocalizedString(@"Not Now",@"\"Not Now\" label for button used to cancel/dismiss alertview")
 						   otherButtonTitles: @"OK", nil];

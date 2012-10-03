@@ -372,6 +372,11 @@
 		7DF429D311E4EC5B00B8227E /* NSObject+BlioAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DF429D111E4EC5B00B8227E /* NSObject+BlioAdditions.m */; };
 		7DF4A12C11EF4DBD00F6A4DD /* libEucalyptusBase.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D3F504A11EF3DDA0065A5F7 /* libEucalyptusBase.a */; };
 		7DFA426D13A925BB0059C9B0 /* icon-back@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A3E6419812397C0400D2B85A /* icon-back@2x.png */; };
+		876AEC76161CB469008899A8 /* bsd-3-clause-license.html in Resources */ = {isa = PBXBuildFile; fileRef = 876AEC75161CB469008899A8 /* bsd-3-clause-license.html */; };
+		876AEC77161CB469008899A8 /* bsd-3-clause-license.html in Resources */ = {isa = PBXBuildFile; fileRef = 876AEC75161CB469008899A8 /* bsd-3-clause-license.html */; };
+		876AEC78161CB469008899A8 /* bsd-3-clause-license.html in Resources */ = {isa = PBXBuildFile; fileRef = 876AEC75161CB469008899A8 /* bsd-3-clause-license.html */; };
+		876AEC79161CB469008899A8 /* bsd-3-clause-license.html in Resources */ = {isa = PBXBuildFile; fileRef = 876AEC75161CB469008899A8 /* bsd-3-clause-license.html */; };
+		876AEC7A161CB469008899A8 /* bsd-3-clause-license.html in Resources */ = {isa = PBXBuildFile; fileRef = 876AEC75161CB469008899A8 /* bsd-3-clause-license.html */; };
 		8783725D160908BC00EA85A4 /* icon-fontsize.png in Resources */ = {isa = PBXBuildFile; fileRef = 8783725B160908BC00EA85A4 /* icon-fontsize.png */; };
 		8783725E160908BC00EA85A4 /* icon-fontsize.png in Resources */ = {isa = PBXBuildFile; fileRef = 8783725B160908BC00EA85A4 /* icon-fontsize.png */; };
 		8783725F160908BC00EA85A4 /* icon-fontsize.png in Resources */ = {isa = PBXBuildFile; fileRef = 8783725B160908BC00EA85A4 /* icon-fontsize.png */; };
@@ -2657,6 +2662,7 @@
 		7DF2A48E11536CA100FC2045 /* BlioFlowEucBook.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioFlowEucBook.m; sourceTree = "<group>"; };
 		7DF429D011E4EC5400B8227E /* NSObject+BlioAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSObject+BlioAdditions.h"; sourceTree = "<group>"; };
 		7DF429D111E4EC5B00B8227E /* NSObject+BlioAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSObject+BlioAdditions.m"; sourceTree = "<group>"; };
+		876AEC75161CB469008899A8 /* bsd-3-clause-license.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = "bsd-3-clause-license.html"; sourceTree = "<group>"; };
 		8783725B160908BC00EA85A4 /* icon-fontsize.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-fontsize.png"; sourceTree = "<group>"; };
 		8783725C160908BC00EA85A4 /* icon-fontsize@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-fontsize@2x.png"; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* BlioApp-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "BlioApp-Info.plist"; plistStructureDefinitionIdentifier = "com.apple.xcode.plist.structure-definition.iphone.info-plist"; sourceTree = "<group>"; };
@@ -3603,6 +3609,7 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				876AEC75161CB469008899A8 /* bsd-3-clause-license.html */,
 				8783725B160908BC00EA85A4 /* icon-fontsize.png */,
 				8783725C160908BC00EA85A4 /* icon-fontsize@2x.png */,
 				A386B27C15FE804A00C25FBA /* Acapela For iPhone LF USEnglish Tracy */,
@@ -5250,6 +5257,7 @@
 				7D18B94816033807002E8F0B /* Default-568h@2x.png in Resources */,
 				8783725D160908BC00EA85A4 /* icon-fontsize.png in Resources */,
 				87837262160908BC00EA85A4 /* icon-fontsize@2x.png in Resources */,
+				876AEC76161CB469008899A8 /* bsd-3-clause-license.html in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -5508,6 +5516,7 @@
 				7D18B94A16033807002E8F0B /* Default-568h@2x.png in Resources */,
 				8783725F160908BC00EA85A4 /* icon-fontsize.png in Resources */,
 				87837264160908BC00EA85A4 /* icon-fontsize@2x.png in Resources */,
+				876AEC78161CB469008899A8 /* bsd-3-clause-license.html in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -5752,6 +5761,7 @@
 				7D02B52315E4E6DF00B764A7 /* THAVPlayerAudioBackground.png in Resources */,
 				87837260160908BC00EA85A4 /* icon-fontsize.png in Resources */,
 				87837265160908BC00EA85A4 /* icon-fontsize@2x.png in Resources */,
+				876AEC79161CB469008899A8 /* bsd-3-clause-license.html in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -6010,6 +6020,7 @@
 				7D18B94916033807002E8F0B /* Default-568h@2x.png in Resources */,
 				8783725E160908BC00EA85A4 /* icon-fontsize.png in Resources */,
 				87837263160908BC00EA85A4 /* icon-fontsize@2x.png in Resources */,
+				876AEC77161CB469008899A8 /* bsd-3-clause-license.html in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -6271,6 +6282,7 @@
 				7D02B52415E4E6DF00B764A7 /* THAVPlayerAudioBackground.png in Resources */,
 				87837261160908BC00EA85A4 /* icon-fontsize.png in Resources */,
 				87837266160908BC00EA85A4 /* icon-fontsize@2x.png in Resources */,
+				876AEC7A161CB469008899A8 /* bsd-3-clause-license.html in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -7216,7 +7228,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				CODE_SIGN_ENTITLEMENTS = "$(SRCROOT)/Entitlements.plist";
+				CODE_SIGN_IDENTITY = "iPhone Developer: Arnold Chien (4XCU87FX68)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Arnold Chien (4XCU87FX68)";
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -7229,6 +7244,7 @@
 					"\"$(SRCROOT)/Libraries/TTS\"",
 					"\"$(SRCROOT)/libKNFBReader/Pagemark\"",
 				);
+				ONLY_ACTIVE_ARCH = NO;
 				OTHER_CFLAGS = (
 					"-DNOUNCRYPT",
 					"-DNOCRYPT",
@@ -7241,6 +7257,8 @@
 					"-fobjc-arc",
 				);
 				PRODUCT_NAME = Blio;
+				PROVISIONING_PROFILE = "502B0524-F40F-44A0-BD8E-30E68C3900EE";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "502B0524-F40F-44A0-BD8E-30E68C3900EE";
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -7249,7 +7267,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				CODE_SIGN_ENTITLEMENTS = "$(SRCROOT)/Entitlements.plist";
+				CODE_SIGN_IDENTITY = "iPhone Developer: Arnold Chien (4XCU87FX68)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Arnold Chien (4XCU87FX68)";
 				COPY_PHASE_STRIP = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = Sources/BlioApp_Prefix.pch;
@@ -7272,6 +7293,8 @@
 					"-fobjc-arc",
 				);
 				PRODUCT_NAME = Blio;
+				PROVISIONING_PROFILE = "B05B6A66-6729-4BE0-BA50-2A04D2F4BE79";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "B05B6A66-6729-4BE0-BA50-2A04D2F4BE79";
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
@@ -7518,6 +7541,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				CODE_SIGN_ENTITLEMENTS = "$(SRCROOT)/Entitlements.plist";
 				CODE_SIGN_IDENTITY = "iPhone Distribution: K-NFB Reading Technology Inc.";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: K-NFB Reading Technology Inc.";
