@@ -34,6 +34,8 @@
 @property (nonatomic, retain) UILabel *sampleTextLabel;
 @property (nonatomic, retain) id<BlioParagraphSource> paragraphSource;
 
+@property (nonatomic, assign) BOOL tallScreen;
+
 - (void)updateCurrentBookmarkPoint;
 
 - (float)speedForYValue:(float)y;
@@ -45,7 +47,7 @@
 
 @implementation BlioSpeedReadView
 
-@synthesize bookID, fontSizes, currentBookmarkPoint, currentWordOffset, currentParagraphID, bigTextLabel, sampleTextLabel, speed, textArray, nextWordTimer, paragraphSource;
+@synthesize bookID, fontSizes, currentBookmarkPoint, currentWordOffset, currentParagraphID, bigTextLabel, sampleTextLabel, speed, textArray, nextWordTimer, paragraphSource, tallScreen;
 @synthesize delegate;
 
 - (void)dealloc {
@@ -73,6 +75,7 @@
     if ((self = [super initWithFrame:[UIScreen mainScreen].bounds])) {    
         self.bookID = bookIDIn;
         self.delegate = delegateIn;
+        self.tallScreen = (fabs((double)frame.size.height - (double)568) < DBL_EPSILON);
         
         paragraphSource = [[[BlioBookManager sharedBookManager] checkOutParagraphSourceForBookWithID:bookID] retain];
         
@@ -86,23 +89,48 @@
         [fingerImageHolder.layer addSublayer:fingerImage];
         
         backgroundImage = [CALayer layer];
-        [backgroundImage setFrame:CGRectMake(0, 0, 320, 480)];
-        [backgroundImage setContents:(id)[[UIImage imageNamed:@"speedreaderBackgroundImages/background-black-portrait.png"] CGImage]];
+        if (self.tallScreen) {
+            [backgroundImage setFrame:CGRectMake(0, 0, 320, 568)];
+            [backgroundImage setContents:(id)[[UIImage imageNamed:@"speedreaderBackgroundImages/background-black-portrait-tall.png"] CGImage]];
+        }
+        else {
+            [backgroundImage setFrame:CGRectMake(0, 0, 320, 480)];
+            [backgroundImage setContents:(id)[[UIImage imageNamed:@"speedreaderBackgroundImages/background-black-portrait.png"] CGImage]];
+            
+        }
         [self.layer addSublayer:backgroundImage];
         
         backgroundImageLandscape = [CALayer layer];
-        [backgroundImageLandscape setFrame:CGRectMake(0, 160, 480, 320 )];
-        [backgroundImageLandscape setContents:(id)[[UIImage imageNamed:@"speedreaderBackgroundImages/background-black-landscape.png"] CGImage]];
+        if (self.tallScreen) {
+            [backgroundImageLandscape setFrame:CGRectMake(0, 248, 568, 320 )];
+            [backgroundImageLandscape setContents:(id)[[UIImage imageNamed:@"speedreaderBackgroundImages/background-black-landscape-tall.png"] CGImage]];
+        }
+        else {
+            [backgroundImageLandscape setFrame:CGRectMake(0, 160, 480, 320 )];
+            [backgroundImageLandscape setContents:(id)[[UIImage imageNamed:@"speedreaderBackgroundImages/background-black-landscape.png"] CGImage]];
+        }
         [self.layer addSublayer:backgroundImageLandscape];
         
         roundCorners = [CALayer layer];
-        [roundCorners setFrame:CGRectMake(0, 0, 320, 480)];
-        [roundCorners setContents:(id)[[UIImage imageNamed:@"speedreaderBackgroundImages/roundcorners-portrait.png"] CGImage]];
+        if (self.tallScreen) {
+            [roundCorners setFrame:CGRectMake(0, 0, 320, 568)];
+            [roundCorners setContents:(id)[[UIImage imageNamed:@"speedreaderBackgroundImages/roundcorners-portrait-tall.png"] CGImage]];
+        }
+        else {
+            [roundCorners setFrame:CGRectMake(0, 0, 320, 480)];
+            [roundCorners setContents:(id)[[UIImage imageNamed:@"speedreaderBackgroundImages/roundcorners-portrait.png"] CGImage]];
+        }
         [self.layer addSublayer:roundCorners];
         
         roundCornersLandscape = [CALayer layer];
-        [roundCornersLandscape setFrame:CGRectMake(0, 160, 480, 320)];
-        [roundCornersLandscape setContents:(id)[[UIImage imageNamed:@"speedreaderBackgroundImages/roundcorners-landscape.png"] CGImage]];
+        if (self.tallScreen) {
+            [roundCornersLandscape setFrame:CGRectMake(0, 248, 568, 320)];
+            [roundCornersLandscape setContents:(id)[[UIImage imageNamed:@"speedreaderBackgroundImages/roundcorners-landscape-tall.png"] CGImage]];
+        }
+        else {
+            [roundCornersLandscape setFrame:CGRectMake(0, 160, 480, 320)];
+            [roundCornersLandscape setContents:(id)[[UIImage imageNamed:@"speedreaderBackgroundImages/roundcorners-landscape.png"] CGImage]];
+        }
         [self.layer addSublayer:roundCornersLandscape];
         
         bigTextLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 100, 290, 240)];
@@ -159,7 +187,10 @@
     UIInterfaceOrientation i = [[UIApplication sharedApplication] statusBarOrientation]; 
     
     if (UIInterfaceOrientationIsLandscape(i)) {
-        self.frame = CGRectMake(0, -160, 480, 480);
+        //if (self.tallScreen)
+        //    self.frame = CGRectMake(0, -160, 568, 568);
+        //else
+            self.frame = CGRectMake(0, -160, 480, 480);
     }
 }
 
@@ -205,21 +236,38 @@
 
 - (void)setColor:(BlioPageColor)newColor {
     if (newColor == kBlioPageColorWhite) {
-        
-        [backgroundImage setContents:(id)[[UIImage imageNamed:@"speedreaderBackgroundImages/background-light-portrait.png"] CGImage]];
-        [backgroundImageLandscape setContents:(id)[[UIImage imageNamed:@"speedreaderBackgroundImages/background-light-landscape.png"] CGImage]];
+        if (self.tallScreen) {
+            [backgroundImage setContents:(id)[[UIImage imageNamed:@"speedreaderBackgroundImages/background-light-portrait-tall.png"] CGImage]];
+            [backgroundImageLandscape setContents:(id)[[UIImage imageNamed:@"speedreaderBackgroundImages/background-light-landscape-tall.png"] CGImage]];
+        }
+        else {
+            [backgroundImage setContents:(id)[[UIImage imageNamed:@"speedreaderBackgroundImages/background-light-portrait"] CGImage]];
+            [backgroundImageLandscape setContents:(id)[[UIImage imageNamed:@"speedreaderBackgroundImages/background-light-landscape.png"] CGImage]];
+        }
         self.backgroundColor = [UIColor whiteColor];
         [bigTextLabel setTextColor:[UIColor blackColor]];
         [sampleTextLabel setTextColor:[UIColor blackColor]];
     } else if (newColor == kBlioPageColorBlack) {
-        [backgroundImage setContents:(id)[[UIImage imageNamed:@"speedreaderBackgroundImages/background-black-portrait.png"] CGImage]];
-        [backgroundImageLandscape setContents:(id)[[UIImage imageNamed:@"speedreaderBackgroundImages/background-black-landscape.png"] CGImage]];
+        if (self.tallScreen) {
+            [backgroundImage setContents:(id)[[UIImage imageNamed:@"speedreaderBackgroundImages/background-black-portrait-tall.png"] CGImage]];
+            [backgroundImageLandscape setContents:(id)[[UIImage imageNamed:@"speedreaderBackgroundImages/background-black-landscape-tall.png"] CGImage]];
+        }
+        else {
+            [backgroundImage setContents:(id)[[UIImage imageNamed:@"speedreaderBackgroundImages/background-black-portrait.png"] CGImage]];
+            [backgroundImageLandscape setContents:(id)[[UIImage imageNamed:@"speedreaderBackgroundImages/background-black-landscape.png"] CGImage]];
+        }
         self.backgroundColor = [UIColor blackColor];
         [bigTextLabel setTextColor:[UIColor whiteColor]];        
         [sampleTextLabel setTextColor:[UIColor whiteColor]];        
     } else if (newColor == kBlioPageColorNeutral) {
-        [backgroundImage setContents:(id)[[UIImage imageNamed:@"speedreaderBackgroundImages/background-neutral-portrait.png"] CGImage]];
-        [backgroundImageLandscape setContents:(id)[[UIImage imageNamed:@"speedreaderBackgroundImages/background-neutral-landscape.png"] CGImage]];
+        if (self.tallScreen) {
+            [backgroundImage setContents:(id)[[UIImage imageNamed:@"speedreaderBackgroundImages/background-neutral-portrait-tall.png"] CGImage]];
+            [backgroundImageLandscape setContents:(id)[[UIImage imageNamed:@"speedreaderBackgroundImages/background-neutral-landscape-tall.png"] CGImage]];
+        }
+        else {
+            [backgroundImage setContents:(id)[[UIImage imageNamed:@"speedreaderBackgroundImages/background-neutral-portrait.png"] CGImage]];
+            [backgroundImageLandscape setContents:(id)[[UIImage imageNamed:@"speedreaderBackgroundImages/background-neutral-landscape.png"] CGImage]];
+        }
         self.backgroundColor = [UIColor colorWithRed:253.0f/255.0f green:235.0f/255.0f blue:213.0f/255.0f alpha:1];
         [bigTextLabel setTextColor:[UIColor blackColor]];        
         [sampleTextLabel setTextColor:[UIColor blackColor]];                
