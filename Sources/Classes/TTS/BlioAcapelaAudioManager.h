@@ -20,6 +20,7 @@ extern NSString * const BlioVoiceListRefreshedNotification;
 	AcapelaLicense* ttsLicense;
     NSOperationQueue *downloadQueue;
 	NSDictionary * voiceData;
+    NSString* currentString;
     CFAttributedStringRef currentStringWithWordOffsets;
 	AVAudioPlayer * sampleAudioPlayer;
     UIViewController * rootViewController;
@@ -31,6 +32,7 @@ extern NSString * const BlioVoiceListRefreshedNotification;
 @property (nonatomic, retain) NSDictionary *voiceData;
 @property (nonatomic, retain) AVAudioPlayer *sampleAudioPlayer;
 @property (nonatomic, retain) UIViewController * rootViewController;
+@property (nonatomic, retain) NSString *currentString;
 
 
 // These look like they refer to properties, but no.

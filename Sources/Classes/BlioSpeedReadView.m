@@ -75,7 +75,7 @@
     if ((self = [super initWithFrame:[UIScreen mainScreen].bounds])) {    
         self.bookID = bookIDIn;
         self.delegate = delegateIn;
-        self.tallScreen = (fabs((double)frame.size.height - (double)568) < DBL_EPSILON);
+        self.tallScreen = (fabs([UIScreen mainScreen].bounds.size.height - (double)568) < DBL_EPSILON);
         
         paragraphSource = [[[BlioBookManager sharedBookManager] checkOutParagraphSourceForBookWithID:bookID] retain];
         
@@ -275,16 +275,27 @@
 }
 
 - (void)layoutLandscape {
-    bigTextLabel.frame = CGRectMake(15, 200, 430, 240);
-    sampleTextLabel.frame = CGRectMake(15, 200, 2000, 240);    
+    if (self.tallScreen) {
+        bigTextLabel.frame = CGRectMake(15, 244, 430, 240);
+        sampleTextLabel.frame = CGRectMake(15, 244, 2000, 240);
+    } else {
+        bigTextLabel.frame = CGRectMake(15, 200, 430, 240);
+        sampleTextLabel.frame = CGRectMake(15, 200, 2000, 240);
+    }
     
     [backgroundImageLandscape setHidden:NO];    
     [backgroundImage setHidden:YES];        
 }
 
 - (void)layoutPortrait {
-    bigTextLabel.frame = CGRectMake(15, 100, 290, 240);
-    sampleTextLabel.frame = CGRectMake(15, 100, 2000, 240);        
+    if (self.tallScreen) {
+        bigTextLabel.frame = CGRectMake(15, 144, 290, 240);
+        sampleTextLabel.frame = CGRectMake(15, 144, 2000, 240);
+    } else {
+        bigTextLabel.frame = CGRectMake(15, 100, 290, 240);
+        sampleTextLabel.frame = CGRectMake(15, 100, 2000, 240);
+    }
+    
     
     [backgroundImageLandscape setHidden:YES];
     [backgroundImage setHidden:NO];            
@@ -396,13 +407,17 @@
         
         float loc = [[[touches allObjects] objectAtIndex:0] locationInView:self].y;
         float fingerImageYValue = loc-46;        
+        
+        float phoneHeightDifference = self.frame.size.height - 480;
+        
         UIInterfaceOrientation i = [[UIApplication sharedApplication] statusBarOrientation];
-        if (UIInterfaceOrientationIsPortrait(i)){
-            xOffset = 147;
-            yOffset = -80;
+        
+        if (UIInterfaceOrientationIsLandscape(i)){
+            xOffset = 147 + phoneHeightDifference;
+            yOffset = -80 - phoneHeightDifference/2;
         }
         
-        [fingerImageHolder setFrame:CGRectMake([self calculateFingerXValueFromY:fingerImageYValue+yOffset]+xOffset, fingerImageYValue, 93, 93)];
+        [fingerImageHolder setFrame:CGRectMake([self calculateFingerXValueFromY:fingerImageYValue+yOffset]+xOffset, fingerImageYValue+phoneHeightDifference/2, 93, 93)];
         
         [CATransaction begin];
         [CATransaction setValue:[NSNumber numberWithFloat:0.25f] forKey:kCATransactionAnimationDuration];
@@ -417,6 +432,7 @@
         [CATransaction commit];
         
         speed = [self speedForYValue:loc];
+
         
         if (speed == 0) {
             if (nextWordTimer) {
@@ -452,18 +468,20 @@
         int oldSpeed = speed;
         float loc = [[[touches allObjects] objectAtIndex:0] locationInView:self].y;
         float fingerImageYValue = loc-46;        
+        
+        float phoneHeightDifference = self.frame.size.height - 480;
+        
         UIInterfaceOrientation i = [[UIApplication sharedApplication] statusBarOrientation];
+        
         if (UIInterfaceOrientationIsLandscape(i)){
-            xOffset = 147;
-            yOffset = -80;
+            xOffset = 147 + phoneHeightDifference;
+            yOffset = -80 - phoneHeightDifference/2;
         }
         
-        
-        
-        [fingerImageHolder setFrame:CGRectMake([self calculateFingerXValueFromY:fingerImageYValue+yOffset]+xOffset, fingerImageYValue, 93, 93)];
+        [fingerImageHolder setFrame:CGRectMake([self calculateFingerXValueFromY:fingerImageYValue+yOffset]+xOffset, fingerImageYValue+phoneHeightDifference/2, 93, 93)];
         
         speed = [self speedForYValue:loc];
-        
+
         if (speed != oldSpeed) {
             if (speed == 0) {
                 if (nextWordTimer) {
@@ -536,30 +554,67 @@
 
 
 - (float)speedForYValue:(float)y {
-    
-    
     UIInterfaceOrientation i = [[UIApplication sharedApplication] statusBarOrientation];
-    if (UIInterfaceOrientationIsPortrait(i)) {
-        if (y > 400) {
-            return ((480-y)/80)*-1;
+    if (tallScreen) {
+        /* it seems like we're getting y values of about -20 to 538 in portrait
+           and 228 - 538 in landscape
+           these are adjusted accordingly */
+        
+        if (UIInterfaceOrientationIsPortrait(i)) {
+            if (y > 538-88) {
+                //if over 450, then return -1 (480) to 0 (568)
+                //this moves the text backwards
+                return ((538-y)/88)*-1;
+            }
+            //if their finger is between 400 and 450, speed is 0
+            if (y > 400) return 0;
+            //if their finger is under 130, .06
+            if (y < 130) return .06;
+            
+            //if it's between 130 and 400, then .06 -> 1.06
+            y = (y-130)/270+.06;
+            
+        } else {
+            if (y > 498) {
+                return ((538-y)/40)*-1;
+            }
+            //458 to 498 is stationary
+            if (y > 458) return 0;
+            //0 to 278 is .06
+            if (y < 278) return .06;
+            
+            //278 to 458 is 0.6 -> 1.06
+            y = (y-278)/180+.06;
         }
-        if (y > 350) return 0;
-        if (y < 100) return .06;
-        
-        
-        
-        y = (y-100)/250+.06;        
-        
     } else {
-        if (y > 440) {
-            return ((480-y)/40)*-1;
+        if (UIInterfaceOrientationIsPortrait(i)) {
+            if (y > 400) {
+                //if over 400, then return -1 (400) to 0 (480)
+                //this moves the text backwards
+                return ((480-y)/80)*-1;
+            }
+            //if their finger is between 350 and 400, 0
+            if (y > 350) return 0;
+            //if their finger is under 100, .06
+            if (y < 100) return .06;
+            
+            //if it's between 100 and 350, then .06 -> 1.06
+            y = (y-100)/250+.06;
+            
+        } else {
+            //440 to 480 = -1->0 (moving backwards)
+            if (y > 440) {
+                return ((480-y)/40)*-1;
+            }
+            //380 to 440 is stationary
+            if (y > 380) return 0;
+            //0 to 220 is .06
+            if (y < 220) return .06;
+            
+            //220 to 380 is 0.6 -> 1.06
+            y = (y-220)/160+.06;
         }
-        if (y > 380) return 0;
-        if (y < 220) return .06;
-        
-        y = (y-220)/160+.06;   
     }
-    
     
     return y;
 }

@@ -25,7 +25,7 @@ NSString * const BlioVoiceListRefreshedNotification = @"BlioVoiceListRefreshedNo
 
 @implementation BlioAcapelaAudioManager
 
-@synthesize downloadQueue,voiceData,sampleAudioPlayer, rootViewController;
+@synthesize downloadQueue,voiceData,sampleAudioPlayer, rootViewController, currentString;
 @synthesize engine, ttsLicense;
 
 +(BlioAcapelaAudioManager*)sharedAcapelaAudioManager
@@ -71,6 +71,7 @@ NSString * const BlioVoiceListRefreshedNotification = @"BlioVoiceListRefreshedNo
     }
 	if (self.downloadQueue) [self.downloadQueue cancelAllOperations];
     
+    self.currentString = nil;
 	self.downloadQueue = nil;
 	self.voiceData = nil;
 	self.sampleAudioPlayer = nil;
@@ -183,6 +184,7 @@ NSString * const BlioVoiceListRefreshedNotification = @"BlioVoiceListRefreshedNo
     currentStringWithWordOffsets = stringWithWordOffsets;
     
     NSString *stringToSpeak = (NSString *)CFAttributedStringGetString(currentStringWithWordOffsets);
+    currentString = stringToSpeak;
     return [engine startSpeakingString:stringToSpeak];
 	
 	// TESTING
