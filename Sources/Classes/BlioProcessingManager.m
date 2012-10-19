@@ -19,6 +19,7 @@
 #import "BlioAppSettingsConstants.h"
 
 #define AUTODOWNLOAD_ALERT_TAG 15
+#define DOWNLOAD_ADVISORY_ALERT_TAG 25
 
 @interface BlioProcessingManager()
 @property (nonatomic, retain) NSOperationQueue *preAvailabilityQueue;
@@ -1623,18 +1624,26 @@
 
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex{
 	if (buttonIndex == 0) {
-        if (alertView.tag != AUTODOWNLOAD_ALERT_TAG) {
-            [BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Auto-Download Setting",@"\"Auto-Download Books\" Alert message title")
-                                     message:NSLocalizedStringWithDefaultValue(@"AUTO_DOWNLOAD_SETTING_INFO_WITHOUT_DOWNLOAD",nil,[NSBundle mainBundle],@"You can download your books later by going to the Archive.  To select whether or not to download books automatically in the future, go to My Account in Settings.",@"Alert message informing the first time iOS end-user where auto-download setting can be changed after someone has chosen not to download books upon first time launch.")
-                                    delegate:nil
-                           cancelButtonTitle:NSLocalizedString(@"OK",@"\"OK\" label for alertview")
-                           otherButtonTitles:nil];
-            [[NSUserDefaults standardUserDefaults] setInteger:-1 forKey:kBlioDownloadNewBooksDefaultsKey];		 
-            [[NSUserDefaults standardUserDefaults] synchronize];
-        }
-        else {
+        if (alertView.tag == DOWNLOAD_ADVISORY_ALERT_TAG) {
             [self processArchivedBooks];
             [[BlioStoreManager sharedInstance] retrieveBooksForSourceID:BlioBookSourceOnlineStore];
+        }
+        else if (alertView.tag == AUTODOWNLOAD_ALERT_TAG) {
+            [BlioAlertManager showTaggedAlertWithTitle:NSLocalizedString(@"Download Advisory",@"\"Download Advisory\" Alert message title")
+                                         message:NSLocalizedStringWithDefaultValue(@"DOWNLOAD_ADVISORY_INFO",nil,[NSBundle mainBundle],@"If you have a large library, it may take several minutes for your books to download.  For best results you should not exit Blio or lock the screen until downloading is complete.",@"Alert message advising the user that download of her library may take time, during which she'd best not exit or background the app.")
+                                        delegate:self
+                                             tag:DOWNLOAD_ADVISORY_ALERT_TAG
+                               cancelButtonTitle:NSLocalizedString(@"OK",@"\"OK\" label for alertview")
+                               otherButtonTitles:nil];
+        }
+        else {
+            [BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Auto-Download Setting",@"\"Auto-Download Books\" Alert message title")
+                                         message:NSLocalizedStringWithDefaultValue(@"AUTO_DOWNLOAD_SETTING_INFO_WITHOUT_DOWNLOAD",nil,[NSBundle mainBundle],@"You can download your books later by going to the Archive.  To select whether or not to download books automatically in the future, go to My Account in Settings.",@"Alert message informing the first time iOS end-user where auto-download setting can be changed after someone has chosen not to download books upon first time launch.")
+                                        delegate:nil
+                               cancelButtonTitle:NSLocalizedString(@"OK",@"\"OK\" label for alertview")
+                               otherButtonTitles:nil];
+            [[NSUserDefaults standardUserDefaults] setInteger:-1 forKey:kBlioDownloadNewBooksDefaultsKey];
+            [[NSUserDefaults standardUserDefaults] synchronize];
         }
     }
 	if (buttonIndex == 1) {
