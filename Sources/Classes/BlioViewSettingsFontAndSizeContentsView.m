@@ -568,9 +568,9 @@
             cell = [[[BlioCenterableTableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:cellIdentifier] autorelease];
             cell.detailTextLabel.text = NSLocalizedString(@"Use fonts specified by the book\u2019s publisher.", @"Explanation for 'original' font selection");
             cell.detailTextLabel.textAlignment = UITextAlignmentCenter;
-            cell.detailTextLabel.adjustsFontSizeToFitWidth = YES;
-        } else {        
-            cell = [[[BlioCenterableTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellIdentifier] autorelease];
+            cell.detailTextLabel.adjustsFontSizeToFitWidth = YES;            
+        } else {
+            cell = [[[BlioCenterableTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellIdentifier] autorelease];            
         }
         cell.textLabel.textAlignment = UITextAlignmentCenter;
         
@@ -587,6 +587,14 @@
     }
             
     cell.textLabel.text = fontDisplayName;
+
+    cell.accessibilityLabel = fontDisplayName;
+    if(isOriginal) {
+        cell.accessibilityHint = NSLocalizedString(@"Use fonts specified by the book\u2019s publisher for book text.", @"Voiceover hint for font selection 'original' setting");
+    } else {
+        cell.accessibilityHint = [NSString stringWithFormat:NSLocalizedString(@"Use the \"%@\" font for book text.", @"Voiceover hint for font selection (arg = font name)"), fontDisplayName];
+    }
+
     
     NSUInteger fontSize = isOriginal ? 18 : 24;
     if([self.delegate shouldShowExtraBoldnessSettings] &&
