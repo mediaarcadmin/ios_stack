@@ -414,6 +414,24 @@
                               atScrollPosition:UITableViewScrollPositionMiddle 
                                       animated:NO];
     
+    // Now that we've got everything sized appropriately, we'll change the order.
+    CGFloat downShiftDistance = CGRectGetMaxY(self.fontBoldnessSegment.frame) - CGRectGetMaxY(self.fontTableViewContainer.frame);
+    CGFloat upShiftDistance = CGRectGetMinY(self.fontSizeSegment.frame) - CGRectGetMinY(self.fontTableViewContainer.frame);
+    
+    CGAffineTransform upshiftTransform = CGAffineTransformMakeTranslation(0, -upShiftDistance);
+    
+    self.fontBoldnessLabel.center = CGPointApplyAffineTransform(self.fontBoldnessLabel.center, upshiftTransform);
+    self.fontBoldnessSegment.center = CGPointApplyAffineTransform(self.fontBoldnessSegment.center, upshiftTransform);
+    
+    self.fontSizeLabel.center = CGPointApplyAffineTransform(self.fontSizeLabel.center, upshiftTransform);
+    self.fontSizeSegment.center = CGPointApplyAffineTransform(self.fontSizeSegment.center, upshiftTransform);
+
+    
+    CGAffineTransform downshiftTransform = CGAffineTransformMakeTranslation(0, downShiftDistance);
+    
+    self.fontTableViewContainer.center = CGPointApplyAffineTransform(self.fontTableViewContainer.center, downshiftTransform);
+    
+    
     [super layoutSubviews];
 }
 
@@ -426,37 +444,18 @@
 
 - (void)changeFontBoldness:(id)sender {
     if(!self.refreshingSettings) {
-        BlioExtraBoldness newBoldness;
-        switch(((UISegmentedControl*)sender).selectedSegmentIndex) {
-            default:
-            case 0:
-                newBoldness = kBlioExtraBoldnessNone;
-                break;
-            case 1:
-                newBoldness = kBlioExtraBoldnessExtra;
-                break;
-        }
-        [self.delegate changeExtraBoldness:newBoldness];
+        static const BlioJustification indexToBoldness[2] = { kBlioExtraBoldnessNone, kBlioExtraBoldnessExtra };
+
+        [self.delegate changeExtraBoldness:indexToBoldness[((UISegmentedControl*)sender).selectedSegmentIndex]];
         [self refreshSettings];
     }
 }
 
 - (void)changeJustification:(id)sender {
     if(!self.refreshingSettings) {
-        BlioJustification newJustifiction;
-        switch(((UISegmentedControl*)sender).selectedSegmentIndex) {
-            case 0:
-                newJustifiction = kBlioJustificationOriginal;
-                break;
-            case 1:
-                newJustifiction = kBlioJustificationLeft;
-                break;
-            default:
-            case 2:
-                newJustifiction = kBlioJustificationFull;
-                break;
-        }
-        [self.delegate changeJustification:newJustifiction];
+        static const BlioJustification indexToJustification[3] = { kBlioJustificationOriginal, kBlioJustificationLeft, kBlioJustificationFull };
+
+        [self.delegate changeJustification:indexToJustification[((UISegmentedControl*)sender).selectedSegmentIndex]];
     }
 }
 
@@ -474,7 +473,7 @@
         }
     } else {
         size.width = kBlioViewSettingsWidthIPad;
-        size.height = roundf(self.rowHeight * 11.5f);
+        size.height = roundf(self.rowHeight * 12.75f);
         if(self.doneButton) {
             size.height += self.rowHeight + kBlioViewSettingsRowSpacingIPad;
         }
