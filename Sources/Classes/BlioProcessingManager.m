@@ -31,7 +31,7 @@
 
 @implementation BlioProcessingManager
 
-@synthesize preAvailabilityQueue;
+@synthesize preAvailabilityQueue,notifyProcessingComplete = _notifyProcessingComplete;
 
 - (void)dealloc {
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
@@ -749,8 +749,10 @@
 			
 		}
 	}
-	
+	[self completeOperationQueued];
+    NSLog(@"bookID: %@",bookID);
 	BlioProcessingCompleteOperation *completeOp = [[BlioProcessingCompleteOperation alloc] init];
+    completeOp.processingDelegate = self;
 	[completeOp setQueuePriority:NSOperationQueuePriorityVeryHigh];
 	completeOp.alreadyCompletedOperations = alreadyCompletedOperations;
 	completeOp.bookID = bookID;
@@ -1619,12 +1621,41 @@
 	}
 	return tempArray;
 }
+
+-(void)completeOperationQueued {
+    _queuedCompleteOperations++;
+    [UIApplication sharedApplication].idleTimerDisabled = YES;
+    NSLog(@"incrementing - _queuedCompleteOperations: %u",_queuedCompleteOperations);
+}
+-(void)completeOperationFinished {
+    _queuedCompleteOperations--;
+    if (_queuedCompleteOperations == 0) {
+        if (_notifyProcessingComplete) {
+            _notifyProcessingComplete = NO;
+            [[NSUserDefaults standardUserDefaults] setBool:YES forKey:kBlioHasRestoredPurchasedBooksKey];
+            [[NSUserDefaults standardUserDefaults] synchronize];
+            if (UIAccessibilityIsVoiceOverRunning()) {
+                [BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Attention",@"\"Attention\" Alert message title")
+                                             message:NSLocalizedStringWithDefaultValue(@"PROCESSING_COMPLETE",nil,[NSBundle mainBundle],@"Your books have finished downloading.",@"Alert message informing the accessibility user that books have finished downloading.")
+                                            delegate:nil
+                                   cancelButtonTitle:NSLocalizedString(@"OK",@"\"OK\" label for alertview")
+                                   otherButtonTitles:nil];
+            }
+        }
+        [UIApplication sharedApplication].idleTimerDisabled = NO;
+    }
+    NSLog(@"decrementing - _queuedCompleteOperations: %u",_queuedCompleteOperations);
+}
+
 #pragma mark -
 #pragma mark UIAlertViewDelegate methods
 
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex{
 	if (buttonIndex == 0) {
         if (alertView.tag == DOWNLOAD_ADVISORY_ALERT_TAG) {
+            if (![[NSUserDefaults standardUserDefaults] boolForKey:kBlioHasRestoredPurchasedBooksKey]) {
+                _notifyProcessingComplete = YES;
+            }
             [self processArchivedBooks];
             [[BlioStoreManager sharedInstance] retrieveBooksForSourceID:BlioBookSourceOnlineStore];
         }
