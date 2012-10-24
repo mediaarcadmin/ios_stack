@@ -1635,8 +1635,8 @@
             [[NSUserDefaults standardUserDefaults] setBool:YES forKey:kBlioHasRestoredPurchasedBooksKey];
             [[NSUserDefaults standardUserDefaults] synchronize];
             if (UIAccessibilityIsVoiceOverRunning()) {
-                [BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Attention",@"\"Attention\" Alert message title")
-                                             message:NSLocalizedStringWithDefaultValue(@"PROCESSING_COMPLETE",nil,[NSBundle mainBundle],@"Your books have finished downloading.",@"Alert message informing the accessibility user that books have finished downloading.")
+                [BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Processing Complete",@"\"Processing Complete\" Alert message title")
+                                             message:NSLocalizedStringWithDefaultValue(@"PROCESSING_COMPLETE",nil,[NSBundle mainBundle],@"Processing of your books is complete.",@"Alert message informing the accessibility user that books have finished processing.")
                                             delegate:nil
                                    cancelButtonTitle:NSLocalizedString(@"OK",@"\"OK\" label for alertview")
                                    otherButtonTitles:nil];
