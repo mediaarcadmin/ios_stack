@@ -19,7 +19,9 @@
 @end
 
 @interface BlioProcessingCompleteOperation : BlioProcessingAggregateOperation {
+    id<BlioProcessingDelegate> _processingDelegate;
 }
+@property (nonatomic, assign) id<BlioProcessingDelegate> processingDelegate;
 
 @end
 @interface BlioProcessingDeleteBookOperation : BlioProcessingOperation {

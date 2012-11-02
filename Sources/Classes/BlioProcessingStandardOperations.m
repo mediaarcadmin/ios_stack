@@ -61,7 +61,10 @@
 
 @implementation BlioProcessingCompleteOperation
 
+@synthesize processingDelegate = _processingDelegate;
+
 - (void)main {
+    NSLog(@"bookID: %@",bookID);
     if ([self isCancelled]) {
 		NSLog(@"BlioProcessingCompleteOperation cancelled before starting (perhaps due to pause, broken internet connection, crash, or application exit)");
 		NSLog(@"CompleteOperation dependencies: %@",[self dependencies]);
@@ -114,6 +117,7 @@
 }
 - (void) dealloc {
 //	NSLog(@"BlioProcessingCompleteOperation dealloc entered");
+    [self.processingDelegate completeOperationFinished];
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
 	[super dealloc];
 }

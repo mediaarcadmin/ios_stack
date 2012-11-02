@@ -147,6 +147,9 @@
 	}
 	if ([[Reachability reachabilityForInternetConnection] currentReachabilityStatus] != NotReachable) {
 		if ([[BlioStoreManager sharedInstance] isLoggedInForSourceID:BlioBookSourceOnlineStore]) {
+            if (![[NSUserDefaults standardUserDefaults] boolForKey:kBlioHasRestoredPurchasedBooksKey] && [[NSUserDefaults standardUserDefaults] integerForKey:kBlioDownloadNewBooksDefaultsKey] >= 0) {
+                self.processingDelegate.notifyProcessingComplete = YES;
+            }
 			[[BlioStoreManager sharedInstance] retrieveBooksForSourceID:BlioBookSourceOnlineStore];
 			// The following is an instructional alert view that only shows once; we've decided to disable it for now, since the Archive view is not as prominent with paid books automatically downloading.
 //			if (![[NSUserDefaults standardUserDefaults] objectForKey:@"AlertArchive"]) {
