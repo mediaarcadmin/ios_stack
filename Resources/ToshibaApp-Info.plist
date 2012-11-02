@@ -241,10 +241,12 @@
 	</array>
 	<key>UIAppFonts</key>
 	<array>
-		<string>THFonts/LinLibertineO.otf</string>
-		<string>THFonts/LinLibertineO-Bold.otf</string>
-		<string>THFonts/LinLibertineO-Italic.otf</string>
-		<string>THFonts/LinLibertineO-BoldItalic.otf</string>
+		<string>THFonts/LinLibertine_R.otf</string>
+		<string>THFonts/LinLibertine_RB.otf</string>
+		<string>THFonts/LinLibertine_RBI.otf</string>
+		<string>THFonts/LinLibertine_RI.otf</string>
+		<string>THFonts/LinLibertine_RZ.otf</string>
+		<string>THFonts/LinLibertine_RZI.otf</string>
 	</array>
 	<key>googleAPIKey</key>
 	<string>AIzaSyAhUo_vweTs60oUsFr2_n6rVlmRzK8AulI</string>
