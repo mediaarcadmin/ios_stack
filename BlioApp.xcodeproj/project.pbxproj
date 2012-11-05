@@ -1333,6 +1333,7 @@
 		A383F2441174FA7A0049ED3A /* icon-cart.png in Resources */ = {isa = PBXBuildFile; fileRef = A383F2431174FA7A0049ED3A /* icon-cart.png */; };
 		A3849B7F12E7E1FD0040B0EA /* icon-import@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A3B0B2B0126E088500FC3D18 /* icon-import@2x.png */; };
 		A386B27D15FE804A00C25FBA /* Acapela For iPhone LF USEnglish Tracy in Resources */ = {isa = PBXBuildFile; fileRef = A386B27C15FE804A00C25FBA /* Acapela For iPhone LF USEnglish Tracy */; };
+		A388EEA2164809B6009C5727 /* Default-Toshiba-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A388EEA1164809B6009C5727 /* Default-Toshiba-568h@2x.png */; };
 		A38A2EC115EE6A43003398E7 /* libBabTTS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A38A2EBF15EE6A43003398E7 /* libBabTTS.a */; };
 		A38A2EC215EE6A43003398E7 /* libMobilityStatic.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A38A2EC015EE6A43003398E7 /* libMobilityStatic.a */; };
 		A39305FF12BAC01A00949150 /* apache2-license.html in Resources */ = {isa = PBXBuildFile; fileRef = A39305FE12BAC01A00949150 /* apache2-license.html */; };
@@ -2858,6 +2859,7 @@
 		A382D3D811C9159000CFEB88 /* Icon-iPad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-iPad.png"; sourceTree = "<group>"; };
 		A383F2431174FA7A0049ED3A /* icon-cart.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-cart.png"; sourceTree = "<group>"; };
 		A386B27C15FE804A00C25FBA /* Acapela For iPhone LF USEnglish Tracy */ = {isa = PBXFileReference; lastKnownFileType = folder; name = "Acapela For iPhone LF USEnglish Tracy"; path = "TTS/Acapela For iPhone LF USEnglish Tracy"; sourceTree = "<group>"; };
+		A388EEA1164809B6009C5727 /* Default-Toshiba-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-Toshiba-568h@2x.png"; sourceTree = "<group>"; };
 		A38A2EBF15EE6A43003398E7 /* libBabTTS.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libBabTTS.a; path = Libraries/TTS/libBabTTS.a; sourceTree = "<group>"; };
 		A38A2EC015EE6A43003398E7 /* libMobilityStatic.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libMobilityStatic.a; path = Libraries/TTS/libMobilityStatic.a; sourceTree = "<group>"; };
 		A39305FE12BAC01A00949150 /* apache2-license.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = "apache2-license.html"; sourceTree = "<group>"; };
@@ -3609,6 +3611,7 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				A388EEA1164809B6009C5727 /* Default-Toshiba-568h@2x.png */,
 				876AEC75161CB469008899A8 /* bsd-3-clause-license.html */,
 				8783725B160908BC00EA85A4 /* icon-fontsize.png */,
 				8783725C160908BC00EA85A4 /* icon-fontsize@2x.png */,
@@ -6283,6 +6286,7 @@
 				87837261160908BC00EA85A4 /* icon-fontsize.png in Resources */,
 				87837266160908BC00EA85A4 /* icon-fontsize@2x.png in Resources */,
 				876AEC7A161CB469008899A8 /* bsd-3-clause-license.html in Resources */,
+				A388EEA2164809B6009C5727 /* Default-Toshiba-568h@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

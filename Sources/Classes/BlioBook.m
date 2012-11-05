@@ -166,8 +166,12 @@
 }
 - (BOOL)hasTTSRights {
 	//    return NO;//[[self valueForKey:@"hasTTSRightsNum"] boolValue];
+#ifdef TOSHIBA
+    return NO; // No TTS in 1.0
+#else
     // We now run only on >= 4.0, so the VO function is available
-    return [[self valueForKey:@"ttsRight"] boolValue] || UIAccessibilityIsVoiceOverRunning(); 
+    return [[self valueForKey:@"ttsRight"] boolValue] || UIAccessibilityIsVoiceOverRunning();
+#endif
 }
 - (BOOL)isTTSCapable {
     return [[self valueForKey:@"ttsCapable"] boolValue];
