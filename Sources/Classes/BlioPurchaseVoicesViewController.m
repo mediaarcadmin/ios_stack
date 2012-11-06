@@ -51,6 +51,13 @@
 	CGRect targetFrame = [[UIScreen mainScreen] bounds];
 	self.activityIndicatorView = [[[BlioRoundedRectActivityView alloc] initWithFrame:CGRectMake((targetFrame.size.width-activityIndicatorDiameter)/2, (targetFrame.size.height-activityIndicatorDiameter)/2, activityIndicatorDiameter, activityIndicatorDiameter)] autorelease];
 		
+    self.navigationItem.rightBarButtonItem = [[[UIBarButtonItem alloc]
+                                               initWithTitle:NSLocalizedString(@"Restore",@"\"Restore\" bar button")
+                                               style:UIBarButtonItemStylePlain
+                                               target:self
+                                               action:@selector(restoreButtonPressed:)]
+                                              autorelease];
+
 	[[[UIApplication sharedApplication] keyWindow] addSubview:activityIndicatorView];
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReceiveInAppPurchaseProductsFetchStarted:) name:BlioInAppPurchaseProductsFetchStartedNotification object:[BlioInAppPurchaseManager sharedInAppPurchaseManager]];
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReceiveInAppPurchaseProductsFetchFailed:) name:BlioInAppPurchaseProductsFetchFailedNotification object:[BlioInAppPurchaseManager sharedInAppPurchaseManager]];
@@ -71,6 +78,9 @@
 		[self.tableView reloadData];
 	}
 	else if ([BlioInAppPurchaseManager sharedInAppPurchaseManager].isFetchingProducts || [BlioInAppPurchaseManager sharedInAppPurchaseManager].isRestoringTransactions) [self.activityIndicatorView startAnimating];
+}
+-(void)restoreButtonPressed:(UIControl*)sender {
+    [[BlioInAppPurchaseManager sharedInAppPurchaseManager] restoreCompletedTransactions];
 }
 -(void)inAppPurchaseRestoreTransactionsStarted:(NSNotification*)notification {
 	[self.activityIndicatorView startAnimating];
@@ -359,7 +369,6 @@
 -(void)prepareForReuse {
 	[super prepareForReuse];
 	[self setDownloadButtonState:BlioVoiceDownloadButtonStatePurchase];
-	[[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 -(void)setDownloadButtonState:(BlioVoiceDownloadButtonState)aButtonState {
 	if (buttonState != aButtonState) {

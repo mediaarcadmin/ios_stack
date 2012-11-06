@@ -107,6 +107,7 @@
 }
 -(BOOL)hasPreviouslyPurchasedProductWithID:(NSString*)anID {
     for (SKPaymentTransaction* transaction in [SKPaymentQueue defaultQueue].transactions) {
+        NSLog(@"transaction.payment.productIdentifier: %@, anID: %@",transaction.payment.productIdentifier,anID);
 		NSString *productId = transaction.payment.productIdentifier;
 		if ((transaction.transactionState == SKPaymentTransactionStateRestored || transaction.transactionState == SKPaymentTransactionStatePurchased) && [productId isEqualToString:anID]) return YES;
 	}
@@ -142,6 +143,7 @@
     
     [self downloadProductWithTransaction:transaction];
     
+    [[SKPaymentQueue defaultQueue] finishTransaction:transaction];
 	NSMutableDictionary * userInfo = [NSMutableDictionary dictionaryWithCapacity:1];
 	[userInfo setObject:transaction forKey:BlioInAppPurchaseNotificationTransactionKey];
 	[[NSNotificationCenter defaultCenter] postNotificationName:BlioInAppPurchaseTransactionRestoredNotification object:self userInfo:userInfo];
@@ -351,6 +353,9 @@
 				[self failedTransaction:transaction];
 				break;
 			case SKPaymentTransactionStateRestored:
+//                [[SKPaymentQueue defaultQueue] finishTransaction:transaction];
+                [self restoreTransaction:transaction];
+
                 break;
 			default:
 				break;
@@ -358,6 +363,10 @@
 	}
 }
 - (void)paymentQueueRestoreCompletedTransactionsFinished:(SKPaymentQueue *)queue {
+    NSLog(@"[SKPaymentQueue defaultQueue].transactions: %@",[SKPaymentQueue defaultQueue].transactions);
+	for (SKPaymentTransaction *transaction in [SKPaymentQueue defaultQueue].transactions) {
+        NSLog(@"transaction.payment.productIdentifier: %@",transaction.payment.productIdentifier);
+    }
     isRestoringTransactions = NO;
     [[NSNotificationCenter defaultCenter] postNotificationName:BlioInAppPurchaseRestoreTransactionsFinishedNotification object:self userInfo:nil];
 

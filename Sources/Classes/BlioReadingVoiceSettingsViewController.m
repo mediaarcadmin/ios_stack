@@ -60,9 +60,9 @@
 	self.activityIndicatorView = [[[BlioRoundedRectActivityView alloc] initWithFrame:CGRectMake((targetFrame.size.width-activityIndicatorDiameter)/2, (targetFrame.size.height-activityIndicatorDiameter)/2, activityIndicatorDiameter, activityIndicatorDiameter)] autorelease];
 	[[[UIApplication sharedApplication] keyWindow] addSubview:activityIndicatorView];
 
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onInAppPurchaseRestoreTransactionsStarted:) name:BlioInAppPurchaseRestoreTransactionsStartedNotification object:[BlioInAppPurchaseManager sharedInAppPurchaseManager]];
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onInAppPurchaseRestoreTransactionsFinished:) name:BlioInAppPurchaseRestoreTransactionsFinishedNotification object:[BlioInAppPurchaseManager sharedInAppPurchaseManager]];
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onInAppPurchaseRestoreTransactionsFailed:) name:BlioInAppPurchaseRestoreTransactionsFailedNotification object:[BlioInAppPurchaseManager sharedInAppPurchaseManager]];
+//    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onInAppPurchaseRestoreTransactionsStarted:) name:BlioInAppPurchaseRestoreTransactionsStartedNotification object:[BlioInAppPurchaseManager sharedInAppPurchaseManager]];
+//	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onInAppPurchaseRestoreTransactionsFinished:) name:BlioInAppPurchaseRestoreTransactionsFinishedNotification object:[BlioInAppPurchaseManager sharedInAppPurchaseManager]];
+//	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onInAppPurchaseRestoreTransactionsFailed:) name:BlioInAppPurchaseRestoreTransactionsFailedNotification object:[BlioInAppPurchaseManager sharedInAppPurchaseManager]];
     
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onVoiceListRefreshedNotification:) name:BlioVoiceListRefreshedNotification object:nil];
 
@@ -127,9 +127,9 @@
 }
 -(void)viewDidUnload {
 	[[NSNotificationCenter defaultCenter] removeObserver:self name:BlioVoiceListRefreshedNotification object:nil];
-	[[NSNotificationCenter defaultCenter] removeObserver:self name:BlioInAppPurchaseRestoreTransactionsStartedNotification object:nil];
-	[[NSNotificationCenter defaultCenter] removeObserver:self name:BlioInAppPurchaseRestoreTransactionsFinishedNotification object:nil];
-	[[NSNotificationCenter defaultCenter] removeObserver:self name:BlioInAppPurchaseRestoreTransactionsFailedNotification object:nil];
+//	[[NSNotificationCenter defaultCenter] removeObserver:self name:BlioInAppPurchaseRestoreTransactionsStartedNotification object:nil];
+//	[[NSNotificationCenter defaultCenter] removeObserver:self name:BlioInAppPurchaseRestoreTransactionsFinishedNotification object:nil];
+//	[[NSNotificationCenter defaultCenter] removeObserver:self name:BlioInAppPurchaseRestoreTransactionsFailedNotification object:nil];
 }
 -(void)viewWillAppear:(BOOL)animated {
 	[super viewWillAppear:animated];
@@ -406,7 +406,8 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 	if (indexPath.row == self.availableVoices.count) {
-        [[BlioInAppPurchaseManager sharedInAppPurchaseManager] restoreCompletedTransactions];        
+//        [[BlioInAppPurchaseManager sharedInAppPurchaseManager] restoreCompletedTransactions];
+        [self.navigationController pushViewController:[[[BlioPurchaseVoicesViewController alloc] initWithStyle:UITableViewStyleGrouped] autorelease] animated:YES];
 	}
 	else {
 		[tableView deselectRowAtIndexPath:indexPath animated:YES];
