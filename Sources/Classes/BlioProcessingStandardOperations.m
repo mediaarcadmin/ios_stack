@@ -499,6 +499,7 @@
 			[self finish];
 		}
 	}
+    [BlioProcessingOperation addSkipBackupAttributeToItemAtURL:[NSURL fileURLWithPath:temporaryPath]];
 	self.downloadFile = [NSFileHandle fileHandleForWritingAtPath:temporaryPath];
 	NSMutableURLRequest *aRequest = [[NSMutableURLRequest alloc] initWithURL:self.url];
 //	NSLog(@"about to start connection to URL: %@",[self.url absoluteString]);
