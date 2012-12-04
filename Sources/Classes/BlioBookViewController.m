@@ -2451,9 +2451,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 - (void)speechSynthesizer:(AcapelaSpeech*)synth didFinishSpeaking:(BOOL)finishedSpeaking
 {
 	//NSLog(@"%@%i", NSStringFromSelector(_cmd),finishedSpeaking);
-    // pre-1.302 fix
-	//if (finishedSpeaking  && _acapelaAudioManager.currentWordOffset >= ([_acapelaAudioManager.blockWords count]-1)) {
-	if (finishedSpeaking) {
+    if (finishedSpeaking) {
 		// Reached end of block.  Start on the next.
         [self prepareTextToSpeakWithAudioManager:_acapelaAudioManager];
 	}
@@ -2465,12 +2463,6 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 {
 	//NSLog(@"%@", NSStringFromSelector(_cmd));
     if(characterRange.location + characterRange.length <= string.length) {
-        // Fix for 1.302 bug.  The string lengths below should be the same.  But in 1.302 they're not because
-        // the engine is adding a period at the end.  This causes a crash when getting the last word offset
-        // of the string, unless we decrement the range length as below.
-        if ((characterRange.location + characterRange.length == string.length)
-            && (string.length == _acapelaAudioManager.currentString.length+1))
-            characterRange.length--;
         NSUInteger wordOffset = [_acapelaAudioManager wordOffsetForCharacterRange:characterRange];
         
         id<BlioBookView> bookView = self.bookView;
