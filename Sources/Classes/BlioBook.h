@@ -55,6 +55,7 @@ static NSString * const BlioManifestAudiobookTimingFilesKey = @"BlioManifestAudi
 static NSString * const BlioManifestKNFBMetadataKey = @"BlioManifestKNFBMetadataKey";
 static NSString * const BlioManifestPreAvailabilityCompleteKey = @"BlioManifestPreAvailabilityCompleteKey";
 static NSString * const BlioManifestDrmHeaderKey = @"BlioManifestDrmHeaderKey";
+static NSString * const BlioManifestDrmPagesKey = @"BlioManifestDrmPagesKey";
 static NSString * const BlioManifestFirstLayoutPageOnLeftKey = @"BlioManifestFirstLayoutPageOnLeftKey";
 
 static NSString * const BlioManifestEntryLocationKey = @"BlioManifestEntryLocationKey";
@@ -161,7 +162,8 @@ static NSString * const BlioBookThumbnailPrefix = @"thumbnail";
 // Call to release all derived (i.e. not stored in CoreData) attributes 
 // (textflow etc.)
 - (void)flushCaches;
-- (void)reportReadingIfRequired;
+// Not used in KDRM
+//- (void)reportReadingIfRequired;
 
 - (NSArray *)sortedBookmarks;
 - (NSArray *)sortedBookmarksForRange:(BlioBookmarkRange *)range;

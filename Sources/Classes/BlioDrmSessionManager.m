@@ -6,16 +6,19 @@
 //  Copyright 2010 Kurzweil Technologies Inc. All rights reserved.
 //
 
+//#import "BlioLicenseClient.h"
+//#import "DrmGlobals.h"
 #import "BlioDrmSessionManager.h"
-#import "BlioLicenseClient.h"
-#import "DrmGlobals.h"
 #import "XpsSdk.h"
 #import "BlioBook.h"
 #import "BlioXPSProvider.h"
 #import "BlioAlertManager.h"
 #import "BlioAppSettingsConstants.h"
 #import "BlioStoreHelper.h"
+#import "KDRMLicenseStore.h"
+#import "KDRMClient.h"
 
+/* PlayReady:
 // Domain controller URL must be hard-coded instead of parsed from a book's header 
 // because registration can be done proactively from the UI.
 #ifdef TEST_MODE
@@ -23,53 +26,517 @@ NSString* testUrl = @"http://prl.kreader.net/PlayReady/service/LicenseAcquisitio
 #else
 NSString* productionUrl = @"https://bookvault.blioreader.com/PlayReady/service/LicenseAcquisition.asmx";
 #endif
+*/
+
+NSString* licensetUrl = @"http://bookvault.blioreader.com/KDRM/LicenseHandler.ashx";
+NSString* deregistrationUrl = @"https://bookvault.blioreader.com/KDRM/DeregistrationHandler.ashx";
 
 @interface BlioDrmSessionManager()
 
+/* PlayReady:
 struct BlioDrmSessionManagerDrmIVars {
     DRM_APP_CONTEXT* drmAppContext;
     DRM_DECRYPT_CONTEXT  drmDecryptContext;
     DRM_BYTE drmRevocationBuffer[REVOCATION_BUFFER_SIZE];
 };
+//@property (nonatomic, retain) NSManagedObjectID *headerBookID;
+//@property (nonatomic, retain) NSManagedObjectID *boundBookID;
+//@property (nonatomic, retain) NSString* serverResponse;
+*/
 
-@property (nonatomic, retain) NSManagedObjectID *headerBookID;
-@property (nonatomic, retain) NSManagedObjectID *boundBookID;
-@property (nonatomic, retain) NSString* serverResponse;
+@property (nonatomic, retain) KDRMLicense* license;
+@property (nonatomic, retain) NSString* isbn;
 
+/* PlayReady:
 - (void)initialize;
 - (DRM_RESULT)setHeaderForBookWithID:(NSManagedObjectID *)aBookID;
--(DRM_DOMAIN_ID)domainIDFromSavedRegistration;
+- (DRM_DOMAIN_ID)domainIDFromSavedRegistration;
+*/
+
 @end
 
 @implementation BlioDrmSessionManager
 
-@synthesize drmInitialized;
-@synthesize headerBookID, boundBookID, serverResponse;
+@synthesize license, isbn;
 
+-(void)reportError:(NSError*)error {
+    if ([error.domain compare:@"KDRMClientErrorDomain"]) {
+        switch (error.code) {
+            case KDRMClientErrorDomainCodeInvalidHTTPStatusCode: 
+                [BlioAlertManager showAlertOfSuppressedType:BlioDrmFailureAlertType
+                                                      title:NSLocalizedString(@"Rights Management Error",@"\"Rights Management Error\" alert message title")
+                                                    message:NSLocalizedStringWithDefaultValue(@"INVALID_HTTP_STATUS_CODE",
+                                                                                              nil,
+                                                                                              [NSBundle mainBundle],
+                                                                                              error.localizedDescription, 
+                                                                                              @"Description of invalid http status code.")
+                                                   delegate:nil
+                                          cancelButtonTitle:nil
+                                          otherButtonTitles:@"OK", nil];
+                break;
+            case KDRMClientErrorDomainCodeInvalidServerStatusCode:
+                [BlioAlertManager showAlertOfSuppressedType:BlioDrmFailureAlertType
+                                                      title:NSLocalizedString(@"Rights Management Error",@"\"Rights Management Error\" alert message title")
+                                                    message:NSLocalizedStringWithDefaultValue(@"INVALID_SERVER_STATUS_CODE",
+                                                                                              nil,
+                                                                                              [NSBundle mainBundle],
+                                                                                              error.localizedDescription,
+                                                                                              @"Description of invalid server status code.")
+                                                   delegate:nil
+                                          cancelButtonTitle:nil
+                                          otherButtonTitles:@"OK", nil];
+                break;
+            case KDRMClientErrorDomainCodeInvalidLicenseData:
+                [BlioAlertManager showAlertOfSuppressedType:BlioDrmFailureAlertType
+                                                      title:NSLocalizedString(@"Rights Management Error",@"\"Rights Management Error\" alert message title")
+                                                    message:NSLocalizedStringWithDefaultValue(@"INVALID_LICENSE_DATA",
+                                                                                              nil,
+                                                                                              [NSBundle mainBundle],
+                                                                                              @"The license data is invalid.",
+                                                                                              @"Description of invalid license data error.")
+                                                   delegate:nil
+                                          cancelButtonTitle:nil
+                                          otherButtonTitles:@"OK", nil];
+                break;
+            case KDRMClientErrorDomainCodeInvalidSignature:
+                [BlioAlertManager showAlertOfSuppressedType:BlioDrmFailureAlertType
+                                                      title:NSLocalizedString(@"Rights Management Error",@"\"Rights Management Error\" alert message title")
+                                                    message:NSLocalizedStringWithDefaultValue(@"INVALID_LICENSE_SIGNATURE",
+                                                                                              nil,
+                                                                                              [NSBundle mainBundle],
+                                                                                              @"The license signature is invalid.",
+                                                                                              @"Description of invalid license signature error.")
+                                                   delegate:nil
+                                          cancelButtonTitle:nil
+                                          otherButtonTitles:@"OK", nil];
+                break;
+            case KDRMClientErrorDomainCodeMissingLicense:
+                [BlioAlertManager showAlertOfSuppressedType:BlioDrmFailureAlertType
+                                                      title:NSLocalizedString(@"Rights Management Error",@"\"Rights Management Error\" alert message title")
+                                                    message:NSLocalizedStringWithDefaultValue(@"MISSING_LICENSE",
+                                                                                              nil,
+                                                                                              [NSBundle mainBundle],
+                                                                                              @"The book could not be opened because the license is missing.",
+                                                                                              @"Description of missing license error.")
+                                                   delegate:nil
+                                          cancelButtonTitle:nil
+                                          otherButtonTitles:@"OK", nil];
+                break;
+            case KDRMClientErrorDomainCodeExpiredLicense:
+                [BlioAlertManager showAlertOfSuppressedType:BlioDrmFailureAlertType
+                                                      title:NSLocalizedString(@"Rights Management Error",@"\"Rights Management Error\" alert message title")
+                                                    message:NSLocalizedStringWithDefaultValue(@"EXPIRED_LICENSE",
+                                                                                              nil,
+                                                                                              [NSBundle mainBundle],
+                                                                                              @"The book could not be opened because it is past its due date.",
+                                                                                              @"Description of expired license error.")
+                                                   delegate:nil
+                                          cancelButtonTitle:nil
+                                          otherButtonTitles:@"OK", nil];
+                break;
+            default:
+                break;
+        }
+    }
+    else if ([error.domain compare:@"KDRMLicenseStoreErrorDomain"]) {
+        [BlioAlertManager showAlertOfSuppressedType:BlioDrmFailureAlertType
+                                              title:NSLocalizedString(@"Rights Management Error",@"\"Rights Management Error\" alert message title")
+                                            message:NSLocalizedStringWithDefaultValue(@"LICENSE_STORE_ERROR",
+                                                                                      nil,
+                                                                                      [NSBundle mainBundle],
+                                                                                      error.localizedDescription,
+                                                                                      @"Description of license store error.")
+                                           delegate:nil
+                                  cancelButtonTitle:nil
+                                  otherButtonTitles:@"OK", nil];
+    }
+}
 
 -(void) dealloc {
-	Drm_Uninitialize(drmIVars->drmAppContext); 
-	Oem_MemFree(drmIVars->drmAppContext);
-    self.headerBookID = nil;
-    self.boundBookID = nil;
-    
-    free(drmIVars);
+    //Drm_Uninitialize(drmIVars->drmAppContext);
+    //Oem_MemFree(drmIVars->drmAppContext);
+    //self.headerBookID = nil;
+    //self.boundBookID = nil;
+    //free(drmIVars);
+    self.license = nil;
+    self.isbn = nil;
 	[super dealloc];
 }
 
 - (id)initWithBookID:(NSManagedObjectID *)aBookID 
 {
     if((self = [super init])) {
-		self.headerBookID = aBookID;
-        drmIVars = calloc(1, sizeof(struct BlioDrmSessionManagerDrmIVars));
-        [self initialize];
+        BlioBook *book = [[BlioBookManager sharedBookManager] bookWithID:aBookID];
+        self.isbn = [book valueForKey:@"isbn"];
+        self.license = nil;
+        //self.headerBookID = aBookID;
+        //BlioBook *book = [[BlioBookManager sharedBookManager] bookWithID:self.headerBookID];
+        //drmIVars = calloc(1, sizeof(struct BlioDrmSessionManagerDrmIVars));
+        //[self initialize];
     }
     return self;
 }
 
-- (void)initialize {
+
+- (BOOL)getLicenseKDRM:(NSString*)token {
+    KDRMClient* client = [[KDRMClient alloc] init];
+    BOOL success = [client acquireLicenseForISBNSync:self.isbn
+                                               token:token
+                                                 url:licensetUrl
+                                          completion:^(NSURLRequest *request, NSURLResponse *response, NSError *error, KDRMLicense *lic) {
+                                              NSString* logMsg = [NSString stringWithFormat:@"(%@, %@, %@, %@)", request, response, error, lic];
+                                              NSLog(@"%@",logMsg);
+                                              if ( error==nil )
+                                                  NSLog(@"Acquired KDRM License.");
+                                              else
+                                                  [self reportError:error];
+                                          }
+                    ];
+    [client release];
+    if ( success )
+		[[BlioStoreManager sharedInstance] setDeviceRegisteredSettingOnly:BlioDeviceRegisteredStatusRegistered forSourceID:BlioBookSourceOnlineStore];
+    return success;
+}
+
+- (BOOL)getLicense:(NSString*)token {
+    return [self getLicenseKDRM:token];
+    
+    /* PlayReady:
+     if ( !self.drmInitialized ) {
+     NSLog(@"DRM error: license cannot be acquired because DRM is not initialized.");
+     return NO;
+     }
+     
+     DRM_RESULT dr = DRM_SUCCESS;
+     ChkDR([self checkDomain:token]);
+     
+     ErrorExit:
+     if ( dr == DRM_SUCCESS || dr == DRM_S_FALSE || dr == DRM_S_MORE_DATA  ) {
+     NSLog(@"DRM license successfully acquired for bookID: %@", self.headerBookID);
+     return YES;
+     }
+     if ([self checkPriorityError:dr])
+     return NO;
+     // Not sure at this point whether to report to the user or just log.
+     NSLog(@"DRM license acquisition error: %08X",dr);
+     //[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Rights Management Error",@"\"Rights Management Error\" alert message title")
+     message:[NSLocalizedStringWithDefaultValue(@"LICENSE_ACQUISITION_FAILED",nil,[NSBundle mainBundle],@"Unable to obtain license for book. Please contact Blio technical support with the error code: ",@"Alert message shown when device registration fails.")
+     stringByAppendingString:[NSString stringWithFormat:@"%08X", dr]]
+     delegate:nil
+     cancelButtonTitle:nil
+     otherButtonTitles:@"OK", nil];
+     return NO;
+     */
 	
-	// TODO: move dstrDataStoreFile to DrmGlobals.
+}
+
+- (BOOL)bindToLicenseKDRM { 
+    KDRMClient* client = [[KDRMClient alloc] init];
+    KDRMLicense* lic;
+    BOOL success = [client bindToLicense:self.isbn
+                                  license:&lic
+                           completion:^(NSError *error) {
+                               NSString* logMsg = [NSString stringWithFormat:@"(%@)", error];
+                               NSLog(@"%@",logMsg);
+                               if ( error==nil )
+                                   NSLog(@"KDRM bind successful.");
+                               else
+                                   [self reportError:error];
+                           }
+                    ];
+    [client release];
+    if (success)
+        self.license = lic;
+    return success;
+}
+
+- (BOOL)bindToLicense {
+    return [self bindToLicenseKDRM];
+    
+    /* PlayReady:
+     if ( !self.drmInitialized ) {
+     NSLog(@"DRM error: cannot bind to license because DRM is not initialized.");
+     return FALSE;
+     }
+     DRM_RESULT dr = DRM_SUCCESS;
+     if ( ![self.boundBookID isEqual:self.headerBookID] ) {
+     // Search for a license to bind to with the Read right.
+     const DRM_CONST_STRING *rgpdstrRights[1] = {0};
+     DRM_CONST_STRING readRight;
+     readRight.pwszString = [DrmGlobals getDrmGlobals].readRight.pwszString;
+     readRight.cchString = [DrmGlobals getDrmGlobals].readRight.cchString;
+     // Roundabout assignment needed to get around compiler complaint.
+     rgpdstrRights[0] = &readRight;
+     int bufferSz = __CB_DECL(SIZEOF(DRM_CIPHER_CONTEXT));
+     for (int i=0;i<bufferSz;++i)
+     (drmIVars->drmDecryptContext).rgbBuffer[i] = 0;
+     ChkDR( Drm_Reader_Bind( drmIVars->drmAppContext,
+     rgpdstrRights,
+     NO_OF(rgpdstrRights),
+     NULL,
+     NULL,
+     &drmIVars->drmDecryptContext ) );
+     self.boundBookID = self.headerBookID;
+     }
+     
+     ErrorExit:
+     if ([self checkPriorityError:dr])
+     return NO;
+     if (dr != DRM_SUCCESS) {
+     //NSLog(@"DRM bind error: %08X",dr);
+     [BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Rights Management Error",@"\"Rights Management Error\" alert message title")
+     message:[NSLocalizedStringWithDefaultValue(@"DECRYPTION_FAILED",nil,[NSBundle mainBundle],@"Unable to open book. Please contact Blio technical support with the error code: ",@"Alert message shown when book decryption fails.")
+     stringByAppendingString:[NSString stringWithFormat:@"%08X", dr]]
+     delegate:nil
+     cancelButtonTitle:nil
+     otherButtonTitles:@"OK", nil];
+     self.headerBookID = nil;
+     self.boundBookID = nil;
+     return NO;
+     }
+     return YES;
+     */
+}
+
+- (BOOL)decryptDataKDRM:(NSData *)data {
+    
+    if (!self.license)
+        if (![self bindToLicenseKDRM])
+            return NO;
+    
+    id<KDRMLicenseDecryptor> decryptor = [[KDRMLicenseStore sharedLicenseStore] decryptorForLicense:self.license];
+    NSData* decryptedData = [decryptor decryptData:data];
+    // Unlike other KDRM operations, decryption doesn't return any error code.
+    if (!decryptedData)
+        return NO;
+    
+    // The data isn't supposed to change, so we do it underneath NSData.
+    // For future, the libKNFBReader signature should change so that we have an NSMutableData, but 
+    // we leave it for now as NSData to accommodate other consumers of libKNFBReader not on KDRM.
+    if ([decryptedData length] <= [data length])
+        // Should always be the case
+        memcpy((void*)[data bytes],[decryptedData bytes],[decryptedData length]);
+    else
+        return NO;
+    
+    /* Would like: 
+    NSRange replacementRange = {0,[decryptedData length]};
+    [mutableData setLength:[decryptedData length]];
+    [mutableData replaceBytesInRange:replacementRange withBytes:[decryptedData bytes]];
+    */
+    
+    return YES;
+}
+
+- (BOOL)decryptData:(NSMutableData *)data {
+    return [self decryptDataKDRM:data];
+    
+    /* PlayReady:
+     if ( !self.drmInitialized ) {
+     NSLog(@"DRM error: content cannot be decrypted because DRM is not initialized.");
+     return FALSE;
+     }
+     DRM_RESULT dr = DRM_SUCCESS;
+     DRM_AES_COUNTER_MODE_CONTEXT oCtrContext = {0};
+     unsigned char* dataBuff = (unsigned char*)[data bytes];
+     ChkDR(Drm_Reader_Decrypt (&drmIVars->drmDecryptContext,
+     &oCtrContext,
+     dataBuff,
+     [data length]));
+     // At this point, the buffer is PlayReady-decrypted.
+     
+     ErrorExit:
+     if (dr != DRM_SUCCESS) {
+     //NSLog(@"DRM decryption error: %08X",dr);
+     [BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Rights Management Error",@"\"Rights Management Error\" alert message title")
+     message:[NSLocalizedStringWithDefaultValue(@"DECRYPTION_FAILED",nil,[NSBundle mainBundle],@"Unable to open book. Please contact Blio technical support with the error code: ",@"Alert message shown when book decryption fails.")
+     stringByAppendingString:[NSString stringWithFormat:@"%08X", dr]]
+     delegate:nil
+     cancelButtonTitle:nil
+     otherButtonTitles:@"OK", nil];
+     self.headerBookID = nil;
+     self.boundBookID = nil;
+     return NO;
+     }
+     // This XOR step is to undo an additional encryption step that was needed for .NET environment.
+     for (int i=0;i<[data length];++i)
+     dataBuff[i] ^= 0xA0;
+     return YES;
+     */
+}
+
+- (BOOL)leaveDomainKDRM:(NSString*)token {
+    
+    KDRMClient* client = [[KDRMClient alloc] init];
+    BOOL success = [client deregister:token
+                                  url:deregistrationUrl
+                           completion:^(NSURLRequest *request, NSURLResponse *response, NSError *error) {
+                               NSString* logMsg = [NSString stringWithFormat:@"(%@, %@, %@)", request, response, error];
+                               NSLog(@"%@",logMsg);
+                               if ( error==nil )
+                                   NSLog(@"KDRM deregistration successful.");
+                               else
+                                   [self reportError:error];
+                           }
+                    ];
+    [client release];
+    if ( success )
+		[[BlioStoreManager sharedInstance] setDeviceRegisteredSettingOnly:BlioDeviceRegisteredStatusUnregistered forSourceID:BlioBookSourceOnlineStore];
+    return success;
+}
+
+- (BOOL)leaveDomain:(NSString*)token {
+    
+    return [self leaveDomainKDRM:token];
+    
+    /* PlayReady:
+     DRM_RESULT dr = DRM_SUCCESS;
+     DRM_RESULT dr2 = DRM_SUCCESS;
+     DRM_DOMAIN_ID oDomainID;
+     DRM_DWORD cbChallenge = 0;
+     DRM_BYTE *pbChallenge = NULL;
+     DRM_BYTE *pbResponse = NULL;
+     DRM_DWORD cbResponse = 0;
+     
+     if ( !self.drmInitialized ) {
+     NSLog(@"DRM error: cannot leave domain because DRM is not initialized.");
+     return NO;
+     }
+     
+     if ( token == nil ) {
+     NSLog(@"DRM error: attempting to leave domain outside login session.");
+     return NO;
+     }
+     
+     NSDictionary * registrationRecords = [[BlioStoreManager sharedInstance] registrationRecords];
+     if ( [registrationRecords objectForKey:kBlioServiceIDDefaultsKey] != nil )
+     oDomainID = [self domainIDFromSavedRegistration];
+     else {
+     NSLog(@"DRM error: attempting to leave domain with no domain ID information.");
+     return NO;
+     }
+     
+     DRM_CHAR* customData = (DRM_CHAR*)[[[@"<CustomData><AuthToken>"
+     stringByAppendingString:token]
+     stringByAppendingString:@"</AuthToken></CustomData>"]
+     UTF8String];
+     DRM_DWORD customDataSz = (DRM_DWORD)(48 + [token length]);
+     
+     dr = Drm_LeaveDomain_GenerateChallenge( drmIVars->drmAppContext,
+     DRM_REGISTER_NULL_DATA,
+     &oDomainID,
+     customData,
+     customDataSz,
+     pbChallenge,
+     &cbChallenge );
+     
+     if( dr == DRM_E_BUFFERTOOSMALL )
+     {
+     ChkMem( pbChallenge = Oem_MemAlloc( cbChallenge ) );
+     // This returns 8004C509, DRM_E_DOMAIN_NOT_FOUND, if you're not joined to a domain
+     // or if the domain ID is bad.
+     ChkDR( Drm_LeaveDomain_GenerateChallenge( drmIVars->drmAppContext,
+     DRM_REGISTER_NULL_DATA,
+     &oDomainID,
+     customData,
+     customDataSz,
+     pbChallenge,
+     &cbChallenge ) );
+     }
+     else
+     {
+     ChkDR( dr );
+     }
+     
+     //NSLog(@"DRM leave domain challenge: %s",(unsigned char*)pbChallenge);
+     
+     #ifdef TEST_MODE
+     [self getServerResponse:testUrl challengeBuf:pbChallenge challengeSz:&cbChallenge responseBuf:&pbResponse responseSz:&cbResponse soapAction:BlioSoapActionLeaveDomain];
+     #else
+     [self getServerResponse:productionUrl challengeBuf:pbChallenge challengeSz:&cbChallenge responseBuf:&pbResponse responseSz:&cbResponse soapAction:BlioSoapActionLeaveDomain];
+     #endif
+     
+     //NSLog(@"DRM leave domain response: %s",(unsigned char*)pbResponse);
+     @synchronized (self) {
+     ChkDR( Drm_LeaveDomain_ProcessResponse( drmIVars->drmAppContext,
+     pbResponse,
+     cbResponse,
+     &dr2 ) );
+     }
+     
+     
+     ErrorExit:
+     
+     if ( pbChallenge )
+     Oem_MemFree(pbChallenge);
+     // These are "standard success values."
+     if ( dr == DRM_SUCCESS || dr == DRM_S_FALSE || dr == DRM_S_MORE_DATA  ) {
+     [[BlioStoreManager sharedInstance] setDeviceRegisteredSettingOnly:BlioDeviceRegisteredStatusUnregistered forSourceID:BlioBookSourceOnlineStore];
+     [[BlioStoreManager sharedInstance] saveRegistrationAccountID:nil serviceID:nil];
+     //		[[NSUserDefaults standardUserDefaults] setObject:nil forKey:kBlioAccountIDDefaultsKey];
+     //		[[NSUserDefaults standardUserDefaults] setObject:nil forKey:kBlioServiceIDDefaultsKey];
+     return successKDRM;
+     }
+     
+     // Not clear why result and status codes are not the same, but
+     // we check both to be sure.  Though no priority errors are
+     // expected for leaving a domain.
+     if ([self checkPriorityError:dr2])
+     return NO;
+     else if (([self checkPriorityError:dr]))
+     // I don't expect to ever get here, if there's a priority
+     // condition it should be returned by the server.
+     return NO;
+     
+     //NSLog(@"DRM error leaving domain: %08X", dr);
+     [BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Rights Management Error",@"\"Rights Management Error\" alert message title")
+     message:[NSLocalizedStringWithDefaultValue(@"DEREGISTRATION_FAILED",nil,[NSBundle mainBundle],@"Unable to deregister device. Please contact Blio technical support with the error code: ",@"Alert message shown when device deregistration fails.")
+     stringByAppendingString:[NSString stringWithFormat:@"%08X", dr2]]
+     delegate:nil
+     cancelButtonTitle:nil
+     otherButtonTitles:@"OK", nil];
+     return NO;
+     */
+}
+
+
+- (BOOL)reportReading {
+    return YES;
+    
+    /* PlayReady:
+    NSLog(@"Report reading for book with ID %@", self.headerBookID);
+    
+    if ( !self.drmInitialized ) {
+        NSLog(@"DRM error: cannot report reading because DRM is not initialized.");
+        return NO;
+    }
+    
+    DRM_RESULT dr = DRM_SUCCESS;
+	@synchronized (self) {
+		ChkDR( Drm_Reader_Commit( drmIVars->drmAppContext,
+								 NULL,
+								 NULL ) );
+	}
+ErrorExit:
+	if (dr != DRM_SUCCESS) {
+		NSLog(@"DRM commit error: %08X",dr);
+        
+		//[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Rights Management Error",@"\"Rights Management Error\" alert message title")
+    message:[NSLocalizedStringWithDefaultValue(@"REPORTING_FAILED",nil,[NSBundle mainBundle],@"There was an error in book processing. Please contact Blio technical support with the error code: ",@"Alert message shown when book reporting fails.")
+             stringByAppendingString:[NSString stringWithFormat:@"%08X", dr]]
+    delegate:nil
+    cancelButtonTitle:nil
+    otherButtonTitles:@"OK", nil];
+        return NO;
+	}
+    return YES;
+     */
+}
+
+
+/* PlayReady:
+ 
+- (void)initialize {
 	// Data store.
 	DRM_CONST_STRING  dstrDataStoreFile = CREATE_DRM_STRING( HDS_STORE_FILE );
 	dstrDataStoreFile.pwszString = [DrmGlobals getDrmGlobals].dataStore.pwszString;
@@ -105,36 +572,6 @@ ErrorExit:
 		return;
 	}
 	self.drmInitialized = YES;
-}
-
-- (BOOL)reportReading {
-    NSLog(@"Report reading for book with ID %@", self.headerBookID);
-    
-    if ( !self.drmInitialized ) {
-        NSLog(@"DRM error: cannot report reading because DRM is not initialized.");
-        return NO;
-    }
-    
-    DRM_RESULT dr = DRM_SUCCESS;   
-	@synchronized (self) {		
-		ChkDR( Drm_Reader_Commit( drmIVars->drmAppContext,
-								 NULL, 
-								 NULL ) ); 
-	}
-ErrorExit:
-	if (dr != DRM_SUCCESS) {
-		NSLog(@"DRM commit error: %08X",dr);
-		/*
-		[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Rights Management Error",@"\"Rights Management Error\" alert message title") 
-									 message:[NSLocalizedStringWithDefaultValue(@"REPORTING_FAILED",nil,[NSBundle mainBundle],@"There was an error in book processing. Please contact Blio technical support with the error code: ",@"Alert message shown when book reporting fails.")
-											  stringByAppendingString:[NSString stringWithFormat:@"%08X", dr]]
-									delegate:nil 
-						   cancelButtonTitle:nil
-						   otherButtonTitles:@"OK", nil];
-		 */
-        return NO;
-	}
-    return YES;
 }
 
 - (DRM_RESULT)getServerResponse:(NSString*)url challengeBuf:(DRM_BYTE*)pbChallenge 
@@ -263,120 +700,14 @@ ErrorExit:
 	
 	return NO;
 }
+ */
 
-- (BOOL)leaveDomain:(NSString*)token {
-	
-	DRM_RESULT dr = DRM_SUCCESS;
-    DRM_RESULT dr2 = DRM_SUCCESS;
-    DRM_DOMAIN_ID oDomainID;
-    DRM_DWORD cbChallenge = 0;
-    DRM_BYTE *pbChallenge = NULL;
-    DRM_BYTE *pbResponse = NULL;
-    DRM_DWORD cbResponse = 0;
-	
-	if ( !self.drmInitialized ) {
-        NSLog(@"DRM error: cannot leave domain because DRM is not initialized.");
-        return NO;
-    }
-	
-	if ( token == nil ) {
-		NSLog(@"DRM error: attempting to leave domain outside login session.");
-		return NO;
-	}
-	
-	NSDictionary * registrationRecords = [[BlioStoreManager sharedInstance] registrationRecords];
-	if ( [registrationRecords objectForKey:kBlioServiceIDDefaultsKey] != nil )
-		 oDomainID = [self domainIDFromSavedRegistration];
-	else {
-		NSLog(@"DRM error: attempting to leave domain with no domain ID information.");
-		return NO;
-	}
-	
-	DRM_CHAR* customData = (DRM_CHAR*)[[[@"<CustomData><AuthToken>"
-										 stringByAppendingString:token] 
-										stringByAppendingString:@"</AuthToken></CustomData>"]
-									   UTF8String];
-	DRM_DWORD customDataSz = (DRM_DWORD)(48 + [token length]);
-	
-	dr = Drm_LeaveDomain_GenerateChallenge( drmIVars->drmAppContext,
-										   DRM_REGISTER_NULL_DATA,
-										   &oDomainID,
-										   customData,
-										   customDataSz,
-										   pbChallenge,
-										   &cbChallenge );
-	
-    if( dr == DRM_E_BUFFERTOOSMALL )
-    {
-		ChkMem( pbChallenge = Oem_MemAlloc( cbChallenge ) );
-		// This returns 8004C509, DRM_E_DOMAIN_NOT_FOUND, if you're not joined to a domain
-		// or if the domain ID is bad.
-        ChkDR( Drm_LeaveDomain_GenerateChallenge( drmIVars->drmAppContext,
-												 DRM_REGISTER_NULL_DATA,
-												 &oDomainID,
-												 customData,
-												 customDataSz,
-												 pbChallenge,
-												 &cbChallenge ) );
-    }
-    else
-    {
-        ChkDR( dr );
-    }
-	
-	//NSLog(@"DRM leave domain challenge: %s",(unsigned char*)pbChallenge);
-	
-#ifdef TEST_MODE
-	[self getServerResponse:testUrl challengeBuf:pbChallenge challengeSz:&cbChallenge responseBuf:&pbResponse responseSz:&cbResponse soapAction:BlioSoapActionLeaveDomain];
-#else
-	[self getServerResponse:productionUrl challengeBuf:pbChallenge challengeSz:&cbChallenge responseBuf:&pbResponse responseSz:&cbResponse soapAction:BlioSoapActionLeaveDomain];
-#endif
-	
-	//NSLog(@"DRM leave domain response: %s",(unsigned char*)pbResponse);
-	@synchronized (self) {
-		ChkDR( Drm_LeaveDomain_ProcessResponse( drmIVars->drmAppContext,
-											   pbResponse,
-											   cbResponse,
-											   &dr2 ) );
-	}
-	
-    
-ErrorExit:
-	
-	if ( pbChallenge )
-		Oem_MemFree(pbChallenge);
-	// These are "standard success values."
-	if ( dr == DRM_SUCCESS || dr == DRM_S_FALSE || dr == DRM_S_MORE_DATA  ) {
-		[[BlioStoreManager sharedInstance] setDeviceRegisteredSettingOnly:BlioDeviceRegisteredStatusUnregistered forSourceID:BlioBookSourceOnlineStore];
-		[[BlioStoreManager sharedInstance] saveRegistrationAccountID:nil serviceID:nil];
-		//		[[NSUserDefaults standardUserDefaults] setObject:nil forKey:kBlioAccountIDDefaultsKey];
-		//		[[NSUserDefaults standardUserDefaults] setObject:nil forKey:kBlioServiceIDDefaultsKey];
-		return YES;
-	}
-	
-	// Not clear why result and status codes are not the same, but
-	// we check both to be sure.  Though no priority errors are
-	// expected for leaving a domain.
-	if ([self checkPriorityError:dr2])
-		return NO;
-	else if (([self checkPriorityError:dr]))
-		// I don't expect to ever get here, if there's a priority 
-		// condition it should be returned by the server.
-		return NO;
-	
-	//NSLog(@"DRM error leaving domain: %08X", dr);
-	[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Rights Management Error",@"\"Rights Management Error\" alert message title") 
-								 message:[NSLocalizedStringWithDefaultValue(@"DEREGISTRATION_FAILED",nil,[NSBundle mainBundle],@"Unable to deregister device. Please contact Blio technical support with the error code: ",@"Alert message shown when device deregistration fails.")
-										  stringByAppendingString:[NSString stringWithFormat:@"%08X", dr2]]
-								delegate:nil 
-					   cancelButtonTitle:nil
-					   otherButtonTitles:@"OK", nil];
-	return NO;
-}
+
+/* PlayReady:
 - (BOOL)joinDomain:(NSString*)token domainName:(NSString*)name {
-	return [self joinDomain:token domainName:name alertAlways:NO];
+    return [self joinDomain:token domainName:name alertAlways:NO];
 }
-
+ 
 - (BOOL)joinDomain:(NSString*)token domainName:(NSString*)name alertAlways:(BOOL)alertFlag {
 	DRM_RESULT dr = DRM_SUCCESS;
     DRM_RESULT dr2 = DRM_SUCCESS;
@@ -735,140 +1066,8 @@ ErrorExit:
 ErrorExit:
 	return dr;
 }
+ */
 
-- (BOOL)getLicense:(NSString*)token {
-    
-    if ( !self.drmInitialized ) {
-		NSLog(@"DRM error: license cannot be acquired because DRM is not initialized.");
-		return NO;
-	}
-	
-	DRM_RESULT dr = DRM_SUCCESS;
-	ChkDR([self checkDomain:token]);
-	
-ErrorExit:	
-	if ( dr == DRM_SUCCESS || dr == DRM_S_FALSE || dr == DRM_S_MORE_DATA  ) {
-		NSLog(@"DRM license successfully acquired for bookID: %@", self.headerBookID);
-		return YES;
-	}
-	if ([self checkPriorityError:dr])
-		return NO;
-	// Not sure at this point whether to report to the user or just log.
-	NSLog(@"DRM license acquisition error: %08X",dr);
-	/*
-	[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Rights Management Error",@"\"Rights Management Error\" alert message title") 
-								 message:[NSLocalizedStringWithDefaultValue(@"LICENSE_ACQUISITION_FAILED",nil,[NSBundle mainBundle],@"Unable to obtain license for book. Please contact Blio technical support with the error code: ",@"Alert message shown when device registration fails.")
-										  stringByAppendingString:[NSString stringWithFormat:@"%08X", dr]]
-								delegate:nil 
-					   cancelButtonTitle:nil
-					   otherButtonTitles:@"OK", nil];
-	*/
-	return NO;
-	
-}
-
-- (BOOL)bindToLicense {
-    if ( !self.drmInitialized ) {
-        NSLog(@"DRM error: cannot bind to license because DRM is not initialized.");
-        return FALSE;
-    }
-    DRM_RESULT dr = DRM_SUCCESS;
-	if ( ![self.boundBookID isEqual:self.headerBookID] ) { 
-		// Search for a license to bind to with the Read right.
-		const DRM_CONST_STRING *rgpdstrRights[1] = {0};
-		DRM_CONST_STRING readRight;
-		readRight.pwszString = [DrmGlobals getDrmGlobals].readRight.pwszString;
-		readRight.cchString = [DrmGlobals getDrmGlobals].readRight.cchString;
-		// Roundabout assignment needed to get around compiler complaint.
-		rgpdstrRights[0] = &readRight; 
-		int bufferSz = __CB_DECL(SIZEOF(DRM_CIPHER_CONTEXT));
-		for (int i=0;i<bufferSz;++i)
-			(drmIVars->drmDecryptContext).rgbBuffer[i] = 0;
-		ChkDR( Drm_Reader_Bind( drmIVars->drmAppContext,
-							   rgpdstrRights,
-							   NO_OF(rgpdstrRights),
-							   NULL, 
-							   NULL,
-							   &drmIVars->drmDecryptContext ) );
-		self.boundBookID = self.headerBookID;
-	}
-	
-ErrorExit:
-	if ([self checkPriorityError:dr])
-		return NO;
-	if (dr != DRM_SUCCESS) {
-		//NSLog(@"DRM bind error: %08X",dr);
-		[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Rights Management Error",@"\"Rights Management Error\" alert message title") 
-									 message:[NSLocalizedStringWithDefaultValue(@"DECRYPTION_FAILED",nil,[NSBundle mainBundle],@"Unable to open book. Please contact Blio technical support with the error code: ",@"Alert message shown when book decryption fails.")
-											  stringByAppendingString:[NSString stringWithFormat:@"%08X", dr]]
-									delegate:nil 
-						   cancelButtonTitle:nil
-						   otherButtonTitles:@"OK", nil];
-		self.headerBookID = nil;
-		self.boundBookID = nil;
-		return NO;
-	}
-    return YES;
-}
-
-- (BOOL)decryptData:(NSData *)data {
-    if ( !self.drmInitialized ) {
-        NSLog(@"DRM error: content cannot be decrypted because DRM is not initialized.");
-        return FALSE;
-    }
-    
-    DRM_RESULT dr = DRM_SUCCESS;
-	/*        
-	 if ( ![self.boundBookID isEqual:self.headerBookID] ) { 
-	 //NSLog(@"Binding to license.");
-	 
-	 // Search for a license to bind to with the Read right.
-	 const DRM_CONST_STRING *rgpdstrRights[1] = {0};
-	 DRM_CONST_STRING readRight;
-	 readRight.pwszString = [DrmGlobals getDrmGlobals].readRight.pwszString;
-	 readRight.cchString = [DrmGlobals getDrmGlobals].readRight.cchString;
-	 // Roundabout assignment needed to get around compiler complaint.
-	 rgpdstrRights[0] = &readRight; 
-	 int bufferSz = __CB_DECL(SIZEOF(DRM_CIPHER_CONTEXT));
-	 for (int i=0;i<bufferSz;++i)
-	 drmIVars->drmDecryptContext.rgbBuffer[i] = 0;
-	 ChkDR( Drm_Reader_Bind( drmIVars->drmAppContext,
-	 rgpdstrRights,
-	 NO_OF(rgpdstrRights),
-	 NULL, 
-	 NULL,
-	 &drmIVars->drmDecryptContext ) );
-	 
-	 self.boundBookID = self.headerBookID;
-	 }
-	 */	
-	
-	DRM_AES_COUNTER_MODE_CONTEXT oCtrContext = {0};
-	unsigned char* dataBuff = (unsigned char*)[data bytes]; 
-	ChkDR(Drm_Reader_Decrypt (&drmIVars->drmDecryptContext,
-							  &oCtrContext,
-							  dataBuff, 
-							  [data length]));
-	// At this point, the buffer is PlayReady-decrypted.
-	
-ErrorExit:
-	if (dr != DRM_SUCCESS) {
-		//NSLog(@"DRM decryption error: %08X",dr);
-		[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Rights Management Error",@"\"Rights Management Error\" alert message title") 
-									 message:[NSLocalizedStringWithDefaultValue(@"DECRYPTION_FAILED",nil,[NSBundle mainBundle],@"Unable to open book. Please contact Blio technical support with the error code: ",@"Alert message shown when book decryption fails.")
-											  stringByAppendingString:[NSString stringWithFormat:@"%08X", dr]]
-									delegate:nil 
-						   cancelButtonTitle:nil
-						   otherButtonTitles:@"OK", nil];
-		self.headerBookID = nil;
-		self.boundBookID = nil;
-		return NO;
-	}
-    // This XOR step is to undo an additional encryption step that was needed for .NET environment.
-    for (int i=0;i<[data length];++i)
-        dataBuff[i] ^= 0xA0;
-    return YES;
-}
 
 
 @end

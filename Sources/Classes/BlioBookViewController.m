@@ -1182,7 +1182,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
                                                  forKeyPath:@"center"]; 
     
     if(_viewIsDisappearing) {
-        [self.book reportReadingIfRequired];
+        //[self.book reportReadingIfRequired];
         
         if(_bookView) {
             // Need to do this now before the view is removed and doesn't have a window.
@@ -1278,7 +1278,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 
 - (void)applicationWillTerminate:(NSNotification *)notification {
 	[self stopAudio];
-    [self.book reportReadingIfRequired];
+    //[self.book reportReadingIfRequired];
 }
 -(void)onProcessingWillDeleteBookNotification:(NSNotification*)notification {
 	if ([[notification.userInfo objectForKey:@"bookID"] isEqual:self.book.objectID]) {

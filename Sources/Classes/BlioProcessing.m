@@ -67,9 +67,10 @@ static int mutationCount = 0;
         BlioBook *book = [[BlioBookManager sharedBookManager] bookWithID:self.bookID];
         if (nil == book) {
             NSLog(@"Failed to retrieve book in BlioProcessing reportBookReadingIfRequired");
-        } else {
-            [book reportReadingIfRequired];
         }
+        /*else {
+            [book reportReadingIfRequired];
+        }*/
         --mutationCount;
     }
     pthread_mutex_unlock(&sBookMutationMutex);

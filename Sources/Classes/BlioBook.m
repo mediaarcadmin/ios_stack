@@ -142,9 +142,11 @@
     }
 }
 
+/* Not required in KDRM
 - (void)reportReadingIfRequired {
     [[self xpsProvider] reportReadingIfRequired];
 }
+ */
 
 - (NSString *)bookCacheDirectory {
     NSArray *paths = NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES);
@@ -232,7 +234,10 @@
 }
 
 - (BOOL)isEncrypted {
-    return [self hasManifestValueForKey:BlioManifestDrmHeaderKey];
+    // For PlayReady only  
+    //return [self hasManifestValueForKey:BlioManifestDrmHeaderKey];
+    // For PlayReady or KDRM
+    return [self hasManifestValueForKey:BlioManifestDrmPagesKey];
 }
 
 - (BOOL)decryptionIsAvailable {
@@ -721,6 +726,10 @@ static void sortedBookmarkRangePredicateInit() {
 				// Workaround for the fact that this mechanism doesn't work for directories
 				// Just check if the first page thumbnail is at that location
 				exists = [self componentExistsInXPSAtPath:[path stringByAppendingPathComponent:@"1.jpg"]];
+            } else if ([path isEqualToString:BlioXPSEncryptedPagesDir]) {
+                exists = ([self componentExistsInXPSAtPath:[path stringByAppendingPathComponent:@"1.fpage.bin"]]
+                          || [self componentExistsInXPSAtPath:[path stringByAppendingPathComponent:@"blank.fpage.bin"]]
+                          || [self componentExistsInXPSAtPath:[path stringByAppendingPathComponent:@"inside_cover.fpage.bin"]]);
 			} else {
 				exists = [self componentExistsInXPSAtPath:path];
 			}
