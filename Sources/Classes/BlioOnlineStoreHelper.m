@@ -449,6 +449,11 @@
 	return YES;
 }
 -(BOOL) setDeviceRegistered:(BlioDeviceRegisteredStatus)targetStatus {
+    
+    // Provisional: with KDRM there is no longer explicit registration.
+    if ( targetStatus == BlioDeviceRegisteredStatusRegistered )
+        return NO;
+    
 	if ([[Reachability reachabilityForInternetConnection] currentReachabilityStatus] == NotReachable) {
 		NSString * internetMessage = NSLocalizedStringWithDefaultValue(@"INTERNET_REQUIRED_DEREGISTRATION",nil,[NSBundle mainBundle],@"An internet connection is required to deregister this device.",@"Alert message when the user tries to deregister the device without an Internet connection.");
 		if (targetStatus == BlioDeviceRegisteredStatusRegistered) internetMessage = NSLocalizedStringWithDefaultValue(@"INTERNET_REQUIRED_DEREGISTRATION",nil,[NSBundle mainBundle],@"An internet connection is required to deregister this device.",@"Alert message when the user tries to deregister the device without an Internet connection.");
@@ -472,28 +477,20 @@
 		return NO;
 	}
 	BlioDrmSessionManager* drmSessionManager = [[BlioDrmSessionManager alloc] initWithBookID:nil];
-	if ( targetStatus == BlioDeviceRegisteredStatusRegistered ) {
-		if ( ![drmSessionManager joinDomain:self.token domainName:@"novel" alertAlways:YES] ) {
-			// Alert is shown by the drmSessionManager, to display error code.
-			[drmSessionManager release];
-			return NO;
-		} 
-	}
-	else {
-		if ( ![drmSessionManager leaveDomain:self.token] ) {
-			// Alert shown in drmSessionManager to display error code.
-			[drmSessionManager release];
-			return NO;
-		}
-		else { 
-			// de-registration succeeded, delete current user's books
-			[[BlioStoreManager sharedInstance].processingDelegate deletePaidBooksForUserNum:userNum siteNum:siteID];
-		}
-	}
+    if ( ![drmSessionManager leaveDomain:self.token] ) {
+        // Alert shown in drmSessionManager to display error code.
+        [drmSessionManager release];
+        return NO;
+    }
+    else { 
+        // de-registration succeeded, delete current user's books
+        [[BlioStoreManager sharedInstance].processingDelegate deletePaidBooksForUserNum:userNum siteNum:siteID];
+    }
 	[drmSessionManager release];
 	[self setDeviceRegisteredSettingOnly:targetStatus];
 	return YES;
 }
+
 - (void)logout {
 	self.token = nil;
 	self.userNum = 0;
@@ -544,8 +541,11 @@
 	downloadRequest.isbn = [book valueForKey:@"isbn"];
 	downloadRequest.productType = [book valueForKey:@"productType"];
     
-    NSString * platform = @"iPhone";
-    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) platform = @"iPad";
+    // TODO: restore when Bookvault is ready to serve KDRMed books for iOS
+    //NSString * platform = @"iPhone";
+    //if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
+    //    platform = @"iPad";
+    NSString * platform = @"WinRT";
     NSString* version = (NSString*)[[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"]; // @"CFBundleVersion" for build number
     NSString * model = [[UIDevice currentDevice] model];
     NSString * OSType = [[UIDevice currentDevice] systemName];
