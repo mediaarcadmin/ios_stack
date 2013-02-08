@@ -84,43 +84,14 @@
 	}
 }
 
-- (void)changeRegistration:(UIControl*)sender {
-	//self.registrationOn = !self.registrationOn;
-	
-	sender.enabled = NO;
-	
-	BOOL changeSuccess = NO;
-	if ( [(UISwitch*)sender isOn] ) {
-		[activityIndicator startAnimating];  // thread issue...
-		changeSuccess = [[BlioStoreManager sharedInstance] setDeviceRegistered:BlioDeviceRegisteredStatusRegistered forSourceID:BlioBookSourceOnlineStore];
-		[activityIndicator stopAnimating];
-		if (!changeSuccess) {
-			if ([[BlioStoreManager sharedInstance] deviceRegisteredForSourceID:BlioBookSourceOnlineStore]) [(UISwitch*)sender setOn:YES];
-			else {
-                [(UISwitch*)sender setOn:NO];
-                // TICKET 507: automatically logout when de-registering device (or registration fails for legacy logged in users).
-                [[BlioStoreManager sharedInstance] logoutForSourceID:BlioBookSourceOnlineStore];
-                [self.navigationController popViewControllerAnimated:YES];	
-                if ([delegate respondsToSelector:@selector(setDidDeregister:)]) [delegate setDidDeregister:YES];
-                [BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Registration Error",@"\"Registration Error\" alert message title") 
-                                             message:NSLocalizedStringWithDefaultValue(@"LOGGED_IN_BUT_REGISTRATION_FAILED",nil,[NSBundle mainBundle],@"You have been logged out due to a registration error. Please try again later.",@"Alert  informing a logged in end-user that registration failed, resulting in logout.")
-                                            delegate:nil
-                                   cancelButtonTitle:NSLocalizedString(@"OK",@"\"OK\" label for button used to cancel/dismiss alertview")
-                                   otherButtonTitles:nil];
-            }
-		}
-		sender.enabled = YES;
-	}
-	else {
-		registrationSwitch = (UISwitch*)sender;
-		[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Please Confirm",@"\"Please Confirm\" alert message title") 
-									 message:NSLocalizedStringWithDefaultValue(@"CONFIRM_DEREGISTRATION_ALERT",nil,[NSBundle mainBundle],@"Are you sure you want to deregister your device for this account? Doing so will remove all books purchased under the account.",@"Prompt requesting confirmation for de-registration, explaining that doing so will remove all that account's purchased books.")
-									delegate:self
-						   cancelButtonTitle:nil
-						   otherButtonTitles:NSLocalizedString(@"Not Now",@"\"Not Now\" button label within Confirm De/Registration alertview"), NSLocalizedString(@"Deregister",@"\"Deregister\" button label within Confirm Deregistration alertview"), nil];
-		
-	}
-    //	[self.navigationController popViewControllerAnimated:YES];
+- (void)deregister:(UIControl*)sender {
+    sender.enabled = NO;
+    deregisterButton = (UIButton*)sender;
+    [BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Please Confirm",@"\"Please Confirm\" alert message title")
+                                 message:NSLocalizedStringWithDefaultValue(@"CONFIRM_DEREGISTRATION_ALERT",nil,[NSBundle mainBundle],@"Are you sure you want to deregister your device for this account? Doing so will remove all books purchased under the account.",@"Prompt requesting confirmation for de-registration, explaining that doing so will remove all that account's purchased books.")
+                                delegate:self
+                       cancelButtonTitle:nil
+                       otherButtonTitles:NSLocalizedString(@"Not Now",@"\"Not Now\" button label within Confirm De/Registration alertview"), NSLocalizedString(@"Deregister",@"\"Deregister\" button label within Confirm Deregistration alertview"), nil];
 }
 
 - (void)changeDownloadNewBooks:(UIControl*)sender {
@@ -139,7 +110,9 @@
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     // Return the number of sections.
-    return 2;
+    if ( [[BlioStoreManager sharedInstance] deviceRegisteredForSourceID:BlioBookSourceOnlineStore] == BlioDeviceRegisteredStatusRegistered )
+        return 2;
+    return 1;
 }
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     // Return the number of rows in the section.
@@ -147,33 +120,6 @@
 }
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     if (indexPath.section == 0) {
-        static NSString *ListCellIdentifier = @"UITableViewCellRegistrationIdentifier";
-        UITableViewCell *cell;
-        
-        cell = [tableView dequeueReusableCellWithIdentifier:ListCellIdentifier];
-        if (cell == nil) {
-            cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:ListCellIdentifier] autorelease];
-            cell.textLabel.text = NSLocalizedString(@"Registration","\"Registration\" cell label");
-            UISwitch *switchView = [[UISwitch alloc] initWithFrame:CGRectMake(cell.contentView.bounds.size.width - 80.0f - 35.0f, 9.0f, 80.0f, 28.0f)];
-            switchView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin;
-            [switchView setTag:997];
-            [cell addSubview:switchView];
-            if ( [[BlioStoreManager sharedInstance] deviceRegisteredForSourceID:BlioBookSourceOnlineStore] == BlioDeviceRegisteredStatusRegistered ) {
-                [switchView setOn:YES animated:NO];
-                self.registrationOn = YES;
-            }
-            else {
-                [switchView setOn:NO animated:NO];
-                self.registrationOn = NO;
-            }
-            [switchView addTarget:self action:@selector(changeRegistration:) forControlEvents:UIControlEventValueChanged];
-            [switchView release];
-        }
-        
-        cell.selectionStyle = UITableViewCellSelectionStyleNone;
-        return cell;
-    }
-    else if (indexPath.section == 1) {
         static NSString *AutoDownloadCellIdentifier = @"UITableViewCellAutoDownloadIdentifier";
         UITableViewCell *cell;
         
@@ -198,8 +144,28 @@
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
         return cell;
     }
+    else if (indexPath.section == 1) {
+        static NSString *ListCellIdentifier = @"UITableViewCellRegistrationIdentifier";
+        UITableViewCell *cell;
+        
+        cell = [tableView dequeueReusableCellWithIdentifier:ListCellIdentifier];
+        if (cell == nil) {
+            cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:ListCellIdentifier] autorelease];
+            cell.textLabel.text = NSLocalizedString(@"Deregister Device","\"Deregister Device\" cell label");
+            UIButton *buttonView = [[UIButton alloc] initWithFrame:CGRectMake(cell.contentView.bounds.origin.x,cell.contentView.bounds.origin.y,cell.contentView.bounds.size.width, cell.contentView.bounds.size.height)];
+            buttonView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin;
+            //[buttonView setTag:999];
+            [cell addSubview:buttonView];
+            [buttonView addTarget:self action:@selector(deregister:) forControlEvents:UIControlEventTouchUpInside];
+            [buttonView release];
+            
+        }
+        cell.selectionStyle = UITableViewCellSelectionStyleBlue;
+        return cell;
+    }
 	return nil;
 }
+
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
 	NSString *title = nil;
     return title;
@@ -208,16 +174,16 @@
 	NSString *title = nil;
 	switch (section)
 	{
-		case 0:
-		{
-			title = NSLocalizedString(@"You may register up to five devices for reading your purchased books.",@"\"Registration text\" table header in Paid Books Settings View");
-			break;
-		}
-        case 1:
+        case 0:
         {
             title = NSLocalizedStringWithDefaultValue(@"AUTO_DOWNLOAD_EXPLANATION_FOOTER",nil,[NSBundle mainBundle],@"Your new book purchases can be downloaded automatically.  When Auto-Download is off, you can manually download titles from the Archive tab in the Get Books section.",@"Explanatory message that appears at the bottom of the Auto-Download table section within Archive Settings View.");
             break;
         }
+		case 1:
+		{
+			title = NSLocalizedString(@"You may register up to five devices for reading your purchased books.",@"\"Registration text\" table header in Paid Books Settings View");
+			break;
+		}
 	}
     return title;
 }
@@ -229,28 +195,21 @@
 #pragma mark UIAlertViewDelegate
 
 -(void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
-	if (buttonIndex == 0) {
-		[registrationSwitch setOn:YES];
-	}
-	else if (buttonIndex == 1) {
+    if (buttonIndex == 1) {
 		BOOL changeSuccess = NO;
 		[activityIndicator startAnimating];  // thread issue...
 		changeSuccess = [[BlioStoreManager sharedInstance] setDeviceRegistered:BlioDeviceRegisteredStatusUnregistered forSourceID:BlioBookSourceOnlineStore];
 		[activityIndicator stopAnimating];
-		if (!changeSuccess) {
-			if ([[BlioStoreManager sharedInstance] deviceRegisteredForSourceID:BlioBookSourceOnlineStore]) [registrationSwitch setOn:YES];
-			else [registrationSwitch setOn:NO];
-		}
-		else {
-            [registrationSwitch setOn:NO];
-            
+		if (changeSuccess) {
             // TICKET 507: automatically logout when de-registering device.
             [[BlioStoreManager sharedInstance] logoutForSourceID:BlioBookSourceOnlineStore];
-            [self.navigationController popViewControllerAnimated:YES];	
-            if ([delegate respondsToSelector:@selector(setDidDeregister:)]) [delegate setDidDeregister:YES];
+            [self.navigationController popViewControllerAnimated:YES];
+            if ([delegate respondsToSelector:@selector(setDidDeregister:)])
+                [delegate setDidDeregister:YES];
         }
 	}
-	registrationSwitch.enabled = YES;	
+    deregisterButton.enabled = YES;
+    
 }
 
 #pragma mark -

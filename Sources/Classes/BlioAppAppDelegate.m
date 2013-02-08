@@ -172,10 +172,24 @@
 #endif
     
     // Reinitialize model certificates.
-    [self ensureCorrectCertsAvailable];
+    // With KDRM no longer necessary.
+    // [self ensureCorrectCertsAvailable];
 }
 
-- (void)checkDevice {
+-(void)forceRedownload {
+    [BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Rights Management Update",@"\"Rights Management Update\" alert message title")
+                                 message:NSLocalizedStringWithDefaultValue(@"DRM_RESET",nil,[NSBundle mainBundle],@"This version of Blio requires an initial redownload of your paid books.  Go to your Archive to retrieve them.",@"Alert Text informing the end user that paid books must be redownloaded.")
+                                delegate:nil
+                       cancelButtonTitle:nil
+                       otherButtonTitles:@"OK", nil];
+    [self resetDRM]; 
+    [self.processingManager deleteBooksForSourceID:BlioBookSourceOnlineStore];
+    // For the convenience of upgraders we do not force a login.
+    [[NSUserDefaults standardUserDefaults] setBool:YES forKey:kBlioHasLoggedInKey];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
+- (void)checkForBackup {
     // check for backup flag file
     NSArray *paths = NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES);
     NSString *basePath = ([paths count] > 0) ? [paths objectAtIndex:0] : nil;
@@ -198,17 +212,7 @@
     // So to test the following, don't be in test mode.
     if ([deviceIDDefaults length] == 40) {  
         // We are upgrading from 3.1 or previous, or else restoring from version 3.1 backed up to iTunes.
-        [BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Rights Management Reset",@"\"Rights Management Reset\" alert message title") 
-                                         message:NSLocalizedStringWithDefaultValue(@"DRM_RESET",nil,[NSBundle mainBundle],@"This version of Blio requires an initial redownload of your paid books.  Go to your Archive to retrieve them.",@"Alert Text informing the end user that paid books must be redownloaded.")
-                                        delegate:nil 
-                               cancelButtonTitle:nil
-                           otherButtonTitles:@"OK", nil];
-        [self resetDRM]; // The stored ID is a UDID.  Apple is forcing us to change it to a UUID.
-        [self.processingManager deleteBooksForSourceID:BlioBookSourceOnlineStore];
-        // For the convenience of upgraders we do not force a login, even though it
-        // would be appropriate for an iTunes restore.
-        [[NSUserDefaults standardUserDefaults] setBool:YES forKey:kBlioHasLoggedInKey];
-        [[NSUserDefaults standardUserDefaults] synchronize];
+        [self forceRedownload];
     }
     else if (flagFileMissing) {
         // We have installed fresh, or else restoring from version 3.2 that's been backed up either 
@@ -241,24 +245,6 @@
         }
     }
 }
-
-/* formerly using UDID only
-- (void)checkDevice { 
-    // Check that this is the same device as last time. 
-    NSString* thisDevice = [[NSUserDefaults standardUserDefaults] stringForKey:kBlioDeviceIDDefaultsKey]; 
-    if ( !thisDevice ) 
-        // First time, so just store the id. 
-        [[NSUserDefaults standardUserDefaults] setObject:(id)[[UIDevice currentDevice] uniqueIdentifier] forKey:kBlioDeviceIDDefaultsKey];  
-    else if ([thisDevice compare:[[UIDevice currentDevice] uniqueIdentifier]] != NSOrderedSame ) { 
-        [BlioAlertManager showAlertWithTitle:NSLocalizedString(@"New Device",@"\"New Device\" alert message title")  
-                                    message:NSLocalizedStringWithDefaultValue(@"DEVICE_CHANGED",nil,[NSBundle mainBundle],@"This version of Blio was restored from another device.  Your purchased books must be re-downloaded.  Remember to deregister your old device if you no longer plan to use Blio on it.",@"Alert Text informing the end-user that the password must contain at least one digit.") 
-                                    delegate:nil  
-                           cancelButtonTitle:nil 
-                           otherButtonTitles:NSLocalizedString(@"OK",@"\"OK\" label for button used to cancel/dismiss alertview"), nil];
-        [self resetDRM];
-    }
-}
- */
 
 
 - (BOOL)canOpenURL:(NSURL *)url {
@@ -423,7 +409,7 @@ static void *background_init_thread(void * arg) {
 	[BlioSocialManager sharedSocialManager].rootViewController = navigationController;
 	[BlioAcapelaAudioManager sharedAcapelaAudioManager].rootViewController = navigationController;
 	
-	[self checkDevice];
+	[self checkForBackup];
 	    
     BOOL openedBook = NO;
     
@@ -506,14 +492,16 @@ static void *background_init_thread(void * arg) {
         }
         self.delayedURLOpens = nil;
         
-        if (![[NSUserDefaults standardUserDefaults] objectForKey:@"WelcomeScreenShown"]) { 
+        id welcomeScreenShown = [[NSUserDefaults standardUserDefaults] objectForKey:@"WelcomeScreenShown"];
+        if (!welcomeScreenShown) {
             [[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithBool:YES] forKey:@"WelcomeScreenShown"]; 
             [[NSUserDefaults standardUserDefaults] synchronize];
              if (!forceLoginAfterRestore) [[BlioStoreManager sharedInstance] showWelcomeViewForSourceID:BlioBookSourceOnlineStore]; 
         }
         NSLog(@"Current app version number: %@",[[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"]);
         NSDecimalNumber * appVersionNumber = [NSDecimalNumber decimalNumberWithString:[[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"]];
-        if (![[NSUserDefaults standardUserDefaults] objectForKey:@"PreviouslyLaunchedAppVersion"]) {
+        id prevVersion = [[NSUserDefaults standardUserDefaults] objectForKey:@"PreviouslyLaunchedAppVersion"];
+        if (!prevVersion) {
             [[NSUserDefaults standardUserDefaults] setObject:appVersionNumber forKey:@"PreviouslyLaunchedAppVersion"];
             [[NSUserDefaults standardUserDefaults] synchronize];
             // since the first version to record LastLaunchedVersionNumber also happens to be the first version to use the new TTS engine, we also delete old TTS voices if present
@@ -521,11 +509,17 @@ static void *background_init_thread(void * arg) {
                 // prompt end-user to re-download voices
                 [[BlioAcapelaAudioManager sharedAcapelaAudioManager] promptRedownload];                
             }
+            if (welcomeScreenShown)
+                // Installing over a version to old to have stored a PreviouslyLaunchedAppVersion, 
+                // and has been launched at least once.  
+                [self forceRedownload];
             
         }
-        else if ([(NSNumber*)[[NSUserDefaults standardUserDefaults] objectForKey:@"PreviouslyLaunchedAppVersion"] floatValue] < [appVersionNumber floatValue]) {
+        else if ([(NSNumber*)prevVersion floatValue] < [appVersionNumber floatValue]) {
             [[NSUserDefaults standardUserDefaults] setObject:appVersionNumber forKey:@"PreviouslyLaunchedAppVersion"];
-            [[NSUserDefaults standardUserDefaults] synchronize];            
+            [[NSUserDefaults standardUserDefaults] synchronize];
+            if ( [(NSNumber*)prevVersion floatValue] <= 3.5 )
+                [self forceRedownload];
         }
         
         /*

@@ -301,11 +301,10 @@
 
 	if (loginResult == BlioLoginResultSuccess) {
         
-        /* was needed for 2.4 acceptance
-        [[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithBool:YES] forKey:@"FirstLoginOccurred"];
-        [[NSUserDefaults standardUserDefaults] synchronize];
-         */
-
+/*  With introduction of KDRM, we no longer register as part of logging in.  KDRM has
+    no registration independent of license acquistion.  (Though even with PlayReady 
+    we could defer registration until we acquire license.)
+ 
 		// TODO: "DeviceRegistered" key should be refactored with multiple stores in mind.
 //		NSLog(@"[storeHelper deviceRegistered]: %i",[storeHelper deviceRegistered]);
 		if ([storeHelper deviceRegistered] != BlioDeviceRegisteredStatusRegistered) {
@@ -335,11 +334,12 @@
 //			[alertView show];
 //			[alertView release];
 		}		
-		
+*/		
 		[[BlioStoreManager sharedInstance] loginFinishedForSourceID:storeHelper.sourceID];
 	}
 }
 
+/*
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
 {
 
@@ -362,6 +362,7 @@
 		}
 	}
 }
+ */
 
 -(BOOL)isLoggedInForSourceID:(BlioBookSourceID)sourceID {
 	if ([storeHelpers objectForKey:[NSNumber numberWithInt:sourceID]]) return [[storeHelpers objectForKey:[NSNumber numberWithInt:sourceID]] isLoggedIn];

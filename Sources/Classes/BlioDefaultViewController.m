@@ -9,6 +9,7 @@
 #import "BlioDefaultViewController.h"
 #import <unistd.h>
 #import "THNSDataAdditions.h"
+#import "BlioProcessing.h"
 
 
 @interface BlioDefaultViewController ()
@@ -114,9 +115,10 @@
     } else {
         orientation = UIInterfaceOrientationPortrait;
     }
-    
-    [UIImagePNGRepresentation(image) writeToMappedFile:[self dynamicDefaultPngPathForOrientation:orientation]];
-} 
+    NSString * dynamicDefaultPath = [self dynamicDefaultPngPathForOrientation:orientation];
+    [UIImagePNGRepresentation(image) writeToMappedFile:dynamicDefaultPath];
+    [BlioProcessingOperation addSkipBackupAttributeToItemAtURL:[NSURL fileURLWithPath:dynamicDefaultPath]];
+}
 
 - (void)loadDynamicDefaults {
     if((self.dynamicDefault = [[self class] loadDynamicDefaultImageForOrientation:UIInterfaceOrientationPortrait])) {

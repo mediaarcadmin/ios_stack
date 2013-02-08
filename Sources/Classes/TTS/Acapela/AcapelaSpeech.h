@@ -23,6 +23,8 @@ typedef unsigned int BB_U32;
 	
 	- (BOOL)startSpeakingString:(NSString *)string;
 	- (BOOL)startSpeakingString:(NSString *)string toURL:(NSURL *)url;
+    - (BOOL)startSpeakingStringSync:(NSString *)string toURL:(NSURL *)url;
+
 
 	- (BOOL)queueSpeakingString:(NSString *)string;
 	- (BOOL)queueSpeakingString:(NSString *)string textIndex:(int*)index;

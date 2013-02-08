@@ -14,8 +14,8 @@
 @interface BlioMyAccountViewController : BlioAutorotatingTableViewController {
     UIActivityIndicatorView *activityIndicator;
 	BOOL registrationOn;
-	BlioDrmSessionManager* drmSessionManager;
-    UISwitch * registrationSwitch;
+	BlioDrmSessionManager* drmSessionManager;  
+    UIButton * deregisterButton;
     id delegate;
 }
 @property (nonatomic, retain) UIActivityIndicatorView *activityIndicator;

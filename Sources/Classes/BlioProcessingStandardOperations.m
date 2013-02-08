@@ -196,13 +196,16 @@
 			break;
 		}
 	}
-	
+    
 	if ([self isCancelled]) {
 		NSLog(@"BlioProcessingLicenseAcquisitionOperation cancelled before starting (perhaps due to pause, broken internet connection, crash, or application exit)");
 		return;
 	}
 	
-	BOOL isEncrypted = [self bookManifestPath:BlioXPSKNFBDRMHeaderFile existsForLocation:BlioManifestEntryLocationXPS];
+    // For PlayReady only:
+	//BOOL isEncrypted = [self bookManifestPath:BlioXPSKNFBDRMHeaderFile existsForLocation:BlioManifestEntryLocationXPS];
+    // For PlayReady or KDRM:
+	BOOL isEncrypted = [self bookManifestPath:KNFBXPSEncryptedPagesDir existsForLocation:BlioManifestEntryLocationXPS];
 	if (!isEncrypted) {
         self.operationSuccess = YES;
 		self.percentageComplete = 100;
@@ -211,8 +214,12 @@
 	} else {
         NSMutableDictionary *manifestEntry = [NSMutableDictionary dictionary];
 		[manifestEntry setValue:BlioManifestEntryLocationXPS forKey:BlioManifestEntryLocationKey];
-		[manifestEntry setValue:BlioXPSKNFBDRMHeaderFile forKey:BlioManifestEntryPathKey];
-		[self setBookManifestValue:manifestEntry forKey:BlioManifestDrmHeaderKey];
+        // For PlayReady only:
+		//[manifestEntry setValue:BlioXPSKNFBDRMHeaderFile forKey:BlioManifestEntryPathKey];
+		//[self setBookManifestValue:manifestEntry forKey:BlioManifestDrmHeaderKey];
+        // For PlayReady or KDRM:
+		[manifestEntry setValue:KNFBXPSEncryptedPagesDir forKey:BlioManifestEntryPathKey];
+		[self setBookManifestValue:manifestEntry forKey:BlioManifestDrmPagesKey];
 	}
 	BOOL isValidSource = NO;
 #ifdef TEST_MODE
@@ -499,6 +506,7 @@
 			[self finish];
 		}
 	}
+    [BlioProcessingOperation addSkipBackupAttributeToItemAtURL:[NSURL fileURLWithPath:temporaryPath]];
 	self.downloadFile = [NSFileHandle fileHandleForWritingAtPath:temporaryPath];
 	NSMutableURLRequest *aRequest = [[NSMutableURLRequest alloc] initWithURL:self.url];
 //	NSLog(@"about to start connection to URL: %@",[self.url absoluteString]);
@@ -1174,9 +1182,6 @@
 						[self setBookValue:[NSNumber numberWithInt:kBlioBookProcessingStateNotSupported] forKey:@"processingState"];
 						[self cancel];
 						[parser abortParsing];
-					}
-					else {
-						// the app is compatible with the required version of this feature (no action required)
 					}
 				}
 				else {

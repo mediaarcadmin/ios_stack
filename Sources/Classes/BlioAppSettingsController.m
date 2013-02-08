@@ -90,7 +90,9 @@
 	if (section == 1) 
 		return 1;
 #ifdef TOSHIBA
-	if (section == 3) 
+	else if (section == 0)
+		return 1;
+	else if (section == 3)
 		return 3;
 #endif
 	return 2;
@@ -127,13 +129,14 @@
 		case 0:
 			switch ([indexPath row])
 			{
+#ifndef TOSHIBA
 				case 0:
 					[cell.textLabel setText:NSLocalizedString(@"Voice",@"\"Voice\" text label for App Settings cell")];
 					break;
-//				case 1:
-//					[cell.textLabel setText:NSLocalizedString(@"Navigation",@"\"Navigation\" text label for App Settings cell")];
-//					break;
 				case 1:
+#else
+                case 0:
+#endif
 					[cell.textLabel setText:NSLocalizedString(@"Reference Tools",@"\"Reference Tools\" text label for App Settings cell")];
 				default:
 					break;
@@ -194,7 +197,9 @@
 
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+#ifndef TOSHIBA
 	BlioReadingVoiceSettingsViewController *audioController;
+#endif  
 	BlioWebToolSettingsController *webToolController;
 	BlioHelpSettingsController *helpController;
 	BlioVersionController *versionController;
@@ -210,12 +215,16 @@
 		case 0:
 			switch (indexPath.row)
 			{
+#ifndef TOSHIBA
 				case 0:
 					audioController = [[BlioReadingVoiceSettingsViewController alloc] init];
 					[self.navigationController pushViewController:audioController animated:YES];
 					[audioController release];
 					break;
 				case 1:
+#else
+                case 0:
+#endif
 					webToolController = [[BlioWebToolSettingsController alloc] init];
 					[self.navigationController pushViewController:webToolController animated:YES];
 					[webToolController release];

@@ -240,6 +240,7 @@
 						   otherButtonTitles:nil];
 		return;
 	}
+    /* With KDRM there is no longer explicit registration.
 	if ( [[BlioStoreManager sharedInstance] deviceRegisteredForSourceID:BlioBookSourceOnlineStore] != BlioDeviceRegisteredStatusRegistered ) {
 		[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Registration Error",@"\"Registration Error\" alert message title") 
 									 message:NSLocalizedStringWithDefaultValue(@"PROCESSING_REQUIRES_REGISTRATION_MESSAGE",nil,[NSBundle mainBundle],@"Before downloading this book you must register this device for reading purchased books. Would you like to register now?",@"Alert message when the attempts to download a paid book but the device is not registered for paid content.")
@@ -249,9 +250,11 @@
 		currBook = book;
 		return;
 	}
+     */
 	[self.processingDelegate enqueueBook:book];
 }
 
+/*
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
 {
 	if (buttonIndex == 1) {
@@ -260,6 +263,7 @@
 //		[self enqueueBook:currBook]; 
 	}
 }
+*/
 
 -(void) calculateMaxLayoutPageEquivalentCount {
 	
