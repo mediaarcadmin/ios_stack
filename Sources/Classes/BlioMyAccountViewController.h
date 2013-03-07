@@ -12,10 +12,9 @@
 #import "BlioAutorotatingViewController.h"
 
 @interface BlioMyAccountViewController : BlioAutorotatingTableViewController {
-    UIActivityIndicatorView *activityIndicator;
-	BOOL registrationOn;
-	BlioDrmSessionManager* drmSessionManager;  
-    UIButton * deregisterButton;
+    BOOL registrationOn;
+	BlioDrmSessionManager* drmSessionManager;
+    UITableViewCell *deregisterCell;
     id delegate;
 }
 @property (nonatomic, retain) UIActivityIndicatorView *activityIndicator;

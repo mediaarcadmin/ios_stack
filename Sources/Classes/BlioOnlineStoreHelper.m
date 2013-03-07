@@ -541,21 +541,20 @@
 	downloadRequest.isbn = [book valueForKey:@"isbn"];
 	downloadRequest.productType = [book valueForKey:@"productType"];
     
-    // TODO: restore when Bookvault is ready to serve KDRMed books for iOS
-    //NSString * platform = @"iPhone";
-    //if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
-    //    platform = @"iPad";
-    NSString * platform = @"WinRT";
+    NSString * platform = @"iPhone";
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
+        platform = @"iPad";
     NSString* version = (NSString*)[[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"]; // @"CFBundleVersion" for build number
     NSString * model = [[UIDevice currentDevice] model];
     NSString * OSType = [[UIDevice currentDevice] systemName];
     NSString * OSVersion = [[UIDevice currentDevice] systemVersion];
     NSInteger screenWidth = [[UIScreen mainScreen] bounds].size.width;
     NSInteger screenHeight = [[UIScreen mainScreen] bounds].size.height;
-    NSString * preferredFormat = @"XPS-EPUB"; // temporary value; is not currently honored.
+    NSString * preferredFormat = @"XPS-EPUB"; // Ignored by the server.
+    NSString * drmType = @"KDRM";
     
 	downloadRequest.clientInfo = [NSString stringWithFormat:@"<ClientInfo><Platform Id=\"%@\" Version=\"%@\"/></ClientInfo>",platform,version];    
-	downloadRequest.clientInfo = [NSString stringWithFormat:@"<ClientInfo><Partner Id=\"Apple\"/><Platform Id=\"%@\" Version=\"%@\"/><Device Model=\"%@\" OsType=\"%@\" OsVersion = \"%@\" ScreenWidth=\"%i\" ScreenHeight=\"%i\"/><BookInfo PreferredFormat=\"%@\"/></ClientInfo>",platform,version,model,OSType,OSVersion,screenWidth,screenHeight,preferredFormat];
+	downloadRequest.clientInfo = [NSString stringWithFormat:@"<ClientInfo><Partner Id=\"Apple\"/><Platform Id=\"%@\" Version=\"%@\"/><Device Model=\"%@\" OsType=\"%@\" OsVersion = \"%@\" ScreenWidth=\"%i\" ScreenHeight=\"%i\"/><BookInfo PreferredFormat=\"%@\" DRM=\"%@\"/></ClientInfo>",platform,version,model,OSType,OSVersion,screenWidth,screenHeight,preferredFormat,drmType];
     NSLog(@"%@",downloadRequest.clientInfo);
     
 //	BookVaultSoapResponse* response = [vaultBinding RequestDownloadWithTokenUsingParameters:downloadRequest];

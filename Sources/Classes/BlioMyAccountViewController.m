@@ -14,7 +14,7 @@
 
 @implementation BlioMyAccountViewController
 
-@synthesize activityIndicator, registrationOn, drmSessionManager,delegate;
+@synthesize registrationOn, drmSessionManager,delegate;
 
 #pragma mark -
 #pragma mark Initialization
@@ -84,16 +84,6 @@
 	}
 }
 
-- (void)deregister:(UIControl*)sender {
-    sender.enabled = NO;
-    deregisterButton = (UIButton*)sender;
-    [BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Please Confirm",@"\"Please Confirm\" alert message title")
-                                 message:NSLocalizedStringWithDefaultValue(@"CONFIRM_DEREGISTRATION_ALERT",nil,[NSBundle mainBundle],@"Are you sure you want to deregister your device for this account? Doing so will remove all books purchased under the account.",@"Prompt requesting confirmation for de-registration, explaining that doing so will remove all that account's purchased books.")
-                                delegate:self
-                       cancelButtonTitle:nil
-                       otherButtonTitles:NSLocalizedString(@"Not Now",@"\"Not Now\" button label within Confirm De/Registration alertview"), NSLocalizedString(@"Deregister",@"\"Deregister\" button label within Confirm Deregistration alertview"), nil];
-}
-
 - (void)changeDownloadNewBooks:(UIControl*)sender {
 	if ( [(UISwitch*)sender isOn] ) {
 		[[NSUserDefaults standardUserDefaults] setInteger:1 forKey:kBlioDownloadNewBooksDefaultsKey];
@@ -115,14 +105,25 @@
     return 1;
 }
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    // Return the number of rows in the section.
     return 1;
 }
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    if (indexPath.section == 1) {
+        [BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Please Confirm",@"\"Please Confirm\" alert message title")
+                                     message:NSLocalizedStringWithDefaultValue(@"CONFIRM_DEREGISTRATION_ALERT",nil,[NSBundle mainBundle],@"Are you sure you want to deregister your device for this account? Doing so will remove all books purchased under the account.",@"Prompt requesting confirmation for de-registration, explaining that doing so will remove all that account's purchased books.")
+                                    delegate:self
+                           cancelButtonTitle:nil
+                           otherButtonTitles:NSLocalizedString(@"Not Now",@"\"Not Now\" button label within Confirm De/Registration alertview"), NSLocalizedString(@"Deregister",@"\"Deregister\" button label within Confirm Deregistration alertview"), nil];
+        
+    }
+}
+
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     if (indexPath.section == 0) {
         static NSString *AutoDownloadCellIdentifier = @"UITableViewCellAutoDownloadIdentifier";
         UITableViewCell *cell;
-        
         cell = [tableView dequeueReusableCellWithIdentifier:AutoDownloadCellIdentifier];
         if (cell == nil) {
             cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:AutoDownloadCellIdentifier] autorelease];
@@ -130,7 +131,6 @@
             UISwitch *switchView = [[UISwitch alloc] initWithFrame:CGRectMake(cell.contentView.bounds.size.width - 80.0f - 35.0f, 9.0f, 80.0f, 28.0f)];
             switchView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin;
             [switchView setTag:997];
-            [cell addSubview:switchView];
             if ( [[NSUserDefaults standardUserDefaults] integerForKey:kBlioDownloadNewBooksDefaultsKey] >= 0) {
                 [switchView setOn:YES animated:NO];
             }
@@ -138,29 +138,23 @@
                 [switchView setOn:NO animated:NO];
             }
             [switchView addTarget:self action:@selector(changeDownloadNewBooks:) forControlEvents:UIControlEventValueChanged];
+            [cell.contentView addSubview:switchView];
             [switchView release];
         }
-        
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
         return cell;
     }
     else if (indexPath.section == 1) {
         static NSString *ListCellIdentifier = @"UITableViewCellRegistrationIdentifier";
         UITableViewCell *cell;
-        
         cell = [tableView dequeueReusableCellWithIdentifier:ListCellIdentifier];
         if (cell == nil) {
             cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:ListCellIdentifier] autorelease];
             cell.textLabel.text = NSLocalizedString(@"Deregister Device","\"Deregister Device\" cell label");
-            UIButton *buttonView = [[UIButton alloc] initWithFrame:CGRectMake(cell.contentView.bounds.origin.x,cell.contentView.bounds.origin.y,cell.contentView.bounds.size.width, cell.contentView.bounds.size.height)];
-            buttonView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin;
-            //[buttonView setTag:999];
-            [cell addSubview:buttonView];
-            [buttonView addTarget:self action:@selector(deregister:) forControlEvents:UIControlEventTouchUpInside];
-            [buttonView release];
             
         }
         cell.selectionStyle = UITableViewCellSelectionStyleBlue;
+        deregisterCell = cell;
         return cell;
     }
 	return nil;
@@ -197,9 +191,7 @@
 -(void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
     if (buttonIndex == 1) {
 		BOOL changeSuccess = NO;
-		[activityIndicator startAnimating];  // thread issue...
 		changeSuccess = [[BlioStoreManager sharedInstance] setDeviceRegistered:BlioDeviceRegisteredStatusUnregistered forSourceID:BlioBookSourceOnlineStore];
-		[activityIndicator stopAnimating];
 		if (changeSuccess) {
             // TICKET 507: automatically logout when de-registering device.
             [[BlioStoreManager sharedInstance] logoutForSourceID:BlioBookSourceOnlineStore];
@@ -208,8 +200,7 @@
                 [delegate setDidDeregister:YES];
         }
 	}
-    deregisterButton.enabled = YES;
-    
+    deregisterCell.selected = NO;
 }
 
 #pragma mark -
@@ -229,7 +220,6 @@
 
 
 - (void)dealloc {
-	self.activityIndicator = nil;
 	self.drmSessionManager = nil;
     [super dealloc];
 }

@@ -6,8 +6,6 @@
 //  Copyright 2010 Kurzweil Technologies Inc. All rights reserved.
 //
 
-//#import "BlioLicenseClient.h"
-//#import "DrmGlobals.h"
 #import "BlioDrmSessionManager.h"
 #import "XpsSdk.h"
 #import "BlioBook.h"
@@ -18,40 +16,18 @@
 #import "KDRMLicenseStore.h"
 #import "KDRMClient.h"
 
-/* PlayReady:
-// Domain controller URL must be hard-coded instead of parsed from a book's header 
-// because registration can be done proactively from the UI.
 #ifdef TEST_MODE
-NSString* testUrl = @"http://prl.kreader.net/PlayReady/service/LicenseAcquisition.asmx";
+NSString* licenseUrl = @"http://prl.kreader.net/KDRM/LicenseHandler.ashx";
+NSString* deregistrationUrl = @"http://prl.kreader.net/KDRM/DeregistrationHandler.ashx";
 #else
-NSString* productionUrl = @"https://bookvault.blioreader.com/PlayReady/service/LicenseAcquisition.asmx";
-#endif
-*/
-
-NSString* licensetUrl = @"http://bookvault.blioreader.com/KDRM/LicenseHandler.ashx";
+NSString* licenseUrl = @"http://bookvault.blioreader.com/KDRM/LicenseHandler.ashx";
 NSString* deregistrationUrl = @"https://bookvault.blioreader.com/KDRM/DeregistrationHandler.ashx";
+#endif
 
 @interface BlioDrmSessionManager()
 
-/* PlayReady:
-struct BlioDrmSessionManagerDrmIVars {
-    DRM_APP_CONTEXT* drmAppContext;
-    DRM_DECRYPT_CONTEXT  drmDecryptContext;
-    DRM_BYTE drmRevocationBuffer[REVOCATION_BUFFER_SIZE];
-};
-//@property (nonatomic, retain) NSManagedObjectID *headerBookID;
-//@property (nonatomic, retain) NSManagedObjectID *boundBookID;
-//@property (nonatomic, retain) NSString* serverResponse;
-*/
-
 @property (nonatomic, retain) KDRMLicense* license;
 @property (nonatomic, retain) NSString* isbn;
-
-/* PlayReady:
-- (void)initialize;
-- (DRM_RESULT)setHeaderForBookWithID:(NSManagedObjectID *)aBookID;
-- (DRM_DOMAIN_ID)domainIDFromSavedRegistration;
-*/
 
 @end
 
@@ -60,7 +36,7 @@ struct BlioDrmSessionManagerDrmIVars {
 @synthesize license, isbn;
 
 -(void)reportError:(NSError*)error {
-    if ([error.domain compare:@"KDRMClientErrorDomain"]) {
+    if ([error.domain compare:@"KDRMClientErrorDomain"] == NSOrderedSame) {
         switch (error.code) {
             case KDRMClientErrorDomainCodeInvalidHTTPStatusCode: 
                 [BlioAlertManager showAlertOfSuppressedType:BlioDrmFailureAlertType
@@ -87,8 +63,7 @@ struct BlioDrmSessionManagerDrmIVars {
                                           otherButtonTitles:@"OK", nil];
                 break;
             case KDRMClientErrorDomainCodeInvalidLicenseData:
-                [BlioAlertManager showAlertOfSuppressedType:BlioDrmFailureAlertType
-                                                      title:NSLocalizedString(@"Rights Management Error",@"\"Rights Management Error\" alert message title")
+                [BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Rights Management Error",@"\"Rights Management Error\" alert message title")
                                                     message:NSLocalizedStringWithDefaultValue(@"INVALID_LICENSE_DATA",
                                                                                               nil,
                                                                                               [NSBundle mainBundle],
@@ -99,8 +74,7 @@ struct BlioDrmSessionManagerDrmIVars {
                                           otherButtonTitles:@"OK", nil];
                 break;
             case KDRMClientErrorDomainCodeInvalidSignature:
-                [BlioAlertManager showAlertOfSuppressedType:BlioDrmFailureAlertType
-                                                      title:NSLocalizedString(@"Rights Management Error",@"\"Rights Management Error\" alert message title")
+                [BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Rights Management Error",@"\"Rights Management Error\" alert message title")
                                                     message:NSLocalizedStringWithDefaultValue(@"INVALID_LICENSE_SIGNATURE",
                                                                                               nil,
                                                                                               [NSBundle mainBundle],
@@ -111,8 +85,7 @@ struct BlioDrmSessionManagerDrmIVars {
                                           otherButtonTitles:@"OK", nil];
                 break;
             case KDRMClientErrorDomainCodeMissingLicense:
-                [BlioAlertManager showAlertOfSuppressedType:BlioDrmFailureAlertType
-                                                      title:NSLocalizedString(@"Rights Management Error",@"\"Rights Management Error\" alert message title")
+                [BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Rights Management Error",@"\"Rights Management Error\" alert message title")
                                                     message:NSLocalizedStringWithDefaultValue(@"MISSING_LICENSE",
                                                                                               nil,
                                                                                               [NSBundle mainBundle],
@@ -123,8 +96,7 @@ struct BlioDrmSessionManagerDrmIVars {
                                           otherButtonTitles:@"OK", nil];
                 break;
             case KDRMClientErrorDomainCodeExpiredLicense:
-                [BlioAlertManager showAlertOfSuppressedType:BlioDrmFailureAlertType
-                                                      title:NSLocalizedString(@"Rights Management Error",@"\"Rights Management Error\" alert message title")
+                [BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Rights Management Error",@"\"Rights Management Error\" alert message title")
                                                     message:NSLocalizedStringWithDefaultValue(@"EXPIRED_LICENSE",
                                                                                               nil,
                                                                                               [NSBundle mainBundle],
@@ -138,9 +110,8 @@ struct BlioDrmSessionManagerDrmIVars {
                 break;
         }
     }
-    else if ([error.domain compare:@"KDRMLicenseStoreErrorDomain"]) {
-        [BlioAlertManager showAlertOfSuppressedType:BlioDrmFailureAlertType
-                                              title:NSLocalizedString(@"Rights Management Error",@"\"Rights Management Error\" alert message title")
+    else if ([error.domain compare:@"KDRMLicenseStoreErrorDomain"] == NSOrderedSame) {
+        [BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Rights Management Error",@"\"Rights Management Error\" alert message title")
                                             message:NSLocalizedStringWithDefaultValue(@"LICENSE_STORE_ERROR",
                                                                                       nil,
                                                                                       [NSBundle mainBundle],
@@ -153,11 +124,6 @@ struct BlioDrmSessionManagerDrmIVars {
 }
 
 -(void) dealloc {
-    //Drm_Uninitialize(drmIVars->drmAppContext);
-    //Oem_MemFree(drmIVars->drmAppContext);
-    //self.headerBookID = nil;
-    //self.boundBookID = nil;
-    //free(drmIVars);
     self.license = nil;
     self.isbn = nil;
 	[super dealloc];
@@ -169,10 +135,6 @@ struct BlioDrmSessionManagerDrmIVars {
         BlioBook *book = [[BlioBookManager sharedBookManager] bookWithID:aBookID];
         self.isbn = [book valueForKey:@"isbn"];
         self.license = nil;
-        //self.headerBookID = aBookID;
-        //BlioBook *book = [[BlioBookManager sharedBookManager] bookWithID:self.headerBookID];
-        //drmIVars = calloc(1, sizeof(struct BlioDrmSessionManagerDrmIVars));
-        //[self initialize];
     }
     return self;
 }
@@ -182,7 +144,7 @@ struct BlioDrmSessionManagerDrmIVars {
     KDRMClient* client = [[KDRMClient alloc] init];
     BOOL success = [client acquireLicenseForISBNSync:self.isbn
                                                token:token
-                                                 url:licensetUrl
+                                                 url:licenseUrl
                                           completion:^(NSURLRequest *request, NSURLResponse *response, NSError *error, KDRMLicense *lic) {
                                               NSString* logMsg = [NSString stringWithFormat:@"(%@, %@, %@, %@)", request, response, error, lic];
                                               NSLog(@"%@",logMsg);
