@@ -518,7 +518,8 @@ static void *background_init_thread(void * arg) {
         else if ([(NSNumber*)prevVersion floatValue] < [appVersionNumber floatValue]) {
             [[NSUserDefaults standardUserDefaults] setObject:appVersionNumber forKey:@"PreviouslyLaunchedAppVersion"];
             [[NSUserDefaults standardUserDefaults] synchronize];
-            if ( [(NSNumber*)prevVersion floatValue] <= 3.5 )
+            // If the previous version is on PlayReady, force a switch to KDRM.
+            if ( [(NSNumber*)prevVersion floatValue] <= 3.6 )
                 [self forceRedownload];
         }
         
