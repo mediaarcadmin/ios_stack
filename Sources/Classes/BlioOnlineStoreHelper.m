@@ -551,10 +551,15 @@
     NSInteger screenWidth = [[UIScreen mainScreen] bounds].size.width;
     NSInteger screenHeight = [[UIScreen mainScreen] bounds].size.height;
     NSString * preferredFormat = @"XPS-EPUB"; // Ignored by the server.
-    NSString * drmType = @"KDRM";
     
-	downloadRequest.clientInfo = [NSString stringWithFormat:@"<ClientInfo><Platform Id=\"%@\" Version=\"%@\"/></ClientInfo>",platform,version];    
-	downloadRequest.clientInfo = [NSString stringWithFormat:@"<ClientInfo><Partner Id=\"Apple\"/><Platform Id=\"%@\" Version=\"%@\"/><Device Model=\"%@\" OsType=\"%@\" OsVersion = \"%@\" ScreenWidth=\"%i\" ScreenHeight=\"%i\"/><BookInfo PreferredFormat=\"%@\" DRM=\"%@\"/></ClientInfo>",platform,version,model,OSType,OSVersion,screenWidth,screenHeight,preferredFormat,drmType];
+    if ([downloadRequest.productType intValue] == BlioProductTypePreview)
+        // Sample books are not DRMed.
+        downloadRequest.clientInfo = [NSString stringWithFormat:@"<ClientInfo><Partner Id=\"Apple\"/><Platform Id=\"%@\" Version=\"%@\"/><Device Model=\"%@\" OsType=\"%@\" OsVersion = \"%@\" ScreenWidth=\"%i\" ScreenHeight=\"%i\"/><BookInfo PreferredFormat=\"%@\"/></ClientInfo>",platform,version,model,OSType,OSVersion,screenWidth,screenHeight,preferredFormat];
+    else {
+        NSString * drmType = @"KDRM";
+        //downloadRequest.clientInfo = [NSString stringWithFormat:@"<ClientInfo><Platform Id=\"%@\" Version=\"%@\"/></ClientInfo>",platform,version];
+        downloadRequest.clientInfo = [NSString stringWithFormat:@"<ClientInfo><Partner Id=\"Apple\"/><Platform Id=\"%@\" Version=\"%@\"/><Device Model=\"%@\" OsType=\"%@\" OsVersion = \"%@\" ScreenWidth=\"%i\" ScreenHeight=\"%i\"/><BookInfo PreferredFormat=\"%@\" DRM=\"%@\"/></ClientInfo>",platform,version,model,OSType,OSVersion,screenWidth,screenHeight,preferredFormat,drmType];
+    }
     NSLog(@"%@",downloadRequest.clientInfo);
     
 //	BookVaultSoapResponse* response = [vaultBinding RequestDownloadWithTokenUsingParameters:downloadRequest];
