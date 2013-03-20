@@ -170,7 +170,6 @@
 		7D4A015A11DBA36900DDA5B7 /* SelectionEnd.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D4A00F011DBA36800DDA5B7 /* SelectionEnd.png */; };
 		7D4A015B11DBA36900DDA5B7 /* SelectionKnob.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D4A00F111DBA36800DDA5B7 /* SelectionKnob.png */; };
 		7D4A015C11DBA36900DDA5B7 /* SelectionKnob@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D4A00F211DBA36800DDA5B7 /* SelectionKnob@2x.png */; };
-		7D4CA2341417814100117F3A /* THFonts in Resources */ = {isa = PBXBuildFile; fileRef = 7D71550A13E99F2700A593A9 /* THFonts */; };
 		7D4CA2351417826200117F3A /* icon-import@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A3B0B2B0126E088500FC3D18 /* icon-import@2x.png */; };
 		7D4CA236141783B400117F3A /* CoreText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D39D40413EABD2E0029EDCB /* CoreText.framework */; };
 		7D4CE4751100C64C0061BDF2 /* BlioBookmark.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D4CE4741100C64C0061BDF2 /* BlioBookmark.m */; };
@@ -178,6 +177,36 @@
 		7D5B0C49147AD3D0007E3865 /* BlioViewSettingsFontAndSizeContentsView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D5B0C47147AD3D0007E3865 /* BlioViewSettingsFontAndSizeContentsView.m */; };
 		7D5B0C4A147AD3D0007E3865 /* BlioViewSettingsFontAndSizeContentsView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D5B0C47147AD3D0007E3865 /* BlioViewSettingsFontAndSizeContentsView.m */; };
 		7D5B0C4B147AD3D0007E3865 /* BlioViewSettingsFontAndSizeContentsView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D5B0C47147AD3D0007E3865 /* BlioViewSettingsFontAndSizeContentsView.m */; };
+		7D612BDA16FA439A00455436 /* LinLibertine_R.otf in Resources */ = {isa = PBXBuildFile; fileRef = 7D612BD416FA439A00455436 /* LinLibertine_R.otf */; };
+		7D612BDB16FA439A00455436 /* LinLibertine_R.otf in Resources */ = {isa = PBXBuildFile; fileRef = 7D612BD416FA439A00455436 /* LinLibertine_R.otf */; };
+		7D612BDC16FA439A00455436 /* LinLibertine_R.otf in Resources */ = {isa = PBXBuildFile; fileRef = 7D612BD416FA439A00455436 /* LinLibertine_R.otf */; };
+		7D612BDD16FA439A00455436 /* LinLibertine_R.otf in Resources */ = {isa = PBXBuildFile; fileRef = 7D612BD416FA439A00455436 /* LinLibertine_R.otf */; };
+		7D612BDE16FA439A00455436 /* LinLibertine_R.otf in Resources */ = {isa = PBXBuildFile; fileRef = 7D612BD416FA439A00455436 /* LinLibertine_R.otf */; };
+		7D612BDF16FA439A00455436 /* LinLibertine_RB.otf in Resources */ = {isa = PBXBuildFile; fileRef = 7D612BD516FA439A00455436 /* LinLibertine_RB.otf */; };
+		7D612BE016FA439A00455436 /* LinLibertine_RB.otf in Resources */ = {isa = PBXBuildFile; fileRef = 7D612BD516FA439A00455436 /* LinLibertine_RB.otf */; };
+		7D612BE116FA439A00455436 /* LinLibertine_RB.otf in Resources */ = {isa = PBXBuildFile; fileRef = 7D612BD516FA439A00455436 /* LinLibertine_RB.otf */; };
+		7D612BE216FA439A00455436 /* LinLibertine_RB.otf in Resources */ = {isa = PBXBuildFile; fileRef = 7D612BD516FA439A00455436 /* LinLibertine_RB.otf */; };
+		7D612BE316FA439A00455436 /* LinLibertine_RB.otf in Resources */ = {isa = PBXBuildFile; fileRef = 7D612BD516FA439A00455436 /* LinLibertine_RB.otf */; };
+		7D612BE416FA439A00455436 /* LinLibertine_RBI.otf in Resources */ = {isa = PBXBuildFile; fileRef = 7D612BD616FA439A00455436 /* LinLibertine_RBI.otf */; };
+		7D612BE516FA439A00455436 /* LinLibertine_RBI.otf in Resources */ = {isa = PBXBuildFile; fileRef = 7D612BD616FA439A00455436 /* LinLibertine_RBI.otf */; };
+		7D612BE616FA439A00455436 /* LinLibertine_RBI.otf in Resources */ = {isa = PBXBuildFile; fileRef = 7D612BD616FA439A00455436 /* LinLibertine_RBI.otf */; };
+		7D612BE716FA439A00455436 /* LinLibertine_RBI.otf in Resources */ = {isa = PBXBuildFile; fileRef = 7D612BD616FA439A00455436 /* LinLibertine_RBI.otf */; };
+		7D612BE816FA439A00455436 /* LinLibertine_RBI.otf in Resources */ = {isa = PBXBuildFile; fileRef = 7D612BD616FA439A00455436 /* LinLibertine_RBI.otf */; };
+		7D612BE916FA439A00455436 /* LinLibertine_RI.otf in Resources */ = {isa = PBXBuildFile; fileRef = 7D612BD716FA439A00455436 /* LinLibertine_RI.otf */; };
+		7D612BEA16FA439A00455436 /* LinLibertine_RI.otf in Resources */ = {isa = PBXBuildFile; fileRef = 7D612BD716FA439A00455436 /* LinLibertine_RI.otf */; };
+		7D612BEB16FA439A00455436 /* LinLibertine_RI.otf in Resources */ = {isa = PBXBuildFile; fileRef = 7D612BD716FA439A00455436 /* LinLibertine_RI.otf */; };
+		7D612BEC16FA439A00455436 /* LinLibertine_RI.otf in Resources */ = {isa = PBXBuildFile; fileRef = 7D612BD716FA439A00455436 /* LinLibertine_RI.otf */; };
+		7D612BED16FA439A00455436 /* LinLibertine_RI.otf in Resources */ = {isa = PBXBuildFile; fileRef = 7D612BD716FA439A00455436 /* LinLibertine_RI.otf */; };
+		7D612BEE16FA439A00455436 /* LinLibertine_RZ.otf in Resources */ = {isa = PBXBuildFile; fileRef = 7D612BD816FA439A00455436 /* LinLibertine_RZ.otf */; };
+		7D612BEF16FA439A00455436 /* LinLibertine_RZ.otf in Resources */ = {isa = PBXBuildFile; fileRef = 7D612BD816FA439A00455436 /* LinLibertine_RZ.otf */; };
+		7D612BF016FA439A00455436 /* LinLibertine_RZ.otf in Resources */ = {isa = PBXBuildFile; fileRef = 7D612BD816FA439A00455436 /* LinLibertine_RZ.otf */; };
+		7D612BF116FA439A00455436 /* LinLibertine_RZ.otf in Resources */ = {isa = PBXBuildFile; fileRef = 7D612BD816FA439A00455436 /* LinLibertine_RZ.otf */; };
+		7D612BF216FA439A00455436 /* LinLibertine_RZ.otf in Resources */ = {isa = PBXBuildFile; fileRef = 7D612BD816FA439A00455436 /* LinLibertine_RZ.otf */; };
+		7D612BF316FA439A00455436 /* LinLibertine_RZI.otf in Resources */ = {isa = PBXBuildFile; fileRef = 7D612BD916FA439A00455436 /* LinLibertine_RZI.otf */; };
+		7D612BF416FA439A00455436 /* LinLibertine_RZI.otf in Resources */ = {isa = PBXBuildFile; fileRef = 7D612BD916FA439A00455436 /* LinLibertine_RZI.otf */; };
+		7D612BF516FA439A00455436 /* LinLibertine_RZI.otf in Resources */ = {isa = PBXBuildFile; fileRef = 7D612BD916FA439A00455436 /* LinLibertine_RZI.otf */; };
+		7D612BF616FA439A00455436 /* LinLibertine_RZI.otf in Resources */ = {isa = PBXBuildFile; fileRef = 7D612BD916FA439A00455436 /* LinLibertine_RZI.otf */; };
+		7D612BF716FA439A00455436 /* LinLibertine_RZI.otf in Resources */ = {isa = PBXBuildFile; fileRef = 7D612BD916FA439A00455436 /* LinLibertine_RZI.otf */; };
 		7D662008132E7E9B00242F63 /* libstdc++.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D662007132E7E9B00242F63 /* libstdc++.dylib */; };
 		7D662009132E7F1600242F63 /* libstdc++.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D662007132E7E9B00242F63 /* libstdc++.dylib */; };
 		7D66200A132E7F2100242F63 /* libstdc++.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D662007132E7E9B00242F63 /* libstdc++.dylib */; };
@@ -220,9 +249,6 @@
 		7D6D9FFB124E9DEE005FD8CE /* BlioBookSearchResultsTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C95FCCFF123BCED600859B92 /* BlioBookSearchResultsTableViewController.m */; };
 		7D6D9FFC124E9DEE005FD8CE /* BlioBookSearchResult.m in Sources */ = {isa = PBXBuildFile; fileRef = C95FCD0D123BDB1300859B92 /* BlioBookSearchResult.m */; };
 		7D6D9FFE124E9E1A005FD8CE /* NSArray+BlioAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DB7029E1248D38E00BC3272 /* NSArray+BlioAdditions.m */; };
-		7D71550B13E99F2700A593A9 /* THFonts in Resources */ = {isa = PBXBuildFile; fileRef = 7D71550A13E99F2700A593A9 /* THFonts */; };
-		7D71550C13E99F2700A593A9 /* THFonts in Resources */ = {isa = PBXBuildFile; fileRef = 7D71550A13E99F2700A593A9 /* THFonts */; };
-		7D71550D13E99F2700A593A9 /* THFonts in Resources */ = {isa = PBXBuildFile; fileRef = 7D71550A13E99F2700A593A9 /* THFonts */; };
 		7D7917F610F21CD400C4D839 /* BlioBookViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D7917F510F21CD400C4D839 /* BlioBookViewController.m */; };
 		7D79183610F2257C00C4D839 /* BlioFlowView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D79183510F2257C00C4D839 /* BlioFlowView.m */; };
 		7D79CFAD117F55E70081F554 /* BlioEPubParagraphSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D79CFAC117F55E70081F554 /* BlioEPubParagraphSource.m */; };
@@ -1560,7 +1586,6 @@
 		A3BEFD4A152DE9E6009B4F4A /* TextFlowXAMLOverrides.css in Resources */ = {isa = PBXBuildFile; fileRef = C93ECB19134B6215003B99FD /* TextFlowXAMLOverrides.css */; };
 		A3BEFD4B152DE9E6009B4F4A /* book-overlay@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DC8A54451412E25D0009341B /* book-overlay@2x.png */; };
 		A3BEFD4C152DE9E6009B4F4A /* book-overlay.png in Resources */ = {isa = PBXBuildFile; fileRef = DC8A54461412E25D0009341B /* book-overlay.png */; };
-		A3BEFD4D152DE9E6009B4F4A /* THFonts in Resources */ = {isa = PBXBuildFile; fileRef = 7D71550A13E99F2700A593A9 /* THFonts */; };
 		A3BEFD4E152DE9E6009B4F4A /* voiceover-tips.html in Resources */ = {isa = PBXBuildFile; fileRef = A323E75F1427A6D10043E78E /* voiceover-tips.html */; };
 		A3BEFD4F152DE9E6009B4F4A /* brightness-sun-bright.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D69C35014293D6500136CFB /* brightness-sun-bright.png */; };
 		A3BEFD50152DE9E6009B4F4A /* brightness-sun-bright@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D69C35114293D6500136CFB /* brightness-sun-bright@2x.png */; };
@@ -2557,6 +2582,12 @@
 		7D5B0C46147AD3D0007E3865 /* BlioViewSettingsFontAndSizeContentsView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioViewSettingsFontAndSizeContentsView.h; sourceTree = "<group>"; };
 		7D5B0C47147AD3D0007E3865 /* BlioViewSettingsFontAndSizeContentsView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioViewSettingsFontAndSizeContentsView.m; sourceTree = "<group>"; };
 		7D5B0C4C147AD743007E3865 /* BlioViewSettingsMetrics.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioViewSettingsMetrics.h; sourceTree = "<group>"; };
+		7D612BD416FA439A00455436 /* LinLibertine_R.otf */ = {isa = PBXFileReference; lastKnownFileType = file; name = LinLibertine_R.otf; path = THFonts/LinLibertine_R.otf; sourceTree = "<group>"; };
+		7D612BD516FA439A00455436 /* LinLibertine_RB.otf */ = {isa = PBXFileReference; lastKnownFileType = file; name = LinLibertine_RB.otf; path = THFonts/LinLibertine_RB.otf; sourceTree = "<group>"; };
+		7D612BD616FA439A00455436 /* LinLibertine_RBI.otf */ = {isa = PBXFileReference; lastKnownFileType = file; name = LinLibertine_RBI.otf; path = THFonts/LinLibertine_RBI.otf; sourceTree = "<group>"; };
+		7D612BD716FA439A00455436 /* LinLibertine_RI.otf */ = {isa = PBXFileReference; lastKnownFileType = file; name = LinLibertine_RI.otf; path = THFonts/LinLibertine_RI.otf; sourceTree = "<group>"; };
+		7D612BD816FA439A00455436 /* LinLibertine_RZ.otf */ = {isa = PBXFileReference; lastKnownFileType = file; name = LinLibertine_RZ.otf; path = THFonts/LinLibertine_RZ.otf; sourceTree = "<group>"; };
+		7D612BD916FA439A00455436 /* LinLibertine_RZI.otf */ = {isa = PBXFileReference; lastKnownFileType = file; name = LinLibertine_RZI.otf; path = THFonts/LinLibertine_RZI.otf; sourceTree = "<group>"; };
 		7D662007132E7E9B00242F63 /* libstdc++.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libstdc++.dylib"; path = "usr/lib/libstdc++.dylib"; sourceTree = SDKROOT; };
 		7D69C35014293D6500136CFB /* brightness-sun-bright.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "brightness-sun-bright.png"; sourceTree = "<group>"; };
 		7D69C35114293D6500136CFB /* brightness-sun-bright@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "brightness-sun-bright@2x.png"; sourceTree = "<group>"; };
@@ -2566,7 +2597,6 @@
 		7D6C65A41619A0B000B15BA4 /* BlioViewSettingsInterface.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioViewSettingsInterface.m; sourceTree = "<group>"; };
 		7D6C65AA1619A36E00B15BA4 /* BlioViewSettingsContentsView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioViewSettingsContentsView.h; sourceTree = "<group>"; };
 		7D6C65AB1619A36E00B15BA4 /* BlioViewSettingsContentsView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioViewSettingsContentsView.m; sourceTree = "<group>"; };
-		7D71550A13E99F2700A593A9 /* THFonts */ = {isa = PBXFileReference; lastKnownFileType = folder; path = THFonts; sourceTree = "<group>"; };
 		7D7917F410F21CD400C4D839 /* BlioBookViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioBookViewController.h; sourceTree = "<group>"; };
 		7D7917F510F21CD400C4D839 /* BlioBookViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioBookViewController.m; sourceTree = "<group>"; };
 		7D79183410F2257C00C4D839 /* BlioFlowView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioFlowView.h; sourceTree = "<group>"; };
@@ -3699,7 +3729,12 @@
 				7DDF8FC615D580C600CCC867 /* THAVPlayerPlay.png */,
 				7DDF8FC715D580C600CCC867 /* THAVPlayerPlay@2x.png */,
 				7D02B51F15E4E6DF00B764A7 /* THAVPlayerAudioBackground.png */,
-				7D71550A13E99F2700A593A9 /* THFonts */,
+				7D612BD416FA439A00455436 /* LinLibertine_R.otf */,
+				7D612BD516FA439A00455436 /* LinLibertine_RB.otf */,
+				7D612BD616FA439A00455436 /* LinLibertine_RBI.otf */,
+				7D612BD716FA439A00455436 /* LinLibertine_RI.otf */,
+				7D612BD816FA439A00455436 /* LinLibertine_RZ.otf */,
+				7D612BD916FA439A00455436 /* LinLibertine_RZI.otf */,
 				7D381CCE10D93023008D34E2 /* Apple */,
 				7D381CDB10D93023008D34E2 /* BookEdge.pvrtc */,
 			);
@@ -4903,7 +4938,6 @@
 				7DFA426D13A925BB0059C9B0 /* icon-back@2x.png in Resources */,
 				DC8A54471412E25D0009341B /* book-overlay@2x.png in Resources */,
 				DC8A544A1412E25D0009341B /* book-overlay.png in Resources */,
-				7D71550B13E99F2700A593A9 /* THFonts in Resources */,
 				A323E7601427A6D10043E78E /* voiceover-tips.html in Resources */,
 				7D69C35414293D6500136CFB /* brightness-sun-bright.png in Resources */,
 				7D69C35814293D6500136CFB /* brightness-sun-bright@2x.png in Resources */,
@@ -4932,6 +4966,12 @@
 				8783725D160908BC00EA85A4 /* icon-fontsize.png in Resources */,
 				87837262160908BC00EA85A4 /* icon-fontsize@2x.png in Resources */,
 				876AEC76161CB469008899A8 /* bsd-3-clause-license.html in Resources */,
+				7D612BDA16FA439A00455436 /* LinLibertine_R.otf in Resources */,
+				7D612BDF16FA439A00455436 /* LinLibertine_RB.otf in Resources */,
+				7D612BE416FA439A00455436 /* LinLibertine_RBI.otf in Resources */,
+				7D612BE916FA439A00455436 /* LinLibertine_RI.otf in Resources */,
+				7D612BEE16FA439A00455436 /* LinLibertine_RZ.otf in Resources */,
+				7D612BF316FA439A00455436 /* LinLibertine_RZI.otf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -5161,7 +5201,6 @@
 				C93ECB28134B6215003B99FD /* TextFlowXAMLOverrides.css in Resources */,
 				DC8A54491412E25D0009341B /* book-overlay@2x.png in Resources */,
 				DC8A544C1412E25D0009341B /* book-overlay.png in Resources */,
-				7D71550D13E99F2700A593A9 /* THFonts in Resources */,
 				A323E7621427A6D10043E78E /* voiceover-tips.html in Resources */,
 				7D69C35614293D6500136CFB /* brightness-sun-bright.png in Resources */,
 				7D69C35A14293D6500136CFB /* brightness-sun-bright@2x.png in Resources */,
@@ -5189,6 +5228,12 @@
 				8783725F160908BC00EA85A4 /* icon-fontsize.png in Resources */,
 				87837264160908BC00EA85A4 /* icon-fontsize@2x.png in Resources */,
 				876AEC78161CB469008899A8 /* bsd-3-clause-license.html in Resources */,
+				7D612BDC16FA439A00455436 /* LinLibertine_R.otf in Resources */,
+				7D612BE116FA439A00455436 /* LinLibertine_RB.otf in Resources */,
+				7D612BE616FA439A00455436 /* LinLibertine_RBI.otf in Resources */,
+				7D612BEB16FA439A00455436 /* LinLibertine_RI.otf in Resources */,
+				7D612BF016FA439A00455436 /* LinLibertine_RZ.otf in Resources */,
+				7D612BF516FA439A00455436 /* LinLibertine_RZI.otf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -5409,7 +5454,6 @@
 				A31CC7E913FEA07E0010BFC5 /* TextFlowFlow.css in Resources */,
 				A31CC7EA13FEA07E0010BFC5 /* TextFlowXAML.css in Resources */,
 				A31CC7EB13FEA07E0010BFC5 /* TextFlowXAMLOverrides.css in Resources */,
-				7D4CA2341417814100117F3A /* THFonts in Resources */,
 				DCBF27E4141E6FE000FF050A /* book-overlay@2x.png in Resources */,
 				DCBF27E5141E6FE600FF050A /* book-overlay.png in Resources */,
 				A323E7631427A6D10043E78E /* voiceover-tips.html in Resources */,
@@ -5432,6 +5476,12 @@
 				87837260160908BC00EA85A4 /* icon-fontsize.png in Resources */,
 				87837265160908BC00EA85A4 /* icon-fontsize@2x.png in Resources */,
 				876AEC79161CB469008899A8 /* bsd-3-clause-license.html in Resources */,
+				7D612BDD16FA439A00455436 /* LinLibertine_R.otf in Resources */,
+				7D612BE216FA439A00455436 /* LinLibertine_RB.otf in Resources */,
+				7D612BE716FA439A00455436 /* LinLibertine_RBI.otf in Resources */,
+				7D612BEC16FA439A00455436 /* LinLibertine_RI.otf in Resources */,
+				7D612BF116FA439A00455436 /* LinLibertine_RZ.otf in Resources */,
+				7D612BF616FA439A00455436 /* LinLibertine_RZI.otf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -5661,7 +5711,6 @@
 				C93ECB27134B6215003B99FD /* TextFlowXAMLOverrides.css in Resources */,
 				DC8A54481412E25D0009341B /* book-overlay@2x.png in Resources */,
 				DC8A544B1412E25D0009341B /* book-overlay.png in Resources */,
-				7D71550C13E99F2700A593A9 /* THFonts in Resources */,
 				A323E7611427A6D10043E78E /* voiceover-tips.html in Resources */,
 				7D69C35514293D6500136CFB /* brightness-sun-bright.png in Resources */,
 				7D69C35914293D6500136CFB /* brightness-sun-bright@2x.png in Resources */,
@@ -5689,6 +5738,12 @@
 				8783725E160908BC00EA85A4 /* icon-fontsize.png in Resources */,
 				87837263160908BC00EA85A4 /* icon-fontsize@2x.png in Resources */,
 				876AEC77161CB469008899A8 /* bsd-3-clause-license.html in Resources */,
+				7D612BDB16FA439A00455436 /* LinLibertine_R.otf in Resources */,
+				7D612BE016FA439A00455436 /* LinLibertine_RB.otf in Resources */,
+				7D612BE516FA439A00455436 /* LinLibertine_RBI.otf in Resources */,
+				7D612BEA16FA439A00455436 /* LinLibertine_RI.otf in Resources */,
+				7D612BEF16FA439A00455436 /* LinLibertine_RZ.otf in Resources */,
+				7D612BF416FA439A00455436 /* LinLibertine_RZI.otf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -5907,7 +5962,6 @@
 				A3BEFD4A152DE9E6009B4F4A /* TextFlowXAMLOverrides.css in Resources */,
 				A3BEFD4B152DE9E6009B4F4A /* book-overlay@2x.png in Resources */,
 				A3BEFD4C152DE9E6009B4F4A /* book-overlay.png in Resources */,
-				A3BEFD4D152DE9E6009B4F4A /* THFonts in Resources */,
 				A3BEFD4E152DE9E6009B4F4A /* voiceover-tips.html in Resources */,
 				A3BEFD4F152DE9E6009B4F4A /* brightness-sun-bright.png in Resources */,
 				A3BEFD50152DE9E6009B4F4A /* brightness-sun-bright@2x.png in Resources */,
@@ -5950,6 +6004,12 @@
 				87837266160908BC00EA85A4 /* icon-fontsize@2x.png in Resources */,
 				876AEC7A161CB469008899A8 /* bsd-3-clause-license.html in Resources */,
 				A388EEA2164809B6009C5727 /* Default-Toshiba-568h@2x.png in Resources */,
+				7D612BDE16FA439A00455436 /* LinLibertine_R.otf in Resources */,
+				7D612BE316FA439A00455436 /* LinLibertine_RB.otf in Resources */,
+				7D612BE816FA439A00455436 /* LinLibertine_RBI.otf in Resources */,
+				7D612BED16FA439A00455436 /* LinLibertine_RI.otf in Resources */,
+				7D612BF216FA439A00455436 /* LinLibertine_RZ.otf in Resources */,
+				7D612BF716FA439A00455436 /* LinLibertine_RZI.otf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
