@@ -178,7 +178,7 @@
 
 -(void)forceRedownload {
     [BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Rights Management Update",@"\"Rights Management Update\" alert message title")
-                                 message:NSLocalizedStringWithDefaultValue(@"DRM_RESET",nil,[NSBundle mainBundle],@"This version of Blio requires an initial redownload of your paid books.  Go to your Archive to retrieve them.",@"Alert Text informing the end user that paid books must be redownloaded.")
+                                 message:NSLocalizedStringWithDefaultValue(@"DRM_RESET",nil,[NSBundle mainBundle],@"This version of Blio requires an initial redownload of your books.  You can retrieve them by going to your Archive.",@"Alert Text informing the end user that books must be redownloaded.")
                                 delegate:nil
                        cancelButtonTitle:nil
                        otherButtonTitles:@"OK", nil];
@@ -189,7 +189,7 @@
     [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
-- (void)checkForBackup {
+- (BOOL)checkForBackup {
     // check for backup flag file
     NSArray *paths = NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES);
     NSString *basePath = ([paths count] > 0) ? [paths objectAtIndex:0] : nil;
@@ -213,6 +213,7 @@
     if ([deviceIDDefaults length] == 40) {  
         // We are upgrading from 3.1 or previous, or else restoring from version 3.1 backed up to iTunes.
         [self forceRedownload];
+        return YES;
     }
     else if (flagFileMissing) {
         // We have installed fresh, or else restoring from version 3.2 that's been backed up either 
@@ -244,12 +245,46 @@
             forceLoginAfterRestore = YES;
         }
     }
+    return NO;
 }
 
+- (BOOL) checkVersion {
+    NSLog(@"Current app version number: %@",[[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"]);
+    NSDecimalNumber * appVersionNumber = [NSDecimalNumber decimalNumberWithString:[[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"]];
+    id prevVersion = [[NSUserDefaults standardUserDefaults] objectForKey:@"PreviouslyLaunchedAppVersion"];
+    if (!prevVersion) {
+        [[NSUserDefaults standardUserDefaults] setObject:appVersionNumber forKey:@"PreviouslyLaunchedAppVersion"];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+        // since the first version to record LastLaunchedVersionNumber also happens to be the first version to use the new TTS engine, we also delete old TTS voices if present
+        if ([[[BlioAcapelaAudioManager sharedAcapelaAudioManager]  availableVoicesForUse] count] > 0) {
+            // prompt end-user to re-download voices
+            [[BlioAcapelaAudioManager sharedAcapelaAudioManager] promptRedownload];
+        }
+        if ([[NSUserDefaults standardUserDefaults] objectForKey:@"WelcomeScreenShown"]) {
+            // Installing over a version to old to have stored a PreviouslyLaunchedAppVersion,
+            // and has been launched at least once.
+            [self forceRedownload];
+            return YES;
+        }
+        
+    }
+    else if ([(NSNumber*)prevVersion floatValue] < [appVersionNumber floatValue]) {
+        [[NSUserDefaults standardUserDefaults] setObject:appVersionNumber forKey:@"PreviouslyLaunchedAppVersion"];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+#ifndef TOSHIBA
+        // If the previous version is on PlayReady, force a switch to KDRM.
+        if ( [(NSNumber*)prevVersion floatValue] <= 3.6 ) {
+            [self forceRedownload];
+            return YES;
+        }
+#endif
+    }
+    return NO;
+}
 
 - (BOOL)canOpenURL:(NSURL *)url {
     if ([url isFileURL]) {
-		NSString * file = [url path]; 
+		NSString * file = [url path];
 		if ([file.pathExtension compare:@"epub" options:NSCaseInsensitiveSearch] == NSOrderedSame ||
             [file.pathExtension compare:@"pdf" options:NSCaseInsensitiveSearch] == NSOrderedSame || 
             [file.pathExtension compare:@"xps" options:NSCaseInsensitiveSearch] == NSOrderedSame) {
@@ -409,31 +444,35 @@ static void *background_init_thread(void * arg) {
 	[BlioSocialManager sharedSocialManager].rootViewController = navigationController;
 	[BlioAcapelaAudioManager sharedAcapelaAudioManager].rootViewController = navigationController;
 	
-	[self checkForBackup];
-	    
+	BOOL forcedRedownload = [self checkForBackup];
+    if ( !forcedRedownload )
+        forcedRedownload = [self checkVersion];
+	   
     BOOL openedBook = NO;
-    
-    NSArray *openBookIDs = [[NSUserDefaults standardUserDefaults] objectForKey:kBlioOpenBookKey];
-    if(openBookIDs.count == 2) {
-		NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
-		[fetchRequest setEntity:[NSEntityDescription entityForName:@"BlioBook" inManagedObjectContext:moc]];
-		[fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"sourceID == %@ && sourceSpecificID == %@",
-                                    [openBookIDs objectAtIndex:0],
-                                    [openBookIDs objectAtIndex:1]]];
-        NSError *errorExecute = nil; 
-		NSArray *results = [moc executeFetchRequest:fetchRequest error:&errorExecute]; 
-		[fetchRequest release];
-        if(!errorExecute && results.count == 1) {
-			if ([[results objectAtIndex:0] isEncrypted]) {
-				if ([[results objectAtIndex:0] decryptionIsAvailable]) {
-					[libraryController openBook:[results objectAtIndex:0]];
-					openedBook = YES;
-				}
-			}
-			else {
-				[libraryController openBook:[results objectAtIndex:0]];
-				openedBook = YES;
-			}
+    if ( !forcedRedownload ) {
+
+        NSArray *openBookIDs = [[NSUserDefaults standardUserDefaults] objectForKey:kBlioOpenBookKey];
+        if (openBookIDs.count == 2) {
+            NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
+            [fetchRequest setEntity:[NSEntityDescription entityForName:@"BlioBook" inManagedObjectContext:moc]];
+            [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"sourceID == %@ && sourceSpecificID == %@",
+                                        [openBookIDs objectAtIndex:0],
+                                        [openBookIDs objectAtIndex:1]]];
+            NSError *errorExecute = nil; 
+            NSArray *results = [moc executeFetchRequest:fetchRequest error:&errorExecute]; 
+            [fetchRequest release];
+            if(!errorExecute && results.count == 1) {
+                if ([[results objectAtIndex:0] isEncrypted]) {
+                    if ([[results objectAtIndex:0] decryptionIsAvailable]) {
+                        [libraryController openBook:[results objectAtIndex:0]];
+                        openedBook = YES;
+                    }
+                }
+                else {
+                    [libraryController openBook:[results objectAtIndex:0]];
+                    openedBook = YES;
+                }
+            }
         }
     }
     
@@ -497,32 +536,6 @@ static void *background_init_thread(void * arg) {
             [[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithBool:YES] forKey:@"WelcomeScreenShown"]; 
             [[NSUserDefaults standardUserDefaults] synchronize];
              if (!forceLoginAfterRestore) [[BlioStoreManager sharedInstance] showWelcomeViewForSourceID:BlioBookSourceOnlineStore]; 
-        }
-        NSLog(@"Current app version number: %@",[[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"]);
-        NSDecimalNumber * appVersionNumber = [NSDecimalNumber decimalNumberWithString:[[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"]];
-        id prevVersion = [[NSUserDefaults standardUserDefaults] objectForKey:@"PreviouslyLaunchedAppVersion"];
-        if (!prevVersion) {
-            [[NSUserDefaults standardUserDefaults] setObject:appVersionNumber forKey:@"PreviouslyLaunchedAppVersion"];
-            [[NSUserDefaults standardUserDefaults] synchronize];
-            // since the first version to record LastLaunchedVersionNumber also happens to be the first version to use the new TTS engine, we also delete old TTS voices if present
-            if ([[[BlioAcapelaAudioManager sharedAcapelaAudioManager]  availableVoicesForUse] count] > 0) {
-                // prompt end-user to re-download voices
-                [[BlioAcapelaAudioManager sharedAcapelaAudioManager] promptRedownload];                
-            }
-            if (welcomeScreenShown)
-                // Installing over a version to old to have stored a PreviouslyLaunchedAppVersion, 
-                // and has been launched at least once.  
-                [self forceRedownload];
-            
-        }
-        else if ([(NSNumber*)prevVersion floatValue] < [appVersionNumber floatValue]) {
-            [[NSUserDefaults standardUserDefaults] setObject:appVersionNumber forKey:@"PreviouslyLaunchedAppVersion"];
-            [[NSUserDefaults standardUserDefaults] synchronize];
-#ifndef TOSHIBA
-            // If the previous version is on PlayReady, force a switch to KDRM.
-            if ( [(NSNumber*)prevVersion floatValue] <= 3.6 )
-                [self forceRedownload];
-#endif
         }
         
         /*
