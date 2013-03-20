@@ -155,6 +155,7 @@
         }
         cell.selectionStyle = UITableViewCellSelectionStyleBlue;
         deregisterCell = cell;
+        [cell setAccessibilityTraits:UIAccessibilityTraitButton];
         return cell;
     }
 	return nil;
