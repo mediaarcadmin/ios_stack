@@ -177,7 +177,7 @@
 }
 
 -(void)forceRedownload {
-    [BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Rights Management Update",@"\"Rights Management Update\" alert message title")
+    [BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Library Update",@"\"Library Update\" alert message title")
                                  message:NSLocalizedStringWithDefaultValue(@"DRM_RESET",nil,[NSBundle mainBundle],@"This version of Blio requires an initial redownload of your paid and borrowed books.  You can retrieve them by going to your Archive.",@"Alert Text informing the end user that books must be redownloaded.")
                                 delegate:nil
                        cancelButtonTitle:nil
