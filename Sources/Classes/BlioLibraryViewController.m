@@ -1351,7 +1351,9 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 #pragma mark -
 #pragma mark Toolbar Actions
 
-- (void)showStore:(id)sender {    
+- (void)showStore:(id)sender {
+    // Avoids __CFURLCache crash in 6.1.
+    [[NSURLCache sharedURLCache] removeAllCachedResponses];
     BlioStoreTabViewController *aStoreController = [[BlioStoreTabViewController alloc] initWithProcessingDelegate:self.processingDelegate managedObjectContext:self.managedObjectContext];
 	if (sender == self.libraryVaultButton || [sender isKindOfClass:[UITableViewCell class]]) {
 		for (id vc in aStoreController.viewControllers) {
