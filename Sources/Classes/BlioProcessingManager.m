@@ -1661,7 +1661,7 @@
         }
         else if (alertView.tag == AUTODOWNLOAD_ALERT_TAG) {
             [BlioAlertManager showTaggedAlertWithTitle:NSLocalizedString(@"Download Advisory",@"\"Download Advisory\" Alert message title")
-                                         message:NSLocalizedStringWithDefaultValue(@"DOWNLOAD_ADVISORY_INFO",nil,[NSBundle mainBundle],@"If you have a large library, it may take several minutes for your books to download.  For best results you should not exit Blio or lock the screen until downloading is complete.",@"Alert message advising the user that download of her library may take time, during which she'd best not exit or background the app.")
+                                         message:NSLocalizedStringWithDefaultValue(@"DOWNLOAD_ADVISORY_INFO",nil,[NSBundle mainBundle],@"If you have a large library, it may take several minutes for your books to download.  For best results you should not exit  or lock the screen until downloading is complete.",@"Alert message advising the user that download of her library may take time, during which she'd best not exit or background the app.")
                                         delegate:self
                                              tag:DOWNLOAD_ADVISORY_ALERT_TAG
                                cancelButtonTitle:NSLocalizedString(@"OK",@"\"OK\" label for alertview")

@@ -41,7 +41,7 @@ NSString* deregistrationUrl = @"https://bookvault.blioreader.com/KDRM/Deregistra
             case KDRMClientErrorDomainCodeInvalidHTTPStatusCode: 
                 [BlioAlertManager showAlertOfSuppressedType:BlioDrmFailureAlertType
                                                       title:NSLocalizedString(@"Rights Management Error",@"\"Rights Management Error\" alert message title")
-                                                    message:NSLocalizedString(error.localizedDescription,@"Description of invalid http status code.")
+                                                    message:error.localizedDescription
                                                    delegate:nil
                                           cancelButtonTitle:nil
                                           otherButtonTitles:@"OK", nil];
@@ -49,7 +49,7 @@ NSString* deregistrationUrl = @"https://bookvault.blioreader.com/KDRM/Deregistra
             case KDRMClientErrorDomainCodeInvalidServerStatusCode:
                 [BlioAlertManager showAlertOfSuppressedType:BlioDrmFailureAlertType
                                                       title:NSLocalizedString(@"Rights Management Error",@"\"Rights Management Error\" alert message title")
-                                                    message:NSLocalizedString(error.localizedDescription,@"Description of invalid server status code.")
+                                                    message:error.localizedDescription
                                                    delegate:nil
                                           cancelButtonTitle:nil
                                           otherButtonTitles:@"OK", nil];
@@ -104,7 +104,7 @@ NSString* deregistrationUrl = @"https://bookvault.blioreader.com/KDRM/Deregistra
     }
     else if ([error.domain compare:@"KDRMLicenseStoreErrorDomain"] == NSOrderedSame) {
         [BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Rights Management Error",@"\"Rights Management Error\" alert message title")
-                                            message:NSLocalizedString(error.localizedDescription,@"Description of license store error.")
+                                            message:error.localizedDescription
                                            delegate:nil
                                   cancelButtonTitle:nil
                                   otherButtonTitles:@"OK", nil];

@@ -982,12 +982,14 @@ static void sortedBookmarkRangePredicateInit() {
         id paragraphID = startParagraphID;
         for(;;) {
             NSArray *words = [paragraphSource wordsForParagraphWithID:paragraphID];
-            if([paragraphID isEqual:startParagraphID] && [paragraphID isEqual:endParagraphID]) {
-                words = [words subarrayWithRange:NSMakeRange(startWordOffset, endWordOffset - startWordOffset + 1)];
-            } else if([paragraphID isEqual:startParagraphID]) {
-                words = [words subarrayWithRange:NSMakeRange(startWordOffset, words.count - startWordOffset)];
-            } else if([paragraphID isEqual:endParagraphID]) {
-                words = [words subarrayWithRange:NSMakeRange(0, endWordOffset + 1)];
+            if ([words count] != 0) {
+                if([paragraphID isEqual:startParagraphID] && [paragraphID isEqual:endParagraphID]) {
+                    words = [words subarrayWithRange:NSMakeRange(startWordOffset, endWordOffset - startWordOffset + 1)];
+                } else if([paragraphID isEqual:startParagraphID]) {
+                    words = [words subarrayWithRange:NSMakeRange(startWordOffset, words.count - startWordOffset)];
+                } else if([paragraphID isEqual:endParagraphID]) {
+                    words = [words subarrayWithRange:NSMakeRange(0, endWordOffset + 1)];
+                }
             }
             [buildWords addObjectsFromArray:words];
             
