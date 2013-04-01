@@ -423,6 +423,9 @@ static void *background_init_thread(void * arg) {
     
     [self ensureTTSAvailable];
     
+    // Avoids CFURLCache crash in 6.1.
+    [[NSURLCache sharedURLCache] removeAllCachedResponses];
+    
 	self.internetReach = [Reachability reachabilityForInternetConnection];
 	self.networkStatus = [self.internetReach currentReachabilityStatus];
 	[[NSNotificationCenter defaultCenter] addObserver: self selector: @selector(reachabilityChanged:) name: kReachabilityChangedNotification object: nil];
