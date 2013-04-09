@@ -345,8 +345,10 @@ static void *background_init_thread(void * arg) {
     
     self.window = [[[THEventCapturingWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]] autorelease];
     [self setUpDefaultImage];
-    [window makeKeyAndVisible];    
+    [window makeKeyAndVisible];
     
+    // Avoids CFURLCache crash in 6.1.
+    [[NSURLCache sharedURLCache] removeAllCachedResponses];
     
     [self performSelector:@selector(delayedApplicationDidFinishLaunchingStep1:) withObject:application afterDelay:0];
     
@@ -422,9 +424,6 @@ static void *background_init_thread(void * arg) {
     [[NSUserDefaults standardUserDefaults] setBool:YES forKey:kBlioTTSEnabledDefaultsKey];
     
     [self ensureTTSAvailable];
-    
-    // Avoids CFURLCache crash in 6.1.
-    [[NSURLCache sharedURLCache] removeAllCachedResponses];
     
 	self.internetReach = [Reachability reachabilityForInternetConnection];
 	self.networkStatus = [self.internetReach currentReachabilityStatus];
