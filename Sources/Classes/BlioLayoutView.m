@@ -262,11 +262,7 @@
         if ([(NSObject *)self.dataSource respondsToSelector:@selector(hasEnhancedContent)]) {
             hasEnhancedContent = [self.dataSource hasEnhancedContent];
         }
-        
-        if (hasEnhancedContent) {
-            aPageTurningView.lightIsStaticWhenPagesPannedOrZoomed = NO;
-        }
-                
+                        
         if (CGRectEqualToRect(firstPageCrop, CGRectZero)) {
             [aPageTurningView setPageAspectRatio:0];
         } else {
