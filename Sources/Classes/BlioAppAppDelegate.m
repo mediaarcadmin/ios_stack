@@ -339,6 +339,10 @@ static void *background_init_thread(void * arg) {
 }
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+    
+    // Avoids CFURLCache crash in 6.1.
+    [[NSURLCache sharedURLCache] removeAllCachedResponses];
+    
     // The idea here is to do as little as possible and load the faded book page very quickly.
     // We'll properly do everything else (including ap setup, loading the NIB etc). in 
     // -delayedApplicationDidFinishLaunching.
@@ -346,9 +350,6 @@ static void *background_init_thread(void * arg) {
     self.window = [[[THEventCapturingWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]] autorelease];
     [self setUpDefaultImage];
     [window makeKeyAndVisible];
-    
-    // Avoids CFURLCache crash in 6.1.
-    [[NSURLCache sharedURLCache] removeAllCachedResponses];
     
     [self performSelector:@selector(delayedApplicationDidFinishLaunchingStep1:) withObject:application afterDelay:0];
     

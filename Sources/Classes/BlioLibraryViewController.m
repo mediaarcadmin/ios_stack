@@ -103,6 +103,9 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 }
 
 - (void)loadView {
+    // Avoids CFURLCache crash in 6.1.
+    [[NSURLCache sharedURLCache] removeAllCachedResponses];
+    
 	self.view = [[[UIView alloc] initWithFrame:[[UIScreen mainScreen] bounds]] autorelease];
 	NSString * libraryBackgroundFilename = @"librarybackground.png";
 	
@@ -876,9 +879,11 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 	}
 }
 - (void)gridView:(MRGridView *)gridView didTapAndHoldCellAtIndex:(NSInteger)index{
+#ifndef TOSHIBA
     NSLog(@"%@",NSStringFromSelector(_cmd));
     sharedGridIndex = index;
     [self showSocialOptions];
+#endif
 }
 -(void)gridView:(MRGridView *)gridView confirmationForDeletionAtIndex:(NSInteger)index {
 	_keyValueOfCellToBeDeleted = index;
