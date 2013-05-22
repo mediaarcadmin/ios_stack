@@ -1021,14 +1021,25 @@
 		[self resumeProcessingForSourceID:BlioBookSourceOnlineStore];
 		[self resumeProcessingForSourceID:BlioBookSourceLocalBundleDRM];
         if (![[NSUserDefaults standardUserDefaults] boolForKey:kBlioHasLoggedInKey]) {
-            [[NSUserDefaults standardUserDefaults] setBool:YES forKey:kBlioDownloadNewBooksDefaultsKey];
+            // As of 3.8, we turn off AutoDownload by default.  And why was this ever a BOOL?
+            //[[NSUserDefaults standardUserDefaults] setBool:YES forKey:kBlioDownloadNewBooksDefaultsKey];
+            [[NSUserDefaults standardUserDefaults] setInteger:-1 forKey:kBlioDownloadNewBooksDefaultsKey];
             [[NSUserDefaults standardUserDefaults] setBool:YES forKey:kBlioHasLoggedInKey];
             [[NSUserDefaults standardUserDefaults] synchronize];
+            /* As of 3.8 we also no longer let the user initially choose to auto-download.
             [BlioAlertManager showAlertWithTitle:NSLocalizedString(@"You Have Books",@"\"You Have Books\" Alert message title")
                                          message:NSLocalizedStringWithDefaultValue(@"AUTO_DOWNLOAD_BOOKS_FIRST_TIME",nil,[NSBundle mainBundle],@"Would you like to download the books in your account now?",@"Alert message informing the first time iOS end-user of the option to download all the user's books.")
                                         delegate:self
                                cancelButtonTitle:NSLocalizedString(@"Not Now",@"\"Not Now\" label for button used to cancel/dismiss alertview")
-                               otherButtonTitles:NSLocalizedString(@"OK",@"\"OK\" label for alertview"),nil];
+             otherButtonTitles:NSLocalizedString(@"OK",@"\"OK\" label for alertview"),nil];
+             [[NSUserDefaults standardUserDefaults] setInteger:-1 forKey:kBlioDownloadNewBooksDefaultsKey];
+             [[NSUserDefaults standardUserDefaults] synchronize];
+             */
+            [BlioAlertManager showAlertWithTitle:NSLocalizedString(@"You Have Books",@"\"You Have Books\" Alert message title")
+                                    message:NSLocalizedStringWithDefaultValue(@"AUTO_DOWNLOAD_SETTING_INFO_WITHOUT_DOWNLOAD",nil,[NSBundle mainBundle],@"You can download your books by going to the Archive.  To download books automatically in the future, you can turn on your Auto-Download account setting.",@"Alert message informing the first time iOS end-user where auto-download setting can be changed.")
+                                        delegate:nil
+                                cancelButtonTitle:NSLocalizedString(@"OK",@"\"OK\" label for alertview")
+                                otherButtonTitles:nil];
         }
         else if ( [[NSUserDefaults standardUserDefaults] integerForKey:kBlioDownloadNewBooksDefaultsKey] > 0) {
             [[BlioStoreManager sharedInstance] retrieveBooksForSourceID:BlioBookSourceOnlineStore];
@@ -1650,6 +1661,7 @@
 #pragma mark -
 #pragma mark UIAlertViewDelegate methods
 
+/* As of 3.8, we now set AutoDownload off by default.
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex{
 	if (buttonIndex == 0) {
         if (alertView.tag == DOWNLOAD_ADVISORY_ALERT_TAG) {
@@ -1688,5 +1700,6 @@
 	}
 	[alertView dismissWithClickedButtonIndex:buttonIndex animated:YES];
 }
+*/
 
 @end
