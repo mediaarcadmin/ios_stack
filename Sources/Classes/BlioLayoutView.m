@@ -1394,6 +1394,7 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
             
             self.overlay = gestureSuppressingView;
 			[self.pageTurningView addSubview:gestureSuppressingView];
+            gestureSuppressingView.layer.zPosition = 100;
             
             [gestureSuppressingView release];
 		}
@@ -1823,6 +1824,8 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
 {
     UITapGestureRecognizer *doubleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleDoubleTap:)];
     doubleTap.numberOfTapsRequired = 2;
+    doubleTap.delegate = self;
+    
     [aPageTurningView addGestureRecognizer:doubleTap];
         
     [aPageTurningView.tapGestureRecognizer removeTarget:nil action:nil]; 
@@ -1835,7 +1838,14 @@ CGAffineTransform transformRectToFitRect(CGRect sourceRect, CGRect targetRect, B
     [doubleTap release];
 }
 
-- (void)handleSingleTap:(UITapGestureRecognizer *)sender {     
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch {
+    if([touch.view isKindOfClass:[UIControl class]]) {
+        return NO;
+    }
+    return YES; 
+}
+
+- (void)handleSingleTap:(UITapGestureRecognizer *)sender {
     if (sender.state == UIGestureRecognizerStateEnded && 
         !self.selector.isTracking) {
         
