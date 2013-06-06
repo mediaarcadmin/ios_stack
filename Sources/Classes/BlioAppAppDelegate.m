@@ -626,6 +626,8 @@ static void *background_init_thread(void * arg) {
 }
 - (void)applicationWillResignActive:(UIApplication *)application {
 	NSLog(@"%@", NSStringFromSelector(_cmd));
+    // Avoids CFURLCache crash in 6.1.
+    [[NSURLCache sharedURLCache] removeAllCachedResponses];
 }
 
 #pragma mark -
