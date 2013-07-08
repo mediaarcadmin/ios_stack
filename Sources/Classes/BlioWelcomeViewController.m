@@ -222,7 +222,7 @@
 		existingUserTextView.lineBreakMode = UILineBreakModeWordWrap;
 		existingUserTextView.numberOfLines = 0;
 #ifdef TOSHIBA  
-		existingUserTextView.text = NSLocalizedString(@"Log in to your ToshibaBookplace.com account to sync your reading list. If you are a new customer, please visit our website to sign up.",@"Existing user message on welcome view controller.");
+		existingUserTextView.text = NSLocalizedString(@"Log in to your Toshiba Book Place account to sync your reading list. If you are a new customer, please visit our website to sign up.",@"Existing user message on welcome view controller.");
 #else
 		existingUserTextView.text = NSLocalizedString(@"Log in to your Blio.com account to sync your reading list. If you are a new customer, please visit our website to sign up.",@"Existing user message on welcome view controller.");
 #endif
@@ -469,7 +469,7 @@
     self.cell1 = [[[BlioWelcomeTableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:@"cell"] autorelease];
     cell1.titleLabel.text = NSLocalizedString(@"Log In",@"\"Log In\" existing user title for welcome view controller.");
 #ifdef TOSHIBA
-    cell1.descriptionText = NSLocalizedString(@"Sync your reading list via your ToshibaBookplace.com account. If you are new, please visit our website to sign up.",@"Existing user message on welcome view controller.");
+    cell1.descriptionText = NSLocalizedString(@"Sync your reading list via your Toshiba Book Place account. If you are new, please visit our website to sign up.",@"Existing user message on welcome view controller.");
 #else
     cell1.descriptionText = NSLocalizedString(@"Log in to your Blio.com account to sync your reading list. If you are a new customer, please visit our website to sign up.",@"Existing user message on welcome view controller.");
 #endif
