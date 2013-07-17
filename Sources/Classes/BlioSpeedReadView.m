@@ -771,6 +771,40 @@
     [self goToBookmarkPoint:newBookmarkPoint animated:YES];
 }
 
+- (void)goToContentsSectionIdentifier:(id)identifier animated:(BOOL)animated
+{
+}
+
+- (UIImage *)dimPageImage
+{
+    return nil;
+}
+
+- (BlioJustification)justification
+{
+    return kBlioJustificationLeft;
+}
+
+- (BlioTwoUp)twoUp
+{
+    return kBlioTwoUpNever;
+}
+
+- (BOOL)shouldTapZoom
+{
+    return NO;
+}
+
+- (BlioExtraBoldness)extraBoldness
+{
+    return kBlioExtraBoldnessNone;
+}
+
+- (id)currentContentsSectionIdentifier
+{
+    return nil;
+}
+
 #pragma mark -
 #pragma mark EucBookContentsTableViewControllerDataSource
 
@@ -801,6 +835,23 @@ presentationNameAndSubTitleForSectionUuid:(NSString *)sectionUuid {
 - (NSString *)contentsTableViewController:(EucBookContentsTableViewController *)contentsTableViewController displayPageNumberForPageIndex:(NSUInteger)page
 {
     return [self displayPageNumberForPercentage:(float)page / 1000.0f];
+}
+
+- (NSArray *)contentsTableViewControllerSectionIdentifiers:(EucBookContentsTableViewController *)contentsTableViewController {
+    return [self.contentsDataSource contentsTableViewControllerSectionIdentifiers:contentsTableViewController];
+}
+
+- (THPair *)contentsTableViewController:(EucBookContentsTableViewController *)contentsTableViewController
+presentationNameAndSubTitleForSectionIdentifier:(id)sectionIdentifier {
+    return [self.contentsDataSource contentsTableViewController:contentsTableViewController
+                presentationNameAndSubTitleForSectionIdentifier:sectionIdentifier];
+}
+
+- (NSUInteger)contentsTableViewController:(EucBookContentsTableViewController *)contentsTableViewController
+            pageIndexForSectionIdentifier:(id)sectionIdentifier {
+    
+    return [self.contentsDataSource contentsTableViewController:contentsTableViewController
+                                  pageIndexForSectionIdentifier:sectionIdentifier];
 }
 
 @end

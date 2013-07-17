@@ -12,6 +12,7 @@
 #import "BlioAcapelaAudioManager.h"
 #import "BlioAlertManager.h"
 #import "Reachability.h"
+#import "BlioAppSettingsConstants.h"
 
 @implementation BlioInAppPurchaseVoice
 
@@ -186,8 +187,11 @@
     BlioProcessingDownloadAndUnzipVoiceOperation * preExistingVoiceOp = [[BlioAcapelaAudioManager sharedAcapelaAudioManager] downloadVoiceOperationByVoice:productId];
     if (voiceName && ![voiceNamesForUse containsObject:voiceName] && !preExistingVoiceOp) {
         
-        //send purchase request to our server
-        NSString *hardwareId = [[UIDevice currentDevice] uniqueIdentifier];
+        // Send purchase request to our server
+        // With iOS 7, uniqueIdentifier is no longer available.  TODO: We do have the UUID that we use
+        // for DRM purposes, but not sure the ramifications for legacy customers of switching to this.
+        //NSString *hardwareId = [[UIDevice currentDevice] uniqueIdentifier];
+        NSString *hardwareId = [[NSUserDefaults standardUserDefaults] stringForKey:kBlioDeviceIDDefaultsKey];
         NSInteger testMode;
 #ifdef TEST_MODE
         testMode = 1;

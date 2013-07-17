@@ -151,7 +151,9 @@
 			if ( [[bodyPart LoginResult].ReturnCode intValue] == 200 ) { 
 				self.token = [bodyPart LoginResult].Token;
 //				NSLog(@"set token: %@",self.token);
-				self.timeout = [[NSDate date] addTimeInterval:(NSTimeInterval)[[bodyPart LoginResult].Timeout floatValue]];
+                // Deprecated
+				//self.timeout = [[NSDate date] addTimeInterval:(NSTimeInterval)[[bodyPart LoginResult].Timeout floatValue]];
+				self.timeout = [[NSDate date] dateByAddingTimeInterval:(NSTimeInterval)[[bodyPart LoginResult].Timeout floatValue]];
 //				NSLog(@"timeout: %@",self.timeout);
 //				if ([self deviceRegistered]) {
 //					NSLog(@"rejoining domain...");

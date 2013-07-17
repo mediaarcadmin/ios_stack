@@ -23,7 +23,7 @@
 - (void) setViewControllers:(NSArray *)newArray {
     if (_viewControllers != newArray) {
         if (_viewControllers != nil) [_viewControllers release];
-        _viewControllers = [NSArray arrayWithArray:newArray];
+        _viewControllers = [NSMutableArray arrayWithArray:newArray];
         [_viewControllers retain];
 
 		UIView * view1 = [(UIViewController*)[self.viewControllers objectAtIndex:0] view];
