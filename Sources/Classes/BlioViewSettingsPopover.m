@@ -26,6 +26,12 @@
     UIViewController *contentController = [[UIViewController alloc] init];
     if(contentController) {
         contentController.contentSizeForViewInPopover = contentsView.preferredSize;
+        if([contentController respondsToSelector:@selector(setPreferredContentSize:)]) {
+            contentController.preferredContentSize = contentsView.preferredSize;
+        }
+        if([contentController respondsToSelector:@selector(setEdgesForExtendedLayout:)]) {
+            contentController.edgesForExtendedLayout = UIExtendedEdgeNone;
+        }
         contentController.navigationItem.title = contentsView.navigationItemTitle;
         contentController.view = contentsView;
         

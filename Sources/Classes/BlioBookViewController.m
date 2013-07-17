@@ -242,6 +242,9 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         self.book = newBook;
         self.delegate = aDelegate;
         self.wantsFullScreenLayout = YES;
+        if([self respondsToSelector:@selector(setExtendedLayoutIncludesOpaqueBars:)]) {
+            self.extendedLayoutIncludesOpaqueBars = YES;
+        }
         self.historyStack = [NSMutableArray array];
         
         _firstAppearance = YES;
@@ -2224,10 +2227,12 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         [[NSUserDefaults standardUserDefaults] setInteger:self.bookView.fontSizeIndex forKey:kBlioLastFontSizeIndexDefaultsKey];
     } else if (object == self.navigationController.navigationBar) {
         if ([keyPath isEqualToString:@"bounds"] || 
-            [keyPath isEqualToString:@"center"]) {            
-            [self layoutPageJumpView];
-            [self layoutPageJumpLabelText];
-            [self layoutPageJumpSlider];
+            [keyPath isEqualToString:@"center"]) {
+            if(_pageJumpView) {
+                [self layoutPageJumpView];
+                [self layoutPageJumpLabelText];
+                [self layoutPageJumpSlider];
+            }
         }
     }
 }
