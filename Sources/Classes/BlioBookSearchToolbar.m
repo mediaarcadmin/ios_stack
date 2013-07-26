@@ -10,6 +10,7 @@
 #import "BlioAccessibilitySegmentedControl.h"
 #import "BlioUIImageAdditions.h"
 #import <libEucalyptus/THUIImageAdditions.h>
+#import <libEucalyptus/THUIDeviceAdditions.h>
 
 @interface BlioBookSearchCustomSearchField : UITextField
 @end
@@ -56,7 +57,7 @@
 
 - (id)init {
     if ((self = [super init])) {
-        // Initialization code    
+        // Initialization code
         [self setBackgroundColor:[UIColor clearColor]];
         [self setClipsToBounds:YES];
         [self setAutoresizingMask:UIViewAutoresizingFlexibleWidth];
@@ -79,12 +80,23 @@
             [aNavItem setRightBarButtonItem:self.doneButton];
             [self.doneNavBar setItems:[NSArray arrayWithObject:aNavItem] animated:NO];
             [aNavItem release];
+            if ([self.doneNavBar respondsToSelector:@selector(setBarTintColor:)]) {
+                self.doneNavBar.translucent = NO;
+                [self.doneNavBar setBarStyle:UIBarStyleBlack];
+            }
         }
         
-        aNavBar = [[BlioBookSearchCustomNavigationBar alloc] init];
-        if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-            aNavBar.backgroundColor = [UIColor clearColor];
-            aNavBar.tintColor = [UIColor colorWithRed:0.100 green:0.152 blue:0.326 alpha:1.000];
+        if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
+            if ([[UIDevice currentDevice] compareSystemVersion:@"7.0"] >= NSOrderedSame)
+                // Has 6.0-style toolbar look as a BlioBookSearchCustomNavigationBar.
+                aNavBar = [[UINavigationBar alloc] init];
+        }
+        else {
+            aNavBar = [[BlioBookSearchCustomNavigationBar alloc] init];
+            if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+                aNavBar.backgroundColor = [UIColor clearColor];
+                aNavBar.tintColor = [UIColor colorWithRed:0.100 green:0.152 blue:0.326 alpha:1.000];
+            }
         }
         self.inlineNavBar = aNavBar;
         [self addSubview:aNavBar];
@@ -116,18 +128,24 @@
         aNavItem = [[UINavigationItem alloc] init];
         [aNavItem setRightBarButtonItem:aButton];
         [self.inlineNavBar setItems:[NSArray arrayWithObject:aNavItem] animated:NO];
+        if ([self.inlineNavBar respondsToSelector:@selector(setBarTintColor:)]) {
+            // In iOS 7 tintColor relates to the bar items, and if we didn't do this the segment control would be blue.
+            [self.inlineNavBar setTintColor:[UIColor whiteColor]];
+            self.inlineNavBar.translucent = NO;
+            [self.inlineNavBar setBarStyle:UIBarStyleBlack];
+        }
+        
         [aButton release];
         [aNavItem release];
         
         UIView <BlioBookSearchBar> *aSearchBar;
         if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
-            aSearchBar = (UIView <BlioBookSearchBar>*)[[UISearchBar alloc] init]; 
+            aSearchBar = (UIView <BlioBookSearchBar>*)[[UISearchBar alloc] init];
         } else {
             aSearchBar = [[BlioBookSearchCustomSearchBar alloc] init];
         }
         [aSearchBar setPlaceholder:NSLocalizedString(@"Search",@"\"Search\" placeholder text in Search bar")];
         [aSearchBar setShowsCancelButton:NO];
-        [aSearchBar setBarStyle:UIBarStyleBlackOpaque];
         [aSearchBar setAutoresizingMask:UIViewAutoresizingFlexibleWidth];
         [self addSubview:aSearchBar];
         self.searchBar = aSearchBar;
@@ -138,6 +156,7 @@
         [self addSubview:aToolbarDecoration];
         self.toolbarDecoration = aToolbarDecoration;
         [aToolbarDecoration release];
+         
     }
     return self;
 }
@@ -151,17 +170,38 @@
     }
     
     CGFloat inlineWidth = CGRectGetWidth(self.inlineSegmentedControl.frame) + 6*2;
+    if ([[UIDevice currentDevice] compareSystemVersion:@"7.0"] >= NSOrderedSame)
+        // Needed for some reason on iOS 7.
+        inlineWidth += 4;
     
     if (self.inlineMode) {
         [self.inlineSegmentedControl setAlpha:1];
         [self.toolbarDecoration setAlpha:1];
         [self.inlineNavBar setFrame:CGRectMake(CGRectGetWidth(self.bounds) - inlineWidth, 0, inlineWidth, CGRectGetHeight(self.bounds))];
+        
         [self.searchBar setFrame:CGRectMake(doneWidth, 0, CGRectGetWidth(self.bounds) - doneWidth - inlineWidth, CGRectGetHeight(self.bounds))];
+        
+        if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
+            if ([self.searchBar respondsToSelector:@selector(setBarTintColor:)]) {
+                // Seems no other way to match Done bar and Segment control, which must also be non-translucent.
+                [(UISearchBar*)self.searchBar setBarTintColor:[UIColor blackColor]];
+                // In iOS 7 the extra two pixels are needed for some reason, else a seam is visible at bottom.
+                [self.searchBar setFrame:CGRectMake(doneWidth, 0, self.searchBar.frame.size.width, self.searchBar.frame.size.height + 2)];
+            }
+        }
+        
     } else {
         [self.inlineSegmentedControl setAlpha:0];
         [self.toolbarDecoration setAlpha:0];
         [self.inlineNavBar setFrame:CGRectMake(CGRectGetWidth(self.bounds), 0, inlineWidth, CGRectGetHeight(self.bounds))];
         [self.searchBar setFrame:CGRectMake(doneWidth, 0, CGRectGetWidth(self.bounds) - doneWidth, CGRectGetHeight(self.bounds))];
+        
+        if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
+            if ([self.searchBar respondsToSelector:@selector(setBarTintColor:)]) {
+                [(UISearchBar*)self.searchBar setBarTintColor:[UIColor clearColor]];
+                [self.searchBar setTintColor:[UIColor whiteColor]];
+            }
+        }
     }
     
     [self.searchBar layoutSubviews];

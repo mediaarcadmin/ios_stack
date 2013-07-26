@@ -1026,7 +1026,11 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         
         UIToolbar *toolbar = self.navigationController.toolbar;
         UIBarStyle toolbarStyle = toolbar.barStyle;
-        UIColor *toolbarTint = [toolbar.tintColor retain];
+        UIColor *toolbarTint; 
+        if ([toolbar respondsToSelector:@selector(setBarTintColor:)])
+            toolbarTint = [toolbar.barTintColor retain];
+        else
+            toolbarTint = [toolbar.tintColor retain];
         
         UIStatusBarStyle statusBarStyle = application.statusBarStyle;
         BOOL statusBarHidden = application.isStatusBarHidden;
@@ -1050,21 +1054,23 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         _returnToToolbarTranslucent = toolbar.translucent;
         
         // Set the status bar and navigation bar styles.
-        /*if([_book.author isEqualToString:@"Ward Just"]) {
-            navigationBar.barStyle = UIBarStyleBlackTranslucent;
-            navigationBar.tintColor = [UIColor blackColor];
-            navigationBar.translucent = YES;
-            toolbar.barStyle = UIBarStyleBlackTranslucent;
-            toolbar.tintColor = [UIColor blackColor];
-            toolbar.translucent = YES;
-        } else {*/
-            navigationBar.translucent = NO;
+        if ([navigationBar respondsToSelector:@selector(setBarTintColor:)])
+            [navigationBar setBarTintColor:nil];
+        else
             navigationBar.tintColor = nil;
-            navigationBar.barStyle = UIBarStyleBlackTranslucent;
-            toolbar.translucent = NO;
+        //navigationBar.barStyle = UIBarStyleBlackTranslucent; // deprecated
+        navigationBar.translucent = YES;
+        navigationBar.barStyle = UIBarStyleBlack;
+
+        if ([toolbar respondsToSelector:@selector(setBarTintColor:)]) {
+            [toolbar setBarTintColor:nil];
+            [toolbar setTintColor:[UIColor whiteColor]];  // for bar items
+        }
+        else
             toolbar.tintColor = nil;
-            toolbar.barStyle = UIBarStyleBlackTranslucent;
-        /*}*/
+        //toolbar.barStyle = UIBarStyleBlackTranslucent;  // deprecated
+        toolbar.translucent = YES;
+        toolbar.barStyle = UIBarStyleBlack;
         
         if(statusBarStyle != UIStatusBarStyleBlackTranslucent) {
 			if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
@@ -1200,8 +1206,11 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 //            [self.navigationController setToolbarHidden:NO animated:NO];
             UIToolbar *toolbar = self.navigationController.toolbar;
             toolbar.translucent = _returnToToolbarTranslucent;
-            toolbar.barStyle = _returnToToolbarStyle; 
-            toolbar.tintColor = _returnToToolbarTint;
+            toolbar.barStyle = _returnToToolbarStyle;
+            if ([toolbar respondsToSelector:@selector(setBarTintColor:)])
+                [toolbar setBarTintColor:_returnToToolbarTint];
+            else
+                toolbar.tintColor = _returnToToolbarTint;
             [_returnToToolbarTint release];
             _returnToToolbarTint = nil;
             

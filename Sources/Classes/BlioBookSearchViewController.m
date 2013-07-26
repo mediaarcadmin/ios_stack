@@ -172,7 +172,8 @@ static NSString * const BlioBookSearchCollapseViewToToolbarAnimation = @"BlioBoo
     [newTintColor retain];
     [tintColor release];
     tintColor = newTintColor;
-    [self.toolbar setTintColor:tintColor];
+    if ([[UIDevice currentDevice] compareSystemVersion:@"7.0"] < NSOrderedSame)
+        [self.toolbar setTintColor:tintColor];
 }
 
 - (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration {
@@ -263,18 +264,24 @@ static NSString * const BlioBookSearchCollapseViewToToolbarAnimation = @"BlioBoo
 - (void)animationDidStop:(NSString *)animationID finished:(NSNumber *)finished context:(void *)context {
     if ([animationID isEqualToString:BlioBookSearchDisplayOffScreenAnimation]) {
         [self.view removeFromSuperview];
-        [self.toolbar setTintColor:self.tintColor];
-        [self.toolbar setBarStyle:UIBarStyleDefault];
+        if([[UIDevice currentDevice] compareSystemVersion:@"7.0"] < NSOrderedSame) {
+            [self.toolbar setTintColor:self.tintColor];
+            [self.toolbar setBarStyle:UIBarStyleDefault];
+        }
     } else if ([animationID isEqualToString:BlioBookSearchFadeOffScreenAnimation]) {
         [self.view removeFromSuperview];
         [self.view setAlpha:1];
-        [self.toolbar setTintColor:self.tintColor];
-        [self.toolbar setBarStyle:UIBarStyleDefault];
+        if([[UIDevice currentDevice] compareSystemVersion:@"7.0"] < NSOrderedSame) {
+            [self.toolbar setTintColor:self.tintColor];
+            [self.toolbar setBarStyle:UIBarStyleDefault];
+        }
     } else if ([animationID isEqualToString:BlioBookSearchSlideOffScreenAnimation]) {
         [self.view removeFromSuperview];
         [self.view setAlpha:1];
-        [self.toolbar setTintColor:self.tintColor];
-        [self.toolbar setBarStyle:UIBarStyleDefault];
+        if([[UIDevice currentDevice] compareSystemVersion:@"7.0"] < NSOrderedSame) {
+            [self.toolbar setTintColor:self.tintColor];
+            [self.toolbar setBarStyle:UIBarStyleDefault];
+        }
     } else if ([animationID isEqualToString:BlioBookSearchDisplayFullScreenAnimation]) {
         [self.toolbar.searchBar becomeFirstResponder];
     }
@@ -302,8 +309,11 @@ static NSString * const BlioBookSearchCollapseViewToToolbarAnimation = @"BlioBoo
         }
         
         [self.view setFrame:collapsedFrame];
-        [self.toolbar setTintColor:self.navController.toolbar.tintColor];
-        [self.toolbar setBarStyle:self.navController.toolbar.barStyle];
+        if ([[UIDevice currentDevice] compareSystemVersion:@"7.0"] < NSOrderedSame) {
+            [self.toolbar setTintColor:self.navController.toolbar.tintColor];
+            [self.toolbar setBarStyle:self.navController.toolbar.barStyle];
+        }
+
         [self.toolbar setInlineMode:YES];
         
         if (animated) {
@@ -336,8 +346,11 @@ static NSString * const BlioBookSearchCollapseViewToToolbarAnimation = @"BlioBoo
     }
     
     [self.view setFrame:fullScreen];
-    [self.toolbar setTintColor:self.tintColor];
-    [self.toolbar setBarStyle:UIBarStyleDefault];
+    if ([[UIDevice currentDevice] compareSystemVersion:@"7.0"] < NSOrderedSame) {
+        [self.toolbar setTintColor:self.tintColor];
+        [self.toolbar setBarStyle:UIBarStyleDefault];
+    }
+    
     if (self.toolbar.inlineMode) {
         [self.toolbar setInlineMode:NO];
     }

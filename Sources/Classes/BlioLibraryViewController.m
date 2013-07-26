@@ -181,12 +181,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 - (void)viewDidLoad {
     // N.B. on iOS 4.0 it is important to set the toolbar tint before adding the UIBarButtonItems
 #ifdef TOSHIBA
-    // light gray
-	//self.tintColor = [UIColor colorWithRed:188.0f / 256.0f green:190.0f / 256.0f  blue:192.0f / 256.0f  alpha:1.0f];
-    // dark gray
 	self.tintColor = [UIColor colorWithRed:177.0f / 256.0f green:179.0f / 256.0f  blue:182.0f / 256.0f  alpha:1.0f];
-    // darkest gray
-	//self.tintColor = [UIColor colorWithRed:167.0f / 256.0f green:169.0f / 256.0f  blue:172.0f / 256.0f  alpha:1.0f];
 #else
 	self.tintColor = [UIColor colorWithRed:160.0f / 256.0f green:190.0f / 256.0f  blue:190.0f / 256.0f  alpha:1.0f];
 #endif
@@ -194,8 +189,14 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 	BlioLibraryLayout loadedLibraryLayout = [[NSUserDefaults standardUserDefaults] integerForKey:@"kBlioLastLibraryLayoutDefaultsKey"];
 	
     [self.navigationController setToolbarHidden:NO ];
-    [self.navigationController.toolbar setTintColor:tintColor];
-    [self.navigationController.navigationBar setTintColor:tintColor];
+    if ([self.navigationController.toolbar respondsToSelector:@selector(setBarTintColor:)])
+        [self.navigationController.toolbar setBarTintColor:tintColor];
+    else
+        [self.navigationController.toolbar setTintColor:tintColor];
+    if ([self.navigationController.navigationBar respondsToSelector:@selector(setBarTintColor:)])
+        [self.navigationController.navigationBar setBarTintColor:tintColor];
+    else
+        [self.navigationController.navigationBar setTintColor:tintColor];
     
     self.tableView.hidden = YES;
 	
@@ -453,9 +454,18 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 	[self.navigationController.navigationBar setTranslucent:NO];
 	
 	sortSegmentedControl.tintColor = tintColor;
-    [self.navigationController.toolbar setTintColor:tintColor];
-    [self.navigationController.navigationBar setTintColor:tintColor];    
-
+    if ([self.navigationController.navigationBar respondsToSelector:@selector(setBarTintColor:)])
+        [self.navigationController.navigationBar setBarTintColor:tintColor];
+    else
+        [self.navigationController.navigationBar setTintColor:tintColor];
+    if ([self.navigationController.toolbar respondsToSelector:@selector(setBarTintColor:)]) {
+        [self.navigationController.toolbar setBarTintColor:tintColor];
+        // Returning to the library from reading would otherwise set tint color (for bar items) to match reading toolbar's tint color.
+        [self.navigationController.toolbar setTintColor:nil];
+    }
+    else
+        [self.navigationController.toolbar setTintColor:tintColor];
+ 
     // Workaround to properly set the UIBarButtonItem's tint color in iOS 4
     // From http://stackoverflow.com/questions/3151549/uitoolbar-tint-on-ios4
     for (UIBarButtonItem * item in self.toolbarItems)
@@ -463,7 +473,6 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
         item.style = UIBarButtonItemStylePlain;
         item.style = UIBarButtonItemStyleBordered;
     }
-	
     
 }
 

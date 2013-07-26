@@ -65,7 +65,7 @@
         aTitleLabel.font = [UIFont systemFontOfSize:24.0f];
         aTitleLabel.textColor = [UIColor colorWithRed:43.0f/255.0f green:196.0f/255.0f blue:230.0f/255.0f alpha:1];
         aTitleLabel.backgroundColor = [UIColor clearColor];
-		aTitleLabel.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleBottomMargin;
+		aTitleLabel.autoresizingMask = UIViewAutoresizingFlexibleWidth  |  UIViewAutoresizingFlexibleBottomMargin;
         [self.contentView addSubview:aTitleLabel];
         self.titleLabel = aTitleLabel;
         [aTitleLabel release];
@@ -387,6 +387,9 @@
 #else
 		self.title = NSLocalizedString(@"Welcome to Blio",@"\"Welcome to Blio\" view controller title");
 #endif
+    }
+    if ([self respondsToSelector:@selector(setEdgesForExtendedLayout:)]) {
+        self.edgesForExtendedLayout = UIRectEdgeNone;
     }
     return self;
 }
