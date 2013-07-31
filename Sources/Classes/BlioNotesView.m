@@ -9,6 +9,7 @@
 #import <QuartzCore/QuartzCore.h>
 #import "BlioNotesView.h"
 #import "BlioUIImageAdditions.h"
+#import <libEucalyptus/THUIDeviceAdditions.h>
 
 static const CGFloat kBlioNotesViewPhoneShadow = 16;
 static const CGFloat kBlioNotesViewPadBorder = 6;
@@ -136,9 +137,13 @@ static NSString * const BlioNotesViewExitToTopAnimation = @"BlioNotesViewExitToT
     UIImage *buttonImage = [UIImage blioImageWithString:buttonText font:buttonFont color:[UIColor blackColor]];
     
     UISegmentedControl *aButtonSegment = [[UISegmentedControl alloc] initWithItems:[NSArray arrayWithObject:buttonImage]];
-    aButtonSegment.segmentedControlStyle = UISegmentedControlStyleBar;
     aButtonSegment.frame = CGRectMake(inset + kBlioNotesViewTextXInset, inset + ((kBlioNotesViewToolbarHeight - aButtonSegment.frame.size.height)/2.0f), aButtonSegment.frame.size.width + 4, aButtonSegment.frame.size.height);
-    aButtonSegment.tintColor = [UIColor colorWithRed:0.890 green:0.863f blue:0.592f alpha:1.0f];
+    if ([[UIDevice currentDevice] compareSystemVersion:@"7.0"] >= NSOrderedSame)
+        aButtonSegment.tintColor =  nil;
+    else {
+        aButtonSegment.tintColor = [UIColor colorWithRed:0.890 green:0.863f blue:0.592f alpha:1.0f];
+        aButtonSegment.segmentedControlStyle = UISegmentedControlStyleBar;
+    }
     [[aButtonSegment imageForSegmentAtIndex:0] setAccessibilityLabel:NSLocalizedString(@"Cancel", @"Accessibility label for Notes View Cancel button")];
 
     [aButtonSegment addTarget:self action:@selector(dismiss:) forControlEvents:UIControlEventValueChanged];
@@ -150,9 +155,13 @@ static NSString * const BlioNotesViewExitToTopAnimation = @"BlioNotesViewExitToT
     buttonImage = [UIImage blioImageWithString:buttonText font:buttonFont color:[UIColor blackColor]];
     
     aButtonSegment = [[UISegmentedControl alloc] initWithItems:[NSArray arrayWithObject:buttonImage]];
-    aButtonSegment.segmentedControlStyle = UISegmentedControlStyleBar;
     aButtonSegment.frame = CGRectMake(self.frame.size.width - inset - kBlioNotesViewTextXInset - aButtonSegment.frame.size.width - 8, inset + ((kBlioNotesViewToolbarHeight - aButtonSegment.frame.size.height)/2.0f), aButtonSegment.frame.size.width + 8, aButtonSegment.frame.size.height);
-    aButtonSegment.tintColor = [UIColor colorWithRed:0.890 green:0.863f blue:0.592f alpha:1.0f];
+    if ([[UIDevice currentDevice] compareSystemVersion:@"7.0"] >= NSOrderedSame)
+        aButtonSegment.tintColor =  nil;
+    else {
+        aButtonSegment.tintColor = [UIColor colorWithRed:0.890 green:0.863f blue:0.592f alpha:1.0f];
+        aButtonSegment.segmentedControlStyle = UISegmentedControlStyleBar;
+    }
     [[aButtonSegment imageForSegmentAtIndex:0] setAccessibilityLabel:NSLocalizedString(@"Save", @"Accessibility label for Notes View Save button")];
 
     [aButtonSegment addTarget:self action:@selector(save:) forControlEvents:UIControlEventValueChanged];

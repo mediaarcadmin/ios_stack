@@ -10,6 +10,7 @@
 #import "BlioViewSettingsMetrics.h"
 
 #import <libEucalyptus/THUIImageAdditions.h>
+#import <libEucalyptus/THUIDeviceAdditions.h>
 #import <libEucalyptus/EucPageTurningView.h>
 #import "BlioUIImageAdditions.h"
 
@@ -174,19 +175,40 @@
 		
         UIFont *defaultFont = [UIFont boldSystemFontOfSize:12.0f];
         UIEdgeInsets inset = UIEdgeInsetsMake(0, 2, 2, 2);
-        UIImage *plainImage = [UIImage appleLikeBeveledImage:[UIImage imageWithIcon:[UIImage imageNamed:@"icon-page.png"] string:@"Flowed" font:defaultFont color:whiteColor textInset:inset]];
-        UIImage *layoutImage = [UIImage appleLikeBeveledImage:[UIImage imageWithIcon:[UIImage imageNamed:@"icon-layout.png"] string:@"Fixed" font:defaultFont color:whiteColor textInset:inset]];
+        UIImage *plainImage;
+        UIImage *layoutImage;
+        if ([[UIDevice currentDevice] compareSystemVersion:@"7.0"] >= NSOrderedSame) {
+            plainImage = [UIImage imageWithIcon:[UIImage imageNamed:@"icon-page"] string:@"Flowed" font:defaultFont color:whiteColor textInset:inset];
+            layoutImage = [UIImage imageWithIcon:[UIImage imageNamed:@"icon-layout"] string:@"Fixed" font:defaultFont color:whiteColor textInset:inset];
+            // Problem:  when image is a template, the image interior is lost.  Original rendering mode fixes this, but doesn't render contrastively when segment is selected.  
+            plainImage = [plainImage imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
+            layoutImage = [layoutImage imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
+        }
+        else {
+            // Doesn't render well in iOS 7.
+            plainImage = [UIImage appleLikeBeveledImage:[UIImage imageWithIcon:[UIImage imageNamed:@"icon-page.png"] string:@"Flowed" font:defaultFont color:whiteColor textInset:inset]];
+            layoutImage = [UIImage appleLikeBeveledImage:[UIImage imageWithIcon:[UIImage imageNamed:@"icon-layout.png"] string:@"Fixed" font:defaultFont color:whiteColor textInset:inset]];
+        }
 		NSMutableArray *segmentImages = [NSMutableArray arrayWithObjects:
                                          plainImage,
                                          layoutImage,
                                          nil];
 		if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
-            [segmentImages addObject:[UIImage appleLikeBeveledImage:[UIImage imageWithIcon:[UIImage imageNamed:@"icon-speedread.png"] string:@"Fast" font:defaultFont color:whiteColor textInset:inset]]];
-		}         
-        
+            if ([[UIDevice currentDevice] compareSystemVersion:@"7.0"] >= NSOrderedSame) {
+                // Problem:  see above.
+                [segmentImages addObject:[[UIImage imageWithIcon:[UIImage imageNamed:@"icon-speedread.png"] string:@"Fast" font:defaultFont color:whiteColor textInset:inset] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal]];
+            }
+            else
+                [segmentImages addObject:[UIImage appleLikeBeveledImage:[UIImage imageWithIcon:[UIImage imageNamed:@"icon-speedread.png"] string:@"Fast" font:defaultFont color:whiteColor textInset:inset]]];
+		}
+ 
         BlioAccessibilitySegmentedControl *aLayoutSegmentedControl = [[BlioAccessibilitySegmentedControl alloc] initWithItems:segmentImages];
-        aLayoutSegmentedControl.segmentedControlStyle = UISegmentedControlStyleBar;
-        aLayoutSegmentedControl.tintColor = tintColor;
+        if ([[UIDevice currentDevice] compareSystemVersion:@"7.0"] >= NSOrderedSame)
+            aLayoutSegmentedControl.tintColor = [UIColor whiteColor];
+        else {
+            aLayoutSegmentedControl.tintColor = tintColor;
+            aLayoutSegmentedControl.segmentedControlStyle = UISegmentedControlStyleBar;  // unused in iOS7
+        }
         
         [aLayoutSegmentedControl setContentOffset:CGSizeMake(0, -2) forSegmentAtIndex:0];
         [aLayoutSegmentedControl setContentOffset:CGSizeMake(0, -2) forSegmentAtIndex:1];
@@ -236,8 +258,12 @@
                                     nil];
         
         BlioAccessibilitySegmentedControl *aPageColorSegmentedControl = [[BlioAccessibilitySegmentedControl alloc] initWithItems:pageColorTitles];
-        aPageColorSegmentedControl.segmentedControlStyle = UISegmentedControlStyleBar;
-        aPageColorSegmentedControl.tintColor = tintColor;
+        if ([[UIDevice currentDevice] compareSystemVersion:@"7.0"] >= NSOrderedSame)
+            aPageColorSegmentedControl.tintColor = [UIColor whiteColor];
+        else {
+            aPageColorSegmentedControl.tintColor = tintColor;
+            aPageColorSegmentedControl.segmentedControlStyle = UISegmentedControlStyleBar;
+        }
         
 		// these lines don't seem to have effect because segmented control is not image-driven...
         [[aPageColorSegmentedControl imageForSegmentAtIndex:0] setAccessibilityLabel:NSLocalizedString(@"White page color", @"Accessibility label for View Settings White Page Color button")];
@@ -286,8 +312,12 @@
                                 nil];
 		
 		BlioAccessibilitySegmentedControl *atapZoomsSegment = [[BlioAccessibilitySegmentedControl alloc] initWithItems:tapAdvanceTitles];
-        atapZoomsSegment.segmentedControlStyle = UISegmentedControlStyleBar;
-        atapZoomsSegment.tintColor = tintColor;
+        if ([[UIDevice currentDevice] compareSystemVersion:@"7.0"] >= NSOrderedSame)
+            atapZoomsSegment.tintColor = [UIColor whiteColor];
+        else {
+            atapZoomsSegment.tintColor = tintColor;
+            atapZoomsSegment.segmentedControlStyle = UISegmentedControlStyleBar;
+        }
         
         if(voiceOverIsRelevant) {
             [atapZoomsSegment setAccessibilityHint:NSLocalizedString(@"In this mode, two finger swipe down to begin reading from the current position. Pages will turn automatically. Tap the page to stop reading, or to read individual lines.", @"Accessibility hint for View Settings \"By Page\" button (for \"Tap Advance\" SegmentedControl)") forSegmentIndex:0];
@@ -318,9 +348,13 @@
 									 nil];
 		
 		BlioAccessibilitySegmentedControl *atwoUpLandscapeSegment = [[BlioAccessibilitySegmentedControl alloc] initWithItems:twoUpLandscapeTitles];
-        atwoUpLandscapeSegment.segmentedControlStyle = UISegmentedControlStyleBar;
-        atwoUpLandscapeSegment.tintColor = tintColor;
-                
+        if ([[UIDevice currentDevice] compareSystemVersion:@"7.0"] >= NSOrderedSame)
+            atwoUpLandscapeSegment.tintColor = [UIColor whiteColor];
+        else {
+            atwoUpLandscapeSegment.tintColor = tintColor;
+            atwoUpLandscapeSegment.segmentedControlStyle = UISegmentedControlStyleBar;
+        }
+    
         [self addSubview:atwoUpLandscapeSegment];
         self.twoUpLandscapeSegment = atwoUpLandscapeSegment;
         [atwoUpLandscapeSegment release];

@@ -8,6 +8,7 @@
 
 #import "BlioContentsTabViewController.h"
 #import "BlioAutorotatingViewController.h"
+#import <libEucalyptus/THUIDeviceAdditions.h>
 
 #define MAINLABEL_TAG 1
 #define SECONDLABEL_TAG 2
@@ -130,9 +131,13 @@ typedef enum {
         
         NSArray *tabTitles = [NSArray arrayWithObjects: NSLocalizedString(@"Contents",@"\"Contents\" segmented control title for BlioContentsTabViewController"), NSLocalizedString(@"Bookmarks",@"\"Bookmarks\" segmented control title for BlioContentsTabViewController"), NSLocalizedString(@"Notes",@"\"Notes\" segmented control title for BlioContentsTabViewController"), nil];
         UISegmentedControl *aTabSegmentedControl = [[UISegmentedControl alloc] initWithItems:tabTitles];
-        aTabSegmentedControl.segmentedControlStyle = UISegmentedControlStyleBar;
         if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
-            aTabSegmentedControl.tintColor = tintColor;
+            if ([[UIDevice currentDevice] compareSystemVersion:@"7.0"] >= NSOrderedSame)
+                aTabSegmentedControl.tintColor = nil;
+            else {
+                aTabSegmentedControl.tintColor = tintColor;
+                aTabSegmentedControl.segmentedControlStyle = UISegmentedControlStyleBar;
+            }
         }
         if (isTOCActive) aTabSegmentedControl.selectedSegmentIndex = 0;
 		else {
@@ -153,8 +158,14 @@ typedef enum {
         [self setToolbarHidden:NO];
         
         if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
-            [self.toolbar setTintColor:tintColor];
-            [self.navigationBar setTintColor:tintColor];
+            if ([self.toolbar respondsToSelector:@selector(setBarTintColor:)]) {
+                [self.toolbar setBarTintColor:tintColor];
+                [self.navigationBar setBarTintColor:tintColor];
+            }
+            else {
+                [self.toolbar setTintColor:tintColor];
+                [self.navigationBar setTintColor:tintColor];
+            }
             [self.contentsController.navigationItem setLeftBarButtonItem:self.doneButton];
             [self.bookmarksController.navigationItem setLeftBarButtonItem:self.doneButton];
             [self.notesController.navigationItem setLeftBarButtonItem:self.doneButton];
