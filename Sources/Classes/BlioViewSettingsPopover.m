@@ -30,7 +30,7 @@
             contentController.preferredContentSize = contentsView.preferredSize;
         }
         if([contentController respondsToSelector:@selector(setEdgesForExtendedLayout:)]) {
-            contentController.edgesForExtendedLayout = UIExtendedEdgeNone;
+            contentController.edgesForExtendedLayout = UIRectEdgeNone;
         }
         contentController.navigationItem.title = contentsView.navigationItemTitle;
         contentController.view = contentsView;
