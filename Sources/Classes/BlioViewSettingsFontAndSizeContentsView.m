@@ -173,7 +173,10 @@
         if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
             tintColor = [UIColor darkGrayColor];
         } else {
-            tintColor = kBlioViewSettingsPopverBlueButton;
+            if ([[UIDevice currentDevice] compareSystemVersion:@"7.0"] >= NSOrderedSame)
+                tintColor = [UIColor blackColor];
+            else
+                tintColor = kBlioViewSettingsPopverBlueButton;
         }
         
         UIFont *defaultFont = [UIFont boldSystemFontOfSize:12.0f];
@@ -214,7 +217,10 @@
         
         UILabel *aFontSizeLabel = [[UILabel alloc] initWithFrame:CGRectZero];
         aFontSizeLabel.font = [UIFont boldSystemFontOfSize:14.0f];
-        aFontSizeLabel.textColor = whiteColor;
+        if (([[UIDevice currentDevice] compareSystemVersion:@"7.0"] >= NSOrderedSame) && (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad))
+            aFontSizeLabel.textColor = tintColor;
+        else
+            aFontSizeLabel.textColor = whiteColor;
         aFontSizeLabel.backgroundColor = clearColor;
         aFontSizeLabel.text = NSLocalizedString(@"Font Size",@"Settings Label for Font Size segmented control.");
         [self addSubview:aFontSizeLabel];
@@ -252,12 +258,12 @@
         }
         
         BlioAccessibilitySegmentedControl *aFontSizeSegmentedControl = [[BlioAccessibilitySegmentedControl alloc] initWithItems:fontSizeTitles];
-        if ([[UIDevice currentDevice] compareSystemVersion:@"7.0"] >= NSOrderedSame)
+        if (([[UIDevice currentDevice] compareSystemVersion:@"7.0"] >= NSOrderedSame) && (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone))
             aFontSizeSegmentedControl.tintColor = [UIColor whiteColor];
         else {
             aFontSizeSegmentedControl.tintColor = tintColor;
-            aFontSizeSegmentedControl.segmentedControlStyle = UISegmentedControlStyleBar;
         }
+        aFontSizeSegmentedControl.segmentedControlStyle = UISegmentedControlStyleBar;
         
         [[aFontSizeSegmentedControl imageForSegmentAtIndex:0] setAccessibilityLabel:NSLocalizedString(@"Smaller font size", @"Accessibility label for View Settings Smaller Font Size button")];
         [[aFontSizeSegmentedControl imageForSegmentAtIndex:1] setAccessibilityLabel:NSLocalizedString(@"Small font size", @"Accessibility label for View Settings Smaller Font Size button")];
@@ -278,7 +284,10 @@
         
         UILabel *aFontBoldnessLabel = [[UILabel alloc] initWithFrame:CGRectZero];
         aFontBoldnessLabel.font = [UIFont boldSystemFontOfSize:14.0f];
-        aFontBoldnessLabel.textColor = whiteColor;
+        if (([[UIDevice currentDevice] compareSystemVersion:@"7.0"] >= NSOrderedSame) && (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad))
+            aFontBoldnessLabel.textColor = tintColor;
+        else
+            aFontBoldnessLabel.textColor = whiteColor;
         aFontBoldnessLabel.backgroundColor = clearColor;
         aFontBoldnessLabel.text = NSLocalizedString(@"Boldness",@"Settings Label for Boldness segmented control.");
         [self addSubview:aFontBoldnessLabel];
@@ -291,12 +300,12 @@
                                        nil];
         
         BlioAccessibilitySegmentedControl *aFontBoldnessSegmentedControl = [[BlioAccessibilitySegmentedControl alloc] initWithItems:fontBoldnessTitles];
-        if ([[UIDevice currentDevice] compareSystemVersion:@"7.0"] >= NSOrderedSame)
+        if (([[UIDevice currentDevice] compareSystemVersion:@"7.0"] >= NSOrderedSame) && (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone))
             aFontBoldnessSegmentedControl.tintColor = [UIColor whiteColor];
         else {
-            aFontBoldnessSegmentedControl.segmentedControlStyle = UISegmentedControlStyleBar;  // ignored in iOS 7
             aFontBoldnessSegmentedControl.tintColor = tintColor;
         }
+        aFontBoldnessSegmentedControl.segmentedControlStyle = UISegmentedControlStyleBar;
         
         [self addSubview:aFontBoldnessSegmentedControl];
         self.fontBoldnessSegment = aFontBoldnessSegmentedControl;
@@ -308,7 +317,10 @@
 		
         UILabel *aJustificationLabel = [[UILabel alloc] initWithFrame:CGRectZero];
         aJustificationLabel.font = [UIFont boldSystemFontOfSize:14.0f];
-        aJustificationLabel.textColor = whiteColor;
+        if (([[UIDevice currentDevice] compareSystemVersion:@"7.0"] >= NSOrderedSame) && (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad))
+            aJustificationLabel.textColor = tintColor;
+        else
+            aJustificationLabel.textColor = whiteColor;
         aJustificationLabel.backgroundColor = clearColor;
         aJustificationLabel.text = NSLocalizedString(@"Justification",@"Settings Label for Justification segmented control.");
         [self addSubview:aJustificationLabel];
@@ -322,12 +334,12 @@
                                         nil];
         
         BlioAccessibilitySegmentedControl *aJustificationSegmentedControl = [[BlioAccessibilitySegmentedControl alloc] initWithItems:justificationTitles];
-        if ([[UIDevice currentDevice] compareSystemVersion:@"7.0"] >= NSOrderedSame)
+        if (([[UIDevice currentDevice] compareSystemVersion:@"7.0"] >= NSOrderedSame) && (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone))
             aJustificationSegmentedControl.tintColor = [UIColor whiteColor];
         else {
             aJustificationSegmentedControl.tintColor = tintColor;
-            aJustificationSegmentedControl.segmentedControlStyle = UISegmentedControlStyleBar; 
         }
+        aJustificationSegmentedControl.segmentedControlStyle = UISegmentedControlStyleBar;
         
 		// these lines don't seem to have effect because segmented control is not image-driven...
         [[aJustificationSegmentedControl imageForSegmentAtIndex:0] setAccessibilityLabel:NSLocalizedString(@"Left justified", @"Accessibility label for Reading Settings justification control")];

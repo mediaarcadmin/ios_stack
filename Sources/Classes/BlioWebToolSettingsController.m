@@ -18,11 +18,14 @@
 	if (self)
 	{
 		self.title = NSLocalizedString(@"Reference Tools",@"\"Reference Tools\" view controller title.");
-		if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-			self.contentSizeForViewInPopover = CGSizeMake(320, 200);
-		}
         if ([self respondsToSelector:@selector(setEdgesForExtendedLayout:)]) {
             self.edgesForExtendedLayout = UIRectEdgeNone;
+            if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+                self.contentSizeForViewInPopover = CGSizeMake(320, 260);
+            }
+        }
+        else if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+            self.contentSizeForViewInPopover = CGSizeMake(320, 200);
         }
 	}
 	return self;
