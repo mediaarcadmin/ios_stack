@@ -222,9 +222,9 @@
 		existingUserTextView.lineBreakMode = UILineBreakModeWordWrap;
 		existingUserTextView.numberOfLines = 0;
 #ifdef TOSHIBA  
-		existingUserTextView.text = NSLocalizedString(@"Log in to your Toshiba Book Place account to sync your reading list. If you are new, please visit our website to sign up.",@"Existing user message on welcome view controller.");
+		existingUserTextView.text = NSLocalizedString(@"Log in to your Toshiba Book Place account to sync your reading list. If you are a new customer, please visit our website to sign up.",@"Existing user message on welcome view controller.");
 #else
-		existingUserTextView.text = NSLocalizedString(@"Log in to your Blio.com account to sync your reading list. If you are new, please visit our website to sign up.",@"Existing user message on welcome view controller.");
+		existingUserTextView.text = NSLocalizedString(@"Log in to your Blio.com account to sync your reading list. If you are a new customer, please visit our website to sign up.",@"Existing user message on welcome view controller.");
 #endif
 		//existingUserTextView.text = NSLocalizedStringWithDefaultValue(nil@"EXISTING_USER_TEXT",nil,[NSBundle mainBundle],@"Log in to your Blio.com account to sync your reading //list.\n\n If you are a new customer, please visit our website to sign up.",@"Existing user message on welcome view controller.");
 		[self addSubview:existingUserTextView];
@@ -474,7 +474,7 @@
 #ifdef TOSHIBA
     cell1.descriptionText = NSLocalizedString(@"Sync your reading list via your Toshiba Book Place account. If you are new, please visit our website to sign up.",@"Existing user message on welcome view controller.");
 #else
-    cell1.descriptionText = NSLocalizedString(@"Log in to your Blio.com account to sync your reading list. If you are new, please visit our website to sign up.",@"Existing user message on welcome view controller.");
+    cell1.descriptionText = NSLocalizedString(@"Log in to your Blio.com account to sync your reading list. If you are a new customer, please visit our website to sign up.",@"Existing user message on welcome view controller.");
 #endif
     cell1.frame = CGRectMake(kBlioWelcomeCellMargin, kBlioWelcomeCellMargin, self.cellContainerView.frame.size.width - (kBlioWelcomeCellMargin*2), self.cellContainerView.frame.size.height/3.0f);
     cell1.delegate = self;

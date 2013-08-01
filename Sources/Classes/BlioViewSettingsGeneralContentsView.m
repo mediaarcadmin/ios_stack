@@ -168,10 +168,7 @@
         if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
             tintColor = [UIColor darkGrayColor];
         } else {
-            if ([[UIDevice currentDevice] compareSystemVersion:@"7.0"] >= NSOrderedSame)
-                tintColor = [UIColor blackColor];
-            else
-                tintColor = kBlioViewSettingsPopverBlueButton;
+            tintColor = kBlioViewSettingsPopverBlueButton;
         }
 
 		//////// PAGE LAYOUT
@@ -183,7 +180,7 @@
         if ([[UIDevice currentDevice] compareSystemVersion:@"7.0"] >= NSOrderedSame) {
             plainImage = [UIImage imageWithIcon:[UIImage imageNamed:@"icon-page"] string:@"Flowed" font:defaultFont color:whiteColor textInset:inset];
             layoutImage = [UIImage imageWithIcon:[UIImage imageNamed:@"icon-layout"] string:@"Fixed" font:defaultFont color:whiteColor textInset:inset];
-            // Problem on both iphone and ipad:  when image is a template, the image interior doesn't render.  Original rendering mode fixes this, but doesn't render contrastively when segment is selected (iphone) or unselected (ipad).
+            // Problem:  when image is a template, the image interior is lost.  Original rendering mode fixes this, but doesn't render contrastively when segment is selected.  
             plainImage = [plainImage imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
             layoutImage = [layoutImage imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
         }
@@ -206,14 +203,12 @@
 		}
  
         BlioAccessibilitySegmentedControl *aLayoutSegmentedControl = [[BlioAccessibilitySegmentedControl alloc] initWithItems:segmentImages];
-        if (([[UIDevice currentDevice] compareSystemVersion:@"7.0"] >= NSOrderedSame) &&
-            (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone)) {
+        if ([[UIDevice currentDevice] compareSystemVersion:@"7.0"] >= NSOrderedSame)
             aLayoutSegmentedControl.tintColor = [UIColor whiteColor];
-        }
         else {
             aLayoutSegmentedControl.tintColor = tintColor;
+            aLayoutSegmentedControl.segmentedControlStyle = UISegmentedControlStyleBar;  // unused in iOS7
         }
-        aLayoutSegmentedControl.segmentedControlStyle = UISegmentedControlStyleBar;
         
         [aLayoutSegmentedControl setContentOffset:CGSizeMake(0, -2) forSegmentAtIndex:0];
         [aLayoutSegmentedControl setContentOffset:CGSizeMake(0, -2) forSegmentAtIndex:1];
@@ -249,11 +244,7 @@
 		
         UILabel *aPageColorLabel = [[UILabel alloc] initWithFrame:CGRectZero];
         aPageColorLabel.font = [UIFont boldSystemFontOfSize:14.0f];
-        if (([[UIDevice currentDevice] compareSystemVersion:@"7.0"] >= NSOrderedSame) &&
-            (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad))
-            aPageColorLabel.textColor = tintColor;
-        else
-            aPageColorLabel.textColor = whiteColor;
+        aPageColorLabel.textColor = whiteColor;
         aPageColorLabel.backgroundColor = clearColor;
         aPageColorLabel.text = NSLocalizedString(@"Page Color",@"Settings Label for Page Color segmented control.");
         [self addSubview:aPageColorLabel];
@@ -267,15 +258,12 @@
                                     nil];
         
         BlioAccessibilitySegmentedControl *aPageColorSegmentedControl = [[BlioAccessibilitySegmentedControl alloc] initWithItems:pageColorTitles];
-        
-        if (([[UIDevice currentDevice] compareSystemVersion:@"7.0"] >= NSOrderedSame) &&
-            (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone)) {
+        if ([[UIDevice currentDevice] compareSystemVersion:@"7.0"] >= NSOrderedSame)
             aPageColorSegmentedControl.tintColor = [UIColor whiteColor];
-        }
         else {
             aPageColorSegmentedControl.tintColor = tintColor;
+            aPageColorSegmentedControl.segmentedControlStyle = UISegmentedControlStyleBar;
         }
-        aPageColorSegmentedControl.segmentedControlStyle = UISegmentedControlStyleBar;
         
 		// these lines don't seem to have effect because segmented control is not image-driven...
         [[aPageColorSegmentedControl imageForSegmentAtIndex:0] setAccessibilityLabel:NSLocalizedString(@"White page color", @"Accessibility label for View Settings White Page Color button")];
@@ -300,11 +288,7 @@
         
 		UILabel *aTabZoomsToBlockLabel = [[UILabel alloc] initWithFrame:CGRectZero];
         aTabZoomsToBlockLabel.font = [UIFont boldSystemFontOfSize:14.0f];
-        if (([[UIDevice currentDevice] compareSystemVersion:@"7.0"] >= NSOrderedSame) &&
-            (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad))
-            aTabZoomsToBlockLabel.textColor = tintColor;
-        else
-            aTabZoomsToBlockLabel.textColor = whiteColor;
+        aTabZoomsToBlockLabel.textColor = whiteColor;
         aTabZoomsToBlockLabel.backgroundColor = clearColor;
         if(voiceOverIsRelevant) {
             aTabZoomsToBlockLabel.text = NSLocalizedString(@"Read Mode",@"Settings Label for \"Tap Advance\" Segmented Control when VoiceOver is running (for VoiceOver users, the setting is not related to tapping, but to how VoiceOver reads text).");
@@ -328,15 +312,12 @@
                                 nil];
 		
 		BlioAccessibilitySegmentedControl *atapZoomsSegment = [[BlioAccessibilitySegmentedControl alloc] initWithItems:tapAdvanceTitles];
-        
-        if (([[UIDevice currentDevice] compareSystemVersion:@"7.0"] >= NSOrderedSame) &&
-            (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone)) {
+        if ([[UIDevice currentDevice] compareSystemVersion:@"7.0"] >= NSOrderedSame)
             atapZoomsSegment.tintColor = [UIColor whiteColor];
-        }
         else {
             atapZoomsSegment.tintColor = tintColor;
+            atapZoomsSegment.segmentedControlStyle = UISegmentedControlStyleBar;
         }
-        atapZoomsSegment.segmentedControlStyle = UISegmentedControlStyleBar;
         
         if(voiceOverIsRelevant) {
             [atapZoomsSegment setAccessibilityHint:NSLocalizedString(@"In this mode, two finger swipe down to begin reading from the current position. Pages will turn automatically. Tap the page to stop reading, or to read individual lines.", @"Accessibility hint for View Settings \"By Page\" button (for \"Tap Advance\" SegmentedControl)") forSegmentIndex:0];
@@ -354,11 +335,7 @@
 
 		UILabel *aTwoUpLandscapeLabel = [[UILabel alloc] initWithFrame:CGRectZero];
         aTwoUpLandscapeLabel.font = [UIFont boldSystemFontOfSize:14.0f];
-        if (([[UIDevice currentDevice] compareSystemVersion:@"7.0"] >= NSOrderedSame) &&
-            (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad))
-            aTwoUpLandscapeLabel.textColor = tintColor;
-        else
-            aTwoUpLandscapeLabel.textColor = whiteColor;
+        aTwoUpLandscapeLabel.textColor = whiteColor;
         aTwoUpLandscapeLabel.backgroundColor = clearColor;
         aTwoUpLandscapeLabel.text = NSLocalizedString(@"Landscape",@"Settings Label for number of pages displayed in landscape.");
         [self addSubview:aTwoUpLandscapeLabel];
@@ -371,14 +348,12 @@
 									 nil];
 		
 		BlioAccessibilitySegmentedControl *atwoUpLandscapeSegment = [[BlioAccessibilitySegmentedControl alloc] initWithItems:twoUpLandscapeTitles];
-        if (([[UIDevice currentDevice] compareSystemVersion:@"7.0"] >= NSOrderedSame) &&
-            (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone)) {
+        if ([[UIDevice currentDevice] compareSystemVersion:@"7.0"] >= NSOrderedSame)
             atwoUpLandscapeSegment.tintColor = [UIColor whiteColor];
-        }
         else {
             atwoUpLandscapeSegment.tintColor = tintColor;
+            atwoUpLandscapeSegment.segmentedControlStyle = UISegmentedControlStyleBar;
         }
-        atwoUpLandscapeSegment.segmentedControlStyle = UISegmentedControlStyleBar;
     
         [self addSubview:atwoUpLandscapeSegment];
         self.twoUpLandscapeSegment = atwoUpLandscapeSegment;
