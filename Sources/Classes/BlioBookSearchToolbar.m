@@ -58,7 +58,10 @@
 - (id)init {
     if ((self = [super init])) {
         // Initialization code
-        [self setBackgroundColor:[UIColor clearColor]];
+        if ([[UIDevice currentDevice] compareSystemVersion:@"7.0"] >= NSOrderedSame)
+            [self setBackgroundColor:[UIColor blackColor]];
+        else
+            [self setBackgroundColor:[UIColor clearColor]];
         [self setClipsToBounds:YES];
         [self setAutoresizingMask:UIViewAutoresizingFlexibleWidth];
         
@@ -84,16 +87,18 @@
                 self.doneNavBar.translucent = NO;
                 [self.doneNavBar setBarStyle:UIBarStyleBlack];
             }
-        }
-        
-        if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
             if ([[UIDevice currentDevice] compareSystemVersion:@"7.0"] >= NSOrderedSame)
                 // Has 6.0-style toolbar look as a BlioBookSearchCustomNavigationBar.
                 aNavBar = [[UINavigationBar alloc] init];
+            else
+                aNavBar = [[BlioBookSearchCustomNavigationBar alloc] init];
         }
         else {
             aNavBar = [[BlioBookSearchCustomNavigationBar alloc] init];
-            if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+            if ([[UIDevice currentDevice] compareSystemVersion:@"7.0"] >= NSOrderedSame) {
+                aNavBar.backgroundColor = [UIColor blackColor];
+            }
+            else {
                 aNavBar.backgroundColor = [UIColor clearColor];
                 aNavBar.tintColor = [UIColor colorWithRed:0.100 green:0.152 blue:0.326 alpha:1.000];
             }
@@ -139,10 +144,11 @@
         [aNavItem release];
         
         UIView <BlioBookSearchBar> *aSearchBar;
-        if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
-            aSearchBar = (UIView <BlioBookSearchBar>*)[[UISearchBar alloc] init];
-        } else {
+        if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad
+            && ([[UIDevice currentDevice] compareSystemVersion:@"7.0"] < NSOrderedSame)) {
             aSearchBar = [[BlioBookSearchCustomSearchBar alloc] init];
+        } else {
+            aSearchBar = (UIView <BlioBookSearchBar>*)[[UISearchBar alloc] init];
         }
         [aSearchBar setPlaceholder:NSLocalizedString(@"Search",@"\"Search\" placeholder text in Search bar")];
         [aSearchBar setShowsCancelButton:NO];
@@ -151,12 +157,14 @@
         self.searchBar = aSearchBar;
         [aSearchBar release];
         
-        BlioBookSearchToolbarDecoration *aToolbarDecoration = [[BlioBookSearchToolbarDecoration alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth(self.bounds), 2)];
-        [aToolbarDecoration setAutoresizingMask:UIViewAutoresizingFlexibleWidth];
-        [self addSubview:aToolbarDecoration];
-        self.toolbarDecoration = aToolbarDecoration;
-        [aToolbarDecoration release];
-         
+        if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
+            BlioBookSearchToolbarDecoration *aToolbarDecoration = [[BlioBookSearchToolbarDecoration alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth(self.bounds), 2)];
+            [aToolbarDecoration setAutoresizingMask:UIViewAutoresizingFlexibleWidth];
+            [self addSubview:aToolbarDecoration];
+            self.toolbarDecoration = aToolbarDecoration;
+            [aToolbarDecoration release];
+        }
+        
     }
     return self;
 }
@@ -170,18 +178,24 @@
     }
     
     CGFloat inlineWidth = CGRectGetWidth(self.inlineSegmentedControl.frame) + 6*2;
-    if ([[UIDevice currentDevice] compareSystemVersion:@"7.0"] >= NSOrderedSame)
-        // Needed for some reason on iOS 7.
-        inlineWidth += 4;
-    
+    if ([[UIDevice currentDevice] compareSystemVersion:@"7.0"] >= NSOrderedSame) {
+        if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone)
+            inlineWidth += 4;
+        else
+            inlineWidth += 18;
+    }
     if (self.inlineMode) {
         [self.inlineSegmentedControl setAlpha:1];
         [self.toolbarDecoration setAlpha:1];
-        [self.inlineNavBar setFrame:CGRectMake(CGRectGetWidth(self.bounds) - inlineWidth, 0, inlineWidth, CGRectGetHeight(self.bounds))];
-        
         [self.searchBar setFrame:CGRectMake(doneWidth, 0, CGRectGetWidth(self.bounds) - doneWidth - inlineWidth, CGRectGetHeight(self.bounds))];
-        
-        if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
+        if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad
+            && ([[UIDevice currentDevice] compareSystemVersion:@"7.0"] >= NSOrderedSame)) {
+            [self.inlineNavBar setFrame:CGRectMake(CGRectGetWidth(self.bounds) - inlineWidth, 0, inlineWidth, CGRectGetHeight(self.bounds)-3)];
+            [(UISearchBar*)self.searchBar setBarTintColor:[UIColor blackColor]];
+            [(UISearchBar*)self.searchBar setFrame:CGRectMake(doneWidth, 0, self.searchBar.frame.size.width, self.searchBar.frame.size.height - 7)];
+        }
+        else {
+            [self.inlineNavBar setFrame:CGRectMake(CGRectGetWidth(self.bounds) - inlineWidth, 0, inlineWidth, CGRectGetHeight(self.bounds))];
             if ([self.searchBar respondsToSelector:@selector(setBarTintColor:)]) {
                 // Seems no other way to match Done bar and Segment control, which must also be non-translucent.
                 [(UISearchBar*)self.searchBar setBarTintColor:[UIColor blackColor]];
@@ -189,7 +203,6 @@
                 [self.searchBar setFrame:CGRectMake(doneWidth, 0, self.searchBar.frame.size.width, self.searchBar.frame.size.height + 2)];
             }
         }
-        
     } else {
         [self.inlineSegmentedControl setAlpha:0];
         [self.toolbarDecoration setAlpha:0];
@@ -202,6 +215,11 @@
                 [self.searchBar setTintColor:[UIColor whiteColor]];
             }
         }
+        else
+            if ([self.searchBar respondsToSelector:@selector(setBarTintColor:)]) {
+                [(UISearchBar*)self.searchBar setBarTintColor:[UIColor blackColor]];
+                [self.searchBar setFrame:CGRectMake(doneWidth, 0, self.searchBar.frame.size.width, self.searchBar.frame.size.height-6)];
+            }
     }
     
     [self.searchBar layoutSubviews];
@@ -338,6 +356,7 @@
 - (void)setPlaceholder:(NSString *)placeholder {
     [self.searchField setPlaceholder:placeholder];
 }
+
 
 - (void)setShowsCancelButton:(BOOL)showCancel {
     // Do nothing
