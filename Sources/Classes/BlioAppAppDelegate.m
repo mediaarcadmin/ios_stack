@@ -159,17 +159,17 @@
             NSLog(@"WARNING: deletion of binary device certificate failed. %@, %@", error, [error userInfo]);
     }
     
-
-#ifdef TEST_MODE
-    NSString* testDeviceID = [[[UIDevice currentDevice] uniqueIdentifier] stringByAppendingString:@"X"]; 
-    [[NSUserDefaults standardUserDefaults] setObject:testDeviceID forKey:kBlioDeviceIDDefaultsKey];
-#else
+// uniqueIdentifier no longer available from 7.0 on
+//#ifdef TEST_MODE
+//    NSString* testDeviceID = [[[UIDevice currentDevice] uniqueIdentifier] stringByAppendingString:@"X"];
+//    [[NSUserDefaults standardUserDefaults] setObject:testDeviceID forKey:kBlioDeviceIDDefaultsKey];
+//#else
     // Reset the id for this device.  It must now be a UUID.
     CFUUIDRef uuidObj = CFUUIDCreate(kCFAllocatorDefault);
     NSString *uuidStr = [(NSString *)CFUUIDCreateString(kCFAllocatorDefault, uuidObj) autorelease];
     [[NSUserDefaults standardUserDefaults] setObject:uuidStr forKey:kBlioDeviceIDDefaultsKey];
     CFRelease(uuidObj); 
-#endif
+//#endif
     
     // Reinitialize model certificates.
     // With KDRM no longer necessary.

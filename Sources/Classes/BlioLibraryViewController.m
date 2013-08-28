@@ -1315,6 +1315,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 - (void)controllerDidChangeContent:(NSFetchedResultsController *)controller {
 //	[self performSelector:@selector(needsAccessibilityLayoutChanged) withObject:nil afterDelay:0.2f];
 	[self needsAccessibilityLayoutChanged];
+    
 	//   [self.tableView endUpdates];
 }
 /*
@@ -2217,7 +2218,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 
 @implementation BlioLibraryListCell
 
-@synthesize bookView, titleLabel, authorLabel, /*progressSlider,proportionalProgressView,*/ delegate,progressView,pauseResumeButton,statusBadge,previewBadge,bookTypeBadge,numberOfDaysLeftLabel,daysLeftLabel;
+@synthesize bookView, titleLabel, authorLabel, returnButton, /*progressSlider,proportionalProgressView,*/ delegate,progressView,pauseResumeButton,statusBadge,previewBadge,bookTypeBadge,numberOfDaysLeftLabel,daysLeftLabel;
 
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
@@ -2232,6 +2233,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
     self.bookTypeBadge = nil;
     self.numberOfDaysLeftLabel = nil;
     self.daysLeftLabel = nil;
+    self.returnButton = nil;
     [super dealloc];
 }
 
@@ -2275,6 +2277,23 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
         [self.contentView addSubview:aAuthorLabel];
         self.authorLabel = aAuthorLabel;
         [aAuthorLabel release];
+        
+        UIButton* aReturnButton = [[UIButton alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.bookView.frame) + kBlioLibraryListBookMargin, 52, 65, 15)];
+        //aReturnButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+		//aReturnButton.showsTouchWhenHighlighted = YES;
+        //[aReturnButton setFrame:CGRectMake(CGRectGetMaxX(self.bookView.frame) + kBlioLibraryListBookMargin, 52, 65, 15)];
+        [aReturnButton setAccessibilityLabel:NSLocalizedString(@"Return", @"Accessibility label for Library View cell book return button.")];
+		[aReturnButton setAccessibilityHint:NSLocalizedString(@"Returns book to library.", @"Accessibility hint for Library View cell book return button.")];
+        [aReturnButton setTitle:@"RETURN" forState:UIControlStateNormal];
+        //if ([[UIDevice currentDevice] compareSystemVersion:@"7.0"] >= NSOrderedSame)
+        // in iOS 7, want this to be the default blue; but default is white
+        [aReturnButton setTitleColor:[UIColor blueColor] forState:UIControlStateNormal];
+        aReturnButton.titleLabel.font = [UIFont systemFontOfSize:12];
+        aReturnButton.hidden = YES;
+		[aReturnButton addTarget:self action:@selector(onReturnButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
+        [self.contentView addSubview:aReturnButton];
+        self.returnButton = aReturnButton;
+        [aReturnButton release];
         
 		/*
         BlioProgressView *aSlider = [[BlioProgressView alloc] init];
@@ -2352,7 +2371,17 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 	pauseResumeButton.isAccessibilityElement = NO;
 	previewBadge.hidden = YES;
     bookTypeBadge.hidden = YES;
+    returnButton.hidden = YES;
 }
+
+-(void)onReturnButtonPressed:(id)sender {
+    [BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Return Book",@"\"Return Book\" alert message title")
+                                       message:NSLocalizedStringWithDefaultValue(@"RETURN_BOOK_EXPLANATION",nil,[NSBundle mainBundle],@"If you return this book to the library, it will no longer be available to download.  Would you like to proceed?",@"alert message explaining return of a book")
+                                      delegate:self
+                             cancelButtonTitle:NSLocalizedString(@"No",@"\"No\" label for button used to cancel/dismiss alertview")
+                             otherButtonTitles: @"OK", nil];
+}
+
 -(void)onPauseResumeButtonPressed:(id)sender {
 	if ([[[self.bookView book] valueForKey:@"processingState"] intValue] == kBlioBookProcessingStateIncomplete) [delegate pauseProcessingForBook:[self book]];
 	else [delegate enqueueBook:[self book]];
@@ -2469,7 +2498,13 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 		self.bookTypeBadge.hidden = NO;
         NSTimeInterval timeDifference = [[self.book valueForKey:@"expirationDate"] timeIntervalSinceDate:[NSDate date]];
         NSInteger daysLeftInteger = 0;
-        if (timeDifference > 0) daysLeftInteger = ceil(timeDifference/86400);
+        if (timeDifference > 0) {
+            daysLeftInteger = ceil(timeDifference/86400);
+            NSInteger processingState = [[[self.bookView book] valueForKey:@"processingState"] intValue];
+            if ( (processingState != kBlioBookProcessingStatePlaceholderOnly)
+                && (processingState != kBlioBookProcessingStateIncomplete) )
+                self.returnButton.hidden = NO;
+        }
         self.numberOfDaysLeftLabel.text = [NSString stringWithFormat:@"%i",daysLeftInteger];
         if (daysLeftInteger == 1) self.daysLeftLabel.text = NSLocalizedString(@"DAY LEFT", @"\"DAY LEFT\" label for borrowed books in the library interface.");
         else self.daysLeftLabel.text = NSLocalizedString(@"DAYS LEFT", @"\"DAYS LEFT\" label for borrowed books in the library interface.");
@@ -2548,7 +2583,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 		//self.progressSlider.hidden = NO;
 		progressView.isAccessibilityElement = NO;
 		progressView.hidden = YES;
-		self.accessoryView = nil;
+        self.accessoryView = nil;
 		pauseResumeButton.isAccessibilityElement = NO;
 		[self resetAuthorText];
 		self.selectionStyle = UITableViewCellSelectionStyleGray;
@@ -2657,6 +2692,81 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 //		self.progressSlider.hidden = YES;		
 	}
 }
+
+#pragma mark UIAlertViewDelegate methods
+
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
+    switch (buttonIndex) {
+        case 0:
+            break;
+        case 1:
+            NSLog(@"Return %@ to library.", self.book.title);
+            BookVaultSoap *vaultBinding = [[BookVault BookVaultSoap] retain];
+            vaultBinding.logXMLInOut = YES;
+            BookVault_DeleteBook* deleteBookRequest = [[BookVault_DeleteBook new] autorelease];
+            deleteBookRequest.token = [[BlioStoreManager sharedInstance] tokenForSourceID:BlioBookSourceOnlineStore];
+            deleteBookRequest.productTypeId = [self.book valueForKey:@"productType"];
+            deleteBookRequest.ISBN = [self.book valueForKey:@"isbn"];
+            [vaultBinding DeleteBookAsyncUsingParameters:deleteBookRequest delegate:self];
+            [vaultBinding release];
+            break;
+        default:
+            break;
+    }
+}
+
+#pragma mark BookVaultSoapResponseDelegate method
+
+- (void) operation:(BookVaultSoapOperation *)operation completedWithResponse:(BookVaultSoapResponse *)response {
+	if (!response.responseType) {
+		NSLog(@"ERROR: response has no response type!");
+		return;
+	}
+	if ([response.responseType isEqualToString:BlioBookVaultResponseTypeDeleteBook]) {
+		
+		NSArray *responseBodyParts = response.bodyParts;
+		for(id bodyPart in responseBodyParts) {
+            NSLog(@"DeleteBook response bodyPart: %@",bodyPart);
+		}
+        
+		for(id bodyPart in responseBodyParts) {
+			if ([bodyPart isKindOfClass:[SOAPFault class]]) {
+				NSString* err = ((SOAPFault *)bodyPart).simpleFaultString;
+				NSLog(@"SOAP error for book deletion: %@",err);
+                NSString* errorMessage = @"There was an error returning this book: ";
+                [BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Return Book",@"\"Return Book\" alert message title")
+                                                   message:[errorMessage stringByAppendingString:err]
+                                                  delegate:self
+                                         cancelButtonTitle:NSLocalizedString(@"OK",@"\"OK\" label for button used to cancel/dismiss alertview")
+                                         otherButtonTitles: nil];
+				return;
+			}
+            else if ( [[bodyPart DeleteBookResult].ReturnCode intValue] == 0 ) {
+                // Success.  Now delete the book locally, which will also update the data source.
+                /*NSError* err = nil;
+                [[self.book managedObjectContext] deleteObject:self.book];
+                if (![[self.book managedObjectContext] save:&err])
+                    NSLog(@"Error deleting book from core data: %@",[err localizedDescription]);
+                 */
+                // TODO: deleteBook should delete license
+                [[delegate processingDelegate] deleteBook:self.book shouldSave:YES];
+                
+				return;
+			}
+			else {
+				NSLog(@"Error %@ deleting book from archive: %@",[[[bodyPart DeleteBookResult] ReturnCode] stringValue], [bodyPart DeleteBookResult].Message);
+                NSString* errorMessage = @"There was an error returning this book.  Please contact Blio technical support with the error code: ";
+                [BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Return Book",@"\"Return Book"\" alert message title")
+                                                   message:[errorMessage stringByAppendingString:[[[bodyPart DeleteBookResult] ReturnCode] stringValue]]
+                                                  delegate:self
+                                         cancelButtonTitle:NSLocalizedString(@"OK",@"\"OK\" label for button used to cancel/dismiss alertview")
+                                         otherButtonTitles: nil];
+				return;
+			}
+		}
+	}
+}
+
 
 @end
 

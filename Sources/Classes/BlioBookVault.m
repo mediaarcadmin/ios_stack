@@ -13,6 +13,471 @@ static NSString* const testBookvaultUrl = @"http://prl.kreader.net/Bookvault.asm
 static NSString* const productionBookvaultUrl = @"https://bookvault.blioreader.com/BookVault.asmx";
 #endif
 
+@implementation BookVault_DeleteBook
+
+- (id)init
+{
+	if((self = [super init])) {
+		token = 0;
+		ISBN = 0;
+		productTypeId = 0;
+	}
+	
+	return self;
+}
+- (void)dealloc
+{
+	if(token != nil) [token release];
+	if(ISBN != nil) [ISBN release];
+	if(productTypeId != nil) [productTypeId release];
+	
+	[super dealloc];
+}
+- (NSString *)nsPrefix
+{
+	return @"BookVault";
+}
+- (xmlNodePtr)xmlNodeForDoc:(xmlDocPtr)doc elementName:(NSString *)elName
+{
+	xmlNodePtr node = xmlNewDocNode(doc, NULL, (const xmlChar*)[elName UTF8String], NULL);
+	xmlSetNsProp(node, nil, (const xmlChar*)"xmlns", (const xmlChar*)"BlioBookVault");
+	
+	[self addAttributesToNode:node];
+	
+	[self addElementsToNode:node];
+	
+	return node;
+}
+- (void)addAttributesToNode:(xmlNodePtr)node
+{
+	
+}
+- (void)addElementsToNode:(xmlNodePtr)node
+{
+	if(self.token != 0) {
+		xmlAddChild(node, [self.token xmlNodeForDoc:node->doc elementName:@"token"]);
+	}
+	if(self.ISBN != 0) {
+		xmlAddChild(node, [self.ISBN xmlNodeForDoc:node->doc elementName:@"ISBN"]);
+	}
+	if(self.productTypeId != 0) {
+		xmlAddChild(node, [self.productTypeId xmlNodeForDoc:node->doc elementName:@"productTypeId"]);
+	}
+}
+/* elements */
+@synthesize token;
+@synthesize ISBN;
+@synthesize productTypeId;
+/* attributes */
+- (NSDictionary *)attributes
+{
+	NSMutableDictionary *attributes = [NSMutableDictionary dictionary];
+	
+	return attributes;
+}
++ (BookVault_DeleteBook *)deserializeNode:(xmlNodePtr)cur
+{
+	BookVault_DeleteBook *newObject = [[BookVault_DeleteBook new] autorelease];
+	
+	[newObject deserializeAttributesFromNode:cur];
+	[newObject deserializeElementsFromNode:cur];
+	
+	return newObject;
+}
+- (void)deserializeAttributesFromNode:(xmlNodePtr)cur
+{
+}
+- (void)deserializeElementsFromNode:(xmlNodePtr)cur
+{
+	
+	
+	for( cur = cur->children ; cur != NULL ; cur = cur->next ) {
+		if(cur->type == XML_ELEMENT_NODE) {
+			xmlChar *elementText = xmlNodeListGetString(cur->doc, cur->children, 1);
+			NSString *elementString = nil;
+			
+			if(elementText != NULL) {
+				elementString = [NSString stringWithCString:(char*)elementText encoding:NSUTF8StringEncoding];
+				[elementString self]; // avoid compiler warning for unused var
+				xmlFree(elementText);
+			}
+			if(xmlStrEqual(cur->name, (const xmlChar *) "token")) {
+				
+				Class elementClass = nil;
+				xmlChar *instanceType = xmlGetNsProp(cur, (const xmlChar *) "type", (const xmlChar *) "http://www.w3.org/2001/XMLSchema-instance");
+				if(instanceType == NULL) {
+					elementClass = [NSString  class];
+				} else {
+					NSString *elementTypeString = [NSString stringWithCString:(char*)instanceType encoding:NSUTF8StringEncoding];
+					
+					NSArray *elementTypeArray = [elementTypeString componentsSeparatedByString:@":"];
+					
+					NSString *elementClassString = nil;
+					if([elementTypeArray count] > 1) {
+						NSString *prefix = [elementTypeArray objectAtIndex:0];
+						NSString *localName = [elementTypeArray objectAtIndex:1];
+						
+						xmlNsPtr elementNamespace = xmlSearchNs(cur->doc, cur, (const xmlChar *)[prefix UTF8String]);
+						
+						NSString *standardPrefix = [[USGlobals sharedInstance].wsdlStandardNamespaces objectForKey:[NSString stringWithCString:(char*)elementNamespace->href encoding:NSUTF8StringEncoding]];
+						
+						elementClassString = [NSString stringWithFormat:@"%@_%@", standardPrefix, localName];
+					} else {
+						elementClassString = [elementTypeString stringByReplacingOccurrencesOfString:@":" withString:@"_" options:0 range:NSMakeRange(0, [elementTypeString length])];
+					}
+					
+					elementClass = NSClassFromString(elementClassString);
+					xmlFree(instanceType);
+				}
+				
+				id newChild = [elementClass deserializeNode:cur];
+				
+				self.token = newChild;
+			}
+			if(xmlStrEqual(cur->name, (const xmlChar *) "ISBN")) {
+				
+				Class elementClass = nil;
+				xmlChar *instanceType = xmlGetNsProp(cur, (const xmlChar *) "type", (const xmlChar *) "http://www.w3.org/2001/XMLSchema-instance");
+				if(instanceType == NULL) {
+					elementClass = [NSString  class];
+				} else {
+					NSString *elementTypeString = [NSString stringWithCString:(char*)instanceType encoding:NSUTF8StringEncoding];
+					
+					NSArray *elementTypeArray = [elementTypeString componentsSeparatedByString:@":"];
+					
+					NSString *elementClassString = nil;
+					if([elementTypeArray count] > 1) {
+						NSString *prefix = [elementTypeArray objectAtIndex:0];
+						NSString *localName = [elementTypeArray objectAtIndex:1];
+						
+						xmlNsPtr elementNamespace = xmlSearchNs(cur->doc, cur, (const xmlChar *)[prefix UTF8String]);
+						
+						NSString *standardPrefix = [[USGlobals sharedInstance].wsdlStandardNamespaces objectForKey:[NSString stringWithCString:(char*)elementNamespace->href encoding:NSUTF8StringEncoding]];
+						
+						elementClassString = [NSString stringWithFormat:@"%@_%@", standardPrefix, localName];
+					} else {
+						elementClassString = [elementTypeString stringByReplacingOccurrencesOfString:@":" withString:@"_" options:0 range:NSMakeRange(0, [elementTypeString length])];
+					}
+					
+					elementClass = NSClassFromString(elementClassString);
+					xmlFree(instanceType);
+				}
+				
+				id newChild = [elementClass deserializeNode:cur];
+				
+				self.ISBN = newChild;
+			}
+			if(xmlStrEqual(cur->name, (const xmlChar *) "productTypeId")) {
+				
+				Class elementClass = nil;
+				xmlChar *instanceType = xmlGetNsProp(cur, (const xmlChar *) "type", (const xmlChar *) "http://www.w3.org/2001/XMLSchema-instance");
+				if(instanceType == NULL) {
+					elementClass = [NSString  class];
+				} else {
+					NSString *elementTypeString = [NSString stringWithCString:(char*)instanceType encoding:NSUTF8StringEncoding];
+					
+					NSArray *elementTypeArray = [elementTypeString componentsSeparatedByString:@":"];
+					
+					NSString *elementClassString = nil;
+					if([elementTypeArray count] > 1) {
+						NSString *prefix = [elementTypeArray objectAtIndex:0];
+						NSString *localName = [elementTypeArray objectAtIndex:1];
+						
+						xmlNsPtr elementNamespace = xmlSearchNs(cur->doc, cur, (const xmlChar *)[prefix UTF8String]);
+						
+						NSString *standardPrefix = [[USGlobals sharedInstance].wsdlStandardNamespaces objectForKey:[NSString stringWithCString:(char*)elementNamespace->href encoding:NSUTF8StringEncoding]];
+						
+						elementClassString = [NSString stringWithFormat:@"%@_%@", standardPrefix, localName];
+					} else {
+						elementClassString = [elementTypeString stringByReplacingOccurrencesOfString:@":" withString:@"_" options:0 range:NSMakeRange(0, [elementTypeString length])];
+					}
+					
+					elementClass = NSClassFromString(elementClassString);
+					xmlFree(instanceType);
+				}
+				
+				id newChild = [elementClass deserializeNode:cur];
+				
+				self.productTypeId = newChild;
+			}
+		}
+	}
+}
+@end
+@implementation BookVault_DeleteBookResult
+- (id)init
+{
+	if((self = [super init])) {
+		ReturnCode = 0;
+		Message = 0;
+	}
+	
+	return self;
+}
+- (void)dealloc
+{
+	if(ReturnCode != nil) [ReturnCode release];
+	if(Message != nil) [Message release];
+	
+	[super dealloc];
+}
+- (NSString *)nsPrefix
+{
+	return @"BookVault";
+}
+- (xmlNodePtr)xmlNodeForDoc:(xmlDocPtr)doc elementName:(NSString *)elName
+{
+	xmlNodePtr root = xmlDocGetRootElement(doc);
+	
+	xmlNsPtr xsi = xmlSearchNs(doc, root, (const xmlChar*)"xsi");
+	
+	xmlNodePtr node = xmlNewDocNode(doc, NULL, (const xmlChar*)[elName UTF8String], NULL);
+	xmlSetNsProp(node, xsi, (const xmlChar*)"type", (const xmlChar*)"BookVault:DeleteBookResult");
+	
+	[self addAttributesToNode:node];
+	
+	[self addElementsToNode:node];
+	
+	return node;
+}
+- (void)addAttributesToNode:(xmlNodePtr)node
+{
+	
+}
+- (void)addElementsToNode:(xmlNodePtr)node
+{
+	
+	if(self.ReturnCode != 0) {
+		xmlAddChild(node, [self.ReturnCode xmlNodeForDoc:node->doc elementName:@"ReturnCode"]);
+	}
+	if(self.Message != 0) {
+		xmlAddChild(node, [self.Message xmlNodeForDoc:node->doc elementName:@"Message"]);
+	}
+}
+/* elements */
+@synthesize ReturnCode;
+@synthesize Message;
+/* attributes */
+- (NSDictionary *)attributes
+{
+	NSMutableDictionary *attributes = [NSMutableDictionary dictionary];
+	
+	return attributes;
+}
++ (BookVault_DeleteBookResult *)deserializeNode:(xmlNodePtr)cur
+{
+	BookVault_DeleteBookResult *newObject = [[BookVault_DeleteBookResult new] autorelease];
+	
+	[newObject deserializeAttributesFromNode:cur];
+	[newObject deserializeElementsFromNode:cur];
+	
+	return newObject;
+}
+- (void)deserializeAttributesFromNode:(xmlNodePtr)cur
+{
+}
+- (void)deserializeElementsFromNode:(xmlNodePtr)cur
+{
+	
+	
+	for( cur = cur->children ; cur != NULL ; cur = cur->next ) {
+		if(cur->type == XML_ELEMENT_NODE) {
+			xmlChar *elementText = xmlNodeListGetString(cur->doc, cur->children, 1);
+			NSString *elementString = nil;
+			
+			if(elementText != NULL) {
+				elementString = [NSString stringWithCString:(char*)elementText encoding:NSUTF8StringEncoding];
+				[elementString self]; // avoid compiler warning for unused var
+				xmlFree(elementText);
+			}
+			if(xmlStrEqual(cur->name, (const xmlChar *) "ReturnCode")) {
+				
+				Class elementClass = nil;
+				xmlChar *instanceType = xmlGetNsProp(cur, (const xmlChar *) "type", (const xmlChar *) "http://www.w3.org/2001/XMLSchema-instance");
+				if(instanceType == NULL) {
+					elementClass = [NSNumber  class];
+				} else {
+					NSString *elementTypeString = [NSString stringWithCString:(char*)instanceType encoding:NSUTF8StringEncoding];
+					
+					NSArray *elementTypeArray = [elementTypeString componentsSeparatedByString:@":"];
+					
+					NSString *elementClassString = nil;
+					if([elementTypeArray count] > 1) {
+						NSString *prefix = [elementTypeArray objectAtIndex:0];
+						NSString *localName = [elementTypeArray objectAtIndex:1];
+						
+						xmlNsPtr elementNamespace = xmlSearchNs(cur->doc, cur, (const xmlChar *)[prefix UTF8String]);
+						
+						NSString *standardPrefix = [[USGlobals sharedInstance].wsdlStandardNamespaces objectForKey:[NSString stringWithCString:(char*)elementNamespace->href encoding:NSUTF8StringEncoding]];
+						
+						elementClassString = [NSString stringWithFormat:@"%@_%@", standardPrefix, localName];
+					} else {
+						elementClassString = [elementTypeString stringByReplacingOccurrencesOfString:@":" withString:@"_" options:0 range:NSMakeRange(0, [elementTypeString length])];
+					}
+					
+					elementClass = NSClassFromString(elementClassString);
+					xmlFree(instanceType);
+				}
+				
+				id newChild = [elementClass deserializeNode:cur];
+				
+				self.ReturnCode = newChild;
+			}
+			if(xmlStrEqual(cur->name, (const xmlChar *) "Message")) {
+				
+				Class elementClass = nil;
+				xmlChar *instanceType = xmlGetNsProp(cur, (const xmlChar *) "type", (const xmlChar *) "http://www.w3.org/2001/XMLSchema-instance");
+				if(instanceType == NULL) {
+					elementClass = [NSString  class];
+				} else {
+					NSString *elementTypeString = [NSString stringWithCString:(char*)instanceType encoding:NSUTF8StringEncoding];
+					
+					NSArray *elementTypeArray = [elementTypeString componentsSeparatedByString:@":"];
+					
+					NSString *elementClassString = nil;
+					if([elementTypeArray count] > 1) {
+						NSString *prefix = [elementTypeArray objectAtIndex:0];
+						NSString *localName = [elementTypeArray objectAtIndex:1];
+						
+						xmlNsPtr elementNamespace = xmlSearchNs(cur->doc, cur, (const xmlChar *)[prefix UTF8String]);
+						
+						NSString *standardPrefix = [[USGlobals sharedInstance].wsdlStandardNamespaces objectForKey:[NSString stringWithCString:(char*)elementNamespace->href encoding:NSUTF8StringEncoding]];
+						
+						elementClassString = [NSString stringWithFormat:@"%@_%@", standardPrefix, localName];
+					} else {
+						elementClassString = [elementTypeString stringByReplacingOccurrencesOfString:@":" withString:@"_" options:0 range:NSMakeRange(0, [elementTypeString length])];
+					}
+					
+					elementClass = NSClassFromString(elementClassString);
+					xmlFree(instanceType);
+				}
+				
+				id newChild = [elementClass deserializeNode:cur];
+				
+				self.Message = newChild;
+			}
+		}
+	}
+}
+@end
+@implementation BookVault_DeleteBookResponse
+- (id)init
+{
+	if((self = [super init])) {
+		DeleteBookResult = 0;
+	}
+	
+	return self;
+}
+- (void)dealloc
+{
+	if(DeleteBookResult != nil) [DeleteBookResult release];
+	
+	[super dealloc];
+}
+- (NSString *)nsPrefix
+{
+	return @"BookVault";
+}
+- (xmlNodePtr)xmlNodeForDoc:(xmlDocPtr)doc elementName:(NSString *)elName
+{
+	xmlNodePtr root = xmlDocGetRootElement(doc);
+	
+	xmlNsPtr xsi = xmlSearchNs(doc, root, (const xmlChar*)"xsi");
+	
+	xmlNodePtr node = xmlNewDocNode(doc, NULL, (const xmlChar*)[elName UTF8String], NULL);
+	xmlSetNsProp(node, xsi, (const xmlChar*)"type", (const xmlChar*)"BookVault:DeleteBookResponse");
+	
+	[self addAttributesToNode:node];
+	
+	[self addElementsToNode:node];
+	
+	return node;
+}
+- (void)addAttributesToNode:(xmlNodePtr)node
+{
+	
+}
+- (void)addElementsToNode:(xmlNodePtr)node
+{
+	
+	if(self.DeleteBookResult != 0) {
+		xmlAddChild(node, [self.DeleteBookResult xmlNodeForDoc:node->doc elementName:@"DeleteBookResult"]);
+	}
+}
+/* elements */
+@synthesize DeleteBookResult;
+/* attributes */
+- (NSDictionary *)attributes
+{
+	NSMutableDictionary *attributes = [NSMutableDictionary dictionary];
+	
+	return attributes;
+}
++ (BookVault_DeleteBookResponse *)deserializeNode:(xmlNodePtr)cur
+{
+	BookVault_DeleteBookResponse *newObject = [[BookVault_DeleteBookResponse new] autorelease];
+	
+	[newObject deserializeAttributesFromNode:cur];
+	[newObject deserializeElementsFromNode:cur];
+	
+	return newObject;
+}
+- (void)deserializeAttributesFromNode:(xmlNodePtr)cur
+{
+}
+- (void)deserializeElementsFromNode:(xmlNodePtr)cur
+{
+	
+	
+	for( cur = cur->children ; cur != NULL ; cur = cur->next ) {
+		if(cur->type == XML_ELEMENT_NODE) {
+			xmlChar *elementText = xmlNodeListGetString(cur->doc, cur->children, 1);
+			NSString *elementString = nil;
+			
+			if(elementText != NULL) {
+				elementString = [NSString stringWithCString:(char*)elementText encoding:NSUTF8StringEncoding];
+				[elementString self]; // avoid compiler warning for unused var
+				xmlFree(elementText);
+			}
+			if(xmlStrEqual(cur->name, (const xmlChar *) "DeleteBookResult")) {
+				
+				Class elementClass = nil;
+				xmlChar *instanceType = xmlGetNsProp(cur, (const xmlChar *) "type", (const xmlChar *) "http://www.w3.org/2001/XMLSchema-instance");
+				if(instanceType == NULL) {
+					elementClass = [BookVault_DeleteBookResult class];
+				} else {
+					NSString *elementTypeString = [NSString stringWithCString:(char*)instanceType encoding:NSUTF8StringEncoding];
+					
+					NSArray *elementTypeArray = [elementTypeString componentsSeparatedByString:@":"];
+					
+					NSString *elementClassString = nil;
+					if([elementTypeArray count] > 1) {
+						NSString *prefix = [elementTypeArray objectAtIndex:0];
+						NSString *localName = [elementTypeArray objectAtIndex:1];
+						
+						xmlNsPtr elementNamespace = xmlSearchNs(cur->doc, cur, (const xmlChar *)[prefix UTF8String]);
+						
+						NSString *standardPrefix = [[USGlobals sharedInstance].wsdlStandardNamespaces objectForKey:[NSString stringWithCString:(char*)elementNamespace->href encoding:NSUTF8StringEncoding]];
+						
+						elementClassString = [NSString stringWithFormat:@"%@_%@", standardPrefix, localName];
+					} else {
+						elementClassString = [elementTypeString stringByReplacingOccurrencesOfString:@":" withString:@"_" options:0 range:NSMakeRange(0, [elementTypeString length])];
+					}
+					
+					elementClass = NSClassFromString(elementClassString);
+					xmlFree(instanceType);
+				}
+				
+				id newChild = [elementClass deserializeNode:cur];
+				
+				self.DeleteBookResult = newChild;
+			}
+		}
+	}
+}
+@end
+
 @implementation BookVault_RegisterSale
 - (id)init
 {
@@ -4612,6 +5077,20 @@ static NSString* const productionBookvaultUrl = @"https://bookvault.blioreader.c
 {
 	synchronousOperationComplete = YES;
 }
+
+- (BookVaultSoapResponse *)DeleteBookUsingParameters:(BookVault_DeleteBook *)aParameters
+{
+	return [self performSynchronousOperation:[[(BookVaultSoap_DeleteBook*)[BookVaultSoap_DeleteBook alloc] initWithBinding:self delegate:self
+                                                                                                                    parameters:aParameters
+                                               ] autorelease]];
+}
+- (void)DeleteBookAsyncUsingParameters:(BookVault_DeleteBook *)aParameters  delegate:(id<BookVaultSoapResponseDelegate>)responseDelegate
+{
+	[self performAsynchronousOperation: [[(BookVaultSoap_DeleteBook*)[BookVaultSoap_DeleteBook alloc] initWithBinding:self delegate:responseDelegate
+                                                                                                               parameters:aParameters
+                                          ] autorelease]];
+}
+
 - (BookVaultSoapResponse *)RegisterSaleUsingParameters:(BookVault_RegisterSale *)aParameters 
 {
 	return [self performSynchronousOperation:[[(BookVaultSoap_RegisterSale*)[BookVaultSoap_RegisterSale alloc] initWithBinding:self delegate:self
@@ -4838,6 +5317,104 @@ static NSString* const productionBookvaultUrl = @"https://bookvault.blioreader.c
 	[super dealloc];
 }
 @end
+
+@implementation BookVaultSoap_DeleteBook
+@synthesize parameters;
+- (id)initWithBinding:(BookVaultSoap *)aBinding delegate:(id<BookVaultSoapResponseDelegate>)responseDelegate
+           parameters:(BookVault_DeleteBook *)aParameters
+{
+	if((self = [super initWithBinding:aBinding delegate:responseDelegate])) {
+		self.parameters = aParameters;
+	}
+	
+	return self;
+}
+- (void)dealloc
+{
+	if(parameters != nil) [parameters release];
+	
+	[super dealloc];
+}
+- (void)main
+{
+	[response autorelease];
+	response = [BookVaultSoapResponse new];
+	response.responseType = BlioBookVaultResponseTypeDeleteBook;
+	
+	BookVaultSoap_envelope *envelope = [BookVaultSoap_envelope sharedInstance];
+	
+	NSMutableDictionary *headerElements = nil;
+	headerElements = [NSMutableDictionary dictionary];
+	
+	NSMutableDictionary *bodyElements = nil;
+	bodyElements = [NSMutableDictionary dictionary];
+	if(parameters != nil) [bodyElements setObject:parameters forKey:@"DeleteBook"];
+	
+	NSString *operationXMLString = [envelope serializedFormUsingHeaderElements:headerElements bodyElements:bodyElements];
+	
+	[binding sendHTTPCallUsingBody:operationXMLString soapAction:@"BlioBookVault/DeleteBook" forOperation:self];
+}
+- (void)connectionDidFinishLoading:(NSURLConnection *)connection
+{
+	if (responseData != nil && delegate != nil)
+	{
+		xmlDocPtr doc;
+		xmlNodePtr cur;
+		
+		if (binding.logXMLInOut) {
+			NSLog(@"ResponseBody:\n%@", [[[NSString alloc] initWithData:responseData encoding:NSUTF8StringEncoding] autorelease]);
+		}
+        @synchronized([KNFBXMLParserLock sharedLock]) {
+            doc = xmlParseMemory([responseData bytes], [responseData length]);
+        }
+		if (doc == NULL) {
+			NSDictionary *userInfo = [NSDictionary dictionaryWithObject:@"Errors while parsing returned XML" forKey:NSLocalizedDescriptionKey];
+			
+			response.error = [NSError errorWithDomain:@"BookVaultSoapResponseXML" code:1 userInfo:userInfo];
+			[delegate operation:self completedWithResponse:response];
+		} else {
+			cur = xmlDocGetRootElement(doc);
+			cur = cur->children;
+			
+			for( ; cur != NULL ; cur = cur->next) {
+				if(cur->type == XML_ELEMENT_NODE) {
+					
+					if(xmlStrEqual(cur->name, (const xmlChar *) "Body")) {
+						NSMutableArray *responseBodyParts = [NSMutableArray array];
+						
+						xmlNodePtr bodyNode;
+						for(bodyNode=cur->children ; bodyNode != NULL ; bodyNode = bodyNode->next) {
+							if(cur->type == XML_ELEMENT_NODE) {
+								if(xmlStrEqual(bodyNode->name, (const xmlChar *) "DeleteBookResponse")) {
+									BookVault_DeleteBookResponse *bodyObject = [BookVault_DeleteBookResponse deserializeNode:bodyNode];
+									//NSAssert1(bodyObject != nil, @"Errors while parsing body %s", bodyNode->name);
+									if (bodyObject != nil) [responseBodyParts addObject:bodyObject];
+								}
+                                else if (xmlStrEqual(bodyNode->ns->prefix, (const xmlChar *) "soap") &&
+                                         xmlStrEqual(bodyNode->name, (const xmlChar *) "Fault")) {
+									SOAPFault *bodyObject = [SOAPFault deserializeNode:bodyNode];
+									//NSAssert1(bodyObject != nil, @"Errors while parsing body %s", bodyNode->name);
+									if (bodyObject != nil) [responseBodyParts addObject:bodyObject];
+                                }
+							}
+						}
+						
+						response.bodyParts = responseBodyParts;
+					}
+				}
+			}
+            @synchronized([KNFBXMLParserLock sharedLock]) {
+                xmlFreeDoc(doc);
+            }
+		}
+        @synchronized([KNFBXMLParserLock sharedLock]) {
+            xmlCleanupParser();
+        }
+		[delegate operation:self completedWithResponse:response];
+	}
+}
+@end
+
 @implementation BookVaultSoap_RegisterSale
 @synthesize parameters;
 - (id)initWithBinding:(BookVaultSoap *)aBinding delegate:(id<BookVaultSoapResponseDelegate>)responseDelegate
@@ -5869,7 +6446,21 @@ static BookVaultSoap_envelope *BookVaultSoapSharedEnvelopeInstance = nil;
 {
 	synchronousOperationComplete = YES;
 }
-- (BookVaultSoap12Response *)RegisterSaleUsingParameters:(BookVault_RegisterSale *)aParameters 
+
+- (BookVaultSoap12Response *)DeleteBookUsingParameters:(BookVault_DeleteBook *)aParameters
+{
+	return [self performSynchronousOperation:[[(BookVaultSoap12_DeleteBook*)[BookVaultSoap12_DeleteBook alloc] initWithBinding:self delegate:self
+                                                                                                        parameters:aParameters
+                                               ] autorelease]];
+}
+- (void)DeleteBookAsyncUsingParameters:(BookVault_DeleteBook *)aParameters  delegate:(id<BookVaultSoap12ResponseDelegate>)responseDelegate
+{
+	[self performAsynchronousOperation: [[(BookVaultSoap12_DeleteBook*)[BookVaultSoap12_DeleteBook alloc] initWithBinding:self delegate:responseDelegate
+                                                                                                           parameters:aParameters
+                                          ] autorelease]];
+}
+
+- (BookVaultSoap12Response *)RegisterSaleUsingParameters:(BookVault_RegisterSale *)aParameters
 {
 	return [self performSynchronousOperation:[[(BookVaultSoap12_RegisterSale*)[BookVaultSoap12_RegisterSale alloc] initWithBinding:self delegate:self
 																							parameters:aParameters
@@ -6083,6 +6674,105 @@ static BookVaultSoap_envelope *BookVaultSoapSharedEnvelopeInstance = nil;
 	[super dealloc];
 }
 @end
+
+@implementation BookVaultSoap12_DeleteBook
+@synthesize parameters;
+- (id)initWithBinding:(BookVaultSoap12 *)aBinding delegate:(id<BookVaultSoap12ResponseDelegate>)responseDelegate
+           parameters:(BookVault_DeleteBook *)aParameters
+{
+	if((self = [super initWithBinding:aBinding delegate:responseDelegate])) {
+		self.parameters = aParameters;
+	}
+	
+	return self;
+}
+- (void)dealloc
+{
+	if(parameters != nil) [parameters release];
+	
+	[super dealloc];
+}
+- (void)main
+{
+	[response autorelease];
+	response = [BookVaultSoap12Response new];
+	
+	BookVaultSoap12_envelope *envelope = [BookVaultSoap12_envelope sharedInstance];
+	
+	NSMutableDictionary *headerElements = nil;
+	headerElements = [NSMutableDictionary dictionary];
+	
+	NSMutableDictionary *bodyElements = nil;
+	bodyElements = [NSMutableDictionary dictionary];
+	if(parameters != nil) [bodyElements setObject:parameters forKey:@"DeleteBook"];
+	
+	NSString *operationXMLString = [envelope serializedFormUsingHeaderElements:headerElements bodyElements:bodyElements];
+	
+	[binding sendHTTPCallUsingBody:operationXMLString soapAction:@"BlioBookVault/DeleteBook" forOperation:self];
+}
+- (void)connectionDidFinishLoading:(NSURLConnection *)connection
+{
+	if (responseData != nil && delegate != nil)
+	{
+		xmlDocPtr doc;
+		xmlNodePtr cur;
+		
+		if (binding.logXMLInOut) {
+			NSLog(@"ResponseBody:\n%@", [[[NSString alloc] initWithData:responseData encoding:NSUTF8StringEncoding] autorelease]);
+		}
+		
+        @synchronized([KNFBXMLParserLock sharedLock]) {
+            doc = xmlParseMemory([responseData bytes], [responseData length]);
+        }
+		
+		if (doc == NULL) {
+			NSDictionary *userInfo = [NSDictionary dictionaryWithObject:@"Errors while parsing returned XML" forKey:NSLocalizedDescriptionKey];
+			
+			response.error = [NSError errorWithDomain:@"BookVaultSoap12ResponseXML" code:1 userInfo:userInfo];
+			[delegate operation:self completedWithResponse:response];
+		} else {
+			cur = xmlDocGetRootElement(doc);
+			cur = cur->children;
+			
+			for( ; cur != NULL ; cur = cur->next) {
+				if(cur->type == XML_ELEMENT_NODE) {
+					
+					if(xmlStrEqual(cur->name, (const xmlChar *) "Body")) {
+						NSMutableArray *responseBodyParts = [NSMutableArray array];
+						
+						xmlNodePtr bodyNode;
+						for(bodyNode=cur->children ; bodyNode != NULL ; bodyNode = bodyNode->next) {
+							if(cur->type == XML_ELEMENT_NODE) {
+								if(xmlStrEqual(bodyNode->name, (const xmlChar *) "DeleteBookResponse")) {
+									BookVault_RegisterSaleResponse *bodyObject = [BookVault_RegisterSaleResponse deserializeNode:bodyNode];
+									//NSAssert1(bodyObject != nil, @"Errors while parsing body %s", bodyNode->name);
+									if (bodyObject != nil) [responseBodyParts addObject:bodyObject];
+								}
+                                else if (xmlStrEqual(bodyNode->ns->prefix, (const xmlChar *) "soap") &&
+                                         xmlStrEqual(bodyNode->name, (const xmlChar *) "Fault")) {
+									SOAPFault *bodyObject = [SOAPFault deserializeNode:bodyNode];
+									//NSAssert1(bodyObject != nil, @"Errors while parsing body %s", bodyNode->name);
+									if (bodyObject != nil) [responseBodyParts addObject:bodyObject];
+                                }
+							}
+						}
+						
+						response.bodyParts = responseBodyParts;
+					}
+				}
+			}
+            @synchronized([KNFBXMLParserLock sharedLock]) {
+                xmlFreeDoc(doc);
+            }
+		}
+        @synchronized([KNFBXMLParserLock sharedLock]) {
+            xmlCleanupParser();
+        }
+		[delegate operation:self completedWithResponse:response];
+	}
+}
+@end
+
 @implementation BookVaultSoap12_RegisterSale
 @synthesize parameters;
 - (id)initWithBinding:(BookVaultSoap12 *)aBinding delegate:(id<BookVaultSoap12ResponseDelegate>)responseDelegate

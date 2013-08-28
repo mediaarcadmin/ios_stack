@@ -24,6 +24,9 @@
 @class BookVault_Login;
 @class BookVault_LoginResponse;
 @class BookVault_LoginResult;
+@class BookVault_DeleteBook;
+@class BookVault_DeleteBookResponse;
+@class BookVault_DeleteBookResult;
 
 static NSString * const BlioBookVaultResponseTypeRegisterSale = @"RegisterSaleResponse";
 static NSString * const BlioBookVaultResponseTypeVaultContentsWithToken = @"VaultContentsWithTokenResponse";
@@ -34,6 +37,69 @@ static NSString * const BlioBookVaultResponseTypeRequestDownloadWithTokenEx = @"
 static NSString * const BlioBookVaultResponseTypeRequestClientDownloadWithTokenEx = @"RequestClientDownloadWithTokenExResponse";
 static NSString * const BlioBookVaultResponseTypeRequestDownload = @"RequestDownloadResponse";
 static NSString * const BlioBookVaultResponseTypeLogin = @"LoginResponse";
+static NSString * const BlioBookVaultResponseTypeDeleteBook = @"DeleteBook";
+
+@interface BookVault_DeleteBook : NSObject {
+	
+	/* elements */
+	NSString * token;
+	NSString * ISBN;
+	NSNumber * productTypeId;
+	/* attributes */
+}
+- (NSString *)nsPrefix;
+- (xmlNodePtr)xmlNodeForDoc:(xmlDocPtr)doc elementName:(NSString *)elName;
+- (void)addAttributesToNode:(xmlNodePtr)node;
+- (void)addElementsToNode:(xmlNodePtr)node;
++ (BookVault_DeleteBook *)deserializeNode:(xmlNodePtr)cur;
+- (void)deserializeAttributesFromNode:(xmlNodePtr)cur;
+- (void)deserializeElementsFromNode:(xmlNodePtr)cur;
+/* elements */
+@property (retain) NSString * token;
+@property (retain) NSString * ISBN;
+@property (retain) NSNumber * productTypeId;
+/* attributes */
+- (NSDictionary *)attributes;
+@end
+
+@interface BookVault_DeleteBookResult : NSObject {
+	
+    /* elements */
+	NSNumber * ReturnCode;
+	NSString * Message;
+    /* attributes */
+}
+- (NSString *)nsPrefix;
+- (xmlNodePtr)xmlNodeForDoc:(xmlDocPtr)doc elementName:(NSString *)elName;
+- (void)addAttributesToNode:(xmlNodePtr)node;
+- (void)addElementsToNode:(xmlNodePtr)node;
++ (BookVault_DeleteBookResult *)deserializeNode:(xmlNodePtr)cur;
+- (void)deserializeAttributesFromNode:(xmlNodePtr)cur;
+- (void)deserializeElementsFromNode:(xmlNodePtr)cur;
+/* elements */
+@property (retain) NSNumber * ReturnCode;
+@property (retain) NSString * Message;
+/* attributes */
+- (NSDictionary *)attributes;
+@end
+@interface BookVault_DeleteBookResponse : NSObject {
+	
+    /* elements */
+	BookVault_DeleteBookResult * DeleteBookResult;
+    /* attributes */
+}
+- (NSString *)nsPrefix;
+- (xmlNodePtr)xmlNodeForDoc:(xmlDocPtr)doc elementName:(NSString *)elName;
+- (void)addAttributesToNode:(xmlNodePtr)node;
+- (void)addElementsToNode:(xmlNodePtr)node;
++ (BookVault_DeleteBookResponse *)deserializeNode:(xmlNodePtr)cur;
+- (void)deserializeAttributesFromNode:(xmlNodePtr)cur;
+- (void)deserializeElementsFromNode:(xmlNodePtr)cur;
+/* elements */
+@property (retain) BookVault_DeleteBookResult * DeleteBookResult;
+/* attributes */
+- (NSDictionary *)attributes;
+@end
 
 @interface BookVault_RegisterSale : NSObject {
 	
@@ -616,6 +682,8 @@ static NSString * const BlioBookVaultResponseTypeLogin = @"LoginResponse";
 - (id)initWithAddress:(NSString *)anAddress;
 - (void)sendHTTPCallUsingBody:(NSString *)body soapAction:(NSString *)soapAction forOperation:(BookVaultSoapOperation *)operation;
 - (void)addCookie:(NSHTTPCookie *)toAdd;
+- (BookVaultSoapResponse *)DeleteBookUsingParameters:(BookVault_DeleteBook *)aParameters ;
+- (void)DeleteBookAsyncUsingParameters:(BookVault_DeleteBook *)aParameters  delegate:(id<BookVaultSoapResponseDelegate>)responseDelegate;
 - (BookVaultSoapResponse *)RegisterSaleUsingParameters:(BookVault_RegisterSale *)aParameters ;
 - (void)RegisterSaleAsyncUsingParameters:(BookVault_RegisterSale *)aParameters  delegate:(id<BookVaultSoapResponseDelegate>)responseDelegate;
 - (BookVaultSoapResponse *)VaultContentsWithTokenUsingParameters:(BookVault_VaultContentsWithToken *)aParameters ;
@@ -645,6 +713,14 @@ static NSString * const BlioBookVaultResponseTypeLogin = @"LoginResponse";
 @property (nonatomic, retain) NSMutableData *responseData;
 @property (nonatomic, retain) NSURLConnection *urlConnection;
 - (id)initWithBinding:(BookVaultSoap *)aBinding delegate:(id<BookVaultSoapResponseDelegate>)aDelegate;
+@end
+@interface BookVaultSoap_DeleteBook : BookVaultSoapOperation {
+	BookVault_DeleteBook * parameters;
+}
+@property (retain) BookVault_DeleteBook * parameters;
+- (id)initWithBinding:(BookVaultSoap *)aBinding delegate:(id<BookVaultSoapResponseDelegate>)aDelegate
+           parameters:(BookVault_DeleteBook *)aParameters
+;
 @end
 @interface BookVaultSoap_RegisterSale : BookVaultSoapOperation {
 	BookVault_RegisterSale * parameters;
@@ -756,6 +832,8 @@ static NSString * const BlioBookVaultResponseTypeLogin = @"LoginResponse";
 - (id)initWithAddress:(NSString *)anAddress;
 - (void)sendHTTPCallUsingBody:(NSString *)body soapAction:(NSString *)soapAction forOperation:(BookVaultSoap12Operation *)operation;
 - (void)addCookie:(NSHTTPCookie *)toAdd;
+- (BookVaultSoap12Response *)DeleteBookUsingParameters:(BookVault_DeleteBook *)aParameters ;
+- (void)DeleteBookAsyncUsingParameters:(BookVault_DeleteBook *)aParameters  delegate:(id<BookVaultSoap12ResponseDelegate>)responseDelegate;
 - (BookVaultSoap12Response *)RegisterSaleUsingParameters:(BookVault_RegisterSale *)aParameters ;
 - (void)RegisterSaleAsyncUsingParameters:(BookVault_RegisterSale *)aParameters  delegate:(id<BookVaultSoap12ResponseDelegate>)responseDelegate;
 - (BookVaultSoap12Response *)VaultContentsWithTokenUsingParameters:(BookVault_VaultContentsWithToken *)aParameters ;
@@ -782,6 +860,14 @@ static NSString * const BlioBookVaultResponseTypeLogin = @"LoginResponse";
 @property (nonatomic, retain) NSMutableData *responseData;
 @property (nonatomic, retain) NSURLConnection *urlConnection;
 - (id)initWithBinding:(BookVaultSoap12 *)aBinding delegate:(id<BookVaultSoap12ResponseDelegate>)aDelegate;
+@end
+@interface BookVaultSoap12_DeleteBook : BookVaultSoap12Operation {
+	BookVault_DeleteBook * parameters;
+}
+@property (retain) BookVault_DeleteBook * parameters;
+- (id)initWithBinding:(BookVaultSoap12 *)aBinding delegate:(id<BookVaultSoap12ResponseDelegate>)aDelegate
+           parameters:(BookVault_DeleteBook *)aParameters
+;
 @end
 @interface BookVaultSoap12_RegisterSale : BookVaultSoap12Operation {
 	BookVault_RegisterSale * parameters;

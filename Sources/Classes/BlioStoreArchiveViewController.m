@@ -16,6 +16,9 @@
 #import "Reachability.h"
 #import "BlioStoreHelper.h"
 
+#define ARCHIVE_DELETE_WARNING_TAG 15
+#define ARCHIVE_DELETE_ERROR_TAG 15
+
 @interface BlioStoreArchiveViewController()
 @property (nonatomic, retain) BlioBook* currBook;
 @end
@@ -215,12 +218,10 @@
 -(void) configureTableCell:(BlioLibraryListCell*)cell atIndexPath:(NSIndexPath*)indexPath {
 	cell.book = [self.fetchedResultsController objectAtIndexPath:indexPath];
 	cell.delegate = self;
-	
 	if ([indexPath row] % 2)
 		cell.backgroundView = [[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"row-light.png"]] autorelease];
 	else                         
 		cell.backgroundView = [[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"row-dark.png"]] autorelease];
-	
 	cell.showsReorderControl = YES;	
 }
 -(void) reprocessCoverThumbnailsForBook:(BlioBook*)aBook {
@@ -382,35 +383,34 @@
 */
 
 
-/*
-// Override to support editing the table view.
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
-    
     if (editingStyle == UITableViewCellEditingStyleDelete) {
-        // Delete the row from the data source
-        [tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:YES];
-    }   
-    else if (editingStyle == UITableViewCellEditingStyleInsert) {
-        // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-    }   
+        currBook = [self.fetchedResultsController objectAtIndexPath:indexPath];
+		[BlioAlertManager showTaggedAlertWithTitle:NSLocalizedString(@"Delete from Archive",@"\"Delete from Archive\" alert message title")
+                                           message:NSLocalizedStringWithDefaultValue(@"DELETE_FROM_ARCHIVE_EXPLANATION",nil,[NSBundle mainBundle],@"Deleting this book from your archive means that it will no longer be available to download.  Would you like to proceed?",@"alert message explaining the implications of deleting a book from the archive")
+                                          delegate:self
+                                               tag:ARCHIVE_DELETE_WARNING_TAG
+                                 cancelButtonTitle:NSLocalizedString(@"No",@"\"No\" label for button used to cancel/dismiss alertview")
+                                 otherButtonTitles: @"OK", nil];
+       
+    }
 }
-*/
 
 
 /*
-// Override to support rearranging the table view.
-- (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath {
-}
-*/
+ // Override to support rearranging the table view.
+ - (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath {
+ }
+ */
 
 
 /*
-// Override to support conditional rearranging of the table view.
-- (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath {
-    // Return NO if you do not want the item to be re-orderable.
-    return YES;
-}
-*/
+ // Override to support conditional rearranging of the table view.
+ - (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath {
+ // Return NO if you do not want the item to be re-orderable.
+ return YES;
+ }
+ */
 
 #pragma mark -
 #pragma mark Fetched Results Controller Delegate
@@ -462,6 +462,81 @@
 	//		NSLog(@"mo index: %i, libraryPosition: %i",i,[[[[self.fetchedResultsController fetchedObjects] objectAtIndex:i] valueForKey:@"libraryPosition"] intValue]);
 	//	}
 	
+}
+
+#pragma mark UIAlertViewDelegate methods
+
+// Called when a button is clicked. The view will be automatically dismissed after this call returns
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
+    switch (buttonIndex) {
+        case 0:
+            break;
+        case 1:
+            if (alertView.tag == ARCHIVE_DELETE_WARNING_TAG) {
+                NSLog(@"Delete %@ from archive.", currBook.title);
+                BookVaultSoap *vaultBinding = [[BookVault BookVaultSoap] retain];
+                vaultBinding.logXMLInOut = YES;
+                BookVault_DeleteBook* deleteBookRequest = [[BookVault_DeleteBook new] autorelease];
+                deleteBookRequest.token = [[BlioStoreManager sharedInstance] tokenForSourceID:BlioBookSourceOnlineStore];
+                deleteBookRequest.productTypeId = [currBook valueForKey:@"productType"];
+                deleteBookRequest.ISBN = [currBook valueForKey:@"isbn"];
+                [vaultBinding DeleteBookAsyncUsingParameters:deleteBookRequest delegate:self];
+                [vaultBinding release];
+            }
+            break;
+        default:
+            break;
+    }
+}
+
+#pragma mark BookVaultSoapResponseDelegate method
+
+- (void) operation:(BookVaultSoapOperation *)operation completedWithResponse:(BookVaultSoapResponse *)response {
+	if (!response.responseType) {
+		NSLog(@"ERROR: response has no response type!");
+		return;
+	}
+	if ([response.responseType isEqualToString:BlioBookVaultResponseTypeDeleteBook]) {
+		
+		NSArray *responseBodyParts = response.bodyParts;
+		for(id bodyPart in responseBodyParts) {
+            NSLog(@"DeleteBook response bodyPart: %@",bodyPart);
+		}
+        
+		for(id bodyPart in responseBodyParts) {
+			if ([bodyPart isKindOfClass:[SOAPFault class]]) {
+				NSString* err = ((SOAPFault *)bodyPart).simpleFaultString;
+				NSLog(@"SOAP error for book deletion: %@",err);
+                NSString* errorMessage = @"There was an error deleting this book: ";
+                [BlioAlertManager showTaggedAlertWithTitle:NSLocalizedString(@"Delete from Archive",@"\"Delete from Archive\" alert message title")
+                                                   message:[errorMessage stringByAppendingString:err]
+                                                  delegate:self
+                                                       tag:ARCHIVE_DELETE_ERROR_TAG
+                                         cancelButtonTitle:NSLocalizedString(@"OK",@"\"OK\" label for button used to cancel/dismiss alertview")
+                                         otherButtonTitles: nil];
+				return;
+			}
+            else if ( [[bodyPart DeleteBookResult].ReturnCode intValue] == 0 ) {
+                // Success.  Now update the data source.
+                NSError* err = nil;
+                [self.managedObjectContext deleteObject:currBook];
+                if (![self.managedObjectContext save:&err])
+                    NSLog(@"Error deleting book from core data: %@",[err localizedDescription]);
+				return;
+			}
+			else {
+				NSLog(@"Error %@ deleting book from archive: %@",[[[bodyPart DeleteBookResult] ReturnCode] stringValue], [bodyPart DeleteBookResult].Message);
+                NSString* errorMessage = @"There was an error deleting this book.  Please contact Blio technical support with the error code: ";
+                [BlioAlertManager showTaggedAlertWithTitle:NSLocalizedString(@"Delete from Archive",@"\"Delete from Archive\" alert message title")
+                                                   message:[errorMessage stringByAppendingString:[[[bodyPart DeleteBookResult] ReturnCode] stringValue]]
+                                                  delegate:self
+                                                       tag:ARCHIVE_DELETE_ERROR_TAG
+                                         cancelButtonTitle:NSLocalizedString(@"OK",@"\"OK\" label for button used to cancel/dismiss alertview")
+                                         otherButtonTitles: nil];
+				return;
+			}
+		}
+	}
 }
 
 #pragma mark -
