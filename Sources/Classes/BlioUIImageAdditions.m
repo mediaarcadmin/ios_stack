@@ -7,6 +7,7 @@
 //
 
 #import "BlioUIImageAdditions.h"
+#import <libEucalyptus/THUIDeviceAdditions.h>
 
 @implementation UIImage (BlioAdditions)
 
@@ -123,7 +124,10 @@
         UIGraphicsBeginImageContext(combinedRect.size);
     }
     CGContextRef ctx = UIGraphicsGetCurrentContext();
-    CGContextSetShadowWithColor(ctx, CGSizeMake(0, 0.5f), 0.0f, [UIColor colorWithWhite:0.0f alpha:0.5f].CGColor);
+    
+    if ([[UIDevice currentDevice] compareSystemVersion:@"7.0"] < NSOrderedSame) {
+        CGContextSetShadowWithColor(ctx, CGSizeMake(0, 0.5f), 0.0f, [UIColor colorWithWhite:0.0f alpha:0.5f].CGColor);
+    }
     CGContextBeginTransparencyLayer(ctx, NULL);
     [image drawAtPoint:imageRect.origin];
     [textImage drawAtPoint:textRect.origin];
@@ -148,7 +152,10 @@
     imageRect.size.height -= (inset.top + inset.bottom);
     imageRect = CGRectIntegral(imageRect);
     CGContextRef ctx = UIGraphicsGetCurrentContext();
-    CGContextSetShadowWithColor(ctx, CGSizeMake(0, 0.5f), 0.0f, color.CGColor);
+    
+    if ([[UIDevice currentDevice] compareSystemVersion:@"7.0"] < NSOrderedSame) {
+        CGContextSetShadowWithColor(ctx, CGSizeMake(0, 0.5f), 0.0f, color.CGColor);
+    }
     CGContextBeginTransparencyLayer(ctx, NULL);
     [image drawAtPoint:imageRect.origin];
     CGContextEndTransparencyLayer(ctx);
