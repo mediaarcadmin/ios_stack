@@ -315,6 +315,7 @@ static NSString * const BlioBookSearchCollapseViewToToolbarAnimation = @"BlioBoo
         }
 
         [self.toolbar setInlineMode:YES];
+        [self.navController setToolbarHidden:YES];
         
         if (animated) {
             [UIView commitAnimations];
