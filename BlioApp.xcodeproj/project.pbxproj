@@ -148,7 +148,6 @@
 		7D4A014411DBA36900DDA5B7 /* MenuBackground.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D4A00DA11DBA36800DDA5B7 /* MenuBackground.png */; };
 		7D4A014511DBA36900DDA5B7 /* MenuBackground@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D4A00DB11DBA36800DDA5B7 /* MenuBackground@2x.png */; };
 		7D4A014611DBA36900DDA5B7 /* MenuBackgroundHighlighted.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D4A00DC11DBA36800DDA5B7 /* MenuBackgroundHighlighted.png */; };
-		7D4A014711DBA36900DDA5B7 /* MenuBackgroundHighlighted@2.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D4A00DD11DBA36800DDA5B7 /* MenuBackgroundHighlighted@2.png */; };
 		7D4A014811DBA36900DDA5B7 /* MenuBottomShadowLeft.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D4A00DE11DBA36800DDA5B7 /* MenuBottomShadowLeft.png */; };
 		7D4A014911DBA36900DDA5B7 /* MenuBottomShadowLeft@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D4A00DF11DBA36800DDA5B7 /* MenuBottomShadowLeft@2x.png */; };
 		7D4A014A11DBA36900DDA5B7 /* MenuBottomShadowMiddle.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D4A00E011DBA36800DDA5B7 /* MenuBottomShadowMiddle.png */; };
@@ -295,6 +294,136 @@
 		7D9A6884125ABC7200130A53 /* levenshtein_distance.c in Sources */ = {isa = PBXBuildFile; fileRef = 7D9A6882125ABC7200130A53 /* levenshtein_distance.c */; };
 		7D9A6885125ABC7200130A53 /* levenshtein_distance.c in Sources */ = {isa = PBXBuildFile; fileRef = 7D9A6882125ABC7200130A53 /* levenshtein_distance.c */; };
 		7D9A6886125ABC7200130A53 /* levenshtein_distance.c in Sources */ = {isa = PBXBuildFile; fileRef = 7D9A6882125ABC7200130A53 /* levenshtein_distance.c */; };
+		7D9F9AF517E33A5D00B5FEC7 /* MagnificationLoupeHigh-7.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D9F9AF317E33A5D00B5FEC7 /* MagnificationLoupeHigh-7.png */; };
+		7D9F9AF617E33A5D00B5FEC7 /* MagnificationLoupeHigh-7.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D9F9AF317E33A5D00B5FEC7 /* MagnificationLoupeHigh-7.png */; };
+		7D9F9AF717E33A5D00B5FEC7 /* MagnificationLoupeHigh-7.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D9F9AF317E33A5D00B5FEC7 /* MagnificationLoupeHigh-7.png */; };
+		7D9F9AF817E33A5D00B5FEC7 /* MagnificationLoupeHigh-7.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D9F9AF317E33A5D00B5FEC7 /* MagnificationLoupeHigh-7.png */; };
+		7D9F9AF917E33A5D00B5FEC7 /* MagnificationLoupeHigh-7.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D9F9AF317E33A5D00B5FEC7 /* MagnificationLoupeHigh-7.png */; };
+		7D9F9AFA17E33A5D00B5FEC7 /* MagnificationLoupeHigh-7@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D9F9AF417E33A5D00B5FEC7 /* MagnificationLoupeHigh-7@2x.png */; };
+		7D9F9AFB17E33A5D00B5FEC7 /* MagnificationLoupeHigh-7@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D9F9AF417E33A5D00B5FEC7 /* MagnificationLoupeHigh-7@2x.png */; };
+		7D9F9AFC17E33A5D00B5FEC7 /* MagnificationLoupeHigh-7@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D9F9AF417E33A5D00B5FEC7 /* MagnificationLoupeHigh-7@2x.png */; };
+		7D9F9AFD17E33A5D00B5FEC7 /* MagnificationLoupeHigh-7@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D9F9AF417E33A5D00B5FEC7 /* MagnificationLoupeHigh-7@2x.png */; };
+		7D9F9AFE17E33A5D00B5FEC7 /* MagnificationLoupeHigh-7@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D9F9AF417E33A5D00B5FEC7 /* MagnificationLoupeHigh-7@2x.png */; };
+		7D9F9B1117E33BE100B5FEC7 /* MagnificationLoupeMask-7.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D9F9B0F17E33BE100B5FEC7 /* MagnificationLoupeMask-7.png */; };
+		7D9F9B1217E33BE100B5FEC7 /* MagnificationLoupeMask-7.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D9F9B0F17E33BE100B5FEC7 /* MagnificationLoupeMask-7.png */; };
+		7D9F9B1317E33BE100B5FEC7 /* MagnificationLoupeMask-7.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D9F9B0F17E33BE100B5FEC7 /* MagnificationLoupeMask-7.png */; };
+		7D9F9B1417E33BE100B5FEC7 /* MagnificationLoupeMask-7.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D9F9B0F17E33BE100B5FEC7 /* MagnificationLoupeMask-7.png */; };
+		7D9F9B1517E33BE100B5FEC7 /* MagnificationLoupeMask-7.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D9F9B0F17E33BE100B5FEC7 /* MagnificationLoupeMask-7.png */; };
+		7D9F9B1617E33BE100B5FEC7 /* MagnificationLoupeMask-7@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D9F9B1017E33BE100B5FEC7 /* MagnificationLoupeMask-7@2x.png */; };
+		7D9F9B1717E33BE100B5FEC7 /* MagnificationLoupeMask-7@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D9F9B1017E33BE100B5FEC7 /* MagnificationLoupeMask-7@2x.png */; };
+		7D9F9B1817E33BE100B5FEC7 /* MagnificationLoupeMask-7@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D9F9B1017E33BE100B5FEC7 /* MagnificationLoupeMask-7@2x.png */; };
+		7D9F9B1917E33BE100B5FEC7 /* MagnificationLoupeMask-7@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D9F9B1017E33BE100B5FEC7 /* MagnificationLoupeMask-7@2x.png */; };
+		7D9F9B1A17E33BE100B5FEC7 /* MagnificationLoupeMask-7@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D9F9B1017E33BE100B5FEC7 /* MagnificationLoupeMask-7@2x.png */; };
+		7D9F9B1F17E33CE300B5FEC7 /* LineLoupeHigh-7.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D9F9B1B17E33CE300B5FEC7 /* LineLoupeHigh-7.png */; };
+		7D9F9B2017E33CE300B5FEC7 /* LineLoupeHigh-7.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D9F9B1B17E33CE300B5FEC7 /* LineLoupeHigh-7.png */; };
+		7D9F9B2117E33CE300B5FEC7 /* LineLoupeHigh-7.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D9F9B1B17E33CE300B5FEC7 /* LineLoupeHigh-7.png */; };
+		7D9F9B2217E33CE300B5FEC7 /* LineLoupeHigh-7.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D9F9B1B17E33CE300B5FEC7 /* LineLoupeHigh-7.png */; };
+		7D9F9B2317E33CE300B5FEC7 /* LineLoupeHigh-7.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D9F9B1B17E33CE300B5FEC7 /* LineLoupeHigh-7.png */; };
+		7D9F9B2417E33CE300B5FEC7 /* LineLoupeHigh-7@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D9F9B1C17E33CE300B5FEC7 /* LineLoupeHigh-7@2x.png */; };
+		7D9F9B2517E33CE300B5FEC7 /* LineLoupeHigh-7@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D9F9B1C17E33CE300B5FEC7 /* LineLoupeHigh-7@2x.png */; };
+		7D9F9B2617E33CE300B5FEC7 /* LineLoupeHigh-7@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D9F9B1C17E33CE300B5FEC7 /* LineLoupeHigh-7@2x.png */; };
+		7D9F9B2717E33CE300B5FEC7 /* LineLoupeHigh-7@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D9F9B1C17E33CE300B5FEC7 /* LineLoupeHigh-7@2x.png */; };
+		7D9F9B2817E33CE300B5FEC7 /* LineLoupeHigh-7@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D9F9B1C17E33CE300B5FEC7 /* LineLoupeHigh-7@2x.png */; };
+		7D9F9B3517E33D0900B5FEC7 /* LineLoupeMask-7.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D9F9B3317E33D0900B5FEC7 /* LineLoupeMask-7.png */; };
+		7D9F9B3617E33D0900B5FEC7 /* LineLoupeMask-7.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D9F9B3317E33D0900B5FEC7 /* LineLoupeMask-7.png */; };
+		7D9F9B3717E33D0900B5FEC7 /* LineLoupeMask-7.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D9F9B3317E33D0900B5FEC7 /* LineLoupeMask-7.png */; };
+		7D9F9B3817E33D0900B5FEC7 /* LineLoupeMask-7.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D9F9B3317E33D0900B5FEC7 /* LineLoupeMask-7.png */; };
+		7D9F9B3917E33D0900B5FEC7 /* LineLoupeMask-7.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D9F9B3317E33D0900B5FEC7 /* LineLoupeMask-7.png */; };
+		7D9F9B3A17E33D0900B5FEC7 /* LineLoupeMask-7@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D9F9B3417E33D0900B5FEC7 /* LineLoupeMask-7@2x.png */; };
+		7D9F9B3B17E33D0900B5FEC7 /* LineLoupeMask-7@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D9F9B3417E33D0900B5FEC7 /* LineLoupeMask-7@2x.png */; };
+		7D9F9B3C17E33D0900B5FEC7 /* LineLoupeMask-7@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D9F9B3417E33D0900B5FEC7 /* LineLoupeMask-7@2x.png */; };
+		7D9F9B3D17E33D0900B5FEC7 /* LineLoupeMask-7@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D9F9B3417E33D0900B5FEC7 /* LineLoupeMask-7@2x.png */; };
+		7D9F9B3E17E33D0900B5FEC7 /* LineLoupeMask-7@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D9F9B3417E33D0900B5FEC7 /* LineLoupeMask-7@2x.png */; };
+		7D9F9B4217E3547100B5FEC7 /* MenuArrowBottom-7@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D9F9B3F17E3547100B5FEC7 /* MenuArrowBottom-7@2x.png */; };
+		7D9F9B4317E3547100B5FEC7 /* MenuArrowBottom-7@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D9F9B3F17E3547100B5FEC7 /* MenuArrowBottom-7@2x.png */; };
+		7D9F9B4417E3547100B5FEC7 /* MenuArrowBottom-7@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D9F9B3F17E3547100B5FEC7 /* MenuArrowBottom-7@2x.png */; };
+		7D9F9B4517E3547100B5FEC7 /* MenuArrowBottom-7@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D9F9B3F17E3547100B5FEC7 /* MenuArrowBottom-7@2x.png */; };
+		7D9F9B4617E3547100B5FEC7 /* MenuArrowBottom-7@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D9F9B3F17E3547100B5FEC7 /* MenuArrowBottom-7@2x.png */; };
+		7D9F9B4717E3547100B5FEC7 /* MenuArrowTop-7@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D9F9B4017E3547100B5FEC7 /* MenuArrowTop-7@2x.png */; };
+		7D9F9B4817E3547100B5FEC7 /* MenuArrowTop-7@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D9F9B4017E3547100B5FEC7 /* MenuArrowTop-7@2x.png */; };
+		7D9F9B4917E3547100B5FEC7 /* MenuArrowTop-7@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D9F9B4017E3547100B5FEC7 /* MenuArrowTop-7@2x.png */; };
+		7D9F9B4A17E3547100B5FEC7 /* MenuArrowTop-7@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D9F9B4017E3547100B5FEC7 /* MenuArrowTop-7@2x.png */; };
+		7D9F9B4B17E3547100B5FEC7 /* MenuArrowTop-7@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D9F9B4017E3547100B5FEC7 /* MenuArrowTop-7@2x.png */; };
+		7D9F9B4C17E3547100B5FEC7 /* MenuBackground-7@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D9F9B4117E3547100B5FEC7 /* MenuBackground-7@2x.png */; };
+		7D9F9B4D17E3547100B5FEC7 /* MenuBackground-7@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D9F9B4117E3547100B5FEC7 /* MenuBackground-7@2x.png */; };
+		7D9F9B4E17E3547100B5FEC7 /* MenuBackground-7@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D9F9B4117E3547100B5FEC7 /* MenuBackground-7@2x.png */; };
+		7D9F9B4F17E3547100B5FEC7 /* MenuBackground-7@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D9F9B4117E3547100B5FEC7 /* MenuBackground-7@2x.png */; };
+		7D9F9B5017E3547100B5FEC7 /* MenuBackground-7@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D9F9B4117E3547100B5FEC7 /* MenuBackground-7@2x.png */; };
+		7D9F9B5417E3594200B5FEC7 /* MenuArrowTopHighlighted-7@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D9F9B5117E3594200B5FEC7 /* MenuArrowTopHighlighted-7@2x.png */; };
+		7D9F9B5517E3594200B5FEC7 /* MenuArrowTopHighlighted-7@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D9F9B5117E3594200B5FEC7 /* MenuArrowTopHighlighted-7@2x.png */; };
+		7D9F9B5617E3594200B5FEC7 /* MenuArrowTopHighlighted-7@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D9F9B5117E3594200B5FEC7 /* MenuArrowTopHighlighted-7@2x.png */; };
+		7D9F9B5717E3594200B5FEC7 /* MenuArrowTopHighlighted-7@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D9F9B5117E3594200B5FEC7 /* MenuArrowTopHighlighted-7@2x.png */; };
+		7D9F9B5817E3594200B5FEC7 /* MenuArrowTopHighlighted-7@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D9F9B5117E3594200B5FEC7 /* MenuArrowTopHighlighted-7@2x.png */; };
+		7D9F9B5E17E3594200B5FEC7 /* MenuBackgroundHighlighted-7@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D9F9B5317E3594200B5FEC7 /* MenuBackgroundHighlighted-7@2x.png */; };
+		7D9F9B5F17E3594200B5FEC7 /* MenuBackgroundHighlighted-7@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D9F9B5317E3594200B5FEC7 /* MenuBackgroundHighlighted-7@2x.png */; };
+		7D9F9B6017E3594200B5FEC7 /* MenuBackgroundHighlighted-7@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D9F9B5317E3594200B5FEC7 /* MenuBackgroundHighlighted-7@2x.png */; };
+		7D9F9B6117E3594200B5FEC7 /* MenuBackgroundHighlighted-7@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D9F9B5317E3594200B5FEC7 /* MenuBackgroundHighlighted-7@2x.png */; };
+		7D9F9B6217E3594200B5FEC7 /* MenuBackgroundHighlighted-7@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D9F9B5317E3594200B5FEC7 /* MenuBackgroundHighlighted-7@2x.png */; };
+		7D9F9B6417E359B100B5FEC7 /* MenuArrowBottomHighlighted-7@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D9F9B6317E359B100B5FEC7 /* MenuArrowBottomHighlighted-7@2x.png */; };
+		7D9F9B6517E359B100B5FEC7 /* MenuArrowBottomHighlighted-7@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D9F9B6317E359B100B5FEC7 /* MenuArrowBottomHighlighted-7@2x.png */; };
+		7D9F9B6617E359B100B5FEC7 /* MenuArrowBottomHighlighted-7@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D9F9B6317E359B100B5FEC7 /* MenuArrowBottomHighlighted-7@2x.png */; };
+		7D9F9B6717E359B100B5FEC7 /* MenuArrowBottomHighlighted-7@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D9F9B6317E359B100B5FEC7 /* MenuArrowBottomHighlighted-7@2x.png */; };
+		7D9F9B6817E359B100B5FEC7 /* MenuArrowBottomHighlighted-7@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D9F9B6317E359B100B5FEC7 /* MenuArrowBottomHighlighted-7@2x.png */; };
+		7D9F9B6A17E35C6300B5FEC7 /* MenuRidge-7@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D9F9B6917E35C6300B5FEC7 /* MenuRidge-7@2x.png */; };
+		7D9F9B6B17E35C6300B5FEC7 /* MenuRidge-7@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D9F9B6917E35C6300B5FEC7 /* MenuRidge-7@2x.png */; };
+		7D9F9B6C17E35C6300B5FEC7 /* MenuRidge-7@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D9F9B6917E35C6300B5FEC7 /* MenuRidge-7@2x.png */; };
+		7D9F9B6D17E35C6300B5FEC7 /* MenuRidge-7@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D9F9B6917E35C6300B5FEC7 /* MenuRidge-7@2x.png */; };
+		7D9F9B6E17E35C6300B5FEC7 /* MenuRidge-7@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D9F9B6917E35C6300B5FEC7 /* MenuRidge-7@2x.png */; };
+		7D9F9B7617E3626500B5FEC7 /* MagnificationLoupeMask-7.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D9F9B6F17E3626500B5FEC7 /* MagnificationLoupeMask-7.png */; };
+		7D9F9B7717E3626500B5FEC7 /* MagnificationLoupeMask-7.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D9F9B6F17E3626500B5FEC7 /* MagnificationLoupeMask-7.png */; };
+		7D9F9B7817E3626500B5FEC7 /* MagnificationLoupeMask-7.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D9F9B6F17E3626500B5FEC7 /* MagnificationLoupeMask-7.png */; };
+		7D9F9B7917E3626500B5FEC7 /* MagnificationLoupeMask-7.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D9F9B6F17E3626500B5FEC7 /* MagnificationLoupeMask-7.png */; };
+		7D9F9B7A17E3626500B5FEC7 /* MagnificationLoupeMask-7.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D9F9B6F17E3626500B5FEC7 /* MagnificationLoupeMask-7.png */; };
+		7D9F9B7B17E3626500B5FEC7 /* MenuArrowBottom-7.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D9F9B7017E3626500B5FEC7 /* MenuArrowBottom-7.png */; };
+		7D9F9B7C17E3626500B5FEC7 /* MenuArrowBottom-7.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D9F9B7017E3626500B5FEC7 /* MenuArrowBottom-7.png */; };
+		7D9F9B7D17E3626500B5FEC7 /* MenuArrowBottom-7.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D9F9B7017E3626500B5FEC7 /* MenuArrowBottom-7.png */; };
+		7D9F9B7E17E3626500B5FEC7 /* MenuArrowBottom-7.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D9F9B7017E3626500B5FEC7 /* MenuArrowBottom-7.png */; };
+		7D9F9B7F17E3626500B5FEC7 /* MenuArrowBottom-7.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D9F9B7017E3626500B5FEC7 /* MenuArrowBottom-7.png */; };
+		7D9F9B8017E3626500B5FEC7 /* MenuArrowBottomHighlighted-7.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D9F9B7117E3626500B5FEC7 /* MenuArrowBottomHighlighted-7.png */; };
+		7D9F9B8117E3626500B5FEC7 /* MenuArrowBottomHighlighted-7.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D9F9B7117E3626500B5FEC7 /* MenuArrowBottomHighlighted-7.png */; };
+		7D9F9B8217E3626500B5FEC7 /* MenuArrowBottomHighlighted-7.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D9F9B7117E3626500B5FEC7 /* MenuArrowBottomHighlighted-7.png */; };
+		7D9F9B8317E3626500B5FEC7 /* MenuArrowBottomHighlighted-7.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D9F9B7117E3626500B5FEC7 /* MenuArrowBottomHighlighted-7.png */; };
+		7D9F9B8417E3626500B5FEC7 /* MenuArrowBottomHighlighted-7.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D9F9B7117E3626500B5FEC7 /* MenuArrowBottomHighlighted-7.png */; };
+		7D9F9B8517E3626500B5FEC7 /* MenuArrowTop-7.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D9F9B7217E3626500B5FEC7 /* MenuArrowTop-7.png */; };
+		7D9F9B8617E3626500B5FEC7 /* MenuArrowTop-7.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D9F9B7217E3626500B5FEC7 /* MenuArrowTop-7.png */; };
+		7D9F9B8717E3626500B5FEC7 /* MenuArrowTop-7.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D9F9B7217E3626500B5FEC7 /* MenuArrowTop-7.png */; };
+		7D9F9B8817E3626500B5FEC7 /* MenuArrowTop-7.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D9F9B7217E3626500B5FEC7 /* MenuArrowTop-7.png */; };
+		7D9F9B8917E3626500B5FEC7 /* MenuArrowTop-7.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D9F9B7217E3626500B5FEC7 /* MenuArrowTop-7.png */; };
+		7D9F9B8A17E3626500B5FEC7 /* MenuArrowTopHighlighted-7.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D9F9B7317E3626500B5FEC7 /* MenuArrowTopHighlighted-7.png */; };
+		7D9F9B8B17E3626500B5FEC7 /* MenuArrowTopHighlighted-7.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D9F9B7317E3626500B5FEC7 /* MenuArrowTopHighlighted-7.png */; };
+		7D9F9B8C17E3626500B5FEC7 /* MenuArrowTopHighlighted-7.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D9F9B7317E3626500B5FEC7 /* MenuArrowTopHighlighted-7.png */; };
+		7D9F9B8D17E3626500B5FEC7 /* MenuArrowTopHighlighted-7.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D9F9B7317E3626500B5FEC7 /* MenuArrowTopHighlighted-7.png */; };
+		7D9F9B8E17E3626500B5FEC7 /* MenuArrowTopHighlighted-7.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D9F9B7317E3626500B5FEC7 /* MenuArrowTopHighlighted-7.png */; };
+		7D9F9B8F17E3626500B5FEC7 /* MenuBackground-7.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D9F9B7417E3626500B5FEC7 /* MenuBackground-7.png */; };
+		7D9F9B9017E3626500B5FEC7 /* MenuBackground-7.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D9F9B7417E3626500B5FEC7 /* MenuBackground-7.png */; };
+		7D9F9B9117E3626500B5FEC7 /* MenuBackground-7.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D9F9B7417E3626500B5FEC7 /* MenuBackground-7.png */; };
+		7D9F9B9217E3626500B5FEC7 /* MenuBackground-7.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D9F9B7417E3626500B5FEC7 /* MenuBackground-7.png */; };
+		7D9F9B9317E3626500B5FEC7 /* MenuBackground-7.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D9F9B7417E3626500B5FEC7 /* MenuBackground-7.png */; };
+		7D9F9B9417E3626500B5FEC7 /* MenuBackgroundHighlighted-7.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D9F9B7517E3626500B5FEC7 /* MenuBackgroundHighlighted-7.png */; };
+		7D9F9B9517E3626500B5FEC7 /* MenuBackgroundHighlighted-7.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D9F9B7517E3626500B5FEC7 /* MenuBackgroundHighlighted-7.png */; };
+		7D9F9B9617E3626500B5FEC7 /* MenuBackgroundHighlighted-7.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D9F9B7517E3626500B5FEC7 /* MenuBackgroundHighlighted-7.png */; };
+		7D9F9B9717E3626500B5FEC7 /* MenuBackgroundHighlighted-7.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D9F9B7517E3626500B5FEC7 /* MenuBackgroundHighlighted-7.png */; };
+		7D9F9B9817E3626500B5FEC7 /* MenuBackgroundHighlighted-7.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D9F9B7517E3626500B5FEC7 /* MenuBackgroundHighlighted-7.png */; };
+		7D9F9B9A17E3627100B5FEC7 /* MenuRidge-7.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D9F9B9917E3627100B5FEC7 /* MenuRidge-7.png */; };
+		7D9F9B9B17E3627100B5FEC7 /* MenuRidge-7.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D9F9B9917E3627100B5FEC7 /* MenuRidge-7.png */; };
+		7D9F9B9C17E3627100B5FEC7 /* MenuRidge-7.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D9F9B9917E3627100B5FEC7 /* MenuRidge-7.png */; };
+		7D9F9B9D17E3627100B5FEC7 /* MenuRidge-7.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D9F9B9917E3627100B5FEC7 /* MenuRidge-7.png */; };
+		7D9F9B9E17E3627100B5FEC7 /* MenuRidge-7.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D9F9B9917E3627100B5FEC7 /* MenuRidge-7.png */; };
+		7D9F9BA217E365F900B5FEC7 /* SelectionEnd-7.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D9F9B9F17E365F900B5FEC7 /* SelectionEnd-7.png */; };
+		7D9F9BA317E365F900B5FEC7 /* SelectionEnd-7.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D9F9B9F17E365F900B5FEC7 /* SelectionEnd-7.png */; };
+		7D9F9BA417E365F900B5FEC7 /* SelectionEnd-7.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D9F9B9F17E365F900B5FEC7 /* SelectionEnd-7.png */; };
+		7D9F9BA517E365F900B5FEC7 /* SelectionEnd-7.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D9F9B9F17E365F900B5FEC7 /* SelectionEnd-7.png */; };
+		7D9F9BA617E365F900B5FEC7 /* SelectionEnd-7.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D9F9B9F17E365F900B5FEC7 /* SelectionEnd-7.png */; };
+		7D9F9BA717E365F900B5FEC7 /* SelectionKnob-7.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D9F9BA017E365F900B5FEC7 /* SelectionKnob-7.png */; };
+		7D9F9BA817E365F900B5FEC7 /* SelectionKnob-7.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D9F9BA017E365F900B5FEC7 /* SelectionKnob-7.png */; };
+		7D9F9BA917E365F900B5FEC7 /* SelectionKnob-7.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D9F9BA017E365F900B5FEC7 /* SelectionKnob-7.png */; };
+		7D9F9BAA17E365F900B5FEC7 /* SelectionKnob-7.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D9F9BA017E365F900B5FEC7 /* SelectionKnob-7.png */; };
+		7D9F9BAB17E365F900B5FEC7 /* SelectionKnob-7.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D9F9BA017E365F900B5FEC7 /* SelectionKnob-7.png */; };
+		7D9F9BAC17E365F900B5FEC7 /* SelectionKnob-7@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D9F9BA117E365F900B5FEC7 /* SelectionKnob-7@2x.png */; };
+		7D9F9BAD17E365F900B5FEC7 /* SelectionKnob-7@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D9F9BA117E365F900B5FEC7 /* SelectionKnob-7@2x.png */; };
+		7D9F9BAE17E365F900B5FEC7 /* SelectionKnob-7@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D9F9BA117E365F900B5FEC7 /* SelectionKnob-7@2x.png */; };
+		7D9F9BAF17E365F900B5FEC7 /* SelectionKnob-7@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D9F9BA117E365F900B5FEC7 /* SelectionKnob-7@2x.png */; };
+		7D9F9BB017E365F900B5FEC7 /* SelectionKnob-7@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D9F9BA117E365F900B5FEC7 /* SelectionKnob-7@2x.png */; };
 		7DA5665511529FD2000A849D /* BlioTextFlowFlow.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DA5665311529FD2000A849D /* BlioTextFlowFlow.m */; };
 		7DA5665B11529FE2000A849D /* BlioTextFlowParagraph.m in Sources */ = {isa = PBXBuildFile; fileRef = 7DA5665911529FE2000A849D /* BlioTextFlowParagraph.m */; };
 		7DA97BA512B25A6500F1FF75 /* paper-black~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 7DA97BA212B25A6400F1FF75 /* paper-black~ipad.png */; };
@@ -522,7 +651,6 @@
 		A30E0F7B123EA5B400D31157 /* MenuBackground.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D4A00DA11DBA36800DDA5B7 /* MenuBackground.png */; };
 		A30E0F7C123EA5B400D31157 /* MenuBackground@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D4A00DB11DBA36800DDA5B7 /* MenuBackground@2x.png */; };
 		A30E0F7D123EA5B400D31157 /* MenuBackgroundHighlighted.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D4A00DC11DBA36800DDA5B7 /* MenuBackgroundHighlighted.png */; };
-		A30E0F7E123EA5B400D31157 /* MenuBackgroundHighlighted@2.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D4A00DD11DBA36800DDA5B7 /* MenuBackgroundHighlighted@2.png */; };
 		A30E0F7F123EA5B400D31157 /* MenuBottomShadowLeft.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D4A00DE11DBA36800DDA5B7 /* MenuBottomShadowLeft.png */; };
 		A30E0F80123EA5B400D31157 /* MenuBottomShadowLeft@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D4A00DF11DBA36800DDA5B7 /* MenuBottomShadowLeft@2x.png */; };
 		A30E0F81123EA5B400D31157 /* MenuBottomShadowMiddle.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D4A00E011DBA36800DDA5B7 /* MenuBottomShadowMiddle.png */; };
@@ -781,7 +909,6 @@
 		A31CC77713FEA07E0010BFC5 /* MenuBackground.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D4A00DA11DBA36800DDA5B7 /* MenuBackground.png */; };
 		A31CC77813FEA07E0010BFC5 /* MenuBackground@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D4A00DB11DBA36800DDA5B7 /* MenuBackground@2x.png */; };
 		A31CC77913FEA07E0010BFC5 /* MenuBackgroundHighlighted.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D4A00DC11DBA36800DDA5B7 /* MenuBackgroundHighlighted.png */; };
-		A31CC77A13FEA07E0010BFC5 /* MenuBackgroundHighlighted@2.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D4A00DD11DBA36800DDA5B7 /* MenuBackgroundHighlighted@2.png */; };
 		A31CC77B13FEA07E0010BFC5 /* MenuBottomShadowLeft.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D4A00DE11DBA36800DDA5B7 /* MenuBottomShadowLeft.png */; };
 		A31CC77C13FEA07E0010BFC5 /* MenuBottomShadowLeft@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D4A00DF11DBA36800DDA5B7 /* MenuBottomShadowLeft@2x.png */; };
 		A31CC77D13FEA07E0010BFC5 /* MenuBottomShadowMiddle.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D4A00E011DBA36800DDA5B7 /* MenuBottomShadowMiddle.png */; };
@@ -1195,7 +1322,6 @@
 		A36D3547120B136700E1A035 /* MenuBackground.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D4A00DA11DBA36800DDA5B7 /* MenuBackground.png */; };
 		A36D3548120B136700E1A035 /* MenuBackground@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D4A00DB11DBA36800DDA5B7 /* MenuBackground@2x.png */; };
 		A36D3549120B136700E1A035 /* MenuBackgroundHighlighted.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D4A00DC11DBA36800DDA5B7 /* MenuBackgroundHighlighted.png */; };
-		A36D354A120B136700E1A035 /* MenuBackgroundHighlighted@2.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D4A00DD11DBA36800DDA5B7 /* MenuBackgroundHighlighted@2.png */; };
 		A36D354B120B136700E1A035 /* MenuBottomShadowLeft.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D4A00DE11DBA36800DDA5B7 /* MenuBottomShadowLeft.png */; };
 		A36D354C120B136700E1A035 /* MenuBottomShadowLeft@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D4A00DF11DBA36800DDA5B7 /* MenuBottomShadowLeft@2x.png */; };
 		A36D354D120B136700E1A035 /* MenuBottomShadowMiddle.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D4A00E011DBA36800DDA5B7 /* MenuBottomShadowMiddle.png */; };
@@ -1481,7 +1607,6 @@
 		A3BEFCDD152DE9E6009B4F4A /* MenuBackground.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D4A00DA11DBA36800DDA5B7 /* MenuBackground.png */; };
 		A3BEFCDE152DE9E6009B4F4A /* MenuBackground@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D4A00DB11DBA36800DDA5B7 /* MenuBackground@2x.png */; };
 		A3BEFCDF152DE9E6009B4F4A /* MenuBackgroundHighlighted.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D4A00DC11DBA36800DDA5B7 /* MenuBackgroundHighlighted.png */; };
-		A3BEFCE0152DE9E6009B4F4A /* MenuBackgroundHighlighted@2.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D4A00DD11DBA36800DDA5B7 /* MenuBackgroundHighlighted@2.png */; };
 		A3BEFCE1152DE9E6009B4F4A /* MenuBottomShadowLeft.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D4A00DE11DBA36800DDA5B7 /* MenuBottomShadowLeft.png */; };
 		A3BEFCE2152DE9E6009B4F4A /* MenuBottomShadowLeft@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D4A00DF11DBA36800DDA5B7 /* MenuBottomShadowLeft@2x.png */; };
 		A3BEFCE3152DE9E6009B4F4A /* MenuBottomShadowMiddle.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D4A00E011DBA36800DDA5B7 /* MenuBottomShadowMiddle.png */; };
@@ -2418,6 +2543,13 @@
 			remoteGlobalIDString = 7DB4BA8814E04C4F004B4511;
 			remoteInfo = libots;
 		};
+		7D9F9B0D17E33A5D00B5FEC7 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 7D00D5B910D90FC5002D06E7 /* libEucalyptus.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 7D4999F6174A99FD0090B4CE;
+			remoteInfo = Render;
+		};
 		7DE15F65141E76CD00D37CA2 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 7D00D5B910D90FC5002D06E7 /* libEucalyptus.xcodeproj */;
@@ -2554,7 +2686,6 @@
 		7D4A00DA11DBA36800DDA5B7 /* MenuBackground.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = MenuBackground.png; sourceTree = "<group>"; };
 		7D4A00DB11DBA36800DDA5B7 /* MenuBackground@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "MenuBackground@2x.png"; sourceTree = "<group>"; };
 		7D4A00DC11DBA36800DDA5B7 /* MenuBackgroundHighlighted.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = MenuBackgroundHighlighted.png; sourceTree = "<group>"; };
-		7D4A00DD11DBA36800DDA5B7 /* MenuBackgroundHighlighted@2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "MenuBackgroundHighlighted@2.png"; sourceTree = "<group>"; };
 		7D4A00DE11DBA36800DDA5B7 /* MenuBottomShadowLeft.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = MenuBottomShadowLeft.png; sourceTree = "<group>"; };
 		7D4A00DF11DBA36800DDA5B7 /* MenuBottomShadowLeft@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "MenuBottomShadowLeft@2x.png"; sourceTree = "<group>"; };
 		7D4A00E011DBA36800DDA5B7 /* MenuBottomShadowMiddle.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = MenuBottomShadowMiddle.png; sourceTree = "<group>"; };
@@ -2620,6 +2751,32 @@
 		7D9A40A2150E5B37007D9A3E /* CoreVideo.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreVideo.framework; path = System/Library/Frameworks/CoreVideo.framework; sourceTree = SDKROOT; };
 		7D9A6882125ABC7200130A53 /* levenshtein_distance.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = levenshtein_distance.c; sourceTree = "<group>"; };
 		7D9A6883125ABC7200130A53 /* levenshtein_distance.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = levenshtein_distance.h; sourceTree = "<group>"; };
+		7D9F9AF317E33A5D00B5FEC7 /* MagnificationLoupeHigh-7.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "MagnificationLoupeHigh-7.png"; sourceTree = "<group>"; };
+		7D9F9AF417E33A5D00B5FEC7 /* MagnificationLoupeHigh-7@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "MagnificationLoupeHigh-7@2x.png"; sourceTree = "<group>"; };
+		7D9F9B0F17E33BE100B5FEC7 /* MagnificationLoupeMask-7.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "MagnificationLoupeMask-7.png"; sourceTree = "<group>"; };
+		7D9F9B1017E33BE100B5FEC7 /* MagnificationLoupeMask-7@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "MagnificationLoupeMask-7@2x.png"; sourceTree = "<group>"; };
+		7D9F9B1B17E33CE300B5FEC7 /* LineLoupeHigh-7.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "LineLoupeHigh-7.png"; sourceTree = "<group>"; };
+		7D9F9B1C17E33CE300B5FEC7 /* LineLoupeHigh-7@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "LineLoupeHigh-7@2x.png"; sourceTree = "<group>"; };
+		7D9F9B3317E33D0900B5FEC7 /* LineLoupeMask-7.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "LineLoupeMask-7.png"; sourceTree = "<group>"; };
+		7D9F9B3417E33D0900B5FEC7 /* LineLoupeMask-7@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "LineLoupeMask-7@2x.png"; sourceTree = "<group>"; };
+		7D9F9B3F17E3547100B5FEC7 /* MenuArrowBottom-7@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "MenuArrowBottom-7@2x.png"; sourceTree = "<group>"; };
+		7D9F9B4017E3547100B5FEC7 /* MenuArrowTop-7@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "MenuArrowTop-7@2x.png"; sourceTree = "<group>"; };
+		7D9F9B4117E3547100B5FEC7 /* MenuBackground-7@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "MenuBackground-7@2x.png"; sourceTree = "<group>"; };
+		7D9F9B5117E3594200B5FEC7 /* MenuArrowTopHighlighted-7@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "MenuArrowTopHighlighted-7@2x.png"; sourceTree = "<group>"; };
+		7D9F9B5317E3594200B5FEC7 /* MenuBackgroundHighlighted-7@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "MenuBackgroundHighlighted-7@2x.png"; sourceTree = "<group>"; };
+		7D9F9B6317E359B100B5FEC7 /* MenuArrowBottomHighlighted-7@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "MenuArrowBottomHighlighted-7@2x.png"; sourceTree = "<group>"; };
+		7D9F9B6917E35C6300B5FEC7 /* MenuRidge-7@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "MenuRidge-7@2x.png"; sourceTree = "<group>"; };
+		7D9F9B6F17E3626500B5FEC7 /* MagnificationLoupeMask-7.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "MagnificationLoupeMask-7.png"; sourceTree = "<group>"; };
+		7D9F9B7017E3626500B5FEC7 /* MenuArrowBottom-7.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "MenuArrowBottom-7.png"; sourceTree = "<group>"; };
+		7D9F9B7117E3626500B5FEC7 /* MenuArrowBottomHighlighted-7.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "MenuArrowBottomHighlighted-7.png"; sourceTree = "<group>"; };
+		7D9F9B7217E3626500B5FEC7 /* MenuArrowTop-7.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "MenuArrowTop-7.png"; sourceTree = "<group>"; };
+		7D9F9B7317E3626500B5FEC7 /* MenuArrowTopHighlighted-7.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "MenuArrowTopHighlighted-7.png"; sourceTree = "<group>"; };
+		7D9F9B7417E3626500B5FEC7 /* MenuBackground-7.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "MenuBackground-7.png"; sourceTree = "<group>"; };
+		7D9F9B7517E3626500B5FEC7 /* MenuBackgroundHighlighted-7.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "MenuBackgroundHighlighted-7.png"; sourceTree = "<group>"; };
+		7D9F9B9917E3627100B5FEC7 /* MenuRidge-7.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "MenuRidge-7.png"; sourceTree = "<group>"; };
+		7D9F9B9F17E365F900B5FEC7 /* SelectionEnd-7.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "SelectionEnd-7.png"; sourceTree = "<group>"; };
+		7D9F9BA017E365F900B5FEC7 /* SelectionKnob-7.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "SelectionKnob-7.png"; sourceTree = "<group>"; };
+		7D9F9BA117E365F900B5FEC7 /* SelectionKnob-7@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "SelectionKnob-7@2x.png"; sourceTree = "<group>"; };
 		7DA481241247708E0073AB09 /* BlioEPubBookmarkPointTranslation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioEPubBookmarkPointTranslation.h; sourceTree = "<group>"; };
 		7DA5665211529FD2000A849D /* BlioTextFlowFlow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioTextFlowFlow.h; sourceTree = "<group>"; };
 		7DA5665311529FD2000A849D /* BlioTextFlowFlow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlioTextFlowFlow.m; sourceTree = "<group>"; };
@@ -3717,6 +3874,7 @@
 				7D229E8512F98D0D0037D93D /* libminiunzip.a */,
 				7D381B5510D92E81008D34E2 /* TransitionTest.app */,
 				7DE15F6C141E76CD00D37CA2 /* PageLayoutTest */,
+				7D9F9B0E17E33A5D00B5FEC7 /* Render */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -3753,36 +3911,57 @@
 				7D4A00C311DBA36800DDA5B7 /* iPodLikeSliderKnob@2x.png */,
 				7D4A00C411DBA36800DDA5B7 /* iPodLikeSliderWhiteRightCap.png */,
 				7D4A00C511DBA36800DDA5B7 /* iPodLikeSliderWhiteRightCap@2x.png */,
+				7D9F9B1B17E33CE300B5FEC7 /* LineLoupeHigh-7.png */,
+				7D9F9B1C17E33CE300B5FEC7 /* LineLoupeHigh-7@2x.png */,
 				7D4A00C611DBA36800DDA5B7 /* LineLoupeHigh.png */,
 				7D4A00C711DBA36800DDA5B7 /* LineLoupeHigh@2x.png */,
 				7D4A00C811DBA36800DDA5B7 /* LineLoupeLow.png */,
 				7D4A00C911DBA36800DDA5B7 /* LineLoupeLow@2x.png */,
+				7D9F9B3317E33D0900B5FEC7 /* LineLoupeMask-7.png */,
+				7D9F9B3417E33D0900B5FEC7 /* LineLoupeMask-7@2x.png */,
 				7D4A00CA11DBA36800DDA5B7 /* LineLoupeMask.png */,
 				7D4A00CB11DBA36800DDA5B7 /* LineLoupeMask@2x.png */,
+				7D9F9AF317E33A5D00B5FEC7 /* MagnificationLoupeHigh-7.png */,
+				7D9F9AF417E33A5D00B5FEC7 /* MagnificationLoupeHigh-7@2x.png */,
 				7D4A00CC11DBA36800DDA5B7 /* MagnificationLoupeHigh.png */,
 				7D4A00CD11DBA36800DDA5B7 /* MagnificationLoupeHigh@2x.png */,
 				7D4A00CE11DBA36800DDA5B7 /* MagnificationLoupeLow.png */,
 				7D4A00CF11DBA36800DDA5B7 /* MagnificationLoupeLow@2x.png */,
+				7D9F9B6F17E3626500B5FEC7 /* MagnificationLoupeMask-7.png */,
+				7D9F9B1017E33BE100B5FEC7 /* MagnificationLoupeMask-7@2x.png */,
 				7D4A00D011DBA36800DDA5B7 /* MagnificationLoupeMask.png */,
 				7D4A00D111DBA36800DDA5B7 /* MagnificationLoupeMask@2x.png */,
+				7D9F9B7017E3626500B5FEC7 /* MenuArrowBottom-7.png */,
+				7D9F9B3F17E3547100B5FEC7 /* MenuArrowBottom-7@2x.png */,
 				7D4A00D211DBA36800DDA5B7 /* MenuArrowBottom.png */,
 				7D4A00D311DBA36800DDA5B7 /* MenuArrowBottom@2x.png */,
+				7D9F9B7117E3626500B5FEC7 /* MenuArrowBottomHighlighted-7.png */,
+				7D9F9B6317E359B100B5FEC7 /* MenuArrowBottomHighlighted-7@2x.png */,
 				7D4A00D411DBA36800DDA5B7 /* MenuArrowBottomHighlighted.png */,
 				7D4A00D511DBA36800DDA5B7 /* MenuArrowBottomHighlighted@2x.png */,
+				7D9F9B7217E3626500B5FEC7 /* MenuArrowTop-7.png */,
+				7D9F9B4017E3547100B5FEC7 /* MenuArrowTop-7@2x.png */,
 				7D4A00D611DBA36800DDA5B7 /* MenuArrowTop.png */,
 				7D4A00D711DBA36800DDA5B7 /* MenuArrowTop@2x.png */,
+				7D9F9B7317E3626500B5FEC7 /* MenuArrowTopHighlighted-7.png */,
+				7D9F9B5117E3594200B5FEC7 /* MenuArrowTopHighlighted-7@2x.png */,
 				7D4A00D811DBA36800DDA5B7 /* MenuArrowTopHighlighted.png */,
 				7D4A00D911DBA36800DDA5B7 /* MenuArrowTopHighlighted@2x.png */,
+				7D9F9B7417E3626500B5FEC7 /* MenuBackground-7.png */,
+				7D9F9B4117E3547100B5FEC7 /* MenuBackground-7@2x.png */,
 				7D4A00DA11DBA36800DDA5B7 /* MenuBackground.png */,
 				7D4A00DB11DBA36800DDA5B7 /* MenuBackground@2x.png */,
+				7D9F9B7517E3626500B5FEC7 /* MenuBackgroundHighlighted-7.png */,
+				7D9F9B5317E3594200B5FEC7 /* MenuBackgroundHighlighted-7@2x.png */,
 				7D4A00DC11DBA36800DDA5B7 /* MenuBackgroundHighlighted.png */,
-				7D4A00DD11DBA36800DDA5B7 /* MenuBackgroundHighlighted@2.png */,
 				7D4A00DE11DBA36800DDA5B7 /* MenuBottomShadowLeft.png */,
 				7D4A00DF11DBA36800DDA5B7 /* MenuBottomShadowLeft@2x.png */,
 				7D4A00E011DBA36800DDA5B7 /* MenuBottomShadowMiddle.png */,
 				7D4A00E111DBA36800DDA5B7 /* MenuBottomShadowMiddle@2x.png */,
 				7D4A00E211DBA36800DDA5B7 /* MenuBottomShadowRight.png */,
 				7D4A00E311DBA36800DDA5B7 /* MenuBottomShadowRight@2x.png */,
+				7D9F9B9917E3627100B5FEC7 /* MenuRidge-7.png */,
+				7D9F9B6917E35C6300B5FEC7 /* MenuRidge-7@2x.png */,
 				7D4A00E411DBA36800DDA5B7 /* MenuRidge.png */,
 				7D4A00E511DBA36800DDA5B7 /* MenuRidge@2x.png */,
 				7D4A00E611DBA36800DDA5B7 /* PurchaseButton.png */,
@@ -3795,9 +3974,13 @@
 				7D4A00ED11DBA36800DDA5B7 /* rightButtonBlackTranslucent@2x.png */,
 				7D4A00EE11DBA36800DDA5B7 /* rightButtonBlue.png */,
 				7D4A00EF11DBA36800DDA5B7 /* rightButtonBlue@2x.png */,
+				7D9F9B9F17E365F900B5FEC7 /* SelectionEnd-7.png */,
 				7D4A00F011DBA36800DDA5B7 /* SelectionEnd.png */,
+				7D9F9BA017E365F900B5FEC7 /* SelectionKnob-7.png */,
+				7D9F9BA117E365F900B5FEC7 /* SelectionKnob-7@2x.png */,
 				7D4A00F111DBA36800DDA5B7 /* SelectionKnob.png */,
 				7D4A00F211DBA36800DDA5B7 /* SelectionKnob@2x.png */,
+				7D9F9B6F17E3626500B5FEC7 /* MagnificationLoupeMask-7.png */,
 			);
 			path = Apple;
 			sourceTree = "<group>";
@@ -4579,6 +4762,8 @@
 /* Begin PBXProject section */
 		29B97313FDCFA39411CA2CEA /* Project object */ = {
 			isa = PBXProject;
+			attributes = {
+			};
 			buildConfigurationList = C01FCF4E08A954540054247B /* Build configuration list for PBXProject "BlioApp" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
@@ -4694,6 +4879,13 @@
 			remoteRef = 7D9A409F150E50FE007D9A3E /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
+		7D9F9B0E17E33A5D00B5FEC7 /* Render */ = {
+			isa = PBXReferenceProxy;
+			fileType = "compiled.mach-o.executable";
+			path = Render;
+			remoteRef = 7D9F9B0D17E33A5D00B5FEC7 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
 		7DE15F66141E76CD00D37CA2 /* libEucalyptusModel.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
@@ -4724,6 +4916,7 @@
 				7D381CF710D93023008D34E2 /* BookEdge.pvrtc in Resources */,
 				C977636D10E056E2005E0E2B /* booktextureandshadow.png in Resources */,
 				C977649B10E0E413005E0E2B /* row-dark.png in Resources */,
+				7D9F9B5E17E3594200B5FEC7 /* MenuBackgroundHighlighted-7@2x.png in Resources */,
 				C977649C10E0E413005E0E2B /* row-light.png in Resources */,
 				C985466910E22BCD002305A2 /* icon-speedread.png in Resources */,
 				C985466A10E22BCD002305A2 /* icon-page.png in Resources */,
@@ -4758,6 +4951,7 @@
 				A37A586D113C45640003CCFF /* forward-black.png in Resources */,
 				C99860DB113FD284009E5263 /* check.png in Resources */,
 				C9F748591140100100680E93 /* shadow-bottom.png in Resources */,
+				7D9F9AF517E33A5D00B5FEC7 /* MagnificationLoupeHigh-7.png in Resources */,
 				C9F749431140261700680E93 /* shadow-right.png in Resources */,
 				C9F749441140261700680E93 /* shadow-left.png in Resources */,
 				C9F749451140261700680E93 /* shadow-top.png in Resources */,
@@ -4778,6 +4972,7 @@
 				C9D280B411AD0FCE00857CFB /* button-tts-pause.png in Resources */,
 				DCCE466A11B9AE22002D7E01 /* icon-freebooks.png in Resources */,
 				DCB0364011BDC43300B341D4 /* MainNavControllerAndLibraryView-iPad.xib in Resources */,
+				7D9F9B6A17E35C6300B5FEC7 /* MenuRidge-7@2x.png in Resources */,
 				A382D3D411C9155F00CFEB88 /* Default@2x.png in Resources */,
 				A382D3D511C9155F00CFEB88 /* Icon@2x.png in Resources */,
 				A382D3D911C9159000CFEB88 /* Default-Landscape.png in Resources */,
@@ -4788,7 +4983,9 @@
 				A3C7437211CAC178005A2219 /* icon-contents@2x.png in Resources */,
 				A3C7437411CAC178005A2219 /* icon-layout@2x.png in Resources */,
 				A3C7437511CAC178005A2219 /* icon-lock@2x.png in Resources */,
+				7D9F9BA717E365F900B5FEC7 /* SelectionKnob-7.png in Resources */,
 				A3C7437611CAC178005A2219 /* icon-page@2x.png in Resources */,
+				7D9F9B3A17E33D0900B5FEC7 /* LineLoupeMask-7@2x.png in Resources */,
 				A3C7437711CAC178005A2219 /* icon-pause@2x.png in Resources */,
 				A3C7437811CAC178005A2219 /* icon-play@2x.png in Resources */,
 				A3C7437911CAC178005A2219 /* icon-plus@2x.png in Resources */,
@@ -4800,10 +4997,14 @@
 				A3C7437F11CAC178005A2219 /* paper-white@2x.png in Resources */,
 				DC48C4E911D3199C00C5D186 /* librarybackground-iPad.png in Resources */,
 				7D4A012811DBA36900DDA5B7 /* iPodLikeSliderBlueLeftCap.png in Resources */,
+				7D9F9B1617E33BE100B5FEC7 /* MagnificationLoupeMask-7@2x.png in Resources */,
 				7D4A012911DBA36900DDA5B7 /* iPodLikeSliderBlueLeftCap@2x.png in Resources */,
+				7D9F9B6417E359B100B5FEC7 /* MenuArrowBottomHighlighted-7@2x.png in Resources */,
 				7D4A012A11DBA36900DDA5B7 /* iPodLikeSliderKnob-Small.png in Resources */,
+				7D9F9B4217E3547100B5FEC7 /* MenuArrowBottom-7@2x.png in Resources */,
 				7D4A012B11DBA36900DDA5B7 /* iPodLikeSliderKnob-Small@2x.png in Resources */,
 				7D4A012C11DBA36900DDA5B7 /* iPodLikeSliderKnob.png in Resources */,
+				7D9F9B9A17E3627100B5FEC7 /* MenuRidge-7.png in Resources */,
 				7D4A012D11DBA36900DDA5B7 /* iPodLikeSliderKnob@2x.png in Resources */,
 				7D4A012E11DBA36900DDA5B7 /* iPodLikeSliderWhiteRightCap.png in Resources */,
 				7D4A012F11DBA36900DDA5B7 /* iPodLikeSliderWhiteRightCap@2x.png in Resources */,
@@ -4830,16 +5031,18 @@
 				7D4A014411DBA36900DDA5B7 /* MenuBackground.png in Resources */,
 				7D4A014511DBA36900DDA5B7 /* MenuBackground@2x.png in Resources */,
 				7D4A014611DBA36900DDA5B7 /* MenuBackgroundHighlighted.png in Resources */,
-				7D4A014711DBA36900DDA5B7 /* MenuBackgroundHighlighted@2.png in Resources */,
 				7D4A014811DBA36900DDA5B7 /* MenuBottomShadowLeft.png in Resources */,
 				7D4A014911DBA36900DDA5B7 /* MenuBottomShadowLeft@2x.png in Resources */,
+				7D9F9B8517E3626500B5FEC7 /* MenuArrowTop-7.png in Resources */,
 				7D4A014A11DBA36900DDA5B7 /* MenuBottomShadowMiddle.png in Resources */,
+				7D9F9B7617E3626500B5FEC7 /* MagnificationLoupeMask-7.png in Resources */,
 				7D4A014B11DBA36900DDA5B7 /* MenuBottomShadowMiddle@2x.png in Resources */,
 				7D4A014C11DBA36900DDA5B7 /* MenuBottomShadowRight.png in Resources */,
 				7D4A014D11DBA36900DDA5B7 /* MenuBottomShadowRight@2x.png in Resources */,
 				7D4A014E11DBA36900DDA5B7 /* MenuRidge.png in Resources */,
 				7D4A014F11DBA36900DDA5B7 /* MenuRidge@2x.png in Resources */,
 				7D4A015011DBA36900DDA5B7 /* PurchaseButton.png in Resources */,
+				7D9F9B1F17E33CE300B5FEC7 /* LineLoupeHigh-7.png in Resources */,
 				7D4A015111DBA36900DDA5B7 /* PurchaseButtonPressed.png in Resources */,
 				7D4A015211DBA36900DDA5B7 /* PurchaseConfirmButton.png in Resources */,
 				7D4A015311DBA36900DDA5B7 /* PurchaseConfirmButtonPressed.png in Resources */,
@@ -4857,8 +5060,10 @@
 				C9FD392911FD69FF008F1F50 /* buttonBarArrowDownSmall.png in Resources */,
 				C9FD392A11FD69FF008F1F50 /* buttonBarArrowDownSmall@2x.png in Resources */,
 				C9FD392B11FD69FF008F1F50 /* buttonBarArrowUpSmall.png in Resources */,
+				7D9F9B8F17E3626500B5FEC7 /* MenuBackground-7.png in Resources */,
 				C9FD392C11FD69FF008F1F50 /* buttonBarArrowUpSmall@2x.png in Resources */,
 				C988573A1202ED54006905CF /* navigationBarBlackTranslucentButton.png in Resources */,
+				7D9F9B1117E33BE100B5FEC7 /* MagnificationLoupeMask-7.png in Resources */,
 				C988573B1202ED54006905CF /* navigationBarBlackTranslucentButton@2x.png in Resources */,
 				DC18E083120516F30077DF01 /* button-delete-black@2x.png in Resources */,
 				DC18E086120517010077DF01 /* library-pausebutton@2x.png in Resources */,
@@ -4869,6 +5074,7 @@
 				C9CEBD761211959B0040CEFF /* booktexture-nocover.png in Resources */,
 				DC2ABE411213DC0F00E6C483 /* BlioFeatureCompatibility.plist in Resources */,
 				DCA1B8FD122289C60022D410 /* button-delete-red@2x.png in Resources */,
+				7D9F9BAC17E365F900B5FEC7 /* SelectionKnob-7@2x.png in Resources */,
 				DCA1B900122289D20022D410 /* button-tts-pause@2x.png in Resources */,
 				DCA1B905122289EF0022D410 /* downloadButton@2x.png in Resources */,
 				DCA1B906122289EF0022D410 /* downloadButtonPressed@2x.png in Resources */,
@@ -4882,6 +5088,9 @@
 				DC8CADA7124877DA00C1EED9 /* table-headerbar-background.png in Resources */,
 				DC8CADA8124877DA00C1EED9 /* table-headerbar-background@2x.png in Resources */,
 				C99239DD126CCD9200BA364A /* searchBarBorder.png in Resources */,
+				7D9F9B3517E33D0900B5FEC7 /* LineLoupeMask-7.png in Resources */,
+				7D9F9AFA17E33A5D00B5FEC7 /* MagnificationLoupeHigh-7@2x.png in Resources */,
+				7D9F9B5417E3594200B5FEC7 /* MenuArrowTopHighlighted-7@2x.png in Resources */,
 				C99239DE126CCD9200BA364A /* searchBarBorder@2x.png in Resources */,
 				C9923A12126CCF2D00BA364A /* searchFieldIcon.png in Resources */,
 				C9923A13126CCF2D00BA364A /* searchFieldIcon@2x.png in Resources */,
@@ -4895,6 +5104,7 @@
 				DCD4A4ED126F7F8E00A131B7 /* icon-bookmarked@2x.png in Resources */,
 				DCD4A4EE126F7F8E00A131B7 /* icon-bookmarked.png in Resources */,
 				DCD4A4EF126F7F8E00A131B7 /* icon-add.png in Resources */,
+				7D9F9B8017E3626500B5FEC7 /* MenuArrowBottomHighlighted-7.png in Resources */,
 				A3CA7B221275F92900775EF4 /* icon-back.png in Resources */,
 				7D131D2D1295628300BCA583 /* icon-title@2x.png in Resources */,
 				7D131D2E1295628300BCA583 /* icon-title.png in Resources */,
@@ -4917,16 +5127,19 @@
 				7DA97C1212B273CC00F1FF75 /* paper-white~ipad.png in Resources */,
 				A3E5AF1912B2FD2A008F48C6 /* back-black@2x.png in Resources */,
 				A3E5AF1D12B2FD44008F48C6 /* forward-black@2x.png in Resources */,
+				7D9F9B8A17E3626500B5FEC7 /* MenuArrowTopHighlighted-7.png in Resources */,
 				A39305FF12BAC01A00949150 /* apache2-license.html in Resources */,
 				A393060512BAC03400949150 /* gnulesser-license.html in Resources */,
 				A393060612BAC03400949150 /* mit-license.html in Resources */,
 				A393060712BAC03400949150 /* openfont-license.html in Resources */,
 				DC63DB1912DF8F2E00D8C750 /* badge-preview.png in Resources */,
+				7D9F9B4717E3547100B5FEC7 /* MenuArrowTop-7@2x.png in Resources */,
 				DC63DB1A12DF8F2E00D8C750 /* badge-preview@2x.png in Resources */,
 				A3951A2812E9E87D0023EE10 /* userdoc-ipad.html in Resources */,
 				7D07620312EEC96A008EF96D /* sfhf-license.html in Resources */,
 				7DB56E8713097EB900814B75 /* minizip-license.html in Resources */,
 				C9A9DAEE1312BC22009B950F /* playButton.png in Resources */,
+				7D9F9B4C17E3547100B5FEC7 /* MenuBackground-7@2x.png in Resources */,
 				7D1D5225131E9A64007E36E9 /* paper-black-quartered~ipad.png in Resources */,
 				7D1D5226131E9A64007E36E9 /* paper-neutral-quartered~ipad.png in Resources */,
 				7D1D5227131E9A64007E36E9 /* paper-white-quartered~ipad.png in Resources */,
@@ -4939,8 +5152,10 @@
 				DC8A54471412E25D0009341B /* book-overlay@2x.png in Resources */,
 				DC8A544A1412E25D0009341B /* book-overlay.png in Resources */,
 				A323E7601427A6D10043E78E /* voiceover-tips.html in Resources */,
+				7D9F9B2417E33CE300B5FEC7 /* LineLoupeHigh-7@2x.png in Resources */,
 				7D69C35414293D6500136CFB /* brightness-sun-bright.png in Resources */,
 				7D69C35814293D6500136CFB /* brightness-sun-bright@2x.png in Resources */,
+				7D9F9BA217E365F900B5FEC7 /* SelectionEnd-7.png in Resources */,
 				7D69C35C14293D6500136CFB /* brightness-sun-dim.png in Resources */,
 				7D69C36014293D6500136CFB /* brightness-sun-dim@2x.png in Resources */,
 				A3F24EB1143F671A007565C2 /* voiceover-quickstart.html in Resources */,
@@ -4950,8 +5165,10 @@
 				7DE0D558147AC2B0005FD319 /* FlowViewEucPageOptions.plist in Resources */,
 				DCC2F7F014917EDD006B2F45 /* badge-daysleft@2x.png in Resources */,
 				DCC2F7F314917EDD006B2F45 /* badge-daysleft.png in Resources */,
+				7D9F9B9417E3626500B5FEC7 /* MenuBackgroundHighlighted-7.png in Resources */,
 				DC92D6AD15047804002AF222 /* FBDialog.bundle in Resources */,
 				7DB1248514FFEB0500DB7666 /* BlioEPUB3Overrides.css in Resources */,
+				7D9F9B7B17E3626500B5FEC7 /* MenuArrowBottom-7.png in Resources */,
 				A3EB90941525F8A000C2E35D /* iTunesArtwork in Resources */,
 				A3EB909A1525F8F100C2E35D /* Default-Landscape@2x.png in Resources */,
 				A3EB909D1525F8F100C2E35D /* Default-Portrait@2x.png in Resources */,
@@ -4997,8 +5214,10 @@
 				A30E0F0E123EA5B400D31157 /* paper-neutral.png in Resources */,
 				A30E0F0F123EA5B400D31157 /* paper-white.png in Resources */,
 				A30E0F10123EA5B400D31157 /* icon-lock.png in Resources */,
+				7D9F9B9117E3626500B5FEC7 /* MenuBackground-7.png in Resources */,
 				A30E0F11123EA5B400D31157 /* icon-finger.png in Resources */,
 				A30E0F12123EA5B400D31157 /* Default.png in Resources */,
+				7D9F9B6017E3594200B5FEC7 /* MenuBackgroundHighlighted-7@2x.png in Resources */,
 				A30E0F13123EA5B400D31157 /* librarybackground.png in Resources */,
 				A30E0F14123EA5B400D31157 /* button-list.png in Resources */,
 				A30E0F15123EA5B400D31157 /* button-grid.png in Resources */,
@@ -5016,12 +5235,14 @@
 				A30E0F25123EA5B400D31157 /* roundedcorners.png in Resources */,
 				A30E0F27123EA5B400D31157 /* BlioStoreBookView.xib in Resources */,
 				A30E0F28123EA5B400D31157 /* downloadButton.png in Resources */,
+				7D9F9B1817E33BE100B5FEC7 /* MagnificationLoupeMask-7@2x.png in Resources */,
 				A30E0F29123EA5B400D31157 /* downloadButtonPressed.png in Resources */,
 				A30E0F2A123EA5B400D31157 /* back-black.png in Resources */,
 				A30E0F2C123EA5B400D31157 /* forward-black.png in Resources */,
 				A30E0F2E123EA5B400D31157 /* check.png in Resources */,
 				A30E0F2F123EA5B400D31157 /* shadow-bottom.png in Resources */,
 				A30E0F30123EA5B400D31157 /* shadow-right.png in Resources */,
+				7D9F9B7D17E3626500B5FEC7 /* MenuArrowBottom-7.png in Resources */,
 				A30E0F31123EA5B400D31157 /* shadow-left.png in Resources */,
 				A30E0F32123EA5B400D31157 /* shadow-top.png in Resources */,
 				A30E0F33123EA5B400D31157 /* SearchCellDivider.png in Resources */,
@@ -5031,7 +5252,9 @@
 				A30E0F3A123EA5B400D31157 /* Localizable.strings in Resources */,
 				A30E0F3B123EA5B400D31157 /* library-progress-background.png in Resources */,
 				A30E0F3C123EA5B400D31157 /* button-delete-red.png in Resources */,
+				7D9F9B9617E3626500B5FEC7 /* MenuBackgroundHighlighted-7.png in Resources */,
 				A30E0F3D123EA5B400D31157 /* button-delete-black.png in Resources */,
+				7D9F9B6617E359B100B5FEC7 /* MenuArrowBottomHighlighted-7@2x.png in Resources */,
 				A30E0F3E123EA5B400D31157 /* library-resumebutton.png in Resources */,
 				A30E0F3F123EA5B400D31157 /* library-pausebutton.png in Resources */,
 				A30E0F40123EA5B400D31157 /* BlioVoiceData.plist in Resources */,
@@ -5047,7 +5270,9 @@
 				A30E0F4B123EA5B400D31157 /* Default-Portrait.png in Resources */,
 				A30E0F4C123EA5B400D31157 /* Icon-iPad.png in Resources */,
 				A30E0F4E123EA5B400D31157 /* icon-freebooks@2x.png in Resources */,
+				7D9F9B4E17E3547100B5FEC7 /* MenuBackground-7@2x.png in Resources */,
 				A30E0F4F123EA5B400D31157 /* icon-cart@2x.png in Resources */,
+				7D9F9B8217E3626500B5FEC7 /* MenuArrowBottomHighlighted-7.png in Resources */,
 				A30E0F50123EA5B400D31157 /* icon-contents@2x.png in Resources */,
 				A30E0F52123EA5B400D31157 /* icon-layout@2x.png in Resources */,
 				A30E0F53123EA5B400D31157 /* icon-lock@2x.png in Resources */,
@@ -5061,10 +5286,14 @@
 				A30E0F5B123EA5B400D31157 /* paper-black@2x.png in Resources */,
 				A30E0F5C123EA5B400D31157 /* paper-neutral@2x.png in Resources */,
 				A30E0F5D123EA5B400D31157 /* paper-white@2x.png in Resources */,
+				7D9F9B2117E33CE300B5FEC7 /* LineLoupeHigh-7.png in Resources */,
 				A30E0F5E123EA5B400D31157 /* librarybackground-iPad.png in Resources */,
 				A30E0F5F123EA5B400D31157 /* iPodLikeSliderBlueLeftCap.png in Resources */,
 				A30E0F60123EA5B400D31157 /* iPodLikeSliderBlueLeftCap@2x.png in Resources */,
 				A30E0F61123EA5B400D31157 /* iPodLikeSliderKnob-Small.png in Resources */,
+				7D9F9BAE17E365F900B5FEC7 /* SelectionKnob-7@2x.png in Resources */,
+				7D9F9BA917E365F900B5FEC7 /* SelectionKnob-7.png in Resources */,
+				7D9F9B5617E3594200B5FEC7 /* MenuArrowTopHighlighted-7@2x.png in Resources */,
 				A30E0F62123EA5B400D31157 /* iPodLikeSliderKnob-Small@2x.png in Resources */,
 				A30E0F63123EA5B400D31157 /* iPodLikeSliderKnob.png in Resources */,
 				A30E0F64123EA5B400D31157 /* iPodLikeSliderKnob@2x.png in Resources */,
@@ -5075,6 +5304,7 @@
 				A30E0F69123EA5B400D31157 /* LineLoupeLow.png in Resources */,
 				A30E0F6A123EA5B400D31157 /* LineLoupeLow@2x.png in Resources */,
 				A30E0F6B123EA5B400D31157 /* LineLoupeMask.png in Resources */,
+				7D9F9B3717E33D0900B5FEC7 /* LineLoupeMask-7.png in Resources */,
 				A30E0F6C123EA5B400D31157 /* LineLoupeMask@2x.png in Resources */,
 				A30E0F6D123EA5B400D31157 /* MagnificationLoupeHigh.png in Resources */,
 				A30E0F6E123EA5B400D31157 /* MagnificationLoupeHigh@2x.png in Resources */,
@@ -5093,7 +5323,6 @@
 				A30E0F7B123EA5B400D31157 /* MenuBackground.png in Resources */,
 				A30E0F7C123EA5B400D31157 /* MenuBackground@2x.png in Resources */,
 				A30E0F7D123EA5B400D31157 /* MenuBackgroundHighlighted.png in Resources */,
-				A30E0F7E123EA5B400D31157 /* MenuBackgroundHighlighted@2.png in Resources */,
 				A30E0F7F123EA5B400D31157 /* MenuBottomShadowLeft.png in Resources */,
 				A30E0F80123EA5B400D31157 /* MenuBottomShadowLeft@2x.png in Resources */,
 				A30E0F81123EA5B400D31157 /* MenuBottomShadowMiddle.png in Resources */,
@@ -5105,6 +5334,7 @@
 				A30E0F87123EA5B400D31157 /* PurchaseButton.png in Resources */,
 				A30E0F88123EA5B400D31157 /* PurchaseButtonPressed.png in Resources */,
 				A30E0F89123EA5B400D31157 /* PurchaseConfirmButton.png in Resources */,
+				7D9F9BA417E365F900B5FEC7 /* SelectionEnd-7.png in Resources */,
 				A30E0F8A123EA5B400D31157 /* PurchaseConfirmButtonPressed.png in Resources */,
 				A30E0F8B123EA5B400D31157 /* rightButtonBlackOpaque.png in Resources */,
 				A30E0F8C123EA5B400D31157 /* rightButtonBlackOpaque@2x.png in Resources */,
@@ -5120,14 +5350,17 @@
 				A30E0F97123EA5B400D31157 /* buttonBarArrowDownSmall.png in Resources */,
 				A30E0F98123EA5B400D31157 /* buttonBarArrowDownSmall@2x.png in Resources */,
 				A30E0F99123EA5B400D31157 /* buttonBarArrowUpSmall.png in Resources */,
+				7D9F9B1317E33BE100B5FEC7 /* MagnificationLoupeMask-7.png in Resources */,
 				A30E0F9A123EA5B400D31157 /* buttonBarArrowUpSmall@2x.png in Resources */,
 				A30E0F9C123EA5B400D31157 /* navigationBarBlackTranslucentButton.png in Resources */,
 				A30E0F9D123EA5B400D31157 /* navigationBarBlackTranslucentButton@2x.png in Resources */,
 				A30E0F9E123EA5B400D31157 /* button-delete-black@2x.png in Resources */,
+				7D9F9B8C17E3626500B5FEC7 /* MenuArrowTopHighlighted-7.png in Resources */,
 				A30E0F9F123EA5B400D31157 /* library-pausebutton@2x.png in Resources */,
 				A30E0FA0123EA5B400D31157 /* library-resumebutton@2x.png in Resources */,
 				A30E0FA1123EA5B400D31157 /* library-progress-background@2x.png in Resources */,
 				A30E0FA2123EA5B400D31157 /* eula.html in Resources */,
+				7D9F9B9C17E3627100B5FEC7 /* MenuRidge-7.png in Resources */,
 				A30E0FA3123EA5B400D31157 /* userdoc.html in Resources */,
 				A30E0FA5123EA5B400D31157 /* booktexture-nocover.png in Resources */,
 				A30E0FA6123EA5B400D31157 /* BlioFeatureCompatibility.plist in Resources */,
@@ -5147,6 +5380,7 @@
 				DC8CADA5124877DA00C1EED9 /* table-headerbar-background.png in Resources */,
 				DC8CADA6124877DA00C1EED9 /* table-headerbar-background@2x.png in Resources */,
 				C99239E1126CCD9300BA364A /* searchBarBorder.png in Resources */,
+				7D9F9B4917E3547100B5FEC7 /* MenuArrowTop-7@2x.png in Resources */,
 				C99239E2126CCD9300BA364A /* searchBarBorder@2x.png in Resources */,
 				C9923A10126CCF2D00BA364A /* searchFieldIcon.png in Resources */,
 				C9923A11126CCF2D00BA364A /* searchFieldIcon@2x.png in Resources */,
@@ -5156,6 +5390,7 @@
 				DCD4A292126F470F00A131B7 /* greyButtonPressed@2x.png in Resources */,
 				DCD4A4E8126F7F8E00A131B7 /* icon-add@2x.png in Resources */,
 				DCD4A4E9126F7F8E00A131B7 /* icon-bookmarked@2x.png in Resources */,
+				7D9F9AF717E33A5D00B5FEC7 /* MagnificationLoupeHigh-7.png in Resources */,
 				DCD4A4EA126F7F8E00A131B7 /* icon-bookmarked.png in Resources */,
 				DCD4A4EB126F7F8E00A131B7 /* icon-add.png in Resources */,
 				C9E04BA61271946600A307C4 /* icon-import.png in Resources */,
@@ -5165,6 +5400,7 @@
 				7D131D391295628300BCA583 /* icon-list@2x.png in Resources */,
 				7D131D3A1295628300BCA583 /* icon-list.png in Resources */,
 				7D131D3B1295628300BCA583 /* icon-grid@2x.png in Resources */,
+				7D9F9B7817E3626500B5FEC7 /* MagnificationLoupeMask-7.png in Resources */,
 				7D131D3C1295628300BCA583 /* icon-grid.png in Resources */,
 				7D131D3D1295628300BCA583 /* icon-author@2x.png in Resources */,
 				7D131D3E1295628300BCA583 /* icon-author.png in Resources */,
@@ -5186,6 +5422,7 @@
 				A393060C12BAC03400949150 /* mit-license.html in Resources */,
 				A393060D12BAC03400949150 /* openfont-license.html in Resources */,
 				DC63DB1B12DF8F2E00D8C750 /* badge-preview.png in Resources */,
+				7D9F9B3C17E33D0900B5FEC7 /* LineLoupeMask-7@2x.png in Resources */,
 				DC63DB1C12DF8F2E00D8C750 /* badge-preview@2x.png in Resources */,
 				A3951A2912E9E87D0023EE10 /* userdoc-ipad.html in Resources */,
 				7D07620412EEC96A008EF96D /* sfhf-license.html in Resources */,
@@ -5202,6 +5439,7 @@
 				DC8A54491412E25D0009341B /* book-overlay@2x.png in Resources */,
 				DC8A544C1412E25D0009341B /* book-overlay.png in Resources */,
 				A323E7621427A6D10043E78E /* voiceover-tips.html in Resources */,
+				7D9F9B6C17E35C6300B5FEC7 /* MenuRidge-7@2x.png in Resources */,
 				7D69C35614293D6500136CFB /* brightness-sun-bright.png in Resources */,
 				7D69C35A14293D6500136CFB /* brightness-sun-bright@2x.png in Resources */,
 				7D69C35E14293D6500136CFB /* brightness-sun-dim.png in Resources */,
@@ -5217,11 +5455,15 @@
 				7DB1248714FFEB0500DB7666 /* BlioEPUB3Overrides.css in Resources */,
 				A3EB90961525F8A000C2E35D /* iTunesArtwork in Resources */,
 				A3EB909C1525F8F100C2E35D /* Default-Landscape@2x.png in Resources */,
+				7D9F9B8717E3626500B5FEC7 /* MenuArrowTop-7.png in Resources */,
 				A3EB909F1525F8F100C2E35D /* Default-Portrait@2x.png in Resources */,
 				A3EB90A21525F8F100C2E35D /* Icon-iPad@2x.png in Resources */,
+				7D9F9B4417E3547100B5FEC7 /* MenuArrowBottom-7@2x.png in Resources */,
 				7DDF8FCA15D580C600CCC867 /* THAVPlayerPause.png in Resources */,
+				7D9F9B2617E33CE300B5FEC7 /* LineLoupeHigh-7@2x.png in Resources */,
 				7DDF8FCF15D580C600CCC867 /* THAVPlayerPause@2x.png in Resources */,
 				7DDF8FD415D580C600CCC867 /* THAVPlayerPlay.png in Resources */,
+				7D9F9AFC17E33A5D00B5FEC7 /* MagnificationLoupeHigh-7@2x.png in Resources */,
 				7DDF8FD915D580C600CCC867 /* THAVPlayerPlay@2x.png in Resources */,
 				7D02B52215E4E6DF00B764A7 /* THAVPlayerAudioBackground.png in Resources */,
 				7D18B94A16033807002E8F0B /* Default-568h@2x.png in Resources */,
@@ -5246,6 +5488,7 @@
 				A31CC70413FEA07E0010BFC5 /* MainNavControllerAndLibraryView.xib in Resources */,
 				A31CC70513FEA07E0010BFC5 /* RootViewController.xib in Resources */,
 				A31CC70613FEA07E0010BFC5 /* BookEdge.pvrtc in Resources */,
+				7D9F9AFD17E33A5D00B5FEC7 /* MagnificationLoupeHigh-7@2x.png in Resources */,
 				A31CC70913FEA07E0010BFC5 /* booktextureandshadow.png in Resources */,
 				A31CC70A13FEA07E0010BFC5 /* row-dark.png in Resources */,
 				A31CC70B13FEA07E0010BFC5 /* row-light.png in Resources */,
@@ -5258,6 +5501,7 @@
 				A31CC71213FEA07E0010BFC5 /* paper-neutral.png in Resources */,
 				A31CC71313FEA07E0010BFC5 /* paper-white.png in Resources */,
 				A31CC71413FEA07E0010BFC5 /* icon-lock.png in Resources */,
+				7D9F9AF817E33A5D00B5FEC7 /* MagnificationLoupeHigh-7.png in Resources */,
 				A31CC71513FEA07E0010BFC5 /* icon-finger.png in Resources */,
 				A31CC71613FEA07E0010BFC5 /* Default.png in Resources */,
 				A31CC71713FEA07E0010BFC5 /* librarybackground.png in Resources */,
@@ -5268,17 +5512,22 @@
 				A31CC71D13FEA07E0010BFC5 /* icon-play.png in Resources */,
 				A31CC71E13FEA07E0010BFC5 /* icon-plus.png in Resources */,
 				A31CC71F13FEA07E0010BFC5 /* icon-search.png in Resources */,
+				7D9F9B5717E3594200B5FEC7 /* MenuArrowTopHighlighted-7@2x.png in Resources */,
+				7D9F9B3817E33D0900B5FEC7 /* LineLoupeMask-7.png in Resources */,
 				A31CC72113FEA07E0010BFC5 /* booktextureandshadowsubtle.png in Resources */,
 				A31CC72213FEA07E0010BFC5 /* LibraryGridViewController.png in Resources */,
 				A31CC72313FEA07E0010BFC5 /* Icon.png in Resources */,
 				A31CC72413FEA07E0010BFC5 /* scrubber-icon.png in Resources */,
 				A31CC72613FEA07E0010BFC5 /* speedread-thumb.png in Resources */,
+				7D9F9B7E17E3626500B5FEC7 /* MenuArrowBottom-7.png in Resources */,
 				A31CC72713FEA07E0010BFC5 /* roundedcorners.png in Resources */,
 				A31CC72813FEA07E0010BFC5 /* BlioStoreBookView.xib in Resources */,
 				A31CC72913FEA07E0010BFC5 /* downloadButton.png in Resources */,
 				A31CC72A13FEA07E0010BFC5 /* downloadButtonPressed.png in Resources */,
 				A31CC72B13FEA07E0010BFC5 /* back-black.png in Resources */,
+				7D9F9B6D17E35C6300B5FEC7 /* MenuRidge-7@2x.png in Resources */,
 				A31CC72C13FEA07E0010BFC5 /* forward-black.png in Resources */,
+				7D9F9B6717E359B100B5FEC7 /* MenuArrowBottomHighlighted-7@2x.png in Resources */,
 				A31CC72D13FEA07E0010BFC5 /* check.png in Resources */,
 				A31CC72E13FEA07E0010BFC5 /* shadow-bottom.png in Resources */,
 				A31CC72F13FEA07E0010BFC5 /* shadow-right.png in Resources */,
@@ -5289,6 +5538,7 @@
 				A31CC73413FEA07E0010BFC5 /* icon-vault.png in Resources */,
 				A31CC73513FEA07E0010BFC5 /* icon-cart.png in Resources */,
 				A31CC73613FEA07E0010BFC5 /* Localizable.strings in Resources */,
+				7D9F9B9217E3626500B5FEC7 /* MenuBackground-7.png in Resources */,
 				A31CC73713FEA07E0010BFC5 /* library-progress-background.png in Resources */,
 				A31CC73813FEA07E0010BFC5 /* button-delete-red.png in Resources */,
 				A31CC73913FEA07E0010BFC5 /* button-delete-black.png in Resources */,
@@ -5329,6 +5579,8 @@
 				A31CC76213FEA07E0010BFC5 /* iPodLikeSliderWhiteRightCap@2x.png in Resources */,
 				A31CC76313FEA07E0010BFC5 /* LineLoupeHigh.png in Resources */,
 				A31CC76413FEA07E0010BFC5 /* LineLoupeHigh@2x.png in Resources */,
+				7D9F9B6117E3594200B5FEC7 /* MenuBackgroundHighlighted-7@2x.png in Resources */,
+				7D9F9B8317E3626500B5FEC7 /* MenuArrowBottomHighlighted-7.png in Resources */,
 				A31CC76513FEA07E0010BFC5 /* LineLoupeLow.png in Resources */,
 				A31CC76613FEA07E0010BFC5 /* LineLoupeLow@2x.png in Resources */,
 				A31CC76713FEA07E0010BFC5 /* LineLoupeMask.png in Resources */,
@@ -5346,11 +5598,11 @@
 				A31CC77313FEA07E0010BFC5 /* MenuArrowTop.png in Resources */,
 				A31CC77413FEA07E0010BFC5 /* MenuArrowTop@2x.png in Resources */,
 				A31CC77513FEA07E0010BFC5 /* MenuArrowTopHighlighted.png in Resources */,
+				7D9F9B4A17E3547100B5FEC7 /* MenuArrowTop-7@2x.png in Resources */,
 				A31CC77613FEA07E0010BFC5 /* MenuArrowTopHighlighted@2x.png in Resources */,
 				A31CC77713FEA07E0010BFC5 /* MenuBackground.png in Resources */,
 				A31CC77813FEA07E0010BFC5 /* MenuBackground@2x.png in Resources */,
 				A31CC77913FEA07E0010BFC5 /* MenuBackgroundHighlighted.png in Resources */,
-				A31CC77A13FEA07E0010BFC5 /* MenuBackgroundHighlighted@2.png in Resources */,
 				A31CC77B13FEA07E0010BFC5 /* MenuBottomShadowLeft.png in Resources */,
 				A31CC77C13FEA07E0010BFC5 /* MenuBottomShadowLeft@2x.png in Resources */,
 				A31CC77D13FEA07E0010BFC5 /* MenuBottomShadowMiddle.png in Resources */,
@@ -5365,8 +5617,10 @@
 				A31CC78613FEA07E0010BFC5 /* PurchaseConfirmButtonPressed.png in Resources */,
 				A31CC78713FEA07E0010BFC5 /* rightButtonBlackOpaque.png in Resources */,
 				A31CC78813FEA07E0010BFC5 /* rightButtonBlackOpaque@2x.png in Resources */,
+				7D9F9BA517E365F900B5FEC7 /* SelectionEnd-7.png in Resources */,
 				A31CC78913FEA07E0010BFC5 /* rightButtonBlackTranslucent.png in Resources */,
 				A31CC78A13FEA07E0010BFC5 /* rightButtonBlackTranslucent@2x.png in Resources */,
+				7D9F9BAF17E365F900B5FEC7 /* SelectionKnob-7@2x.png in Resources */,
 				A31CC78B13FEA07E0010BFC5 /* rightButtonBlue.png in Resources */,
 				A31CC78C13FEA07E0010BFC5 /* rightButtonBlue@2x.png in Resources */,
 				A31CC78D13FEA07E0010BFC5 /* SelectionEnd.png in Resources */,
@@ -5380,6 +5634,7 @@
 				A31CC79613FEA07E0010BFC5 /* navigationBarBlackTranslucentButton.png in Resources */,
 				A31CC79713FEA07E0010BFC5 /* navigationBarBlackTranslucentButton@2x.png in Resources */,
 				A31CC79813FEA07E0010BFC5 /* button-delete-black@2x.png in Resources */,
+				7D9F9B8D17E3626500B5FEC7 /* MenuArrowTopHighlighted-7.png in Resources */,
 				A31CC79913FEA07E0010BFC5 /* library-pausebutton@2x.png in Resources */,
 				A31CC79A13FEA07E0010BFC5 /* library-resumebutton@2x.png in Resources */,
 				A31CC79B13FEA07E0010BFC5 /* library-progress-background@2x.png in Resources */,
@@ -5392,16 +5647,19 @@
 				A31CC7A513FEA07E0010BFC5 /* voice-sample-play-button@2x.png in Resources */,
 				A31CC7A613FEA07E0010BFC5 /* badge-audiobook.png in Resources */,
 				A31CC7A713FEA07E0010BFC5 /* badge-notsupported.png in Resources */,
+				7D9F9B9717E3626500B5FEC7 /* MenuBackgroundHighlighted-7.png in Resources */,
 				A31CC7A813FEA07E0010BFC5 /* badge-tts.png in Resources */,
 				A31CC7A913FEA07E0010BFC5 /* badge-tts@2x.png in Resources */,
 				A31CC7AA13FEA07E0010BFC5 /* badge-notsupported@2x.png in Resources */,
 				A31CC7AB13FEA07E0010BFC5 /* badge-audiobook@2x.png in Resources */,
 				A31CC7AC13FEA07E0010BFC5 /* icon-back.png in Resources */,
 				A31CC7AD13FEA07E0010BFC5 /* icon-back@2x.png in Resources */,
+				7D9F9B2717E33CE300B5FEC7 /* LineLoupeHigh-7@2x.png in Resources */,
 				A31CC7AE13FEA07E0010BFC5 /* table-headerbar-background.png in Resources */,
 				A31CC7AF13FEA07E0010BFC5 /* table-headerbar-background@2x.png in Resources */,
 				A31CC7B013FEA07E0010BFC5 /* searchBarBorder.png in Resources */,
 				A31CC7B113FEA07E0010BFC5 /* searchBarBorder@2x.png in Resources */,
+				7D9F9B1917E33BE100B5FEC7 /* MagnificationLoupeMask-7@2x.png in Resources */,
 				A31CC7B213FEA07E0010BFC5 /* searchFieldIcon.png in Resources */,
 				A31CC7B313FEA07E0010BFC5 /* searchFieldIcon@2x.png in Resources */,
 				A31CC7B413FEA07E0010BFC5 /* greyButton.png in Resources */,
@@ -5416,11 +5674,14 @@
 				A31CC7BD13FEA07E0010BFC5 /* icon-import@2x.png in Resources */,
 				A31CC7C213FEA07E0010BFC5 /* icon-title@2x.png in Resources */,
 				A31CC7C313FEA07E0010BFC5 /* icon-title.png in Resources */,
+				7D9F9BAA17E365F900B5FEC7 /* SelectionKnob-7.png in Resources */,
 				A31CC7C413FEA07E0010BFC5 /* icon-list@2x.png in Resources */,
 				A31CC7C513FEA07E0010BFC5 /* icon-list.png in Resources */,
 				A31CC7C613FEA07E0010BFC5 /* icon-grid@2x.png in Resources */,
 				A31CC7C713FEA07E0010BFC5 /* icon-grid.png in Resources */,
 				A31CC7C813FEA07E0010BFC5 /* icon-author@2x.png in Resources */,
+				7D9F9B7917E3626500B5FEC7 /* MagnificationLoupeMask-7.png in Resources */,
+				7D9F9B2217E33CE300B5FEC7 /* LineLoupeHigh-7.png in Resources */,
 				A31CC7C913FEA07E0010BFC5 /* icon-author.png in Resources */,
 				A31CC7CA13FEA07E0010BFC5 /* icon-arbitrary@2x.png in Resources */,
 				A31CC7CB13FEA07E0010BFC5 /* icon-arbitrary.png in Resources */,
@@ -5428,6 +5689,7 @@
 				A31CC7CD13FEA07E0010BFC5 /* webstore-screenshot-ipad@2x.png in Resources */,
 				A31CC7CE13FEA07E0010BFC5 /* webstore-screenshot-phone.png in Resources */,
 				A31CC7CF13FEA07E0010BFC5 /* webstore-screenshot-phone@2x.png in Resources */,
+				7D9F9B1417E33BE100B5FEC7 /* MagnificationLoupeMask-7.png in Resources */,
 				A31CC7D013FEA07E0010BFC5 /* button-background-graygradient.png in Resources */,
 				A31CC7D113FEA07E0010BFC5 /* button-background-graygradient@2x.png in Resources */,
 				A31CC7D313FEA07E0010BFC5 /* paper-black~ipad.png in Resources */,
@@ -5442,7 +5704,11 @@
 				A31CC7DC13FEA07E0010BFC5 /* badge-preview.png in Resources */,
 				A31CC7DD13FEA07E0010BFC5 /* badge-preview@2x.png in Resources */,
 				A31CC7DE13FEA07E0010BFC5 /* XPS-Starters in Resources */,
+				7D9F9B4517E3547100B5FEC7 /* MenuArrowBottom-7@2x.png in Resources */,
 				A31CC7DF13FEA07E0010BFC5 /* userdoc-ipad.html in Resources */,
+				7D9F9B8817E3626500B5FEC7 /* MenuArrowTop-7.png in Resources */,
+				7D9F9B9D17E3627100B5FEC7 /* MenuRidge-7.png in Resources */,
+				7D9F9B3D17E33D0900B5FEC7 /* LineLoupeMask-7@2x.png in Resources */,
 				A31CC7E113FEA07E0010BFC5 /* sfhf-license.html in Resources */,
 				A31CC7E213FEA07E0010BFC5 /* minizip-license.html in Resources */,
 				A31CC7E313FEA07E0010BFC5 /* playButton.png in Resources */,
@@ -5468,6 +5734,7 @@
 				7DE0D55B147AC2B0005FD319 /* FlowViewEucPageOptions.plist in Resources */,
 				DC92D6B015047805002AF222 /* FBDialog.bundle in Resources */,
 				7DB1248814FFEB0500DB7666 /* BlioEPUB3Overrides.css in Resources */,
+				7D9F9B4F17E3547100B5FEC7 /* MenuBackground-7@2x.png in Resources */,
 				7DDF8FCB15D580C600CCC867 /* THAVPlayerPause.png in Resources */,
 				7DDF8FD015D580C600CCC867 /* THAVPlayerPause@2x.png in Resources */,
 				7DDF8FD515D580C600CCC867 /* THAVPlayerPlay.png in Resources */,
@@ -5507,8 +5774,10 @@
 				A36D34D7120B136700E1A035 /* paper-neutral.png in Resources */,
 				A36D34D8120B136700E1A035 /* paper-white.png in Resources */,
 				A36D34D9120B136700E1A035 /* icon-lock.png in Resources */,
+				7D9F9B9017E3626500B5FEC7 /* MenuBackground-7.png in Resources */,
 				A36D34DA120B136700E1A035 /* icon-finger.png in Resources */,
 				A36D34DB120B136700E1A035 /* Default.png in Resources */,
+				7D9F9B5F17E3594200B5FEC7 /* MenuBackgroundHighlighted-7@2x.png in Resources */,
 				A36D34DC120B136700E1A035 /* librarybackground.png in Resources */,
 				A36D34DD120B136700E1A035 /* button-list.png in Resources */,
 				A36D34DE120B136700E1A035 /* button-grid.png in Resources */,
@@ -5526,12 +5795,14 @@
 				A36D34F0120B136700E1A035 /* roundedcorners.png in Resources */,
 				A36D34F2120B136700E1A035 /* BlioStoreBookView.xib in Resources */,
 				A36D34F3120B136700E1A035 /* downloadButton.png in Resources */,
+				7D9F9B1717E33BE100B5FEC7 /* MagnificationLoupeMask-7@2x.png in Resources */,
 				A36D34F4120B136700E1A035 /* downloadButtonPressed.png in Resources */,
 				A36D34F5120B136700E1A035 /* back-black.png in Resources */,
 				A36D34F7120B136700E1A035 /* forward-black.png in Resources */,
 				A36D34F9120B136700E1A035 /* check.png in Resources */,
 				A36D34FA120B136700E1A035 /* shadow-bottom.png in Resources */,
 				A36D34FB120B136700E1A035 /* shadow-right.png in Resources */,
+				7D9F9B7C17E3626500B5FEC7 /* MenuArrowBottom-7.png in Resources */,
 				A36D34FC120B136700E1A035 /* shadow-left.png in Resources */,
 				A36D34FD120B136700E1A035 /* shadow-top.png in Resources */,
 				A36D34FE120B136700E1A035 /* SearchCellDivider.png in Resources */,
@@ -5541,7 +5812,9 @@
 				A36D3505120B136700E1A035 /* Localizable.strings in Resources */,
 				A36D3506120B136700E1A035 /* library-progress-background.png in Resources */,
 				A36D3507120B136700E1A035 /* button-delete-red.png in Resources */,
+				7D9F9B9517E3626500B5FEC7 /* MenuBackgroundHighlighted-7.png in Resources */,
 				A36D3508120B136700E1A035 /* button-delete-black.png in Resources */,
+				7D9F9B6517E359B100B5FEC7 /* MenuArrowBottomHighlighted-7@2x.png in Resources */,
 				A36D3509120B136700E1A035 /* library-resumebutton.png in Resources */,
 				A36D350A120B136700E1A035 /* library-pausebutton.png in Resources */,
 				A36D350B120B136700E1A035 /* BlioVoiceData.plist in Resources */,
@@ -5557,7 +5830,9 @@
 				A36D3517120B136700E1A035 /* Default-Portrait.png in Resources */,
 				A36D3518120B136700E1A035 /* Icon-iPad.png in Resources */,
 				A36D351A120B136700E1A035 /* icon-freebooks@2x.png in Resources */,
+				7D9F9B4D17E3547100B5FEC7 /* MenuBackground-7@2x.png in Resources */,
 				A36D351B120B136700E1A035 /* icon-cart@2x.png in Resources */,
+				7D9F9B8117E3626500B5FEC7 /* MenuArrowBottomHighlighted-7.png in Resources */,
 				A36D351C120B136700E1A035 /* icon-contents@2x.png in Resources */,
 				7D4CA2351417826200117F3A /* icon-import@2x.png in Resources */,
 				A36D351E120B136700E1A035 /* icon-layout@2x.png in Resources */,
@@ -5571,10 +5846,14 @@
 				A36D3526120B136700E1A035 /* icon-vault@2x.png in Resources */,
 				A36D3527120B136700E1A035 /* paper-black@2x.png in Resources */,
 				A36D3528120B136700E1A035 /* paper-neutral@2x.png in Resources */,
+				7D9F9B2017E33CE300B5FEC7 /* LineLoupeHigh-7.png in Resources */,
 				A36D3529120B136700E1A035 /* paper-white@2x.png in Resources */,
 				A36D352A120B136700E1A035 /* librarybackground-iPad.png in Resources */,
 				A36D352B120B136700E1A035 /* iPodLikeSliderBlueLeftCap.png in Resources */,
 				A36D352C120B136700E1A035 /* iPodLikeSliderBlueLeftCap@2x.png in Resources */,
+				7D9F9BAD17E365F900B5FEC7 /* SelectionKnob-7@2x.png in Resources */,
+				7D9F9BA817E365F900B5FEC7 /* SelectionKnob-7.png in Resources */,
+				7D9F9B5517E3594200B5FEC7 /* MenuArrowTopHighlighted-7@2x.png in Resources */,
 				A36D352D120B136700E1A035 /* iPodLikeSliderKnob-Small.png in Resources */,
 				A36D352E120B136700E1A035 /* iPodLikeSliderKnob-Small@2x.png in Resources */,
 				A36D352F120B136700E1A035 /* iPodLikeSliderKnob.png in Resources */,
@@ -5585,6 +5864,7 @@
 				A36D3534120B136700E1A035 /* LineLoupeHigh@2x.png in Resources */,
 				A36D3535120B136700E1A035 /* LineLoupeLow.png in Resources */,
 				A36D3536120B136700E1A035 /* LineLoupeLow@2x.png in Resources */,
+				7D9F9B3617E33D0900B5FEC7 /* LineLoupeMask-7.png in Resources */,
 				A36D3537120B136700E1A035 /* LineLoupeMask.png in Resources */,
 				A36D3538120B136700E1A035 /* LineLoupeMask@2x.png in Resources */,
 				A36D3539120B136700E1A035 /* MagnificationLoupeHigh.png in Resources */,
@@ -5604,7 +5884,6 @@
 				A36D3547120B136700E1A035 /* MenuBackground.png in Resources */,
 				A36D3548120B136700E1A035 /* MenuBackground@2x.png in Resources */,
 				A36D3549120B136700E1A035 /* MenuBackgroundHighlighted.png in Resources */,
-				A36D354A120B136700E1A035 /* MenuBackgroundHighlighted@2.png in Resources */,
 				A36D354B120B136700E1A035 /* MenuBottomShadowLeft.png in Resources */,
 				A36D354C120B136700E1A035 /* MenuBottomShadowLeft@2x.png in Resources */,
 				A36D354D120B136700E1A035 /* MenuBottomShadowMiddle.png in Resources */,
@@ -5615,6 +5894,7 @@
 				A36D3552120B136700E1A035 /* MenuRidge@2x.png in Resources */,
 				A36D3553120B136700E1A035 /* PurchaseButton.png in Resources */,
 				A36D3554120B136700E1A035 /* PurchaseButtonPressed.png in Resources */,
+				7D9F9BA317E365F900B5FEC7 /* SelectionEnd-7.png in Resources */,
 				A36D3555120B136700E1A035 /* PurchaseConfirmButton.png in Resources */,
 				A36D3556120B136700E1A035 /* PurchaseConfirmButtonPressed.png in Resources */,
 				A36D3557120B136700E1A035 /* rightButtonBlackOpaque.png in Resources */,
@@ -5630,14 +5910,17 @@
 				A36D3562120B136700E1A035 /* logo-white@2x.png in Resources */,
 				A36D3563120B136700E1A035 /* buttonBarArrowDownSmall.png in Resources */,
 				A36D3564120B136700E1A035 /* buttonBarArrowDownSmall@2x.png in Resources */,
+				7D9F9B1217E33BE100B5FEC7 /* MagnificationLoupeMask-7.png in Resources */,
 				A36D3565120B136700E1A035 /* buttonBarArrowUpSmall.png in Resources */,
 				A36D3566120B136700E1A035 /* buttonBarArrowUpSmall@2x.png in Resources */,
 				A36D3568120B136700E1A035 /* navigationBarBlackTranslucentButton.png in Resources */,
 				A36D3569120B136700E1A035 /* navigationBarBlackTranslucentButton@2x.png in Resources */,
+				7D9F9B8B17E3626500B5FEC7 /* MenuArrowTopHighlighted-7.png in Resources */,
 				A36D356A120B136700E1A035 /* button-delete-black@2x.png in Resources */,
 				A36D356B120B136700E1A035 /* library-pausebutton@2x.png in Resources */,
 				A36D356C120B136700E1A035 /* library-resumebutton@2x.png in Resources */,
 				A36D356D120B136700E1A035 /* library-progress-background@2x.png in Resources */,
+				7D9F9B9B17E3627100B5FEC7 /* MenuRidge-7.png in Resources */,
 				A36D356F120B136700E1A035 /* eula.html in Resources */,
 				A36D3570120B136700E1A035 /* userdoc.html in Resources */,
 				C9CEBD781211959B0040CEFF /* booktexture-nocover.png in Resources */,
@@ -5657,6 +5940,7 @@
 				A3E6419A12397C0400D2B85A /* icon-back@2x.png in Resources */,
 				DC8CADA9124877DA00C1EED9 /* table-headerbar-background.png in Resources */,
 				DC8CADAA124877DA00C1EED9 /* table-headerbar-background@2x.png in Resources */,
+				7D9F9B4817E3547100B5FEC7 /* MenuArrowTop-7@2x.png in Resources */,
 				C99239DF126CCD9300BA364A /* searchBarBorder.png in Resources */,
 				C99239E0126CCD9300BA364A /* searchBarBorder@2x.png in Resources */,
 				C9923A14126CCF2D00BA364A /* searchFieldIcon.png in Resources */,
@@ -5666,6 +5950,7 @@
 				DCD4A299126F470F00A131B7 /* greyButtonPressed.png in Resources */,
 				DCD4A29A126F470F00A131B7 /* greyButtonPressed@2x.png in Resources */,
 				DCD4A4F0126F7F8E00A131B7 /* icon-add@2x.png in Resources */,
+				7D9F9AF617E33A5D00B5FEC7 /* MagnificationLoupeHigh-7.png in Resources */,
 				DCD4A4F1126F7F8E00A131B7 /* icon-bookmarked@2x.png in Resources */,
 				DCD4A4F2126F7F8E00A131B7 /* icon-bookmarked.png in Resources */,
 				DCD4A4F3126F7F8E00A131B7 /* icon-add.png in Resources */,
@@ -5675,6 +5960,7 @@
 				7D131D251295628300BCA583 /* icon-list@2x.png in Resources */,
 				7D131D261295628300BCA583 /* icon-list.png in Resources */,
 				7D131D271295628300BCA583 /* icon-grid@2x.png in Resources */,
+				7D9F9B7717E3626500B5FEC7 /* MagnificationLoupeMask-7.png in Resources */,
 				7D131D281295628300BCA583 /* icon-grid.png in Resources */,
 				7D131D291295628300BCA583 /* icon-author@2x.png in Resources */,
 				7D131D2A1295628300BCA583 /* icon-author.png in Resources */,
@@ -5696,6 +5982,7 @@
 				A393060912BAC03400949150 /* mit-license.html in Resources */,
 				A393060A12BAC03400949150 /* openfont-license.html in Resources */,
 				DC63DB1712DF8F2E00D8C750 /* badge-preview.png in Resources */,
+				7D9F9B3B17E33D0900B5FEC7 /* LineLoupeMask-7@2x.png in Resources */,
 				DC63DB1812DF8F2E00D8C750 /* badge-preview@2x.png in Resources */,
 				A3951A2A12E9E87D0023EE10 /* userdoc-ipad.html in Resources */,
 				7D07620212EEC96A008EF96D /* sfhf-license.html in Resources */,
@@ -5712,6 +5999,7 @@
 				DC8A54481412E25D0009341B /* book-overlay@2x.png in Resources */,
 				DC8A544B1412E25D0009341B /* book-overlay.png in Resources */,
 				A323E7611427A6D10043E78E /* voiceover-tips.html in Resources */,
+				7D9F9B6B17E35C6300B5FEC7 /* MenuRidge-7@2x.png in Resources */,
 				7D69C35514293D6500136CFB /* brightness-sun-bright.png in Resources */,
 				7D69C35914293D6500136CFB /* brightness-sun-bright@2x.png in Resources */,
 				7D69C35D14293D6500136CFB /* brightness-sun-dim.png in Resources */,
@@ -5727,11 +6015,15 @@
 				7DB1248614FFEB0500DB7666 /* BlioEPUB3Overrides.css in Resources */,
 				A3EB90951525F8A000C2E35D /* iTunesArtwork in Resources */,
 				A3EB909B1525F8F100C2E35D /* Default-Landscape@2x.png in Resources */,
+				7D9F9B8617E3626500B5FEC7 /* MenuArrowTop-7.png in Resources */,
 				A3EB909E1525F8F100C2E35D /* Default-Portrait@2x.png in Resources */,
 				A3EB90A11525F8F100C2E35D /* Icon-iPad@2x.png in Resources */,
+				7D9F9B4317E3547100B5FEC7 /* MenuArrowBottom-7@2x.png in Resources */,
 				7DDF8FC915D580C600CCC867 /* THAVPlayerPause.png in Resources */,
+				7D9F9B2517E33CE300B5FEC7 /* LineLoupeHigh-7@2x.png in Resources */,
 				7DDF8FCE15D580C600CCC867 /* THAVPlayerPause@2x.png in Resources */,
 				7DDF8FD315D580C600CCC867 /* THAVPlayerPlay.png in Resources */,
+				7D9F9AFB17E33A5D00B5FEC7 /* MagnificationLoupeHigh-7@2x.png in Resources */,
 				7DDF8FD815D580C600CCC867 /* THAVPlayerPlay@2x.png in Resources */,
 				7D02B52115E4E6DF00B764A7 /* THAVPlayerAudioBackground.png in Resources */,
 				7D18B94916033807002E8F0B /* Default-568h@2x.png in Resources */,
@@ -5772,6 +6064,7 @@
 				A3BEFC7E152DE9E6009B4F4A /* icon-finger.png in Resources */,
 				A3BEFC80152DE9E6009B4F4A /* librarybackground.png in Resources */,
 				A3BEFC81152DE9E6009B4F4A /* button-list.png in Resources */,
+				7D9F9B3E17E33D0900B5FEC7 /* LineLoupeMask-7@2x.png in Resources */,
 				A3BEFC82152DE9E6009B4F4A /* button-grid.png in Resources */,
 				A3BEFC83152DE9E6009B4F4A /* icon-contents.png in Resources */,
 				A3BEFC84152DE9E6009B4F4A /* icon-pause.png in Resources */,
@@ -5784,11 +6077,13 @@
 				A3BEFC8E152DE9E6009B4F4A /* speedread-thumb.png in Resources */,
 				A3BEFC8F152DE9E6009B4F4A /* roundedcorners.png in Resources */,
 				A3BEFC90152DE9E6009B4F4A /* BlioStoreBookView.xib in Resources */,
+				7D9F9AF917E33A5D00B5FEC7 /* MagnificationLoupeHigh-7.png in Resources */,
 				A3BEFC91152DE9E6009B4F4A /* downloadButton.png in Resources */,
 				A3BEFC92152DE9E6009B4F4A /* downloadButtonPressed.png in Resources */,
 				A3BEFC93152DE9E6009B4F4A /* back-black.png in Resources */,
 				A3BEFC94152DE9E6009B4F4A /* forward-black.png in Resources */,
 				A3BEFC95152DE9E6009B4F4A /* check.png in Resources */,
+				7D9F9B2317E33CE300B5FEC7 /* LineLoupeHigh-7.png in Resources */,
 				A3BEFC96152DE9E6009B4F4A /* shadow-bottom.png in Resources */,
 				A3BEFC97152DE9E6009B4F4A /* shadow-right.png in Resources */,
 				A3BEFC98152DE9E6009B4F4A /* shadow-left.png in Resources */,
@@ -5800,7 +6095,10 @@
 				A3BEFC9E152DE9E6009B4F4A /* Localizable.strings in Resources */,
 				A3BEFC9F152DE9E6009B4F4A /* library-progress-background.png in Resources */,
 				A3BEFCA0152DE9E6009B4F4A /* button-delete-red.png in Resources */,
+				7D9F9B6E17E35C6300B5FEC7 /* MenuRidge-7@2x.png in Resources */,
 				A3BEFCA1152DE9E6009B4F4A /* button-delete-black.png in Resources */,
+				7D9F9B8417E3626500B5FEC7 /* MenuArrowBottomHighlighted-7.png in Resources */,
+				7D9F9B5817E3594200B5FEC7 /* MenuArrowTopHighlighted-7@2x.png in Resources */,
 				A3BEFCA2152DE9E6009B4F4A /* library-resumebutton.png in Resources */,
 				A3BEFCA3152DE9E6009B4F4A /* library-pausebutton.png in Resources */,
 				A3BEFCA4152DE9E6009B4F4A /* BlioVoiceData.plist in Resources */,
@@ -5834,7 +6132,9 @@
 				A3BEFCC6152DE9E6009B4F4A /* iPodLikeSliderKnob@2x.png in Resources */,
 				A3BEFCC7152DE9E6009B4F4A /* iPodLikeSliderWhiteRightCap.png in Resources */,
 				A3BEFCC8152DE9E6009B4F4A /* iPodLikeSliderWhiteRightCap@2x.png in Resources */,
+				7D9F9B2817E33CE300B5FEC7 /* LineLoupeHigh-7@2x.png in Resources */,
 				A3BEFCC9152DE9E6009B4F4A /* LineLoupeHigh.png in Resources */,
+				7D9F9B9317E3626500B5FEC7 /* MenuBackground-7.png in Resources */,
 				A3BEFCCA152DE9E6009B4F4A /* LineLoupeHigh@2x.png in Resources */,
 				A3BEFCCB152DE9E6009B4F4A /* LineLoupeLow.png in Resources */,
 				A3BEFCCC152DE9E6009B4F4A /* LineLoupeLow@2x.png in Resources */,
@@ -5846,6 +6146,7 @@
 				A3BEFCD2152DE9E6009B4F4A /* MagnificationLoupeLow@2x.png in Resources */,
 				A3BEFCD3152DE9E6009B4F4A /* MagnificationLoupeMask.png in Resources */,
 				A3BEFCD4152DE9E6009B4F4A /* MagnificationLoupeMask@2x.png in Resources */,
+				7D9F9B1A17E33BE100B5FEC7 /* MagnificationLoupeMask-7@2x.png in Resources */,
 				A3BEFCD5152DE9E6009B4F4A /* MenuArrowBottom.png in Resources */,
 				A3BEFCD6152DE9E6009B4F4A /* MenuArrowBottom@2x.png in Resources */,
 				A3BEFCD7152DE9E6009B4F4A /* MenuArrowBottomHighlighted.png in Resources */,
@@ -5857,7 +6158,6 @@
 				A3BEFCDD152DE9E6009B4F4A /* MenuBackground.png in Resources */,
 				A3BEFCDE152DE9E6009B4F4A /* MenuBackground@2x.png in Resources */,
 				A3BEFCDF152DE9E6009B4F4A /* MenuBackgroundHighlighted.png in Resources */,
-				A3BEFCE0152DE9E6009B4F4A /* MenuBackgroundHighlighted@2.png in Resources */,
 				A3BEFCE1152DE9E6009B4F4A /* MenuBottomShadowLeft.png in Resources */,
 				A3BEFCE2152DE9E6009B4F4A /* MenuBottomShadowLeft@2x.png in Resources */,
 				A3BEFCE3152DE9E6009B4F4A /* MenuBottomShadowMiddle.png in Resources */,
@@ -5868,12 +6168,15 @@
 				A3BEFCE8152DE9E6009B4F4A /* MenuRidge@2x.png in Resources */,
 				A3BEFCE9152DE9E6009B4F4A /* PurchaseButton.png in Resources */,
 				A3BEFCEA152DE9E6009B4F4A /* PurchaseButtonPressed.png in Resources */,
+				7D9F9B4617E3547100B5FEC7 /* MenuArrowBottom-7@2x.png in Resources */,
 				A3BEFCEB152DE9E6009B4F4A /* PurchaseConfirmButton.png in Resources */,
 				A3BEFCEC152DE9E6009B4F4A /* PurchaseConfirmButtonPressed.png in Resources */,
 				A3BEFCED152DE9E6009B4F4A /* rightButtonBlackOpaque.png in Resources */,
 				A3BEFCEE152DE9E6009B4F4A /* rightButtonBlackOpaque@2x.png in Resources */,
 				A3BEFCEF152DE9E6009B4F4A /* rightButtonBlackTranslucent.png in Resources */,
 				A3BEFCF0152DE9E6009B4F4A /* rightButtonBlackTranslucent@2x.png in Resources */,
+				7D9F9B5017E3547100B5FEC7 /* MenuBackground-7@2x.png in Resources */,
+				7D9F9BAB17E365F900B5FEC7 /* SelectionKnob-7.png in Resources */,
 				A3BEFCF1152DE9E6009B4F4A /* rightButtonBlue.png in Resources */,
 				A3BEFCF2152DE9E6009B4F4A /* rightButtonBlue@2x.png in Resources */,
 				A3BEFCF3152DE9E6009B4F4A /* SelectionEnd.png in Resources */,
@@ -5911,6 +6214,7 @@
 				A3BEFD16152DE9E6009B4F4A /* searchBarBorder@2x.png in Resources */,
 				A3BEFD17152DE9E6009B4F4A /* searchFieldIcon.png in Resources */,
 				A3BEFD18152DE9E6009B4F4A /* searchFieldIcon@2x.png in Resources */,
+				7D9F9B9E17E3627100B5FEC7 /* MenuRidge-7.png in Resources */,
 				A3BEFD19152DE9E6009B4F4A /* greyButton.png in Resources */,
 				A3BEFD1A152DE9E6009B4F4A /* greyButton@2x.png in Resources */,
 				A3BEFD1B152DE9E6009B4F4A /* greyButtonPressed.png in Resources */,
@@ -5930,8 +6234,10 @@
 				A3BEFD29152DE9E6009B4F4A /* icon-author@2x.png in Resources */,
 				A3BEFD2A152DE9E6009B4F4A /* icon-author.png in Resources */,
 				A3BEFD2B152DE9E6009B4F4A /* icon-arbitrary@2x.png in Resources */,
+				7D9F9B7A17E3626500B5FEC7 /* MagnificationLoupeMask-7.png in Resources */,
 				A3BEFD2C152DE9E6009B4F4A /* icon-arbitrary.png in Resources */,
 				A3BEFD2D152DE9E6009B4F4A /* webstore-screenshot-ipad.png in Resources */,
+				7D9F9B7F17E3626500B5FEC7 /* MenuArrowBottom-7.png in Resources */,
 				A3BEFD2E152DE9E6009B4F4A /* webstore-screenshot-ipad@2x.png in Resources */,
 				A3BEFD2F152DE9E6009B4F4A /* webstore-screenshot-phone.png in Resources */,
 				A3BEFD30152DE9E6009B4F4A /* webstore-screenshot-phone@2x.png in Resources */,
@@ -5941,14 +6247,18 @@
 				A3BEFD35152DE9E6009B4F4A /* paper-neutral~ipad.png in Resources */,
 				A3BEFD36152DE9E6009B4F4A /* paper-white~ipad.png in Resources */,
 				A3BEFD37152DE9E6009B4F4A /* back-black@2x.png in Resources */,
+				7D9F9B8917E3626500B5FEC7 /* MenuArrowTop-7.png in Resources */,
 				A3BEFD38152DE9E6009B4F4A /* forward-black@2x.png in Resources */,
 				A3BEFD39152DE9E6009B4F4A /* apache2-license.html in Resources */,
+				7D9F9BB017E365F900B5FEC7 /* SelectionKnob-7@2x.png in Resources */,
 				A3BEFD3A152DE9E6009B4F4A /* gnulesser-license.html in Resources */,
+				7D9F9AFE17E33A5D00B5FEC7 /* MagnificationLoupeHigh-7@2x.png in Resources */,
 				A3BEFD3B152DE9E6009B4F4A /* mit-license.html in Resources */,
 				A3BEFD3C152DE9E6009B4F4A /* openfont-license.html in Resources */,
 				A3BEFD3D152DE9E6009B4F4A /* badge-preview.png in Resources */,
 				A3BEFD3E152DE9E6009B4F4A /* badge-preview@2x.png in Resources */,
 				A3BEFD3F152DE9E6009B4F4A /* userdoc-ipad.html in Resources */,
+				7D9F9B6817E359B100B5FEC7 /* MenuArrowBottomHighlighted-7@2x.png in Resources */,
 				A3BEFD40152DE9E6009B4F4A /* sfhf-license.html in Resources */,
 				A3BEFD41152DE9E6009B4F4A /* minizip-license.html in Resources */,
 				A3BEFD42152DE9E6009B4F4A /* playButton.png in Resources */,
@@ -5959,6 +6269,8 @@
 				A3BEFD47152DE9E6009B4F4A /* TextFlowCover.xhtml in Resources */,
 				A3BEFD48152DE9E6009B4F4A /* TextFlowFlow.css in Resources */,
 				A3BEFD49152DE9E6009B4F4A /* TextFlowXAML.css in Resources */,
+				7D9F9B6217E3594200B5FEC7 /* MenuBackgroundHighlighted-7@2x.png in Resources */,
+				7D9F9B3917E33D0900B5FEC7 /* LineLoupeMask-7.png in Resources */,
 				A3BEFD4A152DE9E6009B4F4A /* TextFlowXAMLOverrides.css in Resources */,
 				A3BEFD4B152DE9E6009B4F4A /* book-overlay@2x.png in Resources */,
 				A3BEFD4C152DE9E6009B4F4A /* book-overlay.png in Resources */,
@@ -5969,6 +6281,7 @@
 				A3BEFD52152DE9E6009B4F4A /* brightness-sun-dim@2x.png in Resources */,
 				A3BEFD53152DE9E6009B4F4A /* voiceover-quickstart.html in Resources */,
 				A3BEFD54152DE9E6009B4F4A /* icon-wrench.png in Resources */,
+				7D9F9BA617E365F900B5FEC7 /* SelectionEnd-7.png in Resources */,
 				A3BEFD55152DE9E6009B4F4A /* icon-wrench@2x.png in Resources */,
 				A3BEFD56152DE9E6009B4F4A /* BlioFonts.plist in Resources */,
 				A3BEFD57152DE9E6009B4F4A /* FlowViewEucPageOptions.plist in Resources */,
@@ -5978,7 +6291,9 @@
 				A3BEFD5B152DE9E6009B4F4A /* BlioEPUB3Overrides.css in Resources */,
 				A3BEFE61152F7EEF009B4F4A /* ToshibaApp-Info.plist in Resources */,
 				A3C6ABF11540A192003C9B90 /* Icon-Large-Toshiba.png in Resources */,
+				7D9F9B9817E3626500B5FEC7 /* MenuBackgroundHighlighted-7.png in Resources */,
 				A3C6ABF21540A192003C9B90 /* Icon-Toshiba.png in Resources */,
+				7D9F9B8E17E3626500B5FEC7 /* MenuArrowTopHighlighted-7.png in Resources */,
 				A3C6ABF31540A192003C9B90 /* Icon-Toshiba@2x.png in Resources */,
 				A3C6ABFA1540A1EB003C9B90 /* Icon-iPad-Toshiba.png in Resources */,
 				A3C6ABFB1540A1EC003C9B90 /* Icon-iPad-Toshiba@2x.png in Resources */,
@@ -5989,6 +6304,7 @@
 				A3C6AC061541A789003C9B90 /* Default-Toshiba.png in Resources */,
 				A3C6AC071541A789003C9B90 /* Default-Toshiba@2x.png in Resources */,
 				A3C6AC0A1541C9AB003C9B90 /* logo-white-Toshiba.png in Resources */,
+				7D9F9B4B17E3547100B5FEC7 /* MenuArrowTop-7@2x.png in Resources */,
 				A3C6AC0B1541C9AB003C9B90 /* logo-white-Toshiba@2x.png in Resources */,
 				A320D447154F187E002671FB /* credits-toshiba.html in Resources */,
 				A3FBC52F1562D91E00F14FE4 /* userdoc-Toshiba.html in Resources */,
@@ -6000,6 +6316,7 @@
 				7DDF8FD615D580C600CCC867 /* THAVPlayerPlay.png in Resources */,
 				7DDF8FDB15D580C600CCC867 /* THAVPlayerPlay@2x.png in Resources */,
 				7D02B52415E4E6DF00B764A7 /* THAVPlayerAudioBackground.png in Resources */,
+				7D9F9B1517E33BE100B5FEC7 /* MagnificationLoupeMask-7.png in Resources */,
 				87837261160908BC00EA85A4 /* icon-fontsize.png in Resources */,
 				87837266160908BC00EA85A4 /* icon-fontsize@2x.png in Resources */,
 				876AEC7A161CB469008899A8 /* bsd-3-clause-license.html in Resources */,
