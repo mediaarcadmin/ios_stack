@@ -165,27 +165,31 @@
         UIColor *whiteColor = [UIColor whiteColor];
         UIColor *clearColor = [UIColor clearColor];
         UIColor *tintColor;
+        UIFont *defaultFont;
         if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
             tintColor = [UIColor darkGrayColor];
+            defaultFont = [UIFont boldSystemFontOfSize:12.0f];
         } else {
-            if ([[UIDevice currentDevice] compareSystemVersion:@"7.0"] >= NSOrderedSame)
+            if ([[UIDevice currentDevice] compareSystemVersion:@"7.0"] >= NSOrderedSame) {
+                defaultFont = [UIFont systemFontOfSize:13.0f];
                 tintColor = [UIColor blackColor];
-            else
+            } else {
+                defaultFont = [UIFont boldSystemFontOfSize:12.0f];
                 tintColor = kBlioViewSettingsPopverBlueButton;
+            }
         }
 
 		//////// PAGE LAYOUT
 		
-        UIFont *defaultFont = [UIFont boldSystemFontOfSize:12.0f];
-        UIEdgeInsets inset = UIEdgeInsetsMake(0, 2, 2, 2);
+        UIEdgeInsets inset = UIEdgeInsetsMake(0, 1, 2, 2);
         UIImage *plainImage;
         UIImage *layoutImage;
         if ([[UIDevice currentDevice] compareSystemVersion:@"7.0"] >= NSOrderedSame) {
             plainImage = [UIImage imageWithIcon:[UIImage imageNamed:@"icon-page"] string:@"Flowed" font:defaultFont color:whiteColor textInset:inset];
             layoutImage = [UIImage imageWithIcon:[UIImage imageNamed:@"icon-layout"] string:@"Fixed" font:defaultFont color:whiteColor textInset:inset];
             // Problem on both iphone and ipad:  when image is a template, the image interior doesn't render.  Original rendering mode fixes this, but doesn't render contrastively when segment is selected (iphone) or unselected(ipad).
-            plainImage = [plainImage imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
-            layoutImage = [layoutImage imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
+            plainImage = [plainImage imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+            layoutImage = [layoutImage imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
         }
         else {
             // Doesn't render well in iOS 7.
