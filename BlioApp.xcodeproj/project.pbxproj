@@ -76,6 +76,11 @@
 		7D18B94816033807002E8F0B /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D18B94716033807002E8F0B /* Default-568h@2x.png */; };
 		7D18B94916033807002E8F0B /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D18B94716033807002E8F0B /* Default-568h@2x.png */; };
 		7D18B94A16033807002E8F0B /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D18B94716033807002E8F0B /* Default-568h@2x.png */; };
+		7D1969DF17E79D3A004EEC74 /* MagnificationLoupeMask-7.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D1969DE17E79D3A004EEC74 /* MagnificationLoupeMask-7.png */; };
+		7D1969E017E79D3A004EEC74 /* MagnificationLoupeMask-7.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D1969DE17E79D3A004EEC74 /* MagnificationLoupeMask-7.png */; };
+		7D1969E117E79D3A004EEC74 /* MagnificationLoupeMask-7.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D1969DE17E79D3A004EEC74 /* MagnificationLoupeMask-7.png */; };
+		7D1969E217E79D3A004EEC74 /* MagnificationLoupeMask-7.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D1969DE17E79D3A004EEC74 /* MagnificationLoupeMask-7.png */; };
+		7D1969E317E79D3A004EEC74 /* MagnificationLoupeMask-7.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D1969DE17E79D3A004EEC74 /* MagnificationLoupeMask-7.png */; };
 		7D1C969113F136D900DCFD02 /* KNFBXPSEPubInfoParserDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D1C969013F136D900DCFD02 /* KNFBXPSEPubInfoParserDelegate.m */; };
 		7D1C969213F136D900DCFD02 /* KNFBXPSEPubInfoParserDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D1C969013F136D900DCFD02 /* KNFBXPSEPubInfoParserDelegate.m */; };
 		7D1C969313F136D900DCFD02 /* KNFBXPSEPubInfoParserDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D1C969013F136D900DCFD02 /* KNFBXPSEPubInfoParserDelegate.m */; };
@@ -2635,6 +2640,7 @@
 		7D131D211295628300BCA583 /* icon-arbitrary@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-arbitrary@2x.png"; sourceTree = "<group>"; };
 		7D131D221295628300BCA583 /* icon-arbitrary.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-arbitrary.png"; sourceTree = "<group>"; };
 		7D18B94716033807002E8F0B /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
+		7D1969DE17E79D3A004EEC74 /* MagnificationLoupeMask-7.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "MagnificationLoupeMask-7.png"; sourceTree = "<group>"; };
 		7D1C968F13F136D900DCFD02 /* KNFBXPSEPubInfoParserDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = KNFBXPSEPubInfoParserDelegate.h; path = XPS/KNFBXPSEPubInfoParserDelegate.h; sourceTree = "<group>"; };
 		7D1C969013F136D900DCFD02 /* KNFBXPSEPubInfoParserDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = KNFBXPSEPubInfoParserDelegate.m; path = XPS/KNFBXPSEPubInfoParserDelegate.m; sourceTree = "<group>"; };
 		7D1C969413F136F100DCFD02 /* KNFBXPSPageNumbersParserDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = KNFBXPSPageNumbersParserDelegate.h; path = XPS/KNFBXPSPageNumbersParserDelegate.h; sourceTree = "<group>"; };
@@ -3921,6 +3927,7 @@
 				7D4A00CD11DBA36800DDA5B7 /* MagnificationLoupeHigh@2x.png */,
 				7D4A00CE11DBA36800DDA5B7 /* MagnificationLoupeLow.png */,
 				7D4A00CF11DBA36800DDA5B7 /* MagnificationLoupeLow@2x.png */,
+				7D1969DE17E79D3A004EEC74 /* MagnificationLoupeMask-7.png */,
 				7D9F9B1017E33BE100B5FEC7 /* MagnificationLoupeMask-7@2x.png */,
 				7D4A00D011DBA36800DDA5B7 /* MagnificationLoupeMask.png */,
 				7D4A00D111DBA36800DDA5B7 /* MagnificationLoupeMask@2x.png */,
@@ -5082,6 +5089,7 @@
 				7D9F9B3517E33D0900B5FEC7 /* LineLoupeMask-7.png in Resources */,
 				7D9F9AFA17E33A5D00B5FEC7 /* MagnificationLoupeHigh-7@2x.png in Resources */,
 				7D9F9B5417E3594200B5FEC7 /* MenuArrowTopHighlighted-7@2x.png in Resources */,
+				7D1969DF17E79D3A004EEC74 /* MagnificationLoupeMask-7.png in Resources */,
 				C99239DE126CCD9200BA364A /* searchBarBorder@2x.png in Resources */,
 				C9923A12126CCF2D00BA364A /* searchFieldIcon.png in Resources */,
 				C9923A13126CCF2D00BA364A /* searchFieldIcon@2x.png in Resources */,
@@ -5272,6 +5280,7 @@
 				A30E0F56123EA5B400D31157 /* icon-play@2x.png in Resources */,
 				A30E0F57123EA5B400D31157 /* icon-plus@2x.png in Resources */,
 				A30E0F58123EA5B400D31157 /* icon-search@2x.png in Resources */,
+				7D1969E117E79D3A004EEC74 /* MagnificationLoupeMask-7.png in Resources */,
 				A30E0F59123EA5B400D31157 /* icon-speedread@2x.png in Resources */,
 				A30E0F5A123EA5B400D31157 /* icon-vault@2x.png in Resources */,
 				A30E0F5B123EA5B400D31157 /* paper-black@2x.png in Resources */,
@@ -5628,6 +5637,7 @@
 				A31CC79913FEA07E0010BFC5 /* library-pausebutton@2x.png in Resources */,
 				A31CC79A13FEA07E0010BFC5 /* library-resumebutton@2x.png in Resources */,
 				A31CC79B13FEA07E0010BFC5 /* library-progress-background@2x.png in Resources */,
+				7D1969E217E79D3A004EEC74 /* MagnificationLoupeMask-7.png in Resources */,
 				A31CC79E13FEA07E0010BFC5 /* booktexture-nocover.png in Resources */,
 				A31CC79F13FEA07E0010BFC5 /* BlioFeatureCompatibility.plist in Resources */,
 				A31CC7A113FEA07E0010BFC5 /* button-delete-red@2x.png in Resources */,
@@ -5830,6 +5840,7 @@
 				A36D3521120B136700E1A035 /* icon-pause@2x.png in Resources */,
 				A36D3522120B136700E1A035 /* icon-play@2x.png in Resources */,
 				A36D3523120B136700E1A035 /* icon-plus@2x.png in Resources */,
+				7D1969E017E79D3A004EEC74 /* MagnificationLoupeMask-7.png in Resources */,
 				A36D3524120B136700E1A035 /* icon-search@2x.png in Resources */,
 				A36D3525120B136700E1A035 /* icon-speedread@2x.png in Resources */,
 				A36D3526120B136700E1A035 /* icon-vault@2x.png in Resources */,
@@ -6268,6 +6279,7 @@
 				A3BEFD52152DE9E6009B4F4A /* brightness-sun-dim@2x.png in Resources */,
 				A3BEFD53152DE9E6009B4F4A /* voiceover-quickstart.html in Resources */,
 				A3BEFD54152DE9E6009B4F4A /* icon-wrench.png in Resources */,
+				7D1969E317E79D3A004EEC74 /* MagnificationLoupeMask-7.png in Resources */,
 				7D9F9BA617E365F900B5FEC7 /* SelectionEnd-7.png in Resources */,
 				A3BEFD55152DE9E6009B4F4A /* icon-wrench@2x.png in Resources */,
 				A3BEFD56152DE9E6009B4F4A /* BlioFonts.plist in Resources */,
