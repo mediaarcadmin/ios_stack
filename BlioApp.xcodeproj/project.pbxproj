@@ -309,11 +309,6 @@
 		7D9F9AFC17E33A5D00B5FEC7 /* MagnificationLoupeHigh-7@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D9F9AF417E33A5D00B5FEC7 /* MagnificationLoupeHigh-7@2x.png */; };
 		7D9F9AFD17E33A5D00B5FEC7 /* MagnificationLoupeHigh-7@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D9F9AF417E33A5D00B5FEC7 /* MagnificationLoupeHigh-7@2x.png */; };
 		7D9F9AFE17E33A5D00B5FEC7 /* MagnificationLoupeHigh-7@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D9F9AF417E33A5D00B5FEC7 /* MagnificationLoupeHigh-7@2x.png */; };
-		7D9F9B1117E33BE100B5FEC7 /* MagnificationLoupeMask-7.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D9F9B0F17E33BE100B5FEC7 /* MagnificationLoupeMask-7.png */; };
-		7D9F9B1217E33BE100B5FEC7 /* MagnificationLoupeMask-7.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D9F9B0F17E33BE100B5FEC7 /* MagnificationLoupeMask-7.png */; };
-		7D9F9B1317E33BE100B5FEC7 /* MagnificationLoupeMask-7.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D9F9B0F17E33BE100B5FEC7 /* MagnificationLoupeMask-7.png */; };
-		7D9F9B1417E33BE100B5FEC7 /* MagnificationLoupeMask-7.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D9F9B0F17E33BE100B5FEC7 /* MagnificationLoupeMask-7.png */; };
-		7D9F9B1517E33BE100B5FEC7 /* MagnificationLoupeMask-7.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D9F9B0F17E33BE100B5FEC7 /* MagnificationLoupeMask-7.png */; };
 		7D9F9B1617E33BE100B5FEC7 /* MagnificationLoupeMask-7@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D9F9B1017E33BE100B5FEC7 /* MagnificationLoupeMask-7@2x.png */; };
 		7D9F9B1717E33BE100B5FEC7 /* MagnificationLoupeMask-7@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D9F9B1017E33BE100B5FEC7 /* MagnificationLoupeMask-7@2x.png */; };
 		7D9F9B1817E33BE100B5FEC7 /* MagnificationLoupeMask-7@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D9F9B1017E33BE100B5FEC7 /* MagnificationLoupeMask-7@2x.png */; };
@@ -2754,7 +2749,6 @@
 		7D9A6883125ABC7200130A53 /* levenshtein_distance.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = levenshtein_distance.h; sourceTree = "<group>"; };
 		7D9F9AF317E33A5D00B5FEC7 /* MagnificationLoupeHigh-7.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "MagnificationLoupeHigh-7.png"; sourceTree = "<group>"; };
 		7D9F9AF417E33A5D00B5FEC7 /* MagnificationLoupeHigh-7@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "MagnificationLoupeHigh-7@2x.png"; sourceTree = "<group>"; };
-		7D9F9B0F17E33BE100B5FEC7 /* MagnificationLoupeMask-7.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "MagnificationLoupeMask-7.png"; sourceTree = "<group>"; };
 		7D9F9B1017E33BE100B5FEC7 /* MagnificationLoupeMask-7@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "MagnificationLoupeMask-7@2x.png"; sourceTree = "<group>"; };
 		7D9F9B1B17E33CE300B5FEC7 /* LineLoupeHigh-7.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "LineLoupeHigh-7.png"; sourceTree = "<group>"; };
 		7D9F9B1C17E33CE300B5FEC7 /* LineLoupeHigh-7@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "LineLoupeHigh-7@2x.png"; sourceTree = "<group>"; };
@@ -5061,7 +5055,6 @@
 				7D9F9B8F17E3626500B5FEC7 /* MenuBackground-7.png in Resources */,
 				C9FD392C11FD69FF008F1F50 /* buttonBarArrowUpSmall@2x.png in Resources */,
 				C988573A1202ED54006905CF /* navigationBarBlackTranslucentButton.png in Resources */,
-				7D9F9B1117E33BE100B5FEC7 /* MagnificationLoupeMask-7.png in Resources */,
 				C988573B1202ED54006905CF /* navigationBarBlackTranslucentButton@2x.png in Resources */,
 				DC18E083120516F30077DF01 /* button-delete-black@2x.png in Resources */,
 				DC18E086120517010077DF01 /* library-pausebutton@2x.png in Resources */,
@@ -5350,7 +5343,6 @@
 				A30E0F97123EA5B400D31157 /* buttonBarArrowDownSmall.png in Resources */,
 				A30E0F98123EA5B400D31157 /* buttonBarArrowDownSmall@2x.png in Resources */,
 				A30E0F99123EA5B400D31157 /* buttonBarArrowUpSmall.png in Resources */,
-				7D9F9B1317E33BE100B5FEC7 /* MagnificationLoupeMask-7.png in Resources */,
 				A30E0F9A123EA5B400D31157 /* buttonBarArrowUpSmall@2x.png in Resources */,
 				A30E0F9C123EA5B400D31157 /* navigationBarBlackTranslucentButton.png in Resources */,
 				A30E0F9D123EA5B400D31157 /* navigationBarBlackTranslucentButton@2x.png in Resources */,
@@ -5688,7 +5680,6 @@
 				A31CC7CD13FEA07E0010BFC5 /* webstore-screenshot-ipad@2x.png in Resources */,
 				A31CC7CE13FEA07E0010BFC5 /* webstore-screenshot-phone.png in Resources */,
 				A31CC7CF13FEA07E0010BFC5 /* webstore-screenshot-phone@2x.png in Resources */,
-				7D9F9B1417E33BE100B5FEC7 /* MagnificationLoupeMask-7.png in Resources */,
 				A31CC7D013FEA07E0010BFC5 /* button-background-graygradient.png in Resources */,
 				A31CC7D113FEA07E0010BFC5 /* button-background-graygradient@2x.png in Resources */,
 				A31CC7D313FEA07E0010BFC5 /* paper-black~ipad.png in Resources */,
@@ -5910,7 +5901,6 @@
 				A36D3562120B136700E1A035 /* logo-white@2x.png in Resources */,
 				A36D3563120B136700E1A035 /* buttonBarArrowDownSmall.png in Resources */,
 				A36D3564120B136700E1A035 /* buttonBarArrowDownSmall@2x.png in Resources */,
-				7D9F9B1217E33BE100B5FEC7 /* MagnificationLoupeMask-7.png in Resources */,
 				A36D3565120B136700E1A035 /* buttonBarArrowUpSmall.png in Resources */,
 				A36D3566120B136700E1A035 /* buttonBarArrowUpSmall@2x.png in Resources */,
 				A36D3568120B136700E1A035 /* navigationBarBlackTranslucentButton.png in Resources */,
@@ -6315,7 +6305,6 @@
 				7DDF8FD615D580C600CCC867 /* THAVPlayerPlay.png in Resources */,
 				7DDF8FDB15D580C600CCC867 /* THAVPlayerPlay@2x.png in Resources */,
 				7D02B52415E4E6DF00B764A7 /* THAVPlayerAudioBackground.png in Resources */,
-				7D9F9B1517E33BE100B5FEC7 /* MagnificationLoupeMask-7.png in Resources */,
 				87837261160908BC00EA85A4 /* icon-fontsize.png in Resources */,
 				87837266160908BC00EA85A4 /* icon-fontsize@2x.png in Resources */,
 				876AEC7A161CB469008899A8 /* bsd-3-clause-license.html in Resources */,
