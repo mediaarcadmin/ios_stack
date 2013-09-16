@@ -369,11 +369,6 @@
 		7D9F9B6C17E35C6300B5FEC7 /* MenuRidge-7@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D9F9B6917E35C6300B5FEC7 /* MenuRidge-7@2x.png */; };
 		7D9F9B6D17E35C6300B5FEC7 /* MenuRidge-7@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D9F9B6917E35C6300B5FEC7 /* MenuRidge-7@2x.png */; };
 		7D9F9B6E17E35C6300B5FEC7 /* MenuRidge-7@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D9F9B6917E35C6300B5FEC7 /* MenuRidge-7@2x.png */; };
-		7D9F9B7617E3626500B5FEC7 /* MagnificationLoupeMask-7.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D9F9B6F17E3626500B5FEC7 /* MagnificationLoupeMask-7.png */; };
-		7D9F9B7717E3626500B5FEC7 /* MagnificationLoupeMask-7.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D9F9B6F17E3626500B5FEC7 /* MagnificationLoupeMask-7.png */; };
-		7D9F9B7817E3626500B5FEC7 /* MagnificationLoupeMask-7.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D9F9B6F17E3626500B5FEC7 /* MagnificationLoupeMask-7.png */; };
-		7D9F9B7917E3626500B5FEC7 /* MagnificationLoupeMask-7.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D9F9B6F17E3626500B5FEC7 /* MagnificationLoupeMask-7.png */; };
-		7D9F9B7A17E3626500B5FEC7 /* MagnificationLoupeMask-7.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D9F9B6F17E3626500B5FEC7 /* MagnificationLoupeMask-7.png */; };
 		7D9F9B7B17E3626500B5FEC7 /* MenuArrowBottom-7.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D9F9B7017E3626500B5FEC7 /* MenuArrowBottom-7.png */; };
 		7D9F9B7C17E3626500B5FEC7 /* MenuArrowBottom-7.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D9F9B7017E3626500B5FEC7 /* MenuArrowBottom-7.png */; };
 		7D9F9B7D17E3626500B5FEC7 /* MenuArrowBottom-7.png in Resources */ = {isa = PBXBuildFile; fileRef = 7D9F9B7017E3626500B5FEC7 /* MenuArrowBottom-7.png */; };
@@ -2766,7 +2761,6 @@
 		7D9F9B5317E3594200B5FEC7 /* MenuBackgroundHighlighted-7@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "MenuBackgroundHighlighted-7@2x.png"; sourceTree = "<group>"; };
 		7D9F9B6317E359B100B5FEC7 /* MenuArrowBottomHighlighted-7@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "MenuArrowBottomHighlighted-7@2x.png"; sourceTree = "<group>"; };
 		7D9F9B6917E35C6300B5FEC7 /* MenuRidge-7@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "MenuRidge-7@2x.png"; sourceTree = "<group>"; };
-		7D9F9B6F17E3626500B5FEC7 /* MagnificationLoupeMask-7.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "MagnificationLoupeMask-7.png"; sourceTree = "<group>"; };
 		7D9F9B7017E3626500B5FEC7 /* MenuArrowBottom-7.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "MenuArrowBottom-7.png"; sourceTree = "<group>"; };
 		7D9F9B7117E3626500B5FEC7 /* MenuArrowBottomHighlighted-7.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "MenuArrowBottomHighlighted-7.png"; sourceTree = "<group>"; };
 		7D9F9B7217E3626500B5FEC7 /* MenuArrowTop-7.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "MenuArrowTop-7.png"; sourceTree = "<group>"; };
@@ -3927,7 +3921,6 @@
 				7D4A00CD11DBA36800DDA5B7 /* MagnificationLoupeHigh@2x.png */,
 				7D4A00CE11DBA36800DDA5B7 /* MagnificationLoupeLow.png */,
 				7D4A00CF11DBA36800DDA5B7 /* MagnificationLoupeLow@2x.png */,
-				7D9F9B6F17E3626500B5FEC7 /* MagnificationLoupeMask-7.png */,
 				7D9F9B1017E33BE100B5FEC7 /* MagnificationLoupeMask-7@2x.png */,
 				7D4A00D011DBA36800DDA5B7 /* MagnificationLoupeMask.png */,
 				7D4A00D111DBA36800DDA5B7 /* MagnificationLoupeMask@2x.png */,
@@ -3980,7 +3973,6 @@
 				7D9F9BA117E365F900B5FEC7 /* SelectionKnob-7@2x.png */,
 				7D4A00F111DBA36800DDA5B7 /* SelectionKnob.png */,
 				7D4A00F211DBA36800DDA5B7 /* SelectionKnob@2x.png */,
-				7D9F9B6F17E3626500B5FEC7 /* MagnificationLoupeMask-7.png */,
 			);
 			path = Apple;
 			sourceTree = "<group>";
@@ -5035,7 +5027,6 @@
 				7D4A014911DBA36900DDA5B7 /* MenuBottomShadowLeft@2x.png in Resources */,
 				7D9F9B8517E3626500B5FEC7 /* MenuArrowTop-7.png in Resources */,
 				7D4A014A11DBA36900DDA5B7 /* MenuBottomShadowMiddle.png in Resources */,
-				7D9F9B7617E3626500B5FEC7 /* MagnificationLoupeMask-7.png in Resources */,
 				7D4A014B11DBA36900DDA5B7 /* MenuBottomShadowMiddle@2x.png in Resources */,
 				7D4A014C11DBA36900DDA5B7 /* MenuBottomShadowRight.png in Resources */,
 				7D4A014D11DBA36900DDA5B7 /* MenuBottomShadowRight@2x.png in Resources */,
@@ -5400,7 +5391,6 @@
 				7D131D391295628300BCA583 /* icon-list@2x.png in Resources */,
 				7D131D3A1295628300BCA583 /* icon-list.png in Resources */,
 				7D131D3B1295628300BCA583 /* icon-grid@2x.png in Resources */,
-				7D9F9B7817E3626500B5FEC7 /* MagnificationLoupeMask-7.png in Resources */,
 				7D131D3C1295628300BCA583 /* icon-grid.png in Resources */,
 				7D131D3D1295628300BCA583 /* icon-author@2x.png in Resources */,
 				7D131D3E1295628300BCA583 /* icon-author.png in Resources */,
@@ -5680,7 +5670,6 @@
 				A31CC7C613FEA07E0010BFC5 /* icon-grid@2x.png in Resources */,
 				A31CC7C713FEA07E0010BFC5 /* icon-grid.png in Resources */,
 				A31CC7C813FEA07E0010BFC5 /* icon-author@2x.png in Resources */,
-				7D9F9B7917E3626500B5FEC7 /* MagnificationLoupeMask-7.png in Resources */,
 				7D9F9B2217E33CE300B5FEC7 /* LineLoupeHigh-7.png in Resources */,
 				A31CC7C913FEA07E0010BFC5 /* icon-author.png in Resources */,
 				A31CC7CA13FEA07E0010BFC5 /* icon-arbitrary@2x.png in Resources */,
@@ -5960,7 +5949,6 @@
 				7D131D251295628300BCA583 /* icon-list@2x.png in Resources */,
 				7D131D261295628300BCA583 /* icon-list.png in Resources */,
 				7D131D271295628300BCA583 /* icon-grid@2x.png in Resources */,
-				7D9F9B7717E3626500B5FEC7 /* MagnificationLoupeMask-7.png in Resources */,
 				7D131D281295628300BCA583 /* icon-grid.png in Resources */,
 				7D131D291295628300BCA583 /* icon-author@2x.png in Resources */,
 				7D131D2A1295628300BCA583 /* icon-author.png in Resources */,
@@ -6234,7 +6222,6 @@
 				A3BEFD29152DE9E6009B4F4A /* icon-author@2x.png in Resources */,
 				A3BEFD2A152DE9E6009B4F4A /* icon-author.png in Resources */,
 				A3BEFD2B152DE9E6009B4F4A /* icon-arbitrary@2x.png in Resources */,
-				7D9F9B7A17E3626500B5FEC7 /* MagnificationLoupeMask-7.png in Resources */,
 				A3BEFD2C152DE9E6009B4F4A /* icon-arbitrary.png in Resources */,
 				A3BEFD2D152DE9E6009B4F4A /* webstore-screenshot-ipad.png in Resources */,
 				7D9F9B7F17E3626500B5FEC7 /* MenuArrowBottom-7.png in Resources */,
@@ -7267,7 +7254,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				CODE_SIGN_ENTITLEMENTS = "$(SRCROOT)/Entitlements.plist";
 				CODE_SIGN_IDENTITY = "iPhone Developer: Arnold Chien (4XCU87FX68)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Arnold Chien (4XCU87FX68)";
@@ -7307,7 +7293,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				CODE_SIGN_ENTITLEMENTS = "$(SRCROOT)/Entitlements.plist";
 				CODE_SIGN_IDENTITY = "iPhone Distribution: K-NFB Reading Technology Inc.";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: K-NFB Reading Technology Inc.";
@@ -7581,7 +7566,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				CODE_SIGN_ENTITLEMENTS = "$(SRCROOT)/Entitlements.plist";
 				CODE_SIGN_IDENTITY = "iPhone Distribution: K-NFB Reading Technology Inc.";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: K-NFB Reading Technology Inc.";
