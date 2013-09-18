@@ -65,7 +65,6 @@ typedef enum {
 typedef enum {
     kBlioLibraryToolbarsStateNoneVisible = 0,
     kBlioLibraryToolbarsStateStatusBarVisible,
-    kBlioLibraryToolbarsStateToolbarsVisible,
     kBlioLibraryToolbarsStateStatusBarAndToolbarsVisible,
     kBlioLibraryToolbarsStatePauseButtonVisible,
 } BlioLibraryToolbarsState;
@@ -1135,6 +1134,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         //if(self.toolbarsVisibleAfterAppearance) {
             if([application isStatusBarHidden]) {
                 [application setStatusBarHidden:NO withAnimation:UIStatusBarAnimationFade];
+                [self setPrefersStatusBarHidden:NO];
             }
         
         if([self.bookView respondsToSelector:@selector(toolbarsWillShow)]) {
@@ -1151,25 +1151,15 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         [self.navigationController.toolbar setHidden:NO];
         [self.navigationController setToolbarHidden:NO animated:NO];
         
-            if(!animated) {
-                CGRect frame = self.navigationController.toolbar.frame;
-                frame.origin.y += frame.size.height;
-                self.navigationController.toolbar.frame = frame;
-                [UIView beginAnimations:@"PullInToolbarAnimations" context:NULL];
-                frame.origin.y -= frame.size.height;
-                self.navigationController.toolbar.frame = frame;
-                [UIView commitAnimations];                
-            }                    
-        //} //else {
-//            UINavigationBar *navBar = self.navigationController.navigationBar;
-//            navBar.barStyle = UIBarStyleBlackTranslucent;  
-//            if(![application isStatusBarHidden]) {
-//				if ([application respondsToSelector:@selector(setStatusBarHidden:withAnimation:)]) 
-//                    [application setStatusBarHidden:YES withAnimation:UIStatusBarAnimationFade];
-//				else 
-//                    [(id)application setStatusBarHidden:YES animated:YES]; // typecast as id to mask deprecation warnings.							
-//            }            
-//        }
+        if(!animated) {
+            CGRect frame = self.navigationController.toolbar.frame;
+            frame.origin.y += frame.size.height;
+            self.navigationController.toolbar.frame = frame;
+            [UIView beginAnimations:@"PullInToolbarAnimations" context:NULL];
+            frame.origin.y -= frame.size.height;
+            self.navigationController.toolbar.frame = frame;
+            [UIView commitAnimations];
+        }
         [self togglePageJumpPanel];
     }
     _firstAppearance = NO;
@@ -1238,7 +1228,8 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
             }                        
             if(_returnToStatusBarHidden != application.isStatusBarHidden){
                 [application setStatusBarHidden:_returnToStatusBarHidden withAnimation:UIStatusBarAnimationFade];
-            }           
+                [self setPrefersStatusBarHidden:_returnToStatusBarHidden];
+            }
             UINavigationBar *navBar = self.navigationController.navigationBar;
             navBar.barStyle = UIBarStyleDefault;
             navBar.translucent = _returnToNavigationBarTranslucent;
@@ -1266,6 +1257,35 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 - (void)viewDidDisappear:(BOOL)animated
 {    
     _viewIsDisappearing = NO;
+}
+
+- (UIStatusBarStyle)preferredStatusBarStyle
+{
+    if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
+        return UIStatusBarStyleBlackTranslucent;
+    } else {
+        return UIStatusBarStyleBlackOpaque;
+    }
+}
+
+- (void)setPrefersStatusBarHidden:(BOOL)prefersStatusBarHidden
+{
+    if(prefersStatusBarHidden != self.prefersStatusBarHidden) {
+        _prefersStatusBarHidden = prefersStatusBarHidden;
+        if([self respondsToSelector:@selector(setNeedsStatusBarAppearanceUpdate)]) {
+            [self setNeedsStatusBarAppearanceUpdate];
+        }
+    }
+}
+
+- (BOOL)prefersStatusBarHidden
+{
+    return _prefersStatusBarHidden;
+}
+
+- (UIStatusBarAnimation)preferredStatusBarUpdateAnimation
+{
+    return UIStatusBarAnimationFade;
 }
 
 - (void)didReceiveMemoryWarning 
@@ -1355,12 +1375,15 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
         self.navigationController.navigationBarHidden = YES;
         [UIApplication sharedApplication].idleTimerDisabled = YES;
         _pageJumpView.hidden = YES;
+        
+        [self setPrefersStatusBarHidden:YES];
     } else {
         if (![self audioPlaying])
             [UIApplication sharedApplication].idleTimerDisabled = NO;
         _pageJumpView.hidden = !self.toolbarsVisible;
         [self layoutPageJumpView];
     }
+
     _fadeState = BookViewControlleUIFadeStateNone;
 }
  
@@ -1415,6 +1438,7 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
 			} else {
 				[[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleBlackOpaque animated:NO];
 			}
+            [self setPrefersStatusBarHidden:NO];
             break;
         default:
             break;
@@ -1422,7 +1446,6 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     
     // Set the toolbar settings we don't want to animate 
     switch (toolbarState) {
-        case kBlioLibraryToolbarsStateToolbarsVisible:
         case kBlioLibraryToolbarsStateStatusBarAndToolbarsVisible:
             if ([self.searchViewController isSearchInline] == NO) {
                 self.navigationController.toolbarHidden = NO;
@@ -1451,7 +1474,6 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
                 [self.bookView toolbarsWillHide];
             }
             break;
-        case kBlioLibraryToolbarsStateToolbarsVisible:
         case kBlioLibraryToolbarsStateStatusBarAndToolbarsVisible:
             if([self.bookView respondsToSelector:@selector(toolbarsWillShow)]) {
                 [self.bookView toolbarsWillShow];
@@ -1461,7 +1483,6 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
     
     // Set the toolbars settings we do want to animate
     switch (toolbarState) {
-        case kBlioLibraryToolbarsStateToolbarsVisible:
         case kBlioLibraryToolbarsStateStatusBarAndToolbarsVisible:
             [UIView setAnimationDuration:0];
             if ([self.searchViewController isSearchInline] == NO) {
@@ -1507,9 +1528,9 @@ static const BOOL kBlioFontPageTexturesAreDarkArray[] = { NO, YES, NO };
             [[UIApplication sharedApplication] setStatusBarHidden:YES withAnimation:UIStatusBarAnimationFade];
             break;
     }
-    
+
     _toolbarState = toolbarState;
-        
+    
     UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification, nil);
 }
 

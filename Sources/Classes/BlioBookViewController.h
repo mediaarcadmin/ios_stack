@@ -85,6 +85,7 @@ typedef enum {
     
     NSUInteger _toolbarState;
     NSUInteger _beforeModalOverlayToolbarState;
+    BOOL _prefersStatusBarHidden;
     
     BlioBookSearchViewController *searchViewController;
     id <BlioCoverViewDelegate> delegate;
