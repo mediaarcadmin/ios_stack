@@ -187,7 +187,6 @@
         if ([[UIDevice currentDevice] compareSystemVersion:@"7.0"] >= NSOrderedSame) {
             plainImage = [UIImage imageWithIcon:[UIImage imageNamed:@"icon-page"] string:@"Flowed" font:defaultFont color:whiteColor textInset:inset];
             layoutImage = [UIImage imageWithIcon:[UIImage imageNamed:@"icon-layout"] string:@"Fixed" font:defaultFont color:whiteColor textInset:inset];
-            // Problem on both iphone and ipad:  when image is a template, the image interior doesn't render.  Original rendering mode fixes this, but doesn't render contrastively when segment is selected (iphone) or unselected(ipad).
             plainImage = [plainImage imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
             layoutImage = [layoutImage imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
         }
@@ -201,12 +200,16 @@
                                          layoutImage,
                                          nil];
 		if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
+            UIImage *speedReadImage;
             if ([[UIDevice currentDevice] compareSystemVersion:@"7.0"] >= NSOrderedSame) {
-                // Problem:  see above.
-                [segmentImages addObject:[[UIImage imageWithIcon:[UIImage imageNamed:@"icon-speedread.png"] string:@"Fast" font:defaultFont color:whiteColor textInset:inset] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal]];
+                speedReadImage = [UIImage imageWithIcon:[UIImage imageNamed:@"icon-speedread.png"] string:@"Fast" font:defaultFont color:whiteColor textInset:inset];
+                speedReadImage = [speedReadImage imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
             }
             else
-                [segmentImages addObject:[UIImage appleLikeBeveledImage:[UIImage imageWithIcon:[UIImage imageNamed:@"icon-speedread.png"] string:@"Fast" font:defaultFont color:whiteColor textInset:inset]]];
+            {
+                speedReadImage = [UIImage appleLikeBeveledImage:[UIImage imageWithIcon:[UIImage imageNamed:@"icon-speedread.png"] string:@"Fast" font:defaultFont color:whiteColor textInset:inset]];
+            }
+            [segmentImages addObject:speedReadImage];
 		}
  
         BlioAccessibilitySegmentedControl *aLayoutSegmentedControl = [[BlioAccessibilitySegmentedControl alloc] initWithItems:segmentImages];
