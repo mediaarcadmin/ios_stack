@@ -2278,6 +2278,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
         self.authorLabel = aAuthorLabel;
         [aAuthorLabel release];
         
+        /*  Restore when Axis 360 is ready for early return.
         UIButton* aReturnButton = [[UIButton alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.bookView.frame) + kBlioLibraryListBookMargin, 52, 65, 15)];
         //aReturnButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
 		//aReturnButton.showsTouchWhenHighlighted = YES;
@@ -2294,6 +2295,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
         [self.contentView addSubview:aReturnButton];
         self.returnButton = aReturnButton;
         [aReturnButton release];
+         */
         
 		/*
         BlioProgressView *aSlider = [[BlioProgressView alloc] init];

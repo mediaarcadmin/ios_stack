@@ -13,6 +13,7 @@
 #import "BlioAppSettingsConstants.h"
 #import	"Reachability.h"
 #import "BlioDrmSessionManager.h"
+#import "BlioBook.h"
 
 // N.B. - For other stores besides the default, BlioOnlineStoreHelper should be subclassed and the init overridden.
 //#define KNFB_STORE 12151
@@ -20,6 +21,8 @@
 //#define TOSHIBA_STORE 12309
 //#define DELL_STORE 12327
 //#define BLIO_IPHONE_VERSION 12555
+
+static NSString * const BlioDeletedFromArchiveAlertType = @"BlioDeletedFromArchiveAlertType";
 
 @interface BlioOnlineStoreHelper (PRIVATE)
 - (void) bookVaultSoapOperation:(BookVaultSoapOperation *)operation completedWithResponse:(BookVaultSoapResponse *)response;
@@ -260,6 +263,8 @@
 //			NSLog(@"bookOwnershipInfo productType: %i",[bookOwnershipInfo.ProductTypeId intValue]);
 //		}
 		
+        // See comments below.
+        //NSMutableSet* incomingLoanerBooks = [NSMutableSet setWithCapacity:8];
 		for (BookVault_BookOwnershipInfo * bookOwnershipInfo in _BookOwnershipInfoArray) {
 			
 			// check to see if BlioBook record is already in the persistent store
@@ -275,6 +280,12 @@
 			}
             else if ([bookOwnershipInfo.RecordStatusId intValue] == 2) {
                 [[BlioStoreManager sharedInstance].processingDelegate deleteBook:preExistingBook attemptArchive:NO shouldSave:YES];
+                [BlioAlertManager showAlertOfSuppressedType:BlioDeletedFromArchiveAlertType
+                                                      title:NSLocalizedString(@"Book Deleted",@"\"Book Deleted"\" alert message title")
+                                             message:NSLocalizedStringWithDefaultValue(@"BOOK_DELETED",nil,[NSBundle mainBundle],@"One or more of your books have been deleted because they are no longer in your archive.",@"Alert message shown when a downloaded book has been deleted from the archive.")
+                                            delegate:self
+                                   cancelButtonTitle:@"OK"
+                                   otherButtonTitles: nil];
             }
 			else if (([[preExistingBook valueForKey:@"productType"] intValue] == BlioProductTypePreview && [bookOwnershipInfo.ProductTypeId intValue] == BlioProductTypeFull)) {
                 NSLog(@"replacing preview version of ISBN:%@ with full version...",bookOwnershipInfo.ISBN);
@@ -288,10 +299,51 @@
 				newISBNs++;
 				[self getContentMetaDataFromISBN:bookOwnershipInfo.ISBN];
 			}
+            else if (incomingTransactionType == BlioTransactionTypeLend) {
+                // see below
+                //[incomingLoanerBooks addObject:bookOwnershipInfo.ISBN];
+                if  (preExistingTransactionType == BlioTransactionTypeLend) {
+                    NSString *dateFormat = @"yyyy-MM-dd'T'HH:mm:ss";
+                    NSDateFormatter *formatter = [[[NSDateFormatter alloc] init] autorelease];
+                    [formatter setDateFormat: dateFormat];
+                    [formatter setTimeZone:[NSTimeZone timeZoneWithAbbreviation:@"EST"]];
+                    NSDate* incomingExpirationDate = [formatter dateFromString:bookOwnershipInfo.ExpirationDate];
+                    // If expiration date has changed (renewal), delete book to clear way for renewed book.
+                    if (![incomingExpirationDate isEqualToDate:[preExistingBook valueForKey:@"expirationDate"]]) {
+                        [[BlioStoreManager sharedInstance].processingDelegate deleteBook:preExistingBook attemptArchive:NO shouldSave:YES];
+                        newISBNs++;
+                        [self getContentMetaDataFromISBN:bookOwnershipInfo.ISBN];
+                        [BlioAlertManager showAlertOfSuppressedType:BlioDeletedFromArchiveAlertType
+                                                              title:NSLocalizedString(@"Book Renewal",@"\"Book Renewal"\" alert message title")
+                                                     message:NSLocalizedStringWithDefaultValue(@"BOOK_RENEWED",nil,[NSBundle mainBundle],@"One or more of your borrowed books have been renewed.  You can redownload them from your Archive.",@"Alert message shown when a downloaded borrowed book has been renewed.")
+                                                    delegate:self
+                                           cancelButtonTitle:@"OK"
+                                           otherButtonTitles: nil];
+                    }
+                }
+            }
 			else {
 				NSLog(@"We already have ISBN: %@ in our persistent store, no need to get meta data for this item.",bookOwnershipInfo.ISBN);	
 			}
 		}
+        /* Unnecessary since the local copy of a returned book would by now already have been deleted, because of the way
+           inactive books are handled above - assuming returned books appear as inactive books, as opposed to being nonexistent.
+           BUT: if they are nonexistent, then uncomment the below.
+        // Now must see whether there are any existing loaner books that are not among the incoming loaner books.
+        NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
+        NSManagedObjectContext* moc = [[BlioBookManager sharedBookManager] managedObjectContextForCurrentThread];
+        [fetchRequest setEntity:[NSEntityDescription entityForName:@"BlioBook" inManagedObjectContext:moc]];
+        [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"transactionType == %@",[NSNumber numberWithInt:BlioTransactionTypeLend]]];
+        NSError *errorExecute = nil;
+        NSArray *results = [moc executeFetchRequest:fetchRequest error:&errorExecute];
+        [fetchRequest release];
+        for (BlioBook* book in results) {
+            if (![incomingLoanerBooks containsObject:[book valueForKey:@"isbn"]])
+                // Book has been returned, from another device.  Delete it.
+                [[BlioStoreManager sharedInstance].processingDelegate deleteBook:book attemptArchive:NO shouldSave:YES];
+                // TODO: alert
+        }
+        */
 		if (newISBNs == 0) [self assessRetrieveBooksProgress];
 	}
 }
