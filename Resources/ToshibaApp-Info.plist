@@ -95,6 +95,9 @@
 	<string>${EXECUTABLE_NAME}</string>
 	<key>CFBundleIconFiles</key>
 	<array>
+		<string>Icon-76-iPad-Toshiba.png</string>
+		<string>Icon-152-iPad-Toshiba.png</string>
+		<string>Icon-120-Toshiba.png</string>
 		<string>Icon-Toshiba.png</string>
 		<string>Icon-Toshiba@2x.png</string>
 		<string>Icon-iPad-Toshiba.png</string>
@@ -140,7 +143,7 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>1.0</string>
+	<string>1.1</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleURLTypes</key>
@@ -161,7 +164,7 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>3624</string>
+	<string>6357</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>UIBackgroundModes</key>
