@@ -95,6 +95,9 @@
 	<string>${EXECUTABLE_NAME}</string>
 	<key>CFBundleIconFiles</key>
 	<array>
+		<string>Icon-152-iPad.png</string>
+		<string>Icon-76-iPad.png</string>
+		<string>Icon-120.png</string>
 		<string>Icon.png</string>
 		<string>Icon@2x.png</string>
 		<string>Icon-iPad.png</string>
@@ -140,7 +143,7 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>3.7</string>
+	<string>4.0</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleURLTypes</key>
@@ -161,7 +164,7 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>6228</string>
+	<string>6357</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>UIBackgroundModes</key>

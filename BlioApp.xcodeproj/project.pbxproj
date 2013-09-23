@@ -534,6 +534,15 @@
 		87837264160908BC00EA85A4 /* icon-fontsize@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8783725C160908BC00EA85A4 /* icon-fontsize@2x.png */; };
 		87837265160908BC00EA85A4 /* icon-fontsize@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8783725C160908BC00EA85A4 /* icon-fontsize@2x.png */; };
 		87837266160908BC00EA85A4 /* icon-fontsize@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8783725C160908BC00EA85A4 /* icon-fontsize@2x.png */; };
+		878FFF4C17F087F800CF22DD /* Icon-120.png in Resources */ = {isa = PBXBuildFile; fileRef = 878FFF4B17F087F800CF22DD /* Icon-120.png */; };
+		878FFF4D17F087F800CF22DD /* Icon-120.png in Resources */ = {isa = PBXBuildFile; fileRef = 878FFF4B17F087F800CF22DD /* Icon-120.png */; };
+		878FFF4E17F087F800CF22DD /* Icon-120.png in Resources */ = {isa = PBXBuildFile; fileRef = 878FFF4B17F087F800CF22DD /* Icon-120.png */; };
+		878FFF5F17F0887800CF22DD /* Icon-76-iPad.png in Resources */ = {isa = PBXBuildFile; fileRef = 878FFF5D17F0887800CF22DD /* Icon-76-iPad.png */; };
+		878FFF6017F0887800CF22DD /* Icon-76-iPad.png in Resources */ = {isa = PBXBuildFile; fileRef = 878FFF5D17F0887800CF22DD /* Icon-76-iPad.png */; };
+		878FFF6117F0887800CF22DD /* Icon-76-iPad.png in Resources */ = {isa = PBXBuildFile; fileRef = 878FFF5D17F0887800CF22DD /* Icon-76-iPad.png */; };
+		878FFF6217F0887800CF22DD /* Icon-152-iPad.png in Resources */ = {isa = PBXBuildFile; fileRef = 878FFF5E17F0887800CF22DD /* Icon-152-iPad.png */; };
+		878FFF6317F0887800CF22DD /* Icon-152-iPad.png in Resources */ = {isa = PBXBuildFile; fileRef = 878FFF5E17F0887800CF22DD /* Icon-152-iPad.png */; };
+		878FFF6417F0887800CF22DD /* Icon-152-iPad.png in Resources */ = {isa = PBXBuildFile; fileRef = 878FFF5E17F0887800CF22DD /* Icon-152-iPad.png */; };
 		A30E0EFB123EA5B400D31157 /* credits.html in Resources */ = {isa = PBXBuildFile; fileRef = A3FE55B412074EFA0038DA0C /* credits.html */; };
 		A30E0EFC123EA5B400D31157 /* MainNavControllerAndLibraryView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 28AD735F0D9D9599002E5188 /* MainNavControllerAndLibraryView.xib */; };
 		A30E0EFD123EA5B400D31157 /* RootViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 28F335F01007B36200424DE2 /* RootViewController.xib */; };
@@ -2831,6 +2840,9 @@
 		876AEC75161CB469008899A8 /* bsd-3-clause-license.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = "bsd-3-clause-license.html"; sourceTree = "<group>"; };
 		8783725B160908BC00EA85A4 /* icon-fontsize.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-fontsize.png"; sourceTree = "<group>"; };
 		8783725C160908BC00EA85A4 /* icon-fontsize@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-fontsize@2x.png"; sourceTree = "<group>"; };
+		878FFF4B17F087F800CF22DD /* Icon-120.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-120.png"; sourceTree = "<group>"; };
+		878FFF5D17F0887800CF22DD /* Icon-76-iPad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-76-iPad.png"; sourceTree = "<group>"; };
+		878FFF5E17F0887800CF22DD /* Icon-152-iPad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-152-iPad.png"; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* BlioApp-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "BlioApp-Info.plist"; plistStructureDefinitionIdentifier = "com.apple.xcode.plist.structure-definition.iphone.info-plist"; sourceTree = "<group>"; };
 		A30E1044123EA5B400D31157 /* Blio.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Blio.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A3169287111488C9005AAE5E /* BlioAudioManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlioAudioManager.h; sourceTree = "<group>"; };
@@ -3625,6 +3637,7 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				878FFF4B17F087F800CF22DD /* Icon-120.png */,
 				A388EEA1164809B6009C5727 /* Default-Toshiba-568h@2x.png */,
 				876AEC75161CB469008899A8 /* bsd-3-clause-license.html */,
 				8783725B160908BC00EA85A4 /* icon-fontsize.png */,
@@ -4610,6 +4623,8 @@
 		DCB0363E11BDC42C00B341D4 /* Resources-iPad */ = {
 			isa = PBXGroup;
 			children = (
+				878FFF5D17F0887800CF22DD /* Icon-76-iPad.png */,
+				878FFF5E17F0887800CF22DD /* Icon-152-iPad.png */,
 				A3FBC5301562D93000F14FE4 /* userdoc-ipad-Toshiba.html */,
 				A3C6ABFC1540A812003C9B90 /* Default-Toshiba-Landscape.png */,
 				A3C6ABFD1540A812003C9B90 /* Default-Toshiba-Landscape@2x.png */,
@@ -5110,6 +5125,7 @@
 				7D131D361295628300BCA583 /* icon-arbitrary.png in Resources */,
 				DCFAC96D12AD738D0049341B /* webstore-screenshot-ipad.png in Resources */,
 				DCFAC96E12AD738D0049341B /* webstore-screenshot-ipad@2x.png in Resources */,
+				878FFF5F17F0887800CF22DD /* Icon-76-iPad.png in Resources */,
 				DCF63D1812B59CA7003E762C /* webstore-screenshot-phone.png in Resources */,
 				DCF63D1912B59CA7003E762C /* webstore-screenshot-phone@2x.png in Resources */,
 				DCF6420112B60B60003E762C /* button-background-graygradient.png in Resources */,
@@ -5162,6 +5178,7 @@
 				7DB1248514FFEB0500DB7666 /* BlioEPUB3Overrides.css in Resources */,
 				7D9F9B7B17E3626500B5FEC7 /* MenuArrowBottom-7.png in Resources */,
 				A3EB90941525F8A000C2E35D /* iTunesArtwork in Resources */,
+				878FFF4C17F087F800CF22DD /* Icon-120.png in Resources */,
 				A3EB909A1525F8F100C2E35D /* Default-Landscape@2x.png in Resources */,
 				A3EB909D1525F8F100C2E35D /* Default-Portrait@2x.png in Resources */,
 				A3EB90A01525F8F100C2E35D /* Icon-iPad@2x.png in Resources */,
@@ -5179,6 +5196,7 @@
 				7D612BDF16FA439A00455436 /* LinLibertine_RB.otf in Resources */,
 				7D612BE416FA439A00455436 /* LinLibertine_RBI.otf in Resources */,
 				7D612BE916FA439A00455436 /* LinLibertine_RI.otf in Resources */,
+				878FFF6217F0887800CF22DD /* Icon-152-iPad.png in Resources */,
 				7D612BEE16FA439A00455436 /* LinLibertine_RZ.otf in Resources */,
 				7D612BF316FA439A00455436 /* LinLibertine_RZI.otf in Resources */,
 			);
@@ -5227,6 +5245,7 @@
 				A30E0F25123EA5B400D31157 /* roundedcorners.png in Resources */,
 				A30E0F27123EA5B400D31157 /* BlioStoreBookView.xib in Resources */,
 				A30E0F28123EA5B400D31157 /* downloadButton.png in Resources */,
+				878FFF6417F0887800CF22DD /* Icon-152-iPad.png in Resources */,
 				7D9F9B1817E33BE100B5FEC7 /* MagnificationLoupeMask-7@2x.png in Resources */,
 				A30E0F29123EA5B400D31157 /* downloadButtonPressed.png in Resources */,
 				A30E0F2A123EA5B400D31157 /* back-black.png in Resources */,
@@ -5246,6 +5265,7 @@
 				A30E0F3C123EA5B400D31157 /* button-delete-red.png in Resources */,
 				7D9F9B9617E3626500B5FEC7 /* MenuBackgroundHighlighted-7.png in Resources */,
 				A30E0F3D123EA5B400D31157 /* button-delete-black.png in Resources */,
+				878FFF6117F0887800CF22DD /* Icon-76-iPad.png in Resources */,
 				7D9F9B6617E359B100B5FEC7 /* MenuArrowBottomHighlighted-7@2x.png in Resources */,
 				A30E0F3E123EA5B400D31157 /* library-resumebutton.png in Resources */,
 				A30E0F3F123EA5B400D31157 /* library-pausebutton.png in Resources */,
@@ -5356,6 +5376,7 @@
 				A30E0FA3123EA5B400D31157 /* userdoc.html in Resources */,
 				A30E0FA5123EA5B400D31157 /* booktexture-nocover.png in Resources */,
 				A30E0FA6123EA5B400D31157 /* BlioFeatureCompatibility.plist in Resources */,
+				878FFF4E17F087F800CF22DD /* Icon-120.png in Resources */,
 				A30E0FA8123EA5B400D31157 /* button-delete-red@2x.png in Resources */,
 				A30E0FA9123EA5B400D31157 /* button-tts-pause@2x.png in Resources */,
 				A30E0FAA123EA5B400D31157 /* downloadButton@2x.png in Resources */,
@@ -5785,6 +5806,7 @@
 				A36D34F0120B136700E1A035 /* roundedcorners.png in Resources */,
 				A36D34F2120B136700E1A035 /* BlioStoreBookView.xib in Resources */,
 				A36D34F3120B136700E1A035 /* downloadButton.png in Resources */,
+				878FFF6317F0887800CF22DD /* Icon-152-iPad.png in Resources */,
 				7D9F9B1717E33BE100B5FEC7 /* MagnificationLoupeMask-7@2x.png in Resources */,
 				A36D34F4120B136700E1A035 /* downloadButtonPressed.png in Resources */,
 				A36D34F5120B136700E1A035 /* back-black.png in Resources */,
@@ -5804,6 +5826,7 @@
 				A36D3507120B136700E1A035 /* button-delete-red.png in Resources */,
 				7D9F9B9517E3626500B5FEC7 /* MenuBackgroundHighlighted-7.png in Resources */,
 				A36D3508120B136700E1A035 /* button-delete-black.png in Resources */,
+				878FFF6017F0887800CF22DD /* Icon-76-iPad.png in Resources */,
 				7D9F9B6517E359B100B5FEC7 /* MenuArrowBottomHighlighted-7@2x.png in Resources */,
 				A36D3509120B136700E1A035 /* library-resumebutton.png in Resources */,
 				A36D350A120B136700E1A035 /* library-pausebutton.png in Resources */,
@@ -5914,6 +5937,7 @@
 				A36D356F120B136700E1A035 /* eula.html in Resources */,
 				A36D3570120B136700E1A035 /* userdoc.html in Resources */,
 				C9CEBD781211959B0040CEFF /* booktexture-nocover.png in Resources */,
+				878FFF4D17F087F800CF22DD /* Icon-120.png in Resources */,
 				DC2ABE421213DC0F00E6C483 /* BlioFeatureCompatibility.plist in Resources */,
 				DCA1B8FE122289C60022D410 /* button-delete-red@2x.png in Resources */,
 				DCA1B901122289D20022D410 /* button-tts-pause@2x.png in Resources */,
@@ -7355,7 +7379,8 @@
 					"-fobjc-arc",
 				);
 				PRODUCT_NAME = Blio;
-				PROVISIONING_PROFILE = "502B0524-F40F-44A0-BD8E-30E68C3900EE";
+				PROVISIONING_PROFILE = "7364D754-6A91-47E8-BFB6-6E0B052A660C";
+				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
@@ -7366,8 +7391,8 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CODE_SIGN_ENTITLEMENTS = "$(SRCROOT)/Entitlements.plist";
-				CODE_SIGN_IDENTITY = "iPhone Developer: Arnold Chien (4XCU87FX68)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Arnold Chien (4XCU87FX68)";
+				CODE_SIGN_IDENTITY = "iPhone Distribution: K-NFB Reading Technology Inc. (65VWBS2PG5)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: K-NFB Reading Technology Inc. (65VWBS2PG5)";
 				COPY_PHASE_STRIP = YES;
 				CURRENT_PROJECT_VERSION = 6;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -7389,8 +7414,9 @@
 					"-fobjc-arc",
 				);
 				PRODUCT_NAME = Blio;
-				PROVISIONING_PROFILE = "502B0524-F40F-44A0-BD8E-30E68C3900EE";
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "502B0524-F40F-44A0-BD8E-30E68C3900EE";
+				PROVISIONING_PROFILE = "544A5CFE-2B90-47AF-8568-27603199A4C6";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "544A5CFE-2B90-47AF-8568-27603199A4C6";
+				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
@@ -7426,6 +7452,7 @@
 				PRODUCT_NAME = Blio;
 				PROVISIONING_PROFILE = "502B0524-F40F-44A0-BD8E-30E68C3900EE";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "5371D97A-F72A-480E-B8BC-87D4B17A6A7E";
+				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
