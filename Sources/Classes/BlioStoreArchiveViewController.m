@@ -525,10 +525,10 @@
 				return;
 			}
 			else {
-				NSLog(@"Error %@ deleting book from archive: %@",[[[bodyPart DeleteBookResult] ReturnCode] stringValue], [bodyPart DeleteBookResult].Message);
-                NSString* errorMessage = @"There was an error deleting this book.  Please contact Blio technical support with the error code: ";
+                NSString* errorMessage = [bodyPart DeleteBookResult].Message;
+				NSLog(@"Error %@ deleting book from archive: %@",[[[bodyPart DeleteBookResult] ReturnCode] stringValue], errorMessage);
                 [BlioAlertManager showTaggedAlertWithTitle:NSLocalizedString(@"Delete from Archive",@"\"Delete from Archive\" alert message title")
-                                                   message:[errorMessage stringByAppendingString:[[[bodyPart DeleteBookResult] ReturnCode] stringValue]]
+                                                   message:errorMessage
                                                   delegate:self
                                                        tag:ARCHIVE_DELETE_ERROR_TAG
                                          cancelButtonTitle:NSLocalizedString(@"OK",@"\"OK\" label for button used to cancel/dismiss alertview")

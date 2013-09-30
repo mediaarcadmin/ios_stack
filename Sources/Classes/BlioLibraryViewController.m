@@ -2754,10 +2754,10 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 				return;
 			}
 			else {
-				NSLog(@"Error %@ deleting book from archive: %@",[[[bodyPart DeleteBookResult] ReturnCode] stringValue], [bodyPart DeleteBookResult].Message);
-                NSString* errorMessage = @"There was an error returning this book.  Please contact Blio technical support with the error code: ";
+                NSString* errorMessage = [bodyPart DeleteBookResult].Message;
+				NSLog(@"Error %@ deleting book from archive: %@",[[[bodyPart DeleteBookResult] ReturnCode] stringValue], errorMessage);
                 [BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Return Book",@"\"Return Book"\" alert message title")
-                                                   message:[errorMessage stringByAppendingString:[[[bodyPart DeleteBookResult] ReturnCode] stringValue]]
+                                                   message:errorMessage
                                                   delegate:self
                                          cancelButtonTitle:NSLocalizedString(@"OK",@"\"OK\" label for button used to cancel/dismiss alertview")
                                          otherButtonTitles: nil];
