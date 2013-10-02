@@ -56,7 +56,7 @@
 		loginHeaderLabel.numberOfLines = 0;
         loginHeaderLabel.backgroundColor = [UIColor clearColor];
 #ifdef TOSHIBA
-		loginHeaderLabel.text = NSLocalizedString(@"Sync your reading list via your ToshibaBookplace.com account.\n\nIf you are new, please visit our website to sign up.",@"Existing user message on welcome view controller.");
+		loginHeaderLabel.text = NSLocalizedString(@"Sync your reading list via your Toshiba Book Place account.\n\nIf you are new, please visit our website to sign up.",@"Existing user message on welcome view controller.");
 #else
 		loginHeaderLabel.text = NSLocalizedString(@"Log in to your Blio.com account to sync your reading list.\n\nIf you are a new customer, please visit our website to sign up.",@"Existing user message on welcome view controller.");
 #endif

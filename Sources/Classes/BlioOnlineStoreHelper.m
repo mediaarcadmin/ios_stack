@@ -263,8 +263,7 @@ static NSString * const BlioDeletedFromArchiveAlertType = @"BlioDeletedFromArchi
 //			NSLog(@"bookOwnershipInfo productType: %i",[bookOwnershipInfo.ProductTypeId intValue]);
 //		}
 		
-        // See comments below.
-        //NSMutableSet* incomingLoanerBooks = [NSMutableSet setWithCapacity:8];
+        NSMutableSet* incomingLoanerBooks = [NSMutableSet setWithCapacity:8];
 		for (BookVault_BookOwnershipInfo * bookOwnershipInfo in _BookOwnershipInfoArray) {
 			
 			// check to see if BlioBook record is already in the persistent store
@@ -300,8 +299,7 @@ static NSString * const BlioDeletedFromArchiveAlertType = @"BlioDeletedFromArchi
 				[self getContentMetaDataFromISBN:bookOwnershipInfo.ISBN];
 			}
             else if (incomingTransactionType == BlioTransactionTypeLend) {
-                // see below
-                //[incomingLoanerBooks addObject:bookOwnershipInfo.ISBN];
+                [incomingLoanerBooks addObject:bookOwnershipInfo.ISBN];
                 if  (preExistingTransactionType == BlioTransactionTypeLend) {
                     NSString *dateFormat = @"yyyy-MM-dd'T'HH:mm:ss";
                     NSDateFormatter *formatter = [[[NSDateFormatter alloc] init] autorelease];
@@ -326,9 +324,7 @@ static NSString * const BlioDeletedFromArchiveAlertType = @"BlioDeletedFromArchi
 				NSLog(@"We already have ISBN: %@ in our persistent store, no need to get meta data for this item.",bookOwnershipInfo.ISBN);	
 			}
 		}
-        /* Unnecessary since the local copy of a returned book would by now already have been deleted, because of the way
-           inactive books are handled above - assuming returned books appear as inactive books, as opposed to being nonexistent.
-           BUT: if they are nonexistent, then uncomment the below.
+    
         // Now must see whether there are any existing loaner books that are not among the incoming loaner books.
         NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
         NSManagedObjectContext* moc = [[BlioBookManager sharedBookManager] managedObjectContextForCurrentThread];
@@ -339,11 +335,10 @@ static NSString * const BlioDeletedFromArchiveAlertType = @"BlioDeletedFromArchi
         [fetchRequest release];
         for (BlioBook* book in results) {
             if (![incomingLoanerBooks containsObject:[book valueForKey:@"isbn"]])
-                // Book has been returned, from another device.  Delete it.
+                // Book has been returned, perhaps from another device.  Delete it.
                 [[BlioStoreManager sharedInstance].processingDelegate deleteBook:book attemptArchive:NO shouldSave:YES];
-                // TODO: alert
         }
-        */
+        
 		if (newISBNs == 0) [self assessRetrieveBooksProgress];
 	}
 }

@@ -2278,16 +2278,19 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
         self.authorLabel = aAuthorLabel;
         [aAuthorLabel release];
         
-        UIButton* aReturnButton = [[UIButton alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.bookView.frame) + kBlioLibraryListBookMargin, 52, 65, 15)];
-        //aReturnButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-		//aReturnButton.showsTouchWhenHighlighted = YES;
-        //[aReturnButton setFrame:CGRectMake(CGRectGetMaxX(self.bookView.frame) + kBlioLibraryListBookMargin, 52, 65, 15)];
+        UIButton* aReturnButton;
+        if ([[UIDevice currentDevice] compareSystemVersion:@"7.0"] >= NSOrderedSame) {
+            aReturnButton = [[UIButton alloc] initWithFrame:CGRectMake(CGRectGetMaxX(self.bookView.frame) + kBlioLibraryListBookMargin, 52, 65, 15)];
+            [aReturnButton setTitleColor:[UIColor colorWithRed:0.0 green:122.0/255.0 blue:1.0 alpha:1.0] forState:UIControlStateNormal];
+        }
+        else {
+            aReturnButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+            [aReturnButton setFrame:CGRectMake(CGRectGetMaxX(self.bookView.frame) + kBlioLibraryListBookMargin, 52, 65, 15)];
+            aReturnButton.showsTouchWhenHighlighted = YES;
+        }
         [aReturnButton setAccessibilityLabel:NSLocalizedString(@"Return", @"Accessibility label for Library View cell book return button.")];
 		[aReturnButton setAccessibilityHint:NSLocalizedString(@"Returns book to library.", @"Accessibility hint for Library View cell book return button.")];
         [aReturnButton setTitle:@"RETURN" forState:UIControlStateNormal];
-        //if ([[UIDevice currentDevice] compareSystemVersion:@"7.0"] >= NSOrderedSame)
-        // in iOS 7, want this to be the default blue; but default is white
-        [aReturnButton setTitleColor:[UIColor blueColor] forState:UIControlStateNormal];
         aReturnButton.titleLabel.font = [UIFont systemFontOfSize:12];
         aReturnButton.hidden = YES;
 		[aReturnButton addTarget:self action:@selector(onReturnButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
@@ -2743,14 +2746,8 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 			}
             else if ( [[bodyPart DeleteBookResult].ReturnCode intValue] == 0 ) {
                 // Success.  Now delete the book locally, which will also update the data source.
-                /*NSError* err = nil;
-                [[self.book managedObjectContext] deleteObject:self.book];
-                if (![[self.book managedObjectContext] save:&err])
-                    NSLog(@"Error deleting book from core data: %@",[err localizedDescription]);
-                 */
                 // TODO: deleteBook should delete license
-                [[delegate processingDelegate] deleteBook:self.book shouldSave:YES];
-                
+                [[delegate processingDelegate] deleteBook:self.book attemptArchive:NO shouldSave:YES];
 				return;
 			}
 			else {
