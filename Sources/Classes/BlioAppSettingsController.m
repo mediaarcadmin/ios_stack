@@ -131,7 +131,7 @@
 			{
 #ifndef TOSHIBA
 				case 0:
-					[cell.textLabel setText:NSLocalizedString(@"Voice",@"\"Voice\" text label for App Settings cell")];
+					[cell.textLabel setText:NSLocalizedString(@"Reading Voice",@"\"Reading Voice\" text label for App Settings cell")];
 					break;
 				case 1:
 #else
