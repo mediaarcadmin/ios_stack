@@ -1082,12 +1082,6 @@
 	self.operationSuccess = YES;
 	self.percentageComplete = 100;
 	
-	// TEMPORARY HACK START
-	// TODO: take this hack out if Cancun is ever fixed for TTS in the future.
-	if ([self.sourceSpecificID isEqualToString:@"FrommersCancun"] && self.sourceID == BlioBookSourceLocalBundle) {
-		[self setBookValue:[NSNumber numberWithBool:NO] forKey:@"ttsRight"]; 
-	}
-	// TEMPORARY HACK END
 }
 
 #pragma mark -

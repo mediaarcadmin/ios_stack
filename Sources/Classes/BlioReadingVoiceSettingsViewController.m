@@ -79,7 +79,8 @@
 	
     [request setFetchBatchSize:30]; // Never fetch more than 30 books at one time
     [request setEntity:[NSEntityDescription entityForName:@"BlioBook" inManagedObjectContext:moc]];
- 	[request setPredicate:[NSPredicate predicateWithFormat:@"ttsCapable == %@ && processingState == %@ && transactionType != %@",[NSNumber numberWithBool:YES], [NSNumber numberWithInt:kBlioBookProcessingStateComplete],[NSNumber numberWithInt:BlioTransactionTypePreorder]]];
+    // AC testing:  was ttsCapable
+ 	[request setPredicate:[NSPredicate predicateWithFormat:@"ttsRight == %@ && processingState == %@ && transactionType != %@",[NSNumber numberWithBool:YES], [NSNumber numberWithInt:kBlioBookProcessingStateComplete],[NSNumber numberWithInt:BlioTransactionTypePreorder]]];
 	[request setSortDescriptors:sorters];
  
 	 self.ttsFetchedResultsController = [[[NSFetchedResultsController alloc]
