@@ -263,17 +263,16 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 								  nil];
     if (sortSegmentedControl) [sortSegmentedControl release];
 	sortSegmentedControl = [[BlioAccessibilitySegmentedControl alloc] initWithItems:sortSegmentImages];
-    
     sortSegmentedControl.segmentedControlStyle = UISegmentedControlStyleBar;
     sortSegmentedControl.frame = CGRectMake(0,0, kBlioLibrarySortButtonWidth, sortSegmentedControl.frame.size.height);
-//    [sortSegmentedControl setContentOffset:CGSizeMake(0, 1) forSegmentAtIndex:0];
-//    [sortSegmentedControl setContentOffset:CGSizeMake(0, 1) forSegmentAtIndex:1];
-//    [sortSegmentedControl setContentOffset:CGSizeMake(0, 1) forSegmentAtIndex:2];
-	
+    
+    if([[UIDevice currentDevice] compareSystemVersion:@"7"] >= NSOrderedSame) {
+        [sortSegmentedControl setContentOffset:CGSizeMake(0, -1) forSegmentAtIndex:0];
+    }
+    
     [sortSegmentedControl addTarget:self action:@selector(setSortOption:) forControlEvents:UIControlEventValueChanged];
     
     [sortSegmentedControl setIsAccessibilityElement:NO];
-	sortSegmentedControl.tintColor = tintColor;
     [[sortSegmentedControl imageForSegmentAtIndex:0] setAccessibilityLabel:NSLocalizedString(@"View by Grid Order", @"Accessibility label for Library View view by grid order button")];
     [[sortSegmentedControl imageForSegmentAtIndex:0] setAccessibilityTraits:UIAccessibilityTraitButton | UIAccessibilityTraitStaticText];
 	[[sortSegmentedControl imageForSegmentAtIndex:1] setAccessibilityLabel:NSLocalizedString(@"View by Title", @"Accessibility label for Library View view by title button")];
@@ -452,9 +451,8 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 	[self.navigationController.navigationBar setBarStyle:UIBarStyleDefault];
 	[self.navigationController.toolbar setTranslucent:NO];
 	[self.navigationController.navigationBar setTranslucent:NO];
-	
-	sortSegmentedControl.tintColor = tintColor;
-    if ([self.navigationController.navigationBar respondsToSelector:@selector(setBarTintColor:)])
+
+	if ([self.navigationController.navigationBar respondsToSelector:@selector(setBarTintColor:)])
         [self.navigationController.navigationBar setBarTintColor:tintColor];
     else
         [self.navigationController.navigationBar setTintColor:tintColor];
@@ -2284,7 +2282,10 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
             [aReturnButton setTitleColor:[UIColor colorWithRed:0.0 green:122.0/255.0 blue:1.0 alpha:1.0] forState:UIControlStateNormal];
         }
         else {
-            aReturnButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+            // Retain to match the +1 count from ...alloc] init...] in the other
+            // branch of the if, above.
+            aReturnButton = [[UIButton buttonWithType:UIButtonTypeRoundedRect] retain];
+            
             [aReturnButton setFrame:CGRectMake(CGRectGetMaxX(self.bookView.frame) + kBlioLibraryListBookMargin, 52, 65, 15)];
             aReturnButton.showsTouchWhenHighlighted = YES;
         }

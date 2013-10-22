@@ -176,13 +176,19 @@
     }
     CGContextRef context = UIGraphicsGetCurrentContext();
     
-    CGContextSaveGState(context);
-    [[UIColor blackColor] set];
-    CGContextFillRect(context, CGRectMake(0, 0, originalSize.width, originalSize.height));
-    CGContextRestoreGState(context);    
-    
-    [image drawAtPoint:CGPointMake(0, 0) blendMode:kCGBlendModeDestinationIn alpha:0.5f];
+    // On iOS 7, Apple doesn't bevel images, so we only actually draw the bevel
+    // on <iOS 7.
+    if ([[UIDevice currentDevice] compareSystemVersion:@"7.0"] < NSOrderedSame) {
+        CGContextSaveGState(context);
+        [[UIColor blackColor] set];
+        CGContextFillRect(context, CGRectMake(0, 0, originalSize.width, originalSize.height));
+        CGContextRestoreGState(context);
 
+        [image drawAtPoint:CGPointMake(0, 0) blendMode:kCGBlendModeDestinationIn alpha:0.5f];
+    }
+
+    // We do make the larger canvas and draw the original image, even on iOS 7
+    // though, so that the resut is the same size.
     [image drawAtPoint:CGPointMake(0, 1)];
         
     UIImage *retImage = UIGraphicsGetImageFromCurrentImageContext();
