@@ -359,10 +359,22 @@ static NSString * const BlioDeletedFromArchiveAlertType = @"BlioDeletedFromArchi
 			NSLog(@"SOAP error for ContentCafe_XmlClassResponse: %@",err);
 			// TODO: Message
 		}
-		else if ( (requestItems = [[bodyPart ContentCafe] RequestItems]) ) { 
-			ContentCafe_RequestItem* requestItem = (ContentCafe_RequestItem*)[[requestItems RequestItem] objectAtIndex:0];
-			ContentCafe_ProductItem* productItem =(ContentCafe_ProductItem*)[[[requestItem ProductItems] ProductItem] objectAtIndex:0];
-			if (productItem) {
+		else if ( (requestItems = [[bodyPart ContentCafe] RequestItems]) ) {
+            /* This code didn't crash for a long time, but it doesn't ensure that the indexed array is non-empty.
+             ContentCafe_RequestItem* requestItem = (ContentCafe_RequestItem*)[[requestItems RequestItem] objectAtIndex:0];
+             ContentCafe_ProductItem* productItem =(ContentCafe_ProductItem*)[[[requestItem ProductItems] ProductItem] objectAtIndex:0];
+             if (productItem) {
+             */
+            NSMutableArray* requestItemArray = [requestItems RequestItem];
+			ContentCafe_RequestItem* requestItem;
+            NSMutableArray* productItemArray;
+            ContentCafe_ProductItem* productItem;
+            if (requestItemArray &&
+                requestItemArray.count != 0 &&
+                (requestItem = (ContentCafe_RequestItem*)[requestItemArray objectAtIndex:0]) &&
+                (productItemArray = [[requestItem ProductItems] ProductItem]) &&
+                productItemArray.count != 0 &&
+                (productItem=(ContentCafe_ProductItem*)[productItemArray objectAtIndex:0]) ) {
 				successfulResponseCount++;
 				NSString* title = [[productItem Title] Value];
 				NSString* author = [productItem Author];
