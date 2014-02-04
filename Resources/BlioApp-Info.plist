@@ -2,6 +2,39 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>BundledBooks</key>
+	<array>
+		<dict>
+			<key>authors</key>
+			<array>
+				<string>Potter, Beatrix</string>
+			</array>
+			<key>placeholderOnly</key>
+			<false/>
+			<key>sourceSpecificID</key>
+			<string>PeterRabbit</string>
+			<key>title</key>
+			<string>Peter Rabbit</string>
+			<key>xpsPath</key>
+			<string>XPS-Starters/Peter Rabbit.xps</string>
+		</dict>
+		<dict>
+			<key>authors</key>
+			<array>
+				<string>Irving, Washington</string>
+			</array>
+			<key>placeholderOnly</key>
+			<false/>
+			<key>sourceSpecificID</key>
+			<string>SleepyHollow</string>
+			<key>title</key>
+			<string>The Legend of Sleepy Hollow</string>
+			<key>xpsPath</key>
+			<string>XPS-Starters/The Legend of Sleepy Hollow.xps</string>
+		</dict>
+	</array>
+	<key>CFBundleAllowMixedLocalizations</key>
+	<true/>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>English</string>
 	<key>CFBundleDisplayName</key>
@@ -104,40 +137,21 @@
 		<string>Icon-iPad@2x.png</string>
 	</array>
 	<key>CFBundleIdentifier</key>
-	<string>com.knfbreading.Blio${BUNDLE_ID_SUFFIX}</string>
-	<key>BundledBooks</key>
-	<array>
-		<dict>
-			<key>title</key>
-			<string>Peter Rabbit</string>
-			<key>authors</key>
-			<array>
-				<string>Potter, Beatrix</string>
-			</array>
-			<key>xpsPath</key>
-			<string>XPS-Starters/Peter Rabbit.xps</string>
-			<key>sourceSpecificID</key>
-			<string>PeterRabbit</string>
-			<key>placeholderOnly</key>
-			<false/>
-		</dict>
-		<dict>
-			<key>title</key>
-			<string>The Legend of Sleepy Hollow</string>
-			<key>authors</key>
-			<array>
-				<string>Irving, Washington</string>
-			</array>
-			<key>xpsPath</key>
-			<string>XPS-Starters/The Legend of Sleepy Hollow.xps</string>
-			<key>sourceSpecificID</key>
-			<string>SleepyHollow</string>
-			<key>placeholderOnly</key>
-			<false/>
-		</dict>
-	</array>
+	<string>com.knfbreading.Blio</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
+	<key>CFBundleLocalizations</key>
+	<array>
+		<string>de</string>
+		<string>en</string>
+		<string>es</string>
+		<string>fr</string>
+		<string>it</string>
+		<string>ja</string>
+		<string>zh_cn</string>
+		<string>zh_tw</string>
+		<string>ko</string>
+	</array>
 	<key>CFBundleName</key>
 	<string>${PRODUCT_NAME}</string>
 	<key>CFBundlePackageType</key>
@@ -165,8 +179,19 @@
 	</array>
 	<key>CFBundleVersion</key>
 	<string>6357</string>
+	<key>FacebookAppID</key>
+	<string>135291369852781</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>UIAppFonts</key>
+	<array>
+		<string>LinLibertine_R.otf</string>
+		<string>LinLibertine_RB.otf</string>
+		<string>LinLibertine_RBI.otf</string>
+		<string>LinLibertine_RI.otf</string>
+		<string>LinLibertine_RZ.otf</string>
+		<string>LinLibertine_RZI.otf</string>
+	</array>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>audio</string>
@@ -230,32 +255,7 @@
 	</array>
 	<key>UTImportedTypeDeclarations</key>
 	<array/>
-	<key>CFBundleAllowMixedLocalizations</key>
-	<true/>
-	<key>CFBundleLocalizations</key>
-	<array>
-		<string>de</string>
-		<string>en</string>
-		<string>es</string>
-		<string>fr</string>
-		<string>it</string>
-		<string>ja</string>
-		<string>zh_cn</string>
-		<string>zh_tw</string>
-		<string>ko</string>
-	</array>
-	<key>UIAppFonts</key>
-	<array>
-		<string>LinLibertine_R.otf</string>
-		<string>LinLibertine_RB.otf</string>
-		<string>LinLibertine_RBI.otf</string>
-		<string>LinLibertine_RI.otf</string>
-		<string>LinLibertine_RZ.otf</string>
-		<string>LinLibertine_RZI.otf</string>
-	</array>
 	<key>googleAPIKey</key>
 	<string>AIzaSyAhUo_vweTs60oUsFr2_n6rVlmRzK8AulI</string>
-	<key>FacebookAppID</key>
-	<string>135291369852781</string>
 </dict>
 </plist>

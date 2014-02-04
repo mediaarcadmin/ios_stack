@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
+	<false/>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>7073FDD4-62F7-491C-99B4-7ED4132416AF</string>
+	<key>IDESourceControlProjectName</key>
+	<string>BlioApp</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>7724AE88-A064-44E7-B323-80B2B98F21EA</key>
+		<string>ssh://github.com/mediaarcadmin/ios_stack.git</string>
+		<key>94A062CC-FB6F-4BE0-97FE-3CCB68D7A914</key>
+		<string>ssh://codebasehq.com/otherthings/libeucalyptus/libeucalyptus.git</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>BlioApp.xcodeproj/project.xcworkspace</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>7724AE88-A064-44E7-B323-80B2B98F21EA</key>
+		<string>../..</string>
+		<key>94A062CC-FB6F-4BE0-97FE-3CCB68D7A914</key>
+		<string>../../libEucalyptus</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>ssh://github.com/mediaarcadmin/ios_stack.git</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>110</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>7724AE88-A064-44E7-B323-80B2B98F21EA</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>7724AE88-A064-44E7-B323-80B2B98F21EA</string>
+			<key>IDESourceControlWCCName</key>
+			<string>ios_stack</string>
+		</dict>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>94A062CC-FB6F-4BE0-97FE-3CCB68D7A914</string>
+			<key>IDESourceControlWCCName</key>
+			<string>libEucalyptus</string>
+		</dict>
+	</array>
+</dict>
+</plist>
