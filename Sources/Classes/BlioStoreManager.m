@@ -12,9 +12,7 @@
 #import "BlioAlertManager.h"
 #import "BlioDrmSessionManager.h"
 #import "BlioAppSettingsConstants.h"
-#import "BlioCreateAccountViewController.h"
 #import "BlioWelcomeViewController.h"
-#import "SFHFKeychainUtils.h"
 
 @implementation BlioStoreManager
 
@@ -78,7 +76,12 @@
 -(void)requestLoginForSourceID:(BlioBookSourceID)sourceID forceLoginDisplayUponFailure:(BOOL)forceLoginDisplay {
 	// first check to see if login info is in NSUserDefaults
 	
-	NSDictionary * loginCredentials = [[NSUserDefaults standardUserDefaults] dictionaryForKey:kBlioUserLoginCredentialsDefaultsKey];
+    
+    // TODO? check stored token rather than username
+	//NSDictionary * loginCredentials = [[NSUserDefaults standardUserDefaults] dictionaryForKey:kBlioUserLoginCredentialsDefaultsKey];
+    if (NO) {
+    }
+/*
 	if ([loginCredentials objectForKey:@"username"]) {
 		NSError * error = nil;
 		NSString * password = [SFHFKeychainUtils getPasswordForUsername:[loginCredentials objectForKey:@"username"] andServiceName:kBlioUserLoginCredentialsDefaultsKey error:&error];
@@ -91,6 +94,7 @@
 			[[BlioStoreManager sharedInstance] showLoginViewForSourceID:sourceID];
 		}
 	}
+ */
 	else {
 		[[BlioStoreManager sharedInstance] showLoginViewForSourceID:sourceID];
 	}
@@ -148,6 +152,7 @@
 	[((UINavigationController*)rootViewController).visibleViewController presentModalViewController:modalLoginNavigationController animated:YES];
 	isShowingLoginView = YES;	
 }
+/*
 -(void)showCreateAccountViewForSourceID:(BlioBookSourceID)sourceID {
 	self.loginViewController = [[[BlioCreateAccountViewController alloc] initWithSourceID:sourceID] autorelease];
 	
@@ -170,6 +175,7 @@
 	[((UINavigationController*)rootViewController).visibleViewController presentModalViewController:modalLoginNavigationController animated:YES];
 	isShowingLoginView = YES;	
 }
+ */
 -(void)dismissLoginView {
 	[((UINavigationController*)rootViewController).visibleViewController dismissModalViewControllerAnimated:YES];
 }
@@ -181,6 +187,7 @@
 	[[NSNotificationCenter defaultCenter] postNotificationName:BlioLoginFinished object:self userInfo:userInfo];
 
 }
+/*
 -(void)saveUsername:(NSString*)username {
 	NSString * oldUsername = [[[NSUserDefaults standardUserDefaults] dictionaryForKey:kBlioUserLoginCredentialsDefaultsKey] objectForKey:@"username"];
 	if (oldUsername && ![oldUsername isEqualToString:username]) {
@@ -216,6 +223,7 @@
 		}
 	}
 }
+
 -(void)clearPasswordForSourceID:(BlioBookSourceID)sourceID {
 	NSString * currentUsername = [[[NSUserDefaults standardUserDefaults] dictionaryForKey:kBlioUserLoginCredentialsDefaultsKey] objectForKey:@"username"];
 	if (currentUsername) {
@@ -226,7 +234,7 @@
 		}
 	}
 }
-
+*/
 -(void)saveRegistrationAccountID:(NSString*)accountID serviceID:(NSString*)serviceID {
 //	NSLog(@"saveRegistrationAccountID: %@, serviceID: %@",accountID,serviceID);
 	NSMutableDictionary * usersDictionary = [[[NSUserDefaults standardUserDefaults] dictionaryForKey:kBlioUsersDictionaryDefaultsKey] mutableCopy];
@@ -260,7 +268,8 @@
 	return nil;
 }
 -(void)loginWithUsername:(NSString*)user password:(NSString*)password sourceID:(BlioBookSourceID)sourceID {
-	[self saveUsername:user];
+    //TODO? save token
+	//[self saveUsername:user];
 	[[storeHelpers objectForKey:[NSNumber numberWithInt:sourceID]] loginWithUsername:user password:password];
 }
 -(NSString*)loginHostnameForSourceID:(BlioBookSourceID)sourceID {
@@ -270,7 +279,7 @@
 //	NSLog(@"BlioStoreManager storeHelper: receivedLoginResult: %i",loginResult);
 	initialLoginCheckFinished = YES;
 	if (loginResult == BlioLoginResultInvalidPassword) {
-		[[BlioStoreManager sharedInstance] clearPasswordForSourceID:storeHelper.sourceID];
+		//[[BlioStoreManager sharedInstance] clearPasswordForSourceID:storeHelper.sourceID];
 	}	
 	if (loginResult == BlioLoginResultInvalidPassword && isShowingLoginView == NO) {
 		[[BlioStoreManager sharedInstance] showLoginViewForSourceID:storeHelper.sourceID];
@@ -391,6 +400,7 @@
 	}
 	return nil;
 }
+/*
 -(BOOL)hasLoginCredentials {
 	NSDictionary * credentials = [[NSUserDefaults standardUserDefaults] dictionaryForKey:kBlioUserLoginCredentialsDefaultsKey];
 	if (credentials && [credentials objectForKey:@"username"]) {
@@ -404,6 +414,7 @@
 	}
 	return NO;
 }
+*/
 -(NSURL*)URLForBookWithSourceID:(BlioBookSourceID)sourceID sourceSpecificID:(NSString*)sourceSpecificID {
 	if ([storeHelpers objectForKey:[NSNumber numberWithInt:sourceID]]) return [[storeHelpers objectForKey:[NSNumber numberWithInt:sourceID]] URLForBookWithID:sourceSpecificID];
 	return nil;	

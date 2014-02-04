@@ -492,10 +492,15 @@ static void *background_init_thread(void * arg) {
         if ([[Reachability reachabilityWithHostName:[[BlioStoreManager sharedInstance] loginHostnameForSourceID:BlioBookSourceOnlineStore]] currentReachabilityStatus] != NotReachable) {
             NSLog(@"[[BlioStoreManager sharedInstance] isLoggedInForSourceID:BlioBookSourceOnlineStore]: %i",[[BlioStoreManager sharedInstance] isLoggedInForSourceID:BlioBookSourceOnlineStore]);
             if (![[BlioStoreManager sharedInstance] isLoggedInForSourceID:BlioBookSourceOnlineStore]) {
+                // TODO? check for stored token
+                if (NO) {
+                }
+                /*
                 if ([[BlioStoreManager sharedInstance] hasLoginCredentials]) {
                     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loginDismissed:) name:BlioLoginFinished object:[BlioStoreManager sharedInstance]];
                     [[BlioStoreManager sharedInstance] requestLoginForSourceID:BlioBookSourceOnlineStore];
                 }
+                 */
                 else if (forceLoginAfterRestore) {
                     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loginDismissedAfterCloudRestore:) name:BlioLoginFinished object:[BlioStoreManager sharedInstance]];
                     [[BlioStoreManager sharedInstance] requestLoginForSourceID:BlioBookSourceOnlineStore];

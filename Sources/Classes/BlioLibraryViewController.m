@@ -2705,6 +2705,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
             break;
         case 1:
             NSLog(@"Return %@ to library.", self.book.title);
+            /*
             BookVaultSoap *vaultBinding = [[BookVault BookVaultSoap] retain];
             vaultBinding.logXMLInOut = YES;
             BookVault_DeleteBook* deleteBookRequest = [[BookVault_DeleteBook new] autorelease];
@@ -2713,12 +2714,14 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
             deleteBookRequest.ISBN = [self.book valueForKey:@"isbn"];
             [vaultBinding DeleteBookAsyncUsingParameters:deleteBookRequest delegate:self];
             [vaultBinding release];
+             */
             break;
         default:
             break;
     }
 }
 
+/*
 #pragma mark BookVaultSoapResponseDelegate method
 
 - (void) operation:(BookVaultSoapOperation *)operation completedWithResponse:(BookVaultSoapResponse *)response {
@@ -2764,7 +2767,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 		}
 	}
 }
-
+*/
 
 @end
 

@@ -12,7 +12,6 @@
 #import "BlioCoverView.h"
 #import "BlioAccessibilitySegmentedControl.h"
 #import "BlioAutorotatingViewController.h"
-#import "BlioBookVault.h"
 
 @class BlioTestBlockWords;
 @class BlioBookViewController;
@@ -233,7 +232,7 @@ static const CGFloat kBlioProportionalProgressBarInsetY = 3;
 -(NSString*)stateBasedAccessibilityHint;
 @end
 
-@interface BlioLibraryListCell : UITableViewCell<BookVaultSoapResponseDelegate> {
+@interface BlioLibraryListCell : UITableViewCell/*<BookVaultSoapResponseDelegate>*/ {
     BlioLibraryBookView *bookView;
     UILabel *titleLabel;
     UILabel *authorLabel;

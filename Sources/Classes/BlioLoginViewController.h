@@ -20,7 +20,7 @@
 }
 @end
 
-@interface BlioLoginViewController : BlioAutorotatingTableViewController <UITextFieldDelegate,UITableViewDelegate,UITableViewDataSource,DigitalLockerConnectionDelegate,BlioLoginResultReceiver> {
+@interface BlioLoginViewController : BlioAutorotatingTableViewController <UITextFieldDelegate,UITableViewDelegate,UITableViewDataSource/*,DigitalLockerConnectionDelegate*/,BlioLoginResultReceiver> {
 	UITextField* emailField;
 	UITextField* passwordField;
 	BlioRoundedRectActivityView * activityIndicatorView;

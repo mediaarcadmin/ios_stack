@@ -493,6 +493,7 @@
 	[request release];	
 }
 
+/*
 #pragma mark -
 #pragma mark DigitalLockerConnectionDelegate methods
 
@@ -525,5 +526,5 @@
 - (void)connection:(DigitalLockerConnection *)aConnection didFailWithError:(NSError *)error {
 	[aConnection release];
 }
-
+*/
 @end

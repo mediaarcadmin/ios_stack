@@ -11,11 +11,10 @@
 #import "BlioProcessing.h"
 #import "BlioRoundedRectActivityView.h"
 #import "BlioAutorotatingViewController.h"
-#import "BlioBookVault.h"
 
 static const NSInteger kBlioStoreMyVaultTag = 3;
 
-@interface BlioStoreArchiveViewController : BlioAutorotatingTableViewController <NSFetchedResultsControllerDelegate,BookVaultSoapResponseDelegate> {
+@interface BlioStoreArchiveViewController : BlioAutorotatingTableViewController <NSFetchedResultsControllerDelegate/*,BookVaultSoapResponseDelegate*/> {
 	NSFetchedResultsController * fetchedResultsController;
     NSManagedObjectContext *_managedObjectContext;
     id <BlioProcessingDelegate> processingDelegate;

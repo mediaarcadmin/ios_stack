@@ -10,10 +10,12 @@
 #import "BlioWelcomeViewController.h"
 #import "UIButton+BlioAdditions.h"
 #import "BlioStoreManager.h"
-#import "BlioCreateAccountViewController.h"
 #import "BlioLoginViewController.h"
 #import <QuartzCore/QuartzCore.h>
 #import "BlioVoiceOverTextController.h"
+#import "BlioLoginService.h"
+#import "BlioLoginMediator.h"
+#import "BlioIdentityProvidersViewController.h"
 
 @interface BlioWelcomeTableViewCell : UITableViewCell {
     UILabel *titleLabel;
@@ -147,12 +149,12 @@
 		blioLabel.text = NSLocalizedString(@"Book Place",@"\"Book Place\" header on welcome view controller.");
 #else
 		blioLabel.font = [UIFont systemFontOfSize:65.0f];
-		blioLabel.text = NSLocalizedString(@"Blio",@"\"Blio\" header on welcome view controller.");
+		blioLabel.text = NSLocalizedString(@"Media Arc",@"\"Media Arc\" header on welcome view controller.");
 #endif
 		[self addSubview:blioLabel];
 		[blioLabel release];
 		
-		[self setAccessibilityLabel:NSLocalizedString(@"Welcome to Blio", @"Accessibility label for \"Welcome to Blio\" welcome screen header.")];
+		[self setAccessibilityLabel:NSLocalizedString(@"Welcome to Media Arc", @"Accessibility label for \"Welcome to Media Arc\" welcome screen header.")];
 
 	}
     return self;
@@ -385,7 +387,7 @@
 #ifdef TOSHIBA
 		self.title = NSLocalizedString(@"Welcome to Book Place",@"\"Welcome to Book Place\" view controller title");
 #else
-		self.title = NSLocalizedString(@"Welcome to Blio",@"\"Welcome to Blio\" view controller title");
+		self.title = NSLocalizedString(@"Welcome to MediaArc",@"\"Welcome to MediaArc\" view controller title");
 #endif
     }
     if ([self respondsToSelector:@selector(setEdgesForExtendedLayout:)]) {
@@ -578,8 +580,54 @@
  */
 }
 -(void)existingUserButtonPressed:(id)sender {
-	BlioLoginViewController * loginViewController = [[[BlioLoginViewController alloc] initWithSourceID:sourceID] autorelease];
-	[self.navigationController pushViewController:loginViewController animated:YES];
+    // setup for App Settings screen, for reference
+    /*
+     - (void)showSettings:(id)sender {
+     BlioAppSettingsController *appSettingsController = [[BlioAppSettingsController alloc] init];
+     [appSettingsController.tableView reloadData];
+     UINavigationController *settingsController = [[UINavigationController alloc] initWithRootViewController:appSettingsController];
+     
+     [appSettingsController release];
+     
+     
+     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+     if (self.settingsPopoverController && self.settingsPopoverController.popoverVisible == YES) {
+     [self.settingsPopoverController dismissPopoverAnimated:YES];
+     self.settingsPopoverController = nil;
+     }
+     else {
+     self.settingsPopoverController = [[[NSClassFromString(@"UIPopoverController") alloc] initWithContentViewController:settingsController] autorelease];
+     self.settingsPopoverController.popoverContentSize = CGSizeMake(320, 440);
+     self.settingsPopoverController.delegate = self;
+     [self.settingsPopoverController presentPopoverFromBarButtonItem:sender permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];
+     }
+     }
+     else {
+     [self presentModalViewController:settingsController animated:YES];
+     }
+     settingsController.delegate = self;
+     [settingsController release];    
+     }
+     */
+    
+    /* For Blio, was:
+     BlioLoginViewController * loginViewController = [[[BlioLoginViewController alloc] initWithSourceID:sourceID] autorelease];
+     [self.navigationController pushViewController:loginViewController animated:YES];
+     */
+    
+    // TODO mediator necessary?
+    BlioLoginMediator* mediator = [[BlioLoginMediator alloc] init];
+    BlioLoginService* loginService = [[BlioLoginService alloc] init];
+    mediator.identityProviders = [loginService getIdentityProviders];
+    BlioIdentityProvidersViewController* providersController = [[BlioIdentityProvidersViewController alloc] initWithProviders:mediator.identityProviders];
+    //[self presentViewController:providersController animated:YES completion:nil];
+    UINavigationController *providersNavController = [[UINavigationController alloc] initWithRootViewController:providersController];
+    [providersController release];
+    [self presentModalViewController:providersNavController animated:YES];
+    [providersNavController release];
+    //[mediator loginToIdentityProvider:[mediator.identityProviders objectAtIndex:0]];
+    [loginService release];
+    [mediator release];
 }
 - (void)receivedLoginResult:(BlioLoginResult)loginResult {
 	if ([self.navigationController.topViewController respondsToSelector:@selector(receivedLoginResult:)]) {

@@ -474,6 +474,7 @@
         case 1:
             if (alertView.tag == ARCHIVE_DELETE_WARNING_TAG) {
                 NSLog(@"Delete %@ from archive.", currBook.title);
+                /*
                 BookVaultSoap *vaultBinding = [[BookVault BookVaultSoap] retain];
                 vaultBinding.logXMLInOut = YES;
                 BookVault_DeleteBook* deleteBookRequest = [[BookVault_DeleteBook new] autorelease];
@@ -482,6 +483,7 @@
                 deleteBookRequest.ISBN = [currBook valueForKey:@"isbn"];
                 [vaultBinding DeleteBookAsyncUsingParameters:deleteBookRequest delegate:self];
                 [vaultBinding release];
+                */
             }
             break;
         default:
@@ -489,6 +491,7 @@
     }
 }
 
+/*
 #pragma mark BookVaultSoapResponseDelegate method
 
 - (void) operation:(BookVaultSoapOperation *)operation completedWithResponse:(BookVaultSoapResponse *)response {
@@ -538,6 +541,7 @@
 		}
 	}
 }
+*/
 
 #pragma mark -
 #pragma mark Core Data Multi-Threading

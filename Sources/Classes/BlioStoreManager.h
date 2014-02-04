@@ -62,9 +62,9 @@ static NSString * const BlioBookDownloadFailureAlertType = @"BlioBookDownloadFai
  @returns The shared BlioStoreManager instance.
  */
 +(BlioStoreManager*)sharedInstance;
--(void)saveUsername:(NSString*)username;
--(void)saveUsername:(NSString*)user password:(NSString*)password sourceID:(BlioBookSourceID)sourceID;
--(void)clearPasswordForSourceID:(BlioBookSourceID)sourceID;
+//-(void)saveUsername:(NSString*)username;
+//-(void)saveUsername:(NSString*)user password:(NSString*)password sourceID:(BlioBookSourceID)sourceID;
+//-(void)clearPasswordForSourceID:(BlioBookSourceID)sourceID;
 -(void)saveRegistrationAccountID:(NSString*)accountID serviceID:(NSString*)serviceID;
 -(NSDictionary*)registrationRecords;
 -(NSString*)currentStoreURL;
@@ -95,7 +95,7 @@ static NSString * const BlioBookDownloadFailureAlertType = @"BlioBookDownloadFai
 	@param sourceID The BlioBookSourceID to be used when the end-user attempts to login.
  */
 -(void)showLoginViewForSourceID:(BlioBookSourceID)sourceID;
--(void)showCreateAccountViewForSourceID:(BlioBookSourceID)sourceID;
+//-(void)showCreateAccountViewForSourceID:(BlioBookSourceID)sourceID;
 /**
 	Returns a boolean login status indicated whether or not the manager is logged in for the given sourceID.
 	@param sourceID The BlioBookSourceID for which the login status is related.
@@ -140,7 +140,7 @@ static NSString * const BlioBookDownloadFailureAlertType = @"BlioBookDownloadFai
 -(NSInteger)storeSiteIDForSourceID:(BlioBookSourceID)sourceID;
 -(NSString*)storeSiteKeyForSourceID:(BlioBookSourceID)sourceID;
 -(NSString*)savedLoginUsername;
--(BOOL)hasLoginCredentials;
+//-(BOOL)hasLoginCredentials;
 -(NSString*)loginHostnameForSourceID:(BlioBookSourceID)sourceID;
 /**
 	Synchronously retrieves the URL for a book identified by a source-specific ID from the appropriate store helper.

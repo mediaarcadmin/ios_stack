@@ -7,7 +7,6 @@
 //
 
 #import "BlioOnlineStoreHelper.h"
-#import "BlioBookVault.h"
 #import "BlioStoreManager.h"
 #import "BlioAlertManager.h"
 #import "BlioAppSettingsConstants.h"
@@ -24,6 +23,7 @@
 
 static NSString * const BlioDeletedFromArchiveAlertType = @"BlioDeletedFromArchiveAlertType";
 
+/*
 @interface BlioOnlineStoreHelper (PRIVATE)
 - (void) bookVaultSoapOperation:(BookVaultSoapOperation *)operation completedWithResponse:(BookVaultSoapResponse *)response;
 - (void) contentCafeSoapOperation:(ContentCafeSoapOperation *)operation completedWithResponse:(ContentCafeSoapResponse *)response;
@@ -46,6 +46,7 @@ static NSString * const BlioDeletedFromArchiveAlertType = @"BlioDeletedFromArchi
 	[delegate contentCafeSoapOperation:operation completedWithResponse:response];
 }
 @end
+ */
 
 @implementation BlioOnlineStoreHelper
 
@@ -55,10 +56,10 @@ static NSString * const BlioDeletedFromArchiveAlertType = @"BlioDeletedFromArchi
 		self.storeTitle = @"Blio Online Store";
 		self.siteID = 12555;
 		self.siteKey = @"B870B960A5B4CB53363BB10855FDC3512658E69E";
-		bookVaultDelegate = [[BlioOnlineStoreHelperBookVaultDelegate alloc] init];
-		bookVaultDelegate.delegate = self;
-		contentCafeDelegate = [[BlioOnlineStoreHelperContentCafeDelegate alloc] init];
-		contentCafeDelegate.delegate = self;
+		//bookVaultDelegate = [[BlioOnlineStoreHelperBookVaultDelegate alloc] init];
+		//bookVaultDelegate.delegate = self;
+		//contentCafeDelegate = [[BlioOnlineStoreHelperContentCafeDelegate alloc] init];
+		//contentCafeDelegate.delegate = self;
 		downloadNewBooks = YES;
 		forceLoginDisplayUponFailure = NO;
 #ifdef TEST_MODE
@@ -72,8 +73,8 @@ static NSString * const BlioDeletedFromArchiveAlertType = @"BlioDeletedFromArchi
 	return self;
 }
 -(void) dealloc {
-	[bookVaultDelegate release];
-	[contentCafeDelegate release];
+	//[bookVaultDelegate release];
+	//[contentCafeDelegate release];
 	if (_isbns) [_isbns release];
 	if (_BookOwnershipInfoArray) [_BookOwnershipInfoArray release];
 	[super dealloc];
@@ -99,6 +100,7 @@ static NSString * const BlioDeletedFromArchiveAlertType = @"BlioDeletedFromArchi
 	currentPassword = [password retain];
 //	NSLog(@"self.userNum: %i",self.userNum);
 	if (!self.userNum > 0) {
+        /*
 		DigitalLockerRequest * request = [[DigitalLockerRequest alloc] init];
 		request.Service = DigitalLockerServiceRegistration;
 		request.Method = DigitalLockerMethodLogin;
@@ -109,10 +111,15 @@ static NSString * const BlioDeletedFromArchiveAlertType = @"BlioDeletedFromArchi
 		DigitalLockerConnection * connection = [[DigitalLockerConnection alloc] initWithDigitalLockerRequest:request siteNum:self.siteID siteKey:self.siteKey delegate:self];
 		[connection start];
 		[request release];		
+         */
 	}
-	else [self retrieveTokenWithUsername:user password:password];
+	else
+        ;
+        //[self retrieveTokenWithUsername:user password:password];
 }
 -(NSString*)loginHostname {
+    return nil;
+    /*
 	NSURL * loginURL = nil; 
 #ifdef TEST_MODE
 	loginURL = [NSURL URLWithString:DigitalLockerGatewayURLTest];
@@ -120,7 +127,9 @@ static NSString * const BlioDeletedFromArchiveAlertType = @"BlioDeletedFromArchi
 	loginURL = [NSURL URLWithString:DigitalLockerGatewayURLProduction];
 #endif
 	return [loginURL host];
+     */
 }
+/*
 -(void)retrieveTokenWithUsername:(NSString*)user password:(NSString*)password {
 //	NSLog(@"%@", NSStringFromSelector(_cmd));
 	BookVaultSoap *vaultBinding = [[BookVault BookVaultSoap] retain];
@@ -360,11 +369,6 @@ static NSString * const BlioDeletedFromArchiveAlertType = @"BlioDeletedFromArchi
 			// TODO: Message
 		}
 		else if ( (requestItems = [[bodyPart ContentCafe] RequestItems]) ) {
-            /* This code didn't crash for a long time, but it doesn't ensure that the indexed array is non-empty.
-             ContentCafe_RequestItem* requestItem = (ContentCafe_RequestItem*)[[requestItems RequestItem] objectAtIndex:0];
-             ContentCafe_ProductItem* productItem =(ContentCafe_ProductItem*)[[[requestItem ProductItems] ProductItem] objectAtIndex:0];
-             if (productItem) {
-             */
             NSMutableArray* requestItemArray = [requestItems RequestItem];
 			ContentCafe_RequestItem* requestItem;
             NSMutableArray* productItemArray;
@@ -447,6 +451,7 @@ static NSString * const BlioDeletedFromArchiveAlertType = @"BlioDeletedFromArchi
 	}
 	[self assessRetrieveBooksProgress];
 }
+ */
 +(BlioTransactionType)transactionTypeForCode:(NSString*)code {
     BlioTransactionType aTransactionType = BlioTransactionTypeNotSpecified;
     if ([code isEqualToString:@"SAL"]) aTransactionType = BlioTransactionTypeSale;
@@ -564,7 +569,8 @@ static NSString * const BlioDeletedFromArchiveAlertType = @"BlioDeletedFromArchi
 		currentPassword = nil;
 	}
 	self.timeout = [NSDate distantPast];
-	[[BlioStoreManager sharedInstance] saveUsername:nil password:nil sourceID:sourceID];
+    // TODO? save token
+	//[[BlioStoreManager sharedInstance] saveUsername:nil password:nil sourceID:sourceID];
 }
 -(void)retrieveBooks {
 	NSLog(@"**********************%@", NSStringFromSelector(_cmd));
@@ -580,7 +586,7 @@ static NSString * const BlioDeletedFromArchiveAlertType = @"BlioDeletedFromArchi
 	[userInfo setObject:[NSNumber numberWithInt:self.sourceID] forKey:@"sourceID"];
 	isRetrievingBooks = YES;
 	[[NSNotificationCenter defaultCenter] postNotificationName:BlioStoreRetrieveBooksStarted object:self userInfo:userInfo];
-
+/*
 	BookVaultSoap *vaultBinding = [[BookVault BookVaultSoap] retain];
 	vaultBinding.logXMLInOut = NO;
 //	BookVault_VaultContentsWithToken* vaultContentsRequest = [[BookVault_VaultContentsWithToken new] autorelease];
@@ -589,14 +595,15 @@ static NSString * const BlioDeletedFromArchiveAlertType = @"BlioDeletedFromArchi
 //	[vaultBinding VaultContentsWithTokenAsyncUsingParameters:vaultContentsRequest delegate:bookVaultDelegate];
 	[vaultBinding VaultContentsWithTokenExAsyncUsingParameters:vaultContentsRequest delegate:bookVaultDelegate];
 	[vaultBinding release];
+ */
 }
 -(NSURL*)URLForBookWithID:(NSString*)sourceSpecificID {
+    return nil;
+    /*
 //	NSLog(@"%@", NSStringFromSelector(_cmd));
 	BlioBook * book = [[BlioStoreManager sharedInstance].processingDelegate bookWithSourceID:self.sourceID sourceSpecificID:sourceSpecificID];
 	BookVaultSoap *vaultBinding = [[BookVault BookVaultSoap] retain];
 	vaultBinding.logXMLInOut = NO;
-//	BookVault_RequestDownloadWithToken* downloadRequest = [[BookVault_RequestDownloadWithToken new] autorelease];
-//	BookVault_RequestDownloadWithTokenEx* downloadRequest = [[BookVault_RequestDownloadWithTokenEx new] autorelease];
 	BookVault_RequestClientDownloadWithTokenEx* downloadRequest = [[BookVault_RequestClientDownloadWithTokenEx new] autorelease];
 	downloadRequest.token = [[BlioStoreManager sharedInstance] tokenForSourceID:BlioBookSourceOnlineStore]; 
 	downloadRequest.isbn = [book valueForKey:@"isbn"];
@@ -623,8 +630,6 @@ static NSString * const BlioDeletedFromArchiveAlertType = @"BlioDeletedFromArchi
     }
     NSLog(@"%@",downloadRequest.clientInfo);
     
-//	BookVaultSoapResponse* response = [vaultBinding RequestDownloadWithTokenUsingParameters:downloadRequest];
-//	BookVaultSoapResponse* response = [vaultBinding RequestDownloadWithTokenExUsingParameters:downloadRequest];
 	BookVaultSoapResponse* response = [vaultBinding RequestClientDownloadWithTokenExUsingParameters:downloadRequest];
 	[vaultBinding release];
 	NSArray *responseBodyParts = response.bodyParts;
@@ -640,74 +645,6 @@ static NSString * const BlioDeletedFromArchiveAlertType = @"BlioDeletedFromArchi
 							   otherButtonTitles:NSLocalizedString(@"OK",@"\"OK\" label for button used to cancel/dismiss alertview"), nil];
 			return nil;
 		}
-        /* legacy code from non-ex web service
-		else if ([bodyPart isKindOfClass:[BookVault_RequestDownloadWithTokenResponse class]]) {
-			if ( [[bodyPart RequestDownloadWithTokenResult].ReturnCode intValue] == 100 ) { 
-				[BlioAlertManager removeSuppressionForAlertType:BlioBookDownloadFailureAlertType];
-				NSString* url = [bodyPart RequestDownloadWithTokenResult].Url;
-				//			NSLog(@"Book download url is %@",url);
-				return [NSURL URLWithString:url];
-			}
-			else {
-				NSLog(@"DownloadRequest error: %@",[bodyPart RequestDownloadWithTokenResult].Message);
-				if ([[bodyPart RequestDownloadWithTokenResult].Message rangeOfString:@"does not own"].location != NSNotFound) {
-					[BlioAlertManager showAlertOfSuppressedType:BlioBookDownloadFailureAlertType
-														  title:NSLocalizedString(@"Error Downloading Book",@"\"Error Downloading Book\" alert message title") 
-												 message:[bodyPart RequestDownloadWithTokenResult].Message
-												delegate:nil 
-									   cancelButtonTitle:nil
-									   otherButtonTitles:NSLocalizedString(@"OK",@"\"OK\" label for button used to cancel/dismiss alertview"), nil];				
-				}
-				else {
-					[BlioAlertManager showAlertOfSuppressedType:BlioBookDownloadFailureAlertType
-														  title:NSLocalizedString(@"Error Downloading Book",@"\"Error Downloading Book\" alert message title") 
-														message:NSLocalizedStringWithDefaultValue(@"DOWNLOADURL_SERVICE_UNAVAILABLE",nil,[NSBundle mainBundle],@"The server may be temporarily unavailable. Please try again later.",@"Alert message shown when the URLForBookWithID: call fails.")
-													   delegate:nil 
-											  cancelButtonTitle:nil
-											  otherButtonTitles:NSLocalizedString(@"OK",@"\"OK\" label for button used to cancel/dismiss alertview"), nil];
-				}
-				return nil;
-			}
-		}
-         */
-        /* legacy for older variant of service
-		else if ([bodyPart isKindOfClass:[BookVault_RequestDownloadWithTokenExResponse class]]) {
-			if ( [[bodyPart RequestDownloadWithTokenExResult].ReturnCode intValue] == 100 ) { 
-				[BlioAlertManager removeSuppressionForAlertType:BlioBookDownloadFailureAlertType];
-				NSString* url = [bodyPart RequestDownloadWithTokenExResult].Url;
-				//			NSLog(@"Book download url is %@",url);
-				return [NSURL URLWithString:url];
-			}
-			else {
-				NSLog(@"DownloadRequest error: %@",[bodyPart RequestDownloadWithTokenExResult].Message);
-                NSLog(@"[[bodyPart RequestDownloadWithTokenExResult].ReturnCode intValue]: %i",[[bodyPart RequestDownloadWithTokenExResult].ReturnCode intValue]);
-                if ( [[bodyPart RequestDownloadWithTokenExResult].ReturnCode intValue] == 106 ) { 
-                    [BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Error Downloading Book",@"\"Error Downloading Book\" alert message title")  
-                                                 message:[NSString stringWithFormat:NSLocalizedStringWithDefaultValue(@"DOWNLOADURL_SERVICE_106_ERROR",nil,[NSBundle mainBundle],@"The book %@ failed to download.  Please report an error 106 for ISBN %@ to Blio technical support.",@"Alert message shown when 106 error occurs."),[book title],downloadRequest.isbn]
-                                                delegate:nil  
-                                       cancelButtonTitle:NSLocalizedString(@"OK",@"\"OK\" label for button used to cancel/dismiss alertview")
-                                       otherButtonTitles:nil];
-                }
-				else if ([[bodyPart RequestDownloadWithTokenExResult].Message rangeOfString:@"does not own"].location != NSNotFound) {
-					[BlioAlertManager showAlertOfSuppressedType:BlioBookDownloadFailureAlertType\
-                                                          title:NSLocalizedString(@"Error Downloading Book",@"\"Error Downloading Book\" alert message title") 
-                                                        message:[bodyPart RequestDownloadWithTokenExResult].Message
-                                                       delegate:nil 
-                                              cancelButtonTitle:nil
-                                              otherButtonTitles:NSLocalizedString(@"OK",@"\"OK\" label for button used to cancel/dismiss alertview"), nil];				
-				}
-				else {
-					[BlioAlertManager showAlertOfSuppressedType:BlioBookDownloadFailureAlertType
-														  title:NSLocalizedString(@"Error Downloading Book",@"\"Error Downloading Book\" alert message title") 
-														message:NSLocalizedStringWithDefaultValue(@"DOWNLOADURL_SERVICE_UNAVAILABLE",nil,[NSBundle mainBundle],@"The server may be temporarily unavailable. Please try again later.",@"Alert message shown when the URLForBookWithID: call fails.")
-													   delegate:nil 
-											  cancelButtonTitle:nil
-											  otherButtonTitles:NSLocalizedString(@"OK",@"\"OK\" label for button used to cancel/dismiss alertview"), nil];
-				}
-				return nil;
-			}
-		}
-         */
 		else if ([bodyPart isKindOfClass:[BookVault_RequestClientDownloadWithTokenExResponse class]]) {
 			if ( [[bodyPart RequestClientDownloadWithTokenExResult].ReturnCode intValue] == 100 ) { 
 				[BlioAlertManager removeSuppressionForAlertType:BlioBookDownloadFailureAlertType];
@@ -746,7 +683,9 @@ static NSString * const BlioDeletedFromArchiveAlertType = @"BlioDeletedFromArchi
 		}
 	}
 	return nil;
+     */
 }
+/*
 - (void)getContentMetaDataFromISBN:(NSString*)isbn {
 	NSLog(@"Getting Content MetaData for ISBN: %@",isbn);
 	ContentCafeSoap *cafeBinding = [[ContentCafe ContentCafeSoap] retain];
@@ -773,7 +712,8 @@ static NSString * const BlioDeletedFromArchiveAlertType = @"BlioDeletedFromArchi
 	[cafeBinding XmlClassAsyncUsingParameters:xmlRequest delegate:contentCafeDelegate];
 	[cafeBinding release];
 }
-
+*/
+/*
 #pragma mark -
 #pragma mark DigitalLockerConnectionDelegate methods
 
@@ -797,6 +737,6 @@ static NSString * const BlioDeletedFromArchiveAlertType = @"BlioDeletedFromArchi
 	[delegate storeHelper:self receivedLoginResult:BlioLoginResultConnectionError];
 	[aConnection release];
 }
-
+*/
 
 @end
