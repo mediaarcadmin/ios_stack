@@ -15,6 +15,8 @@
 #import "BlioAppSettingsConstants.h"
 #import "Reachability.h"
 #import "BlioStoreHelper.h"
+#import "BlioLoginService.h"
+#import "BlioIdentityProvidersViewController.h"
 
 #define ARCHIVE_DELETE_WARNING_TAG 15
 #define ARCHIVE_DELETE_ERROR_TAG 15
@@ -182,7 +184,17 @@
 }
 
 -(void)requestLogin {
-    [[BlioStoreManager sharedInstance] requestLoginForSourceID:BlioBookSourceOnlineStore forceLoginDisplayUponFailure:YES];
+    //[[BlioStoreManager sharedInstance] requestLoginForSourceID:BlioBookSourceOnlineStore forceLoginDisplayUponFailure:YES];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loginDismissed:) name:BlioLoginFinished object:[BlioStoreManager sharedInstance]];
+    NSMutableArray* providers = [[BlioLoginService sharedInstance] getIdentityProviders];
+    if (providers) {
+        BlioIdentityProvidersViewController* providersController = [[BlioIdentityProvidersViewController alloc] initWithProviders:providers];
+        [self.navigationController pushViewController:providersController animated:YES];
+        [providersController release];
+    }
+    else
+        // TODO alert
+        NSLog(@"Error getting identity providers.");
 }
 
 - (void)viewWillDisappear:(BOOL)animated {

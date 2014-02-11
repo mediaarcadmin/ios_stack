@@ -9,6 +9,7 @@
 #import "BlioIdentityProvidersViewController.h"
 #import "BlioWebAuthenticationViewController.h"
 #import "BlioStoreManager.h"
+#import "BlioAccountService.h"
 
 @interface BlioIdentityProvidersViewController ()
 
@@ -16,18 +17,17 @@
 
 @implementation BlioIdentityProvidersViewController
 
+@synthesize identityProviders;
 
 - (id)initWithProviders:(NSArray*)providers {
     self = [super initWithStyle:UITableViewStyleGrouped];
     if (self) {
+        self.identityProviders = providers;
         self.title = @"Choose an Account";
         images = [[NSMutableArray alloc] initWithCapacity:[providers count]];
-        loginURLs = [[NSMutableArray alloc] initWithCapacity:[providers count]];
         names = [[NSMutableArray alloc] initWithCapacity:[providers count]];
         for(int i=0;i<[providers count];i++)
         {
-            NSString* loginURL = [[providers objectAtIndex:i] objectForKey:@"LoginUrl"];
-            [loginURLs addObject:loginURL];
             NSString* name = [[providers objectAtIndex:i] objectForKey:@"Name"];
             [names addObject:name];
             NSString* imageURL = [[providers objectAtIndex:i] objectForKey:@"ImageUrl"];
@@ -35,15 +35,19 @@
             NSError* err;
             NSData *responseData = [NSURLConnection sendSynchronousRequest:imageRequest returningResponse:nil error:&err];
             [imageRequest release];
-            UIImage *image = [UIImage imageWithData:responseData scale:2.0];
-            [images addObject:image];
+            if (responseData) {
+                UIImage *image = [UIImage imageWithData:responseData scale:2.0];
+                [images addObject:image];
+            }
+            else
+                NSLog(@"Could not obtain image for provider %@",name);
         }
     }
     return self;
 }
 
 - (void)dealloc {
-    loginURLs = nil;
+    self.identityProviders = nil;
     images = nil;
     names = nil;
     [super dealloc];
@@ -92,9 +96,6 @@
 
 - (void) dismissSettingsView: (id) sender {
     [self dismissModalViewControllerAnimated:YES];
-    // TODO: get to library view?
-    //[[BlioStoreManager sharedInstance] dismissLoginView];
-    //[self.navigationController popToRootViewControllerAnimated:YES];
 }
 
 #pragma mark - Table view data source
@@ -116,50 +117,22 @@
     if (cell == nil) {
         cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier] autorelease];
     }
-    //cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-
-    switch ( [indexPath section] ) {
-		case 0:
-            [cell.textLabel setText:[names objectAtIndex:0]];
-            cell.imageView.image = [images objectAtIndex:0];
-			break;
-        case 1:
-            [cell.textLabel setText:[names objectAtIndex:1]];
-            cell.imageView.image = [images objectAtIndex:1];
-			break;
-		case 2:
-            [cell.textLabel setText:[names objectAtIndex:2]];
-            cell.imageView.image = [images objectAtIndex:2];
-            break;
-		default:
-			break;
-	}
+    cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+    NSInteger ix = [indexPath section];
+    [cell.textLabel setText:[names objectAtIndex:ix]];
+    cell.imageView.image = [images objectAtIndex:ix];
     return cell;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    // TODO display activity indicator in cell
 	BlioWebAuthenticationViewController *authenticationController;
-	switch ( [indexPath section] ) {
-		case 0:
-            authenticationController = [[BlioWebAuthenticationViewController alloc] initWithURL:[loginURLs objectAtIndex:0]];
-            [self presentViewController:authenticationController animated:YES completion:nil];
-            //[self.navigationController pushViewController:authenticationController animated:YES];
-            [authenticationController release];
-			break;
-		case 1:
-            authenticationController = [[BlioWebAuthenticationViewController alloc] initWithURL:[loginURLs objectAtIndex:1]];
-            [self presentViewController:authenticationController animated:YES completion:nil];
-            [authenticationController release];
-			break;
-		case 2:
-            authenticationController = [[BlioWebAuthenticationViewController alloc] initWithURL:[loginURLs objectAtIndex:2]];
-            [self presentViewController:authenticationController animated:YES completion:nil];
-            [authenticationController release];
-            break;
-		default:
-			break;
-	}
+    NSInteger section = [indexPath section];
+    authenticationController = [[BlioWebAuthenticationViewController alloc] initWithProvider:[self.identityProviders objectAtIndex:section]];
+    [self.navigationController pushViewController:authenticationController animated:YES];
+    [authenticationController release];
 }
+
 /*
 // Override to support conditional editing of the table view.
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath

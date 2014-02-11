@@ -11,9 +11,11 @@
 
 @interface BlioIdentityProvidersViewController : BlioAutorotatingTableViewController {
     NSMutableArray* images;
-    NSMutableArray* loginURLs;
     NSMutableArray* names;
+    NSArray *identityProviders;
 }
+
+@property (nonatomic, retain) NSArray *identityProviders;
 
 - (id)initWithProviders:(NSMutableArray*)providers;
 

@@ -438,7 +438,7 @@
 	NSLog(@"BlioCreateAccountViewController connectionDidFinishLoading...");
 	[activityIndicatorView stopAnimating];
 	if (aConnection.digitalLockerResponse.ReturnCode == 0) {
-		[[BlioStoreManager sharedInstance] saveUsername:emailField.text password:passwordField.text sourceID:sourceID];
+		//[[BlioStoreManager sharedInstance] saveUsername:emailField.text password:passwordField.text sourceID:sourceID];
 		NSString * alertMessage = NSLocalizedStringWithDefaultValue(@"ACCOUNT_CREATED",nil,[NSBundle mainBundle],@"Your account has been created! Blio will now login under your new account.",@"Alert Text informing the end-user that an account has been created, and the app will now login under that new account.");
 		[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Congratulations",@"\"Congratulations\" alert message title") 
 									 message:alertMessage

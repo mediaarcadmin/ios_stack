@@ -10,6 +10,8 @@
 #import "WACloudAccessToken.h"
 #import "NSString+URLEncode.h"
 #import "MediaArcPlatform.h"
+#import "BlioAccountService.h"
+#import "BlioStoreManager.h"
 
 NSString* ScriptNotify = @"<script type=\"text/javascript\">window.external = { 'Notify': function(s) { document.location = 'acs://settoken?token=' + s; }, 'notify': function(s) { document.location = 'acs://settoken?token=' + s; } };</script>";
 
@@ -21,11 +23,12 @@ NSString* ScriptNotify = @"<script type=\"text/javascript\">window.external = { 
 
 @end
 
-@implementation BlioWebAuthenticationViewController
+@implementation BlioWebAuthenticationViewController 
 
-- (id)initWithURL:(NSString *)url {
+- (id)initWithProvider:(NSDictionary *)provider {
     if (self = [super init]) {
-        loginURL = [NSURL URLWithString:url];
+        identityProvider = provider;
+        loginURL = [NSURL URLWithString:[provider objectForKey:@"LoginUrl"]];
         
      /*
         activityIndicatorView = [[UIActivityIndicatorView alloc] initWithFrame:CGRectMake(0.0f, 0.0f, 32.0f, 32.0f)];
@@ -102,7 +105,6 @@ NSString* ScriptNotify = @"<script type=\"text/javascript\">window.external = { 
 {
     if (_data) {
         NSString *content = [[NSString alloc] initWithData:_data encoding:NSUTF8StringEncoding];
-        //NSLog(@"Received HTML:  %@\n", content);
         NSRange headRange = [content rangeOfString:@"<head>"];
         NSRange throughHeadRange;
         throughHeadRange.location = 0;
@@ -194,8 +196,11 @@ NSString* ScriptNotify = @"<script type=\"text/javascript\">window.external = { 
 {
     NSString* urlString = [request.URL absoluteString];
     NSRange hostnameRange;
+    NSRange firstDotRange = [urlString rangeOfString:@"."];
+    if (firstDotRange.location == NSNotFound )
+        return YES;
     hostnameRange.length = [[MediaArcPlatform sharedInstance].acsHost length];
-    hostnameRange.location = [urlString rangeOfString:@"."].location + 1;
+    hostnameRange.location = firstDotRange.location + 1;
     if (![urlString hasPrefix:@"acs:"] &&
         ([[urlString substringWithRange:hostnameRange] compare:[MediaArcPlatform sharedInstance].acsHost] != NSOrderedSame) )
         return YES;
@@ -212,23 +217,17 @@ NSString* ScriptNotify = @"<script type=\"text/javascript\">window.external = { 
     NSString* scheme = [_url scheme];
     if([scheme isEqualToString:@"acs"])
     {
-        NSString* stringWithToken = [_url absoluteString];
-        NSLog(@"Javascript received string: %@", stringWithToken);
+        //NSString* stringWithToken = [_url absoluteString];
+        //NSLog(@"Javascript received string: %@", stringWithToken);
         
-        // parse the JSON URL parameter into a dictionary
         NSDictionary* pairs = [self parsePairs:[_url absoluteString]];
         if(pairs)
         {
-            WACloudAccessToken* accessToken;
-            accessToken = [[WACloudAccessToken alloc] initWithDictionary:pairs];
-            // TODO: now put this somewhere
-            
-        //    [WACloudAccessControlClient setToken:accessToken];
-            
-            // TODO: this gets us to previous screen of id providers.  Not what
-            // we want since we're logged in at this point.
-            [self dismissModalViewControllerAnimated:YES];
-            
+            WACloudAccessToken* accessToken = [[WACloudAccessToken alloc] initWithDictionary:pairs];
+            [BlioAccountService sharedInstance].token = accessToken;
+            [accessToken release];
+            [[BlioLoginService sharedInstance] checkin:identityProvider];
+            [self.navigationController popToRootViewControllerAnimated:YES];
         }
         return NO;
     }
@@ -237,20 +236,20 @@ NSString* ScriptNotify = @"<script type=\"text/javascript\">window.external = { 
     
 }
 
-
 -(void)webViewDidStartLoad:(UIWebView*)webView {
 	//[activityIndicatorView startAnimating];
-    NSLog(@"Loading login page...");
+   // NSLog(@"Loading login page...");
 }
 
 - (void)webViewDidFinishLoad:(UIWebView *)webView {
-    NSLog(@"Finished loading login page...");
+    //[activityIndicatorView stopAnimating];
 }
 
 - (void)webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error {
 	//[activityIndicatorView stopAnimating];
 	NSString* errorMsg = [error localizedDescription];
-	NSLog(@"Error loading web page: %@",errorMsg);
+	NSLog(@"Login unsuccessful: error loading web page: %@",errorMsg);
+    // TODO alert
 }
 
 @end

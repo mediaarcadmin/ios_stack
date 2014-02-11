@@ -99,10 +99,10 @@
 #pragma mark Table view data source
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    // Return the number of sections.
-    if ( [[BlioStoreManager sharedInstance] deviceRegisteredForSourceID:BlioBookSourceOnlineStore] == BlioDeviceRegisteredStatusRegistered )
-        return 2;
-    return 1;
+    // WAS: if ( [[BlioStoreManager sharedInstance] deviceRegisteredForSourceID:BlioBookSourceOnlineStore] == BlioDeviceRegisteredStatusRegistered )
+    if ([[BlioStoreManager sharedInstance] isLoggedInForSourceID:BlioBookSourceOnlineStore])
+        return 3;
+    return 2;
 }
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     return 1;
@@ -110,7 +110,7 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    if (indexPath.section == 1) {
+    if (indexPath.section == 2) {
         [BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Please Confirm",@"\"Please Confirm\" alert message title")
                                      message:NSLocalizedStringWithDefaultValue(@"CONFIRM_DEREGISTRATION_ALERT",nil,[NSBundle mainBundle],@"Are you sure you want to deregister your device for this account? Doing so will remove all books purchased under the account.",@"Prompt requesting confirmation for de-registration, explaining that doing so will remove all that account's purchased books.")
                                     delegate:self
@@ -118,6 +118,7 @@
                            otherButtonTitles:NSLocalizedString(@"Not Now",@"\"Not Now\" button label within Confirm De/Registration alertview"), NSLocalizedString(@"Deregister",@"\"Deregister\" button label within Confirm Deregistration alertview"), nil];
         
     }
+    // else if (indexPath.section == 1)
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -145,12 +146,26 @@
         return cell;
     }
     else if (indexPath.section == 1) {
+        static NSString *ListCellIdentifier = @"UITableViewCellSupportTokenIdentifier";
+        UITableViewCell *cell;
+        cell = [tableView dequeueReusableCellWithIdentifier:ListCellIdentifier];
+        if (cell == nil) {
+            cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:ListCellIdentifier] autorelease];
+            cell.textLabel.text = NSLocalizedString(@"Get Support Token","\"Support Token\" cell label");
+            
+        }
+        cell.selectionStyle = UITableViewCellSelectionStyleBlue;
+        deregisterCell = cell;
+        [cell setAccessibilityTraits:UIAccessibilityTraitButton];
+        return cell;
+    }
+    else if (indexPath.section == 2) {
         static NSString *ListCellIdentifier = @"UITableViewCellRegistrationIdentifier";
         UITableViewCell *cell;
         cell = [tableView dequeueReusableCellWithIdentifier:ListCellIdentifier];
         if (cell == nil) {
             cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:ListCellIdentifier] autorelease];
-            cell.textLabel.text = NSLocalizedString(@"Deregister Device","\"Deregister Device\" cell label");
+            cell.textLabel.text = NSLocalizedString(@"Log Out","\"Log Out\" cell label");
             
         }
         cell.selectionStyle = UITableViewCellSelectionStyleBlue;
@@ -171,12 +186,14 @@
 	{
         case 0:
         {
-            title = NSLocalizedStringWithDefaultValue(@"AUTO_DOWNLOAD_EXPLANATION_FOOTER",nil,[NSBundle mainBundle],@"Your new book purchases can be downloaded automatically.  When Auto-Download is off, you can manually download titles in your Archive.",@"Explanatory message that appears at the bottom of the Auto-Download table section within Archive Settings View.");
+            title = NSLocalizedStringWithDefaultValue(@"AUTO_DOWNLOAD_EXPLANATION_FOOTER",nil,[NSBundle mainBundle],@"Your new book purchases can be downloaded automatically.  When Auto-Download is off, you can manually download titles in your Archive.",@"Explanatory message that appears at the bottom of the Auto-Download table footer.");
             break;
         }
+
 		case 1:
 		{
-			title = NSLocalizedString(@"You may register up to five devices for reading your purchased books.",@"\"Registration text\" table header in Paid Books Settings View");
+			//title = NSLocalizedString(@"You may register up to five devices for reading your purchased books.",@"\"Registration text\" table header in Paid Books Settings View");
+            title = NSLocalizedString(@"Before contacting customer support, you must obtain a token for identification.",@"\"Support token text\" table footer.");
 			break;
 		}
 	}

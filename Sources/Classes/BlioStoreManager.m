@@ -183,7 +183,7 @@
 	isShowingLoginView = NO;
 	self.loginViewController = nil;
 	NSMutableDictionary * userInfo = [NSMutableDictionary dictionary];
-	[userInfo setValue:[NSNumber numberWithInt:sourceID] forKey:@"sourceID"];
+	[userInfo setValue:[NSNumber numberWithInt:sourceID] forKey:@"sourceID"];  // TODO? other userInfo from BlioAccountService
 	[[NSNotificationCenter defaultCenter] postNotificationName:BlioLoginFinished object:self userInfo:userInfo];
 
 }
@@ -374,12 +374,16 @@
  */
 
 -(BOOL)isLoggedInForSourceID:(BlioBookSourceID)sourceID {
-	if ([storeHelpers objectForKey:[NSNumber numberWithInt:sourceID]]) return [[storeHelpers objectForKey:[NSNumber numberWithInt:sourceID]] isLoggedIn];
-	else return NO;
+	if ([storeHelpers objectForKey:[NSNumber numberWithInt:sourceID]])
+        return [[storeHelpers objectForKey:[NSNumber numberWithInt:sourceID]] isLoggedIn];
+	else
+        return NO;
 }
 -(NSString*)usernameForSourceID:(BlioBookSourceID)sourceID {
-	if ([storeHelpers objectForKey:[NSNumber numberWithInt:sourceID]]) return [[storeHelpers objectForKey:[NSNumber numberWithInt:sourceID]] username];
-	else return nil;
+	if ([storeHelpers objectForKey:[NSNumber numberWithInt:sourceID]])
+        return [[storeHelpers objectForKey:[NSNumber numberWithInt:sourceID]] username];
+	else
+        return nil;
 }
 -(void)retrieveBooksForSourceID:(BlioBookSourceID)sourceID {
 	if ([storeHelpers objectForKey:[NSNumber numberWithInt:sourceID]]) [[storeHelpers objectForKey:[NSNumber numberWithInt:sourceID]] retrieveBooks];

@@ -564,8 +564,8 @@
 }
 
 - (void) dismissSelf: (id) sender {
-	[[BlioStoreManager sharedInstance] loginFinishedForSourceID:sourceID];
 //	[self dismissModalViewControllerAnimated:YES];
+	[[NSNotificationCenter defaultCenter] removeObserver:self name:BlioLoginFinished object:[BlioStoreManager sharedInstance]];
 	[[BlioStoreManager sharedInstance] dismissLoginView];
 }
 -(void)firstTimeUserButtonPressed:(id)sender {
@@ -580,54 +580,21 @@
  */
 }
 -(void)existingUserButtonPressed:(id)sender {
-    // setup for App Settings screen, for reference
-    /*
-     - (void)showSettings:(id)sender {
-     BlioAppSettingsController *appSettingsController = [[BlioAppSettingsController alloc] init];
-     [appSettingsController.tableView reloadData];
-     UINavigationController *settingsController = [[UINavigationController alloc] initWithRootViewController:appSettingsController];
-     
-     [appSettingsController release];
-     
-     
-     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-     if (self.settingsPopoverController && self.settingsPopoverController.popoverVisible == YES) {
-     [self.settingsPopoverController dismissPopoverAnimated:YES];
-     self.settingsPopoverController = nil;
-     }
-     else {
-     self.settingsPopoverController = [[[NSClassFromString(@"UIPopoverController") alloc] initWithContentViewController:settingsController] autorelease];
-     self.settingsPopoverController.popoverContentSize = CGSizeMake(320, 440);
-     self.settingsPopoverController.delegate = self;
-     [self.settingsPopoverController presentPopoverFromBarButtonItem:sender permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];
-     }
-     }
-     else {
-     [self presentModalViewController:settingsController animated:YES];
-     }
-     settingsController.delegate = self;
-     [settingsController release];    
-     }
-     */
-    
     /* For Blio, was:
      BlioLoginViewController * loginViewController = [[[BlioLoginViewController alloc] initWithSourceID:sourceID] autorelease];
      [self.navigationController pushViewController:loginViewController animated:YES];
      */
     
-    // TODO mediator necessary?
-    BlioLoginMediator* mediator = [[BlioLoginMediator alloc] init];
-    BlioLoginService* loginService = [[BlioLoginService alloc] init];
-    mediator.identityProviders = [loginService getIdentityProviders];
-    BlioIdentityProvidersViewController* providersController = [[BlioIdentityProvidersViewController alloc] initWithProviders:mediator.identityProviders];
-    //[self presentViewController:providersController animated:YES completion:nil];
-    UINavigationController *providersNavController = [[UINavigationController alloc] initWithRootViewController:providersController];
-    [providersController release];
-    [self presentModalViewController:providersNavController animated:YES];
-    [providersNavController release];
-    //[mediator loginToIdentityProvider:[mediator.identityProviders objectAtIndex:0]];
-    [loginService release];
-    [mediator release];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(dismissSelf:) name:BlioLoginFinished object:[BlioStoreManager sharedInstance]];
+    NSMutableArray* providers = [[BlioLoginService sharedInstance] getIdentityProviders];
+    if (providers) {
+        BlioIdentityProvidersViewController* providersController = [[BlioIdentityProvidersViewController alloc] initWithProviders:providers];
+        [self.navigationController pushViewController:providersController animated:YES];
+        [providersController release];
+    }
+    else
+        // TODO alert
+        NSLog(@"Error getting identity providers.");
 }
 - (void)receivedLoginResult:(BlioLoginResult)loginResult {
 	if ([self.navigationController.topViewController respondsToSelector:@selector(receivedLoginResult:)]) {

@@ -489,8 +489,10 @@ static NSString * const BlioDeletedFromArchiveAlertType = @"BlioDeletedFromArchi
 	}
 }
 -(BOOL)hasValidToken {
-	if (self.token == nil) return NO;
-	if ([self.timeout compare:[NSDate date]] == NSOrderedDescending) return YES;
+	if (self.token == nil)
+        return NO;
+	if ([self.timeout compare:[NSDate date]] == NSOrderedDescending)
+        return YES;
 	return NO;
 }
 -(BlioDeviceRegisteredStatus)deviceRegistered {
@@ -544,6 +546,7 @@ static NSString * const BlioDeletedFromArchiveAlertType = @"BlioDeletedFromArchi
 	}
 	BlioDrmSessionManager* drmSessionManager = [[BlioDrmSessionManager alloc] initWithBookID:nil];
     if ( ![drmSessionManager leaveDomain:self.token] ) {
+        // TODO:  will this work for ACS tokens?
         // Alert shown in drmSessionManager to display error code.
         [drmSessionManager release];
         return NO;

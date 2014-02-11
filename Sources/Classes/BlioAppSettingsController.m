@@ -16,6 +16,12 @@
 #import "BlioVersionController.h"
 #import "BlioVoiceOverHelpSettingsController.h"
 #import "BlioWebTextController.h"
+#import "BlioAccountService.h"
+#import "BlioLoginService.h"
+#import "BlioIdentityProvidersViewController.h"
+
+static const NSInteger kBlioGetProvidersCellActivityIndicatorViewTag = 99;
+static const NSInteger kBlioGetProvidersCellActivityIndicatorViewWidth = 20;
 
 @implementation BlioAppSettingsController
 
@@ -35,7 +41,8 @@
 	if ([[[note userInfo] valueForKey:@"sourceID"] intValue] == BlioBookSourceOnlineStore) {
 		[[NSNotificationCenter defaultCenter] removeObserver:self name:BlioLoginFinished object:[BlioStoreManager sharedInstance]];
 		[self.tableView reloadData];
-		if ([[BlioStoreManager sharedInstance] isLoggedInForSourceID:BlioBookSourceOnlineStore]) [self tableView:self.tableView didSelectRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:1]];
+		if ([[BlioStoreManager sharedInstance] isLoggedInForSourceID:BlioBookSourceOnlineStore])
+            [self tableView:self.tableView didSelectRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:1]];
 	}
 }
 
@@ -74,7 +81,7 @@
     [super viewDidAppear:animated];
     if (didDeregister) {
         didDeregister = NO;
-        [self attemptLogin];
+        // [self attemptLogin];  // necessary/desireable?
     }
 }
 
@@ -144,14 +151,22 @@
 			break;
 		case 1:
 			if ([[BlioStoreManager sharedInstance] isLoggedInForSourceID:BlioBookSourceOnlineStore]) {
-				cell.textLabel.text = [NSString stringWithFormat:@"%@%@",NSLocalizedString(@"My Account: ",@"\"My Account: \" text label prefix for App Settings cell"),[[BlioStoreManager sharedInstance] usernameForSourceID:BlioBookSourceOnlineStore]];
-				//			 cell.textLabel.text = [NSString stringWithFormat:@"Logged in as %@",[[BlioStoreManager sharedInstance] usernameForSourceID:BlioBookSourceOnlineStore]];
+				cell.textLabel.text = [NSString stringWithFormat:@"%@%@",
+                                       NSLocalizedString(@"My Account: ",@"\"My Account: \" text label prefix for App Settings cell"),
+                                       [[BlioAccountService sharedInstance] getAccountID]];
+                                       //[[BlioStoreManager sharedInstance] usernameForSourceID:BlioBookSourceOnlineStore]];
 			}
 			else {
-//				cell.textLabel.textAlignment = UITextAlignmentCenter;
-//				cell.accessoryType = UITableViewCellAccessoryNone;
-//				cell.textLabel.text = @"Login";
-				cell.textLabel.text = NSLocalizedString(@"My Account",@"\"My Account\" text label for App Settings cell");
+				cell.textLabel.text = NSLocalizedString(@"Log In",@"\"Log In\" text label for App Settings cell");// add activity indicator
+                UIActivityIndicatorView * cellActivityIndicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
+                cellActivityIndicatorView.frame = CGRectMake(cell.contentView.frame.size.width - kBlioGetProvidersCellActivityIndicatorViewWidth - ((cell.contentView.frame.size.height-kBlioGetProvidersCellActivityIndicatorViewWidth)/2),(cell.contentView.frame.size.height-kBlioGetProvidersCellActivityIndicatorViewWidth)/2,kBlioGetProvidersCellActivityIndicatorViewWidth,kBlioGetProvidersCellActivityIndicatorViewWidth);
+                cellActivityIndicatorView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin;
+                cellActivityIndicatorView.hidden = YES;
+                
+                cellActivityIndicatorView.hidesWhenStopped = YES;
+                cellActivityIndicatorView.tag = kBlioGetProvidersCellActivityIndicatorViewTag;
+                [cell.contentView addSubview:cellActivityIndicatorView];
+                [cellActivityIndicatorView release];
 			}
 			break;
 		case 2:
@@ -239,7 +254,22 @@
 				[myAccountController release];
 			}
 			else {
-                [self attemptLogin];
+                //[self attemptLogin];
+                UIActivityIndicatorView * cellActivityIndicatorView = (UIActivityIndicatorView *)[[tableView cellForRowAtIndexPath:indexPath].contentView viewWithTag:kBlioGetProvidersCellActivityIndicatorViewTag];
+                cellActivityIndicatorView.hidden = NO;
+                [cellActivityIndicatorView startAnimating];  // Can't see it!!
+                [cellActivityIndicatorView.superview bringSubviewToFront:cellActivityIndicatorView];
+                [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loginDismissed:) name:BlioLoginFinished object:[BlioStoreManager sharedInstance]];
+                NSMutableArray* providers = [[BlioLoginService sharedInstance] getIdentityProviders];
+                [cellActivityIndicatorView stopAnimating];
+                if (providers) {
+                    BlioIdentityProvidersViewController* providersController = [[BlioIdentityProvidersViewController alloc] initWithProviders:providers];
+                    [self.navigationController pushViewController:providersController animated:YES];
+                    [providersController release];
+                }
+                else
+                    // TODO alert
+                    NSLog(@"Error getting identity providers.");
 				[tableView deselectRowAtIndexPath:indexPath animated:YES];
 			}
 			break;
@@ -290,10 +320,14 @@
 			break;
 	}
 }
+
+/*
 -(void)attemptLogin {
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loginDismissed:) name:BlioLoginFinished object:[BlioStoreManager sharedInstance]];
     [[BlioStoreManager sharedInstance] requestLoginForSourceID:BlioBookSourceOnlineStore forceLoginDisplayUponFailure:YES];
 }
+ */
+
 - (void)dealloc {
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
     [super dealloc];

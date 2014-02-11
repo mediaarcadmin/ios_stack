@@ -496,9 +496,9 @@
 		A39D206418917A41009712C6 /* BlioStoreManager.m in Sources */ = {isa = PBXBuildFile; fileRef = A39D206318917A41009712C6 /* BlioStoreManager.m */; };
 		A39D206E1891833A009712C6 /* BlioOnlineStoreHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = A39D206B1891833A009712C6 /* BlioOnlineStoreHelper.m */; };
 		A39D206F1891833A009712C6 /* BlioStoreHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = A39D206D1891833A009712C6 /* BlioStoreHelper.m */; };
+		A39DB21518A19F5800E24E7B /* BlioAccountService.m in Sources */ = {isa = PBXBuildFile; fileRef = A39DB21418A19F5800E24E7B /* BlioAccountService.m */; };
 		A3A190191896C45B003D76BC /* MediaArcPlatform.m in Sources */ = {isa = PBXBuildFile; fileRef = A3A190181896C45B003D76BC /* MediaArcPlatform.m */; };
 		A3A1902A1896E1E0003D76BC /* BlioLoginService.m in Sources */ = {isa = PBXBuildFile; fileRef = A3A190291896E1E0003D76BC /* BlioLoginService.m */; };
-		A3A1902D1897030B003D76BC /* BlioLoginMediator.m in Sources */ = {isa = PBXBuildFile; fileRef = A3A1902C1897030B003D76BC /* BlioLoginMediator.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -1298,12 +1298,12 @@
 		A39D206B1891833A009712C6 /* BlioOnlineStoreHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BlioOnlineStoreHelper.m; path = ../../Sources/Classes/BlioOnlineStoreHelper.m; sourceTree = "<group>"; };
 		A39D206C1891833A009712C6 /* BlioStoreHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BlioStoreHelper.h; path = ../../Sources/Classes/BlioStoreHelper.h; sourceTree = "<group>"; };
 		A39D206D1891833A009712C6 /* BlioStoreHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BlioStoreHelper.m; path = ../../Sources/Classes/BlioStoreHelper.m; sourceTree = "<group>"; };
+		A39DB21318A19F5800E24E7B /* BlioAccountService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BlioAccountService.h; path = ../../Sources/Classes/BlioAccountService.h; sourceTree = "<group>"; };
+		A39DB21418A19F5800E24E7B /* BlioAccountService.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BlioAccountService.m; path = ../../Sources/Classes/BlioAccountService.m; sourceTree = "<group>"; };
 		A3A190171896C45B003D76BC /* MediaArcPlatform.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MediaArcPlatform.h; path = ../../Sources/Classes/MediaArcPlatform.h; sourceTree = "<group>"; };
 		A3A190181896C45B003D76BC /* MediaArcPlatform.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MediaArcPlatform.m; path = ../../Sources/Classes/MediaArcPlatform.m; sourceTree = "<group>"; };
 		A3A190281896E1E0003D76BC /* BlioLoginService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BlioLoginService.h; path = ../../Sources/Classes/BlioLoginService.h; sourceTree = "<group>"; };
 		A3A190291896E1E0003D76BC /* BlioLoginService.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BlioLoginService.m; path = ../../Sources/Classes/BlioLoginService.m; sourceTree = "<group>"; };
-		A3A1902B1897030B003D76BC /* BlioLoginMediator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BlioLoginMediator.h; path = ../../Sources/Classes/BlioLoginMediator.h; sourceTree = "<group>"; };
-		A3A1902C1897030B003D76BC /* BlioLoginMediator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BlioLoginMediator.m; path = ../../Sources/Classes/BlioLoginMediator.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1434,8 +1434,8 @@
 				A39C4E9618981BAD0051C26F /* BlioWebAuthenticationViewController.m */,
 				A3A190281896E1E0003D76BC /* BlioLoginService.h */,
 				A3A190291896E1E0003D76BC /* BlioLoginService.m */,
-				A3A1902B1897030B003D76BC /* BlioLoginMediator.h */,
-				A3A1902C1897030B003D76BC /* BlioLoginMediator.m */,
+				A39DB21318A19F5800E24E7B /* BlioAccountService.h */,
+				A39DB21418A19F5800E24E7B /* BlioAccountService.m */,
 				A39D206A1891833A009712C6 /* BlioOnlineStoreHelper.h */,
 				A39D206B1891833A009712C6 /* BlioOnlineStoreHelper.m */,
 				A39D206C1891833A009712C6 /* BlioStoreHelper.h */,
@@ -2967,6 +2967,7 @@
 				A361AF1A189026DC000268CD /* BlioBookSearchResult.m in Sources */,
 				A361AF7E18903805000268CD /* BlioWelcomeViewController.m in Sources */,
 				A361AE59188F13FF000268CD /* BlioWebToolSettingsController.m in Sources */,
+				A39DB21518A19F5800E24E7B /* BlioAccountService.m in Sources */,
 				A361AECC1890233D000268CD /* BlioTextFlowFlow.m in Sources */,
 				A361AF18189026DC000268CD /* BlioBookSearchController.m in Sources */,
 				A361AEE418902487000268CD /* BlioTextFlowReference.m in Sources */,
@@ -2995,7 +2996,6 @@
 				A361AF301890272E000268CD /* BlioViewSettingsPopover.m in Sources */,
 				A361AF4318902B50000268CD /* BlioSplitView.m in Sources */,
 				A3A190191896C45B003D76BC /* MediaArcPlatform.m in Sources */,
-				A3A1902D1897030B003D76BC /* BlioLoginMediator.m in Sources */,
 				A361AFC31890587C000268CD /* NSString+SBJSON.m in Sources */,
 				A361AFD218905A51000268CD /* levenshtein_distance.c in Sources */,
 				A361AEB4188F1D32000268CD /* BlioStoreArchiveViewController.m in Sources */,

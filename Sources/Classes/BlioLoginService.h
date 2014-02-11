@@ -8,6 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
+/*
 @interface BlioIdentityProvider : NSObject {
 }
 
@@ -17,14 +18,14 @@
 @property (nonatomic, assign) NSString *imageURL;
 
 @end
+*/
 
 @interface BlioLoginService : NSObject {
 }
-@property (nonatomic, assign) NSString *serverPart;
-@property (nonatomic, assign) NSString *checkinPart;
 
++(BlioLoginService*)sharedInstance;
+
+-(void)checkin:(NSDictionary*)provider;
 -(NSMutableArray*)getIdentityProviders;
--(NSString*)getSWTToken:(NSString*)loginResponse;
-- (void)checkin:(NSString*)host identityProvider:(NSString*)provider;
 
 @end
