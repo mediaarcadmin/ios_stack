@@ -7,10 +7,11 @@
 //
 
 #import "BlioAccountService.h"
+#import "BlioStoreHelper.h"
 
 @implementation BlioAccountService
 
-@synthesize token, username, email, handle, provider, loginHost;
+@synthesize token, username, email, handle, provider, loginHost, logoutUrl;
 
 +(BlioAccountService*)sharedInstance {
     static BlioAccountService * sharedService = nil;
@@ -23,9 +24,31 @@
 {
 	self = [super init];
 	if (self) {
-        supportTokenURL = @"/api/user/supporttoken";
+        //
     }
 	return self;
+}
+
+-(void)logout {
+    if (self.logoutUrl) {
+        NSMutableURLRequest* logoutRequest = [[[NSMutableURLRequest alloc] initWithURL:[NSURL URLWithString:self.logoutUrl]]
+                                               autorelease];
+        NSError* err;
+        NSData *responseData = [NSURLConnection sendSynchronousRequest:logoutRequest returningResponse:nil error:&err];
+        if (responseData) {
+            // TODO?  Should we analyze anything in the response?
+            //NSString *responseString = [[NSString alloc] initWithData:responseData encoding: NSUTF8StringEncoding];
+            [BlioAccountService sharedInstance].username = nil;
+            [BlioAccountService sharedInstance].email = nil;
+            [BlioAccountService sharedInstance].handle = nil;
+            [BlioAccountService sharedInstance].loginHost = nil;
+            [[BlioStoreManager sharedInstance] logoutForSourceID:BlioBookSourceOnlineStore];
+        }
+    }
+    // else get oem-specific url?
+    
+    // TODO alert
+    NSLog(@"Could not log out.");
 }
 
 -(NSString*)getAccountID {

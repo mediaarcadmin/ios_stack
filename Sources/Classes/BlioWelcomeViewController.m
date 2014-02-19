@@ -14,7 +14,6 @@
 #import <QuartzCore/QuartzCore.h>
 #import "BlioVoiceOverTextController.h"
 #import "BlioLoginService.h"
-#import "BlioLoginMediator.h"
 #import "BlioIdentityProvidersViewController.h"
 
 @interface BlioWelcomeTableViewCell : UITableViewCell {
@@ -580,13 +579,15 @@
  */
 }
 -(void)existingUserButtonPressed:(id)sender {
-    /* For Blio, was:
+    /* WAS:
      BlioLoginViewController * loginViewController = [[[BlioLoginViewController alloc] initWithSourceID:sourceID] autorelease];
      [self.navigationController pushViewController:loginViewController animated:YES];
      */
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(dismissSelf:) name:BlioLoginFinished object:[BlioStoreManager sharedInstance]];
+    // TODO activity indicator
     NSMutableArray* providers = [[BlioLoginService sharedInstance] getIdentityProviders];
+    // stop activity indicator
     if (providers) {
         BlioIdentityProvidersViewController* providersController = [[BlioIdentityProvidersViewController alloc] initWithProviders:providers];
         [self.navigationController pushViewController:providersController animated:YES];

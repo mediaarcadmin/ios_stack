@@ -9,11 +9,11 @@
 #import "MediaArcPlatform.h"
 
 // Move to build settings when we have more targets
-#define TEST
+#define PROD
 
 @implementation MediaArcPlatform
 
-@synthesize acsNamespace, acsHost, drmHost, servicesHost, realmURL, termsURL;
+@synthesize acsNamespace, acsHost, drmHost, servicesHost, realmURL, termsURL, vaultURL, supportTokenURL, checkinURL;
 
 +(MediaArcPlatform*)sharedInstance
 {
@@ -52,6 +52,9 @@
 #endif
     self.acsHost = @"accesscontrol.windows.net";
     self.termsURL = @"http://www.blio.com/1010/en/terms.htm";
+    self.checkinURL = @"/api/user";
+    self.supportTokenURL = @"/api/user/supporttoken";
+    self.vaultURL = @"/api/user/vault";
 }
 
 @end

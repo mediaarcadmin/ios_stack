@@ -227,6 +227,8 @@ NSString* ScriptNotify = @"<script type=\"text/javascript\">window.external = { 
             [BlioAccountService sharedInstance].token = accessToken;
             [accessToken release];
             [[BlioLoginService sharedInstance] checkin:identityProvider];
+            // TODO when going back to WelcomeViewController, the following leads to
+            // "Unbalanced calls to begin/end appearance transitions for <BlioWebAuthenticationViewController"
             [self.navigationController popToRootViewControllerAnimated:YES];
         }
         return NO;
@@ -248,7 +250,7 @@ NSString* ScriptNotify = @"<script type=\"text/javascript\">window.external = { 
 - (void)webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error {
 	//[activityIndicatorView stopAnimating];
 	NSString* errorMsg = [error localizedDescription];
-	NSLog(@"Login unsuccessful: error loading web page: %@",errorMsg);
+	NSLog(@"Error loading web authentication page: %@",errorMsg);
     // TODO alert
 }
 

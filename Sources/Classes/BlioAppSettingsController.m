@@ -41,8 +41,8 @@ static const NSInteger kBlioGetProvidersCellActivityIndicatorViewWidth = 20;
 	if ([[[note userInfo] valueForKey:@"sourceID"] intValue] == BlioBookSourceOnlineStore) {
 		[[NSNotificationCenter defaultCenter] removeObserver:self name:BlioLoginFinished object:[BlioStoreManager sharedInstance]];
 		[self.tableView reloadData];
-		if ([[BlioStoreManager sharedInstance] isLoggedInForSourceID:BlioBookSourceOnlineStore])
-            [self tableView:self.tableView didSelectRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:1]];
+		//if ([[BlioStoreManager sharedInstance] isLoggedInForSourceID:BlioBookSourceOnlineStore])
+        //    [self tableView:self.tableView didSelectRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
 	}
 }
 
@@ -94,16 +94,17 @@ static const NSInteger kBlioGetProvidersCellActivityIndicatorViewWidth = 20;
 
 // Customize the number of rows in the table view.
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-	if (section == 1) 
+	if (section == 0)
 		return 1;
 #ifdef TOSHIBA
-	else if (section == 0)
+	else if (section == 1)
 		return 1;
 	else if (section == 3)
 		return 3;
 #endif
 	return 2;
 }
+
 /*
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
 {
@@ -119,7 +120,7 @@ static const NSInteger kBlioGetProvidersCellActivityIndicatorViewWidth = 20;
 	return title;
 }
 */
-// Customize the appearance of table view cells.
+
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
     static NSString *CellIdentifier = @"Cell";
@@ -133,7 +134,7 @@ static const NSInteger kBlioGetProvidersCellActivityIndicatorViewWidth = 20;
 	cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
 				
 	switch ( [indexPath section] ) {
-		case 0:
+		case 1:
 			switch ([indexPath row])
 			{
 #ifndef TOSHIBA
@@ -149,7 +150,7 @@ static const NSInteger kBlioGetProvidersCellActivityIndicatorViewWidth = 20;
 					break;
 			}
 			break;
-		case 1:
+		case 0:
 			if ([[BlioStoreManager sharedInstance] isLoggedInForSourceID:BlioBookSourceOnlineStore]) {
 				cell.textLabel.text = [NSString stringWithFormat:@"%@%@",
                                        NSLocalizedString(@"My Account: ",@"\"My Account: \" text label prefix for App Settings cell"),
@@ -162,7 +163,7 @@ static const NSInteger kBlioGetProvidersCellActivityIndicatorViewWidth = 20;
                 cellActivityIndicatorView.frame = CGRectMake(cell.contentView.frame.size.width - kBlioGetProvidersCellActivityIndicatorViewWidth - ((cell.contentView.frame.size.height-kBlioGetProvidersCellActivityIndicatorViewWidth)/2),(cell.contentView.frame.size.height-kBlioGetProvidersCellActivityIndicatorViewWidth)/2,kBlioGetProvidersCellActivityIndicatorViewWidth,kBlioGetProvidersCellActivityIndicatorViewWidth);
                 cellActivityIndicatorView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin;
                 cellActivityIndicatorView.hidden = YES;
-                
+                [cellActivityIndicatorView startAnimating];
                 cellActivityIndicatorView.hidesWhenStopped = YES;
                 cellActivityIndicatorView.tag = kBlioGetProvidersCellActivityIndicatorViewTag;
                 [cell.contentView addSubview:cellActivityIndicatorView];
@@ -227,7 +228,7 @@ static const NSInteger kBlioGetProvidersCellActivityIndicatorViewWidth = 20;
 #endif
     
 	switch ( [indexPath section] ) {
-		case 0:
+		case 1:
 			switch (indexPath.row)
 			{
 #ifndef TOSHIBA
@@ -246,7 +247,7 @@ static const NSInteger kBlioGetProvidersCellActivityIndicatorViewWidth = 20;
 					break;
 			}
 			break;
-		case 1:
+		case 0:
 			if ([[BlioStoreManager sharedInstance] isLoggedInForSourceID:BlioBookSourceOnlineStore]) {
 				myAccountController = [[BlioMyAccountViewController alloc] init];
                 myAccountController.delegate = self;
@@ -257,7 +258,6 @@ static const NSInteger kBlioGetProvidersCellActivityIndicatorViewWidth = 20;
                 //[self attemptLogin];
                 UIActivityIndicatorView * cellActivityIndicatorView = (UIActivityIndicatorView *)[[tableView cellForRowAtIndexPath:indexPath].contentView viewWithTag:kBlioGetProvidersCellActivityIndicatorViewTag];
                 cellActivityIndicatorView.hidden = NO;
-                [cellActivityIndicatorView startAnimating];  // Can't see it!!
                 [cellActivityIndicatorView.superview bringSubviewToFront:cellActivityIndicatorView];
                 [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loginDismissed:) name:BlioLoginFinished object:[BlioStoreManager sharedInstance]];
                 NSMutableArray* providers = [[BlioLoginService sharedInstance] getIdentityProviders];

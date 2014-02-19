@@ -11,6 +11,7 @@
 #import "BlioAppSettingsConstants.h"
 #import "BlioDrmManager.h"
 #import "BlioAlertManager.h"
+#import "BlioAccountService.h"
 
 @implementation BlioMyAccountViewController
 
@@ -208,15 +209,19 @@
 
 -(void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
     if (buttonIndex == 1) {
-		BOOL changeSuccess = NO;
-		changeSuccess = [[BlioStoreManager sharedInstance] setDeviceRegistered:BlioDeviceRegisteredStatusUnregistered forSourceID:BlioBookSourceOnlineStore];
+        [[BlioAccountService sharedInstance] logout];
+        // TODO deregistration (with ACS token?)
+        BOOL changeSuccess = YES;
+		//BOOL changeSuccess = NO;
+		//changeSuccess = [[BlioStoreManager sharedInstance] setDeviceRegistered:BlioDeviceRegisteredStatusUnregistered forSourceID:BlioBookSourceOnlineStore];
 		if (changeSuccess) {
-            // TICKET 507: automatically logout when de-registering device.
-            [[BlioStoreManager sharedInstance] logoutForSourceID:BlioBookSourceOnlineStore];
+            //[[BlioStoreManager sharedInstance] logoutForSourceID:BlioBookSourceOnlineStore];
             [self.navigationController popViewControllerAnimated:YES];
-            if ([delegate respondsToSelector:@selector(setDidDeregister:)])
-                [delegate setDidDeregister:YES];
+            //if ([delegate respondsToSelector:@selector(setDidDeregister:)])
+            //    [delegate setDidDeregister:YES];
         }
+         // else?
+         
 	}
     deregisterCell.selected = NO;
 }

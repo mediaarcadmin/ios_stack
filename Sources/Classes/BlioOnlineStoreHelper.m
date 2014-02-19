@@ -563,6 +563,7 @@ static NSString * const BlioDeletedFromArchiveAlertType = @"BlioDeletedFromArchi
 - (void)logout {
 	self.token = nil;
 	self.userNum = 0;
+    /*
 	if (currentUsername) {
 		[currentUsername release];
 		currentUsername = nil;
@@ -571,6 +572,7 @@ static NSString * const BlioDeletedFromArchiveAlertType = @"BlioDeletedFromArchi
 		[currentPassword release];
 		currentPassword = nil;
 	}
+     */
 	self.timeout = [NSDate distantPast];
     // TODO? save token
 	//[[BlioStoreManager sharedInstance] saveUsername:nil password:nil sourceID:sourceID];

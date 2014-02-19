@@ -19,10 +19,12 @@
 @property (nonatomic, retain) NSString* handle;
 @property (nonatomic, retain) NSDictionary* provider;
 @property (nonatomic, retain) NSString* loginHost;
+@property (nonatomic, retain) NSString* logoutUrl;
 
 +(BlioAccountService*)sharedInstance;
 
 -(NSString*)getAuthorizationHeader;
 -(NSString*)getAccountID;
+-(void)logout;
 
 @end

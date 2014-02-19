@@ -55,7 +55,7 @@
 
 - (void)checkin:(NSDictionary*)provider {
     NSString* checkinURL = @"https://";
-    checkinURL = [[checkinURL stringByAppendingString:[MediaArcPlatform sharedInstance].servicesHost] stringByAppendingString:@"/api/user"];
+    checkinURL = [[checkinURL stringByAppendingString:[MediaArcPlatform sharedInstance].servicesHost] stringByAppendingString:[MediaArcPlatform sharedInstance].checkinURL];
     NSMutableURLRequest* checkinRequest = [[[NSMutableURLRequest alloc] initWithURL:[NSURL URLWithString:checkinURL]]
                                            autorelease];
     [checkinRequest setValue:[[BlioAccountService sharedInstance] getAuthorizationHeader] forHTTPHeaderField:@"Authorization"];
@@ -72,10 +72,11 @@
             [BlioAccountService sharedInstance].handle = [jsonDict objectForKey:@"Handle"];
             //[BlioAccountService sharedInstance].loginHost = [[NSURL URLWithString:[provider objectForKey:@"LoginUrl"]] host];
             [BlioAccountService sharedInstance].loginHost = [jsonDict objectForKey:@"IdentityProvider"];
+            [BlioAccountService sharedInstance].logoutUrl = [provider objectForKey:@"LogoutUrl"];
             BlioStoreHelper* helper = [[BlioStoreManager sharedInstance] storeHelperForSourceID:BlioBookSourceOnlineStore];
             helper.token =  [BlioAccountService sharedInstance].token.securityToken;
             helper.timeout = [[BlioAccountService sharedInstance].token expireDate];
-            [[BlioStoreManager sharedInstance] loginFinishedForSourceID:helper.sourceID];
+            [[BlioStoreManager sharedInstance] loginFinishedForSourceID:helper.sourceID]; 
             return;
         }
     }

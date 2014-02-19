@@ -19,6 +19,8 @@
 @property (nonatomic, assign) NSString *termsURL;
 @property (nonatomic, assign) NSString *realmURL;
 @property (nonatomic, assign) NSString *checkinURL;
+@property (nonatomic, assign) NSString *supportTokenURL;
+@property (nonatomic, assign) NSString *vaultURL;
 
 +(MediaArcPlatform*)sharedInstance;
 
