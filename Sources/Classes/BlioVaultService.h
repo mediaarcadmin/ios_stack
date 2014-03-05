@@ -25,5 +25,6 @@ typedef enum {
 + (void)getProducts:(NSURLSession*)session;
 + (void)getProductsPlusDetails:(NSURLSession*)session;
 + (NSURL*)getDownloadURL:(NSString*)productID;
++ (void)getSupportToken:(NSURLSession*)session;
 
 @end

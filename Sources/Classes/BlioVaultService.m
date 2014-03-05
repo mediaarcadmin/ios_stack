@@ -79,5 +79,14 @@
     [productListRequest release];
 }
 
++ (void)getSupportToken:(NSURLSession*)session {
+    NSString* supportTokenURL = @"https://";
+    supportTokenURL = [[supportTokenURL stringByAppendingString:[MediaArcPlatform sharedInstance].servicesHost] stringByAppendingString:[MediaArcPlatform sharedInstance].supportTokenURL];
+    NSMutableURLRequest *supportTokenRequest = [[NSMutableURLRequest alloc] initWithURL:[NSURL URLWithString:supportTokenURL]];
+    [supportTokenRequest setValue:[[BlioAccountService sharedInstance] getAuthorizationHeader] forHTTPHeaderField:@"Authorization"];
+    NSURLSessionDataTask* task = [session dataTaskWithRequest:supportTokenRequest];
+    [task resume];
+    [supportTokenRequest release];
+}
 
 @end

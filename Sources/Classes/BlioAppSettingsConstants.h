@@ -26,6 +26,9 @@
 #define kCellTopOffset			10.0
 #define kCellHeight				44.0
 
+// Cell activity indicator width
+static const NSInteger kBlioAppSettingCellActivityIndicatorViewWidth = 20;
+
 // NSUserDefaults keys
 static NSString * const kBlioLastVoiceDefaultsKey = @"lastVoice";
 static NSString * const kBlioLastSpeedDefaultsKey = @"lastSpeed";

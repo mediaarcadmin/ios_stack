@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 #import <CoreData/CoreData.h>
 
+@class BlioBookInfo;
 @class BlioBook;
 @class BlioProcessingCompleteOperation;
 @class BlioProcessingDownloadOperation;
@@ -100,6 +101,7 @@ static NSString * const BlioProcessingOperationFailedNotification = @"BlioProces
 -(void) enqueueBook:(BlioBook*)aBook;
 -(void) enqueueBook:(BlioBook*)aBook resetProcessingAlertSuppression:(BOOL)resetValue;
 -(void) enqueueBook:(BlioBook*)aBook placeholderOnly:(BOOL)placeholderOnly;
+-(void) enqueueBook:(BlioBookInfo*)bookInfo download:(BOOL)downloadNewBooks;
 - (void) resumeProcessing;
 -(BlioBook*)bookWithSourceID:(BlioBookSourceID)sourceID sourceSpecificID:(NSString*)sourceSpecificID;
 -(BlioBook*)bookWithSourceID:(BlioBookSourceID)sourceID ISBN:(NSString*)anISBN;

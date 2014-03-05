@@ -12,6 +12,9 @@
 #import "BlioDrmManager.h"
 #import "BlioAlertManager.h"
 #import "BlioAccountService.h"
+#import "BlioVaultService.h"
+
+static const NSInteger kBlioSupportTokenCellActivityIndicatorViewTag = 99;
 
 @implementation BlioMyAccountViewController
 
@@ -111,7 +114,13 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    if (indexPath.section == 2) {
+    if (indexPath.section == 1) {
+        cellActivityIndicatorView.hidden = NO;
+        [cellActivityIndicatorView.superview bringSubviewToFront:cellActivityIndicatorView];
+        NSURLSession* session = [NSURLSession sessionWithConfiguration:[NSURLSessionConfiguration defaultSessionConfiguration] delegate:self delegateQueue:[NSOperationQueue mainQueue]];
+        [BlioVaultService getSupportToken:session];
+    }
+    else if (indexPath.section == 2) {
         [BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Please Confirm",@"\"Please Confirm\" alert message title")
                                      message:NSLocalizedStringWithDefaultValue(@"CONFIRM_DEREGISTRATION_ALERT",nil,[NSBundle mainBundle],@"Are you sure you want to deregister your device for this account? Doing so will remove all books purchased under the account.",@"Prompt requesting confirmation for de-registration, explaining that doing so will remove all that account's purchased books.")
                                     delegate:self
@@ -119,7 +128,6 @@
                            otherButtonTitles:NSLocalizedString(@"Not Now",@"\"Not Now\" button label within Confirm De/Registration alertview"), NSLocalizedString(@"Deregister",@"\"Deregister\" button label within Confirm Deregistration alertview"), nil];
         
     }
-    // else if (indexPath.section == 1)
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -158,6 +166,15 @@
         cell.selectionStyle = UITableViewCellSelectionStyleBlue;
         deregisterCell = cell;
         [cell setAccessibilityTraits:UIAccessibilityTraitButton];
+        cellActivityIndicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
+        cellActivityIndicatorView.frame = CGRectMake(cell.contentView.frame.size.width - kBlioAppSettingCellActivityIndicatorViewWidth - ((cell.contentView.frame.size.height-kBlioAppSettingCellActivityIndicatorViewWidth)/2),(cell.contentView.frame.size.height-kBlioAppSettingCellActivityIndicatorViewWidth)/2,kBlioAppSettingCellActivityIndicatorViewWidth,kBlioAppSettingCellActivityIndicatorViewWidth);
+        cellActivityIndicatorView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin;
+        cellActivityIndicatorView.hidden = YES;
+        [cellActivityIndicatorView startAnimating];
+        cellActivityIndicatorView.hidesWhenStopped = YES;
+        cellActivityIndicatorView.tag = kBlioSupportTokenCellActivityIndicatorViewTag;
+        [cell.contentView addSubview:cellActivityIndicatorView];
+        [cellActivityIndicatorView release];
         return cell;
     }
     else if (indexPath.section == 2) {
@@ -245,6 +262,41 @@
 - (void)dealloc {
 	self.drmSessionManager = nil;
     [super dealloc];
+}
+
+#pragma mark -
+#pragma mark NSURLSessionDataDelegate methods
+
+- (void)URLSession:(NSURLSession *)session task:(NSURLSessionTask *)task didCompleteWithError:(NSError *)error {
+    [cellActivityIndicatorView stopAnimating];
+    if (error) {
+        NSLog(@"Support token data task failed with error: %@", [error description]);
+        return;
+    }
+    NSString* token = [[NSString alloc] initWithData:supportTokenData encoding: NSUTF8StringEncoding];
+    if (supportTokenData && token) {
+            token = [token stringByTrimmingCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@"\""]];
+            [BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Support Token",@"\"Support Token\" alert message title")
+                                     message:[NSString stringWithFormat:@"Your support token is %@",token]
+                                    delegate:self
+                           cancelButtonTitle:@"OK"
+                           otherButtonTitles:nil];
+    }
+    else
+        [BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Support Token Error",@"\"Support Token Error\" alert message title")
+                                        message:NSLocalizedStringWithDefaultValue(@"SUPPORT_TOKEN_ERROR",nil,[NSBundle mainBundle],@"A support token cannot be obtained at this time.  Please try again later.",@"Report that support token cannot be obtained.")
+                                       delegate:self
+                              cancelButtonTitle:@"OK"
+                              otherButtonTitles:nil];
+    supportTokenData = nil;
+}
+
+- (void)URLSession:(NSURLSession *)session dataTask:(NSURLSessionDataTask *)dataTask didReceiveData:(NSData *)data {
+    if (data) {
+        if (!supportTokenData)
+            supportTokenData = [[NSMutableData alloc] initWithCapacity:16];
+        [supportTokenData appendData:data];
+    }
 }
 
 

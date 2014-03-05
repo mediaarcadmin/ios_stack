@@ -19,9 +19,9 @@
 #import "BlioAccountService.h"
 #import "BlioLoginService.h"
 #import "BlioIdentityProvidersViewController.h"
+#import "BlioAppSettingsConstants.h"
 
 static const NSInteger kBlioGetProvidersCellActivityIndicatorViewTag = 99;
-static const NSInteger kBlioGetProvidersCellActivityIndicatorViewWidth = 20;
 
 @implementation BlioAppSettingsController
 
@@ -160,7 +160,7 @@ static const NSInteger kBlioGetProvidersCellActivityIndicatorViewWidth = 20;
 			else {
 				cell.textLabel.text = NSLocalizedString(@"Log In",@"\"Log In\" text label for App Settings cell");// add activity indicator
                 UIActivityIndicatorView * cellActivityIndicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
-                cellActivityIndicatorView.frame = CGRectMake(cell.contentView.frame.size.width - kBlioGetProvidersCellActivityIndicatorViewWidth - ((cell.contentView.frame.size.height-kBlioGetProvidersCellActivityIndicatorViewWidth)/2),(cell.contentView.frame.size.height-kBlioGetProvidersCellActivityIndicatorViewWidth)/2,kBlioGetProvidersCellActivityIndicatorViewWidth,kBlioGetProvidersCellActivityIndicatorViewWidth);
+                cellActivityIndicatorView.frame = CGRectMake(cell.contentView.frame.size.width - kBlioAppSettingCellActivityIndicatorViewWidth - ((cell.contentView.frame.size.height-kBlioAppSettingCellActivityIndicatorViewWidth)/2),(cell.contentView.frame.size.height-kBlioAppSettingCellActivityIndicatorViewWidth)/2,kBlioAppSettingCellActivityIndicatorViewWidth,kBlioAppSettingCellActivityIndicatorViewWidth);
                 cellActivityIndicatorView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin;
                 cellActivityIndicatorView.hidden = YES;
                 [cellActivityIndicatorView startAnimating];

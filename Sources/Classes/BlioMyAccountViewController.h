@@ -11,11 +11,13 @@
 #import "BlioAppSettingsController.h"
 #import "BlioAutorotatingViewController.h"
 
-@interface BlioMyAccountViewController : BlioAutorotatingTableViewController {
+@interface BlioMyAccountViewController : BlioAutorotatingTableViewController<NSURLSessionDataDelegate> {
     BOOL registrationOn;
 	BlioDrmSessionManager* drmSessionManager;
     UITableViewCell *deregisterCell;
     id delegate;
+    NSData* supportTokenData;
+    UIActivityIndicatorView* cellActivityIndicatorView;
 }
 @property (nonatomic, retain) UIActivityIndicatorView *activityIndicator;
 @property (nonatomic, assign) BOOL registrationOn;
