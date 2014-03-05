@@ -9,12 +9,13 @@
 #import <UIKit/UIKit.h>
 #import "BlioLoginService.h"
 
-@interface BlioWebAuthenticationViewController : UIViewController/*BlioAutorotatingTableViewController*/ <UIWebViewDelegate, NSURLConnectionDelegate> {
+@interface BlioWebAuthenticationViewController : UIViewController <UIWebViewDelegate, NSURLConnectionDelegate> {
     NSDictionary *identityProvider;
     UIWebView *loginView;
     NSURL* loginURL;
     NSMutableData *_data;
     NSURL *_url;
+    UIActivityIndicatorView* activityIndicatorView;
 }
 
 - (id)initWithProvider:(NSDictionary *)provider;

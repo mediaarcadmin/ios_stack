@@ -13,6 +13,8 @@
 #import	"Reachability.h"
 #import "BlioDrmSessionManager.h"
 #import "BlioBook.h"
+#import "BlioVaultService.h"
+#import "BlioBookInfo.h"
 
 // N.B. - For other stores besides the default, BlioOnlineStoreHelper should be subclassed and the init overridden.
 //#define KNFB_STORE 12151
@@ -23,30 +25,12 @@
 
 static NSString * const BlioDeletedFromArchiveAlertType = @"BlioDeletedFromArchiveAlertType";
 
-/*
+
 @interface BlioOnlineStoreHelper (PRIVATE)
-- (void) bookVaultSoapOperation:(BookVaultSoapOperation *)operation completedWithResponse:(BookVaultSoapResponse *)response;
-- (void) contentCafeSoapOperation:(ContentCafeSoapOperation *)operation completedWithResponse:(ContentCafeSoapResponse *)response;
-- (void)getContentMetaDataFromISBN:(NSString*)isbn;
 -(void)assessRetrieveBooksProgress;
 -(void)retrieveTokenWithUsername:(NSString*)user password:(NSString*)password;
 @end
-
-@implementation BlioOnlineStoreHelperBookVaultDelegate
-@synthesize delegate;
-- (void) operation:(BookVaultSoapOperation *)operation completedWithResponse:(BookVaultSoapResponse *)response {
-	[delegate bookVaultSoapOperation:operation completedWithResponse:response];
-}
-@end
-
-
-@implementation BlioOnlineStoreHelperContentCafeDelegate
-@synthesize delegate;
-- (void) operation:(ContentCafeSoapOperation *)operation completedWithResponse:(ContentCafeSoapResponse *)response {
-	[delegate contentCafeSoapOperation:operation completedWithResponse:response];
-}
-@end
- */
+ 
 
 @implementation BlioOnlineStoreHelper
 
@@ -56,43 +40,19 @@ static NSString * const BlioDeletedFromArchiveAlertType = @"BlioDeletedFromArchi
 		self.storeTitle = @"Blio Online Store";
 		self.siteID = 12555;
 		self.siteKey = @"B870B960A5B4CB53363BB10855FDC3512658E69E";
-		//bookVaultDelegate = [[BlioOnlineStoreHelperBookVaultDelegate alloc] init];
-		//bookVaultDelegate.delegate = self;
-		//contentCafeDelegate = [[BlioOnlineStoreHelperContentCafeDelegate alloc] init];
-		//contentCafeDelegate.delegate = self;
-		downloadNewBooks = YES;
 		forceLoginDisplayUponFailure = NO;
-#ifdef TEST_MODE
-		self.storeURL = @"http://mobile.theretailerplace.net/";
-#else	
-		self.storeURL = @"https://mobile.blioreader.com/";
-#endif
-		NSLog(@"initializing BlioOnlineStoreHelper with URL: %@",self.storeURL);
-		
 	}
 	return self;
 }
+
 -(void) dealloc {
-	//[bookVaultDelegate release];
-	//[contentCafeDelegate release];
-	if (_isbns) [_isbns release];
-	if (_BookOwnershipInfoArray) [_BookOwnershipInfoArray release];
+	//if (_isbns)
+    //    [_isbns release];
+	if (_BookInfoArray)
+        [_BookInfoArray release];
 	[super dealloc];
 }
--(void)buyBookWithSourceSpecificID:(NSString*)sourceSpecificID {
-	NSLog(@"buyBookWithSourceSpecificID: %@",sourceSpecificID);
-	NSURL* url = [[[NSURL alloc] initWithString:[self storeURLWithSourceSpecificID:sourceSpecificID]] autorelease];
-	[[UIApplication sharedApplication] openURL:url];	
-}
--(NSString*)storeURLWithSourceSpecificID:(NSString*)sourceSpecificID {
-    NSString * modifiedID = sourceSpecificID;
-	if ([sourceSpecificID length] > 2 && [[[sourceSpecificID substringToIndex:2] lowercaseString] isEqualToString:@"bk"]) {
-		modifiedID = [sourceSpecificID substringFromIndex:2];
-	}
-	
-	NSString * fullURL = [NSString stringWithFormat:@"%@bliostore/BTKEY=%@/detail.html", self.storeURL,modifiedID];
-    return fullURL;
-}
+
 - (void)loginWithUsername:(NSString*)user password:(NSString*)password {
 	if (currentUsername) [currentUsername release];
 	if (currentPassword) [currentPassword release];
@@ -141,216 +101,7 @@ static NSString * const BlioDeletedFromArchiveAlertType = @"BlioDeletedFromArchi
 	[vaultBinding LoginAsyncUsingParameters:loginRequest delegate:bookVaultDelegate];
 	[vaultBinding release];
 }
-- (void) bookVaultSoapOperation:(BookVaultSoapOperation *)operation completedWithResponse:(BookVaultSoapResponse *)response {
-	if (!response.responseType) {
-		NSLog(@"ERROR: response has no response type!");
-		return;
-	}
-	if ([response.responseType isEqualToString:BlioBookVaultResponseTypeLogin]) {
-		
-		NSArray *responseBodyParts = response.bodyParts;
-		for(id bodyPart in responseBodyParts) {
-//			NSLog(@"bodyPart: %@",bodyPart);
-		}
-		for(id bodyPart in responseBodyParts) {
-			if ([bodyPart isKindOfClass:[SOAPFault class]]) {
-				NSString* err = ((SOAPFault *)bodyPart).simpleFaultString;
-				NSLog(@"SOAP error for login: %@",err);
-				[delegate storeHelper:self receivedLoginResult:BlioLoginResultError];
-				return;
-			}
-//			NSLog(@"[[bodyPart LoginResult].ReturnCode intValue]: %i",[[bodyPart LoginResult].ReturnCode intValue]);
-			if ( [[bodyPart LoginResult].ReturnCode intValue] == 200 ) { 
-				self.token = [bodyPart LoginResult].Token;
-//				NSLog(@"set token: %@",self.token);
-                // Deprecated
-				//self.timeout = [[NSDate date] addTimeInterval:(NSTimeInterval)[[bodyPart LoginResult].Timeout floatValue]];
-				self.timeout = [[NSDate date] dateByAddingTimeInterval:(NSTimeInterval)[[bodyPart LoginResult].Timeout floatValue]];
-//				NSLog(@"timeout: %@",self.timeout);
-//				if ([self deviceRegistered]) {
-//					NSLog(@"rejoining domain...");
-//					BlioDrmSessionManager* drmSessionManager = [[BlioDrmSessionManager alloc] initWithBookID:nil];
-//					if ( ![drmSessionManager joinDomain:self.token domainName:@"novel"] ) {
-//						NSLog(@"ERROR: newly logged in user could not rejoin registration domain!");
-//					}
-//					[drmSessionManager release];
-//				}
-				[[BlioStoreManager sharedInstance] saveUsername:currentUsername password:currentPassword sourceID:self.sourceID];	
-				[delegate storeHelper:self receivedLoginResult:BlioLoginResultSuccess];
-				return;
-			}
-			else if ( [[bodyPart LoginResult].ReturnCode intValue] == 203 ) {
-				NSLog(@"Invalid password");
-				
-				[delegate storeHelper:self receivedLoginResult:BlioLoginResultInvalidPassword];
-				return;
-			}
-			else {
-				NSLog(@"Login error: %@",[bodyPart LoginResult].Message);
-				[delegate storeHelper:self receivedLoginResult:BlioLoginResultError];
-				return;
-			}
-		}
-	}
-	else if ([response.responseType isEqualToString:BlioBookVaultResponseTypeVaultContentsWithToken]) {
-		NSArray *responseBodyParts = response.bodyParts;
-		for(id bodyPart in responseBodyParts) {
-			if ([bodyPart isKindOfClass:[SOAPFault class]]) {
-				NSString* err = ((SOAPFault *)bodyPart).simpleFaultString;
-				NSLog(@"SOAP error for VaultContents: %@",err);
-				// TODO: Message
-				return;
-			}
-			else if ( [[bodyPart VaultContentsWithTokenResult].ReturnCode intValue] == 300 ) { 
-				if (_isbns) [_isbns release]; // release old set of ISBNs
-				if (_BookOwnershipInfoArray) {
-					[_BookOwnershipInfoArray release]; // release old set of ISBNs
-					_BookOwnershipInfoArray = nil;
-				}
-				_isbns = [[bodyPart VaultContentsWithTokenResult].Contents.string retain];
-			}
-			else {
-				NSLog(@"VaultContents error: %@",[bodyPart VaultContentsWithTokenResult].Message);
-				// TODO: Message
-				return;
-			}
-		}
-		// add new book entries to PersistentStore as appropriate
-		NSLog(@"ISBN count: %i",[_isbns count]);
-		newISBNs = 0;
-		responseCount = 0;
-		successfulResponseCount = 0;
-		
-		for (NSString * isbn in _isbns) {
-			
-			// check to see if BlioBook record is already in the persistent store
-			
-			if ([[BlioStoreManager sharedInstance].processingDelegate bookWithSourceID:self.sourceID sourceSpecificID:isbn] == nil) {
-				newISBNs++;
-				[self getContentMetaDataFromISBN:isbn];
-			}
-			else {
-				NSLog(@"We already have ISBN: %@ in our persistent store, no need to get meta data for this item.",isbn);
-			}
-		}
-		if (newISBNs == 0) [self assessRetrieveBooksProgress];
-	}
-	else if ([response.responseType isEqualToString:BlioBookVaultResponseTypeVaultContentsWithTokenEx]) {
-		NSLog(@"responseType: BlioBookVaultResponseTypeVaultContentsWithTokenEx");
-		NSArray *responseBodyParts = response.bodyParts;
-		for(id bodyPart in responseBodyParts) {
-			NSLog(@"bodyPart class: %@",[[bodyPart class] description]);
-			if ([bodyPart isKindOfClass:[SOAPFault class]]) {
-				NSString* err = ((SOAPFault *)bodyPart).simpleFaultString;
-				NSLog(@"SOAP error for VaultContents: %@",err);
-				// TODO: Message
-				return;
-			}
-			else if ( [[bodyPart VaultContentsWithTokenExResult].ReturnCode intValue] == 300 ) { 
-				if (_isbns) {
-					[_isbns release]; // release old set of ISBNs
-					_isbns = nil;
-				}
-				if (_BookOwnershipInfoArray) [_BookOwnershipInfoArray release]; // release old set of ISBNs
-				_BookOwnershipInfoArray = [[bodyPart VaultContentsWithTokenExResult].Contents.BookOwnershipInfo retain];
-			}
-			else {
-				NSLog(@"VaultContents error: %@",[bodyPart VaultContentsWithTokenResult].Message);
-				// TODO: Message
-				return;
-			}
-		}
-		// add new book entries to PersistentStore as appropriate
-		NSLog(@"_BookOwnershipInfoArray count: %i",[_BookOwnershipInfoArray count]);
-		newISBNs = 0;
-		responseCount = 0;
-		successfulResponseCount = 0;
 
-//		NSLog(@"DEBUGGING LOOP:");
-//		for (BookVault_BookOwnershipInfo * bookOwnershipInfo in _BookOwnershipInfoArray) {
-//			NSLog(@"book in question ISBN: %@",bookOwnershipInfo.ISBN);
-//			NSLog(@"bookOwnershipInfo productType: %i",[bookOwnershipInfo.ProductTypeId intValue]);
-//		}
-		
-        NSMutableSet* incomingLoanerBooks = [NSMutableSet setWithCapacity:8];
-		for (BookVault_BookOwnershipInfo * bookOwnershipInfo in _BookOwnershipInfoArray) {
-			
-			// check to see if BlioBook record is already in the persistent store
-			BlioBook * preExistingBook = [[BlioStoreManager sharedInstance].processingDelegate bookWithSourceID:self.sourceID ISBN:bookOwnershipInfo.ISBN];
-			BlioTransactionType incomingTransactionType = [BlioOnlineStoreHelper transactionTypeForCode:bookOwnershipInfo.TransactionType];
-            BlioTransactionType preExistingTransactionType = [[preExistingBook valueForKey:@"transactionType"] intValue];
-            if (preExistingBook == nil) {
-                NSLog(@"ISBN: %@, %i",bookOwnershipInfo.ISBN,[bookOwnershipInfo.RecordStatusId intValue]);
-				if ([bookOwnershipInfo.RecordStatusId intValue] != 2) {
-                    newISBNs++;
-                   [self getContentMetaDataFromISBN:bookOwnershipInfo.ISBN];
-                }
-			}
-            else if ([bookOwnershipInfo.RecordStatusId intValue] == 2) {
-                [[BlioStoreManager sharedInstance].processingDelegate deleteBook:preExistingBook attemptArchive:NO shouldSave:YES];
-                [BlioAlertManager showAlertOfSuppressedType:BlioDeletedFromArchiveAlertType
-                                                      title:NSLocalizedString(@"Book Deleted",@"\"Book Deleted"\" alert message title")
-                                             message:NSLocalizedStringWithDefaultValue(@"BOOK_DELETED",nil,[NSBundle mainBundle],@"One or more of your books have been deleted because they are no longer in your archive.",@"Alert message shown when a downloaded book has been deleted from the archive.")
-                                            delegate:self
-                                   cancelButtonTitle:@"OK"
-                                   otherButtonTitles: nil];
-            }
-			else if (([[preExistingBook valueForKey:@"productType"] intValue] == BlioProductTypePreview && [bookOwnershipInfo.ProductTypeId intValue] == BlioProductTypeFull)) {
-                NSLog(@"replacing preview version of ISBN:%@ with full version...",bookOwnershipInfo.ISBN);
-                [[BlioStoreManager sharedInstance].processingDelegate deleteBook:preExistingBook shouldSave:YES];
-				newISBNs++;
-				[self getContentMetaDataFromISBN:bookOwnershipInfo.ISBN];
-            }
-            else if ((preExistingTransactionType == BlioTransactionTypeLend && incomingTransactionType == BlioTransactionTypePreorder) || ((preExistingTransactionType == BlioTransactionTypeLend || preExistingTransactionType == BlioTransactionTypePreorder) && (incomingTransactionType == BlioTransactionTypeSale || incomingTransactionType == BlioTransactionTypeSaleFromPreorder || incomingTransactionType == BlioTransactionTypePromotion || incomingTransactionType == BlioTransactionTypeFree))) {
-                NSLog(@"replacing TransactionType:%i version of ISBN:%@ with TransactionType:%i version...",preExistingTransactionType,bookOwnershipInfo.ISBN,incomingTransactionType);                
-				[[BlioStoreManager sharedInstance].processingDelegate deleteBook:preExistingBook shouldSave:YES];
-				newISBNs++;
-				[self getContentMetaDataFromISBN:bookOwnershipInfo.ISBN];
-			}
-            else if (incomingTransactionType == BlioTransactionTypeLend) {
-                [incomingLoanerBooks addObject:bookOwnershipInfo.ISBN];
-                if  (preExistingTransactionType == BlioTransactionTypeLend) {
-                    NSString *dateFormat = @"yyyy-MM-dd'T'HH:mm:ss";
-                    NSDateFormatter *formatter = [[[NSDateFormatter alloc] init] autorelease];
-                    [formatter setDateFormat: dateFormat];
-                    [formatter setTimeZone:[NSTimeZone timeZoneWithAbbreviation:@"EST"]];
-                    NSDate* incomingExpirationDate = [formatter dateFromString:bookOwnershipInfo.ExpirationDate];
-                    // If expiration date has changed (renewal), delete book to clear way for renewed book.
-                    if (![incomingExpirationDate isEqualToDate:[preExistingBook valueForKey:@"expirationDate"]]) {
-                        [[BlioStoreManager sharedInstance].processingDelegate deleteBook:preExistingBook attemptArchive:NO shouldSave:YES];
-                        newISBNs++;
-                        [self getContentMetaDataFromISBN:bookOwnershipInfo.ISBN];
-                        [BlioAlertManager showAlertOfSuppressedType:BlioDeletedFromArchiveAlertType
-                                                              title:NSLocalizedString(@"Book Renewal",@"\"Book Renewal"\" alert message title")
-                                                     message:NSLocalizedStringWithDefaultValue(@"BOOK_RENEWED",nil,[NSBundle mainBundle],@"One or more of your borrowed books have been renewed.  You can redownload them from your Archive.",@"Alert message shown when a downloaded borrowed book has been renewed.")
-                                                    delegate:self
-                                           cancelButtonTitle:@"OK"
-                                           otherButtonTitles: nil];
-                    }
-                }
-            }
-			else {
-				NSLog(@"We already have ISBN: %@ in our persistent store, no need to get meta data for this item.",bookOwnershipInfo.ISBN);	
-			}
-		}
-    
-        // Now must see whether there are any existing loaner books that are not among the incoming loaner books.
-        NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
-        NSManagedObjectContext* moc = [[BlioBookManager sharedBookManager] managedObjectContextForCurrentThread];
-        [fetchRequest setEntity:[NSEntityDescription entityForName:@"BlioBook" inManagedObjectContext:moc]];
-        [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"transactionType == %@",[NSNumber numberWithInt:BlioTransactionTypeLend]]];
-        NSError *errorExecute = nil;
-        NSArray *results = [moc executeFetchRequest:fetchRequest error:&errorExecute];
-        [fetchRequest release];
-        for (BlioBook* book in results) {
-            if (![incomingLoanerBooks containsObject:[book valueForKey:@"isbn"]])
-                // Book has been returned, perhaps from another device.  Delete it.
-                [[BlioStoreManager sharedInstance].processingDelegate deleteBook:book attemptArchive:NO shouldSave:YES];
-        }
-        
-		if (newISBNs == 0) [self assessRetrieveBooksProgress];
-	}
-}
 - (void) contentCafeSoapOperation:(ContentCafeSoapOperation *)operation completedWithResponse:(ContentCafeSoapResponse *)response {
 	responseCount++;
 	NSArray *responseBodyParts = response.bodyParts;
@@ -452,6 +203,7 @@ static NSString * const BlioDeletedFromArchiveAlertType = @"BlioDeletedFromArchi
 	[self assessRetrieveBooksProgress];
 }
  */
+
 +(BlioTransactionType)transactionTypeForCode:(NSString*)code {
     BlioTransactionType aTransactionType = BlioTransactionTypeNotSpecified;
     if ([code isEqualToString:@"SAL"]) aTransactionType = BlioTransactionTypeSale;
@@ -463,6 +215,7 @@ static NSString * const BlioDeletedFromArchiveAlertType = @"BlioDeletedFromArchi
     else if ([code isEqualToString:@"PSL"]) aTransactionType = BlioTransactionTypeSaleFromPreorder;
     return aTransactionType;
 }
+
 -(void)assessRetrieveBooksProgress {
 	if (responseCount == newISBNs || newISBNs == 0) { 
 		NSString * ISBNMetadataResponseAlertText = nil;
@@ -574,9 +327,103 @@ static NSString * const BlioDeletedFromArchiveAlertType = @"BlioDeletedFromArchi
 	}
      */
 	self.timeout = [NSDate distantPast];
-    // TODO? save token
 	//[[BlioStoreManager sharedInstance] saveUsername:nil password:nil sourceID:sourceID];
 }
+
+-(void)onProductDetailsProcessingFinished:(NSNotification*)note {
+	[[NSNotificationCenter defaultCenter] removeObserver:self name:BlioProductDetailsProcessingFinished object:nil];
+    newISBNs = 0;
+    //responseCount = 0;
+    //successfulResponseCount = 0;
+    if ( [[NSUserDefaults standardUserDefaults] integerForKey:kBlioDownloadNewBooksDefaultsKey] >= 0)
+        downloadNewBooks = YES;
+    else
+        downloadNewBooks = NO;
+    NSMutableSet* incomingLoanerBooks = [NSMutableSet setWithCapacity:8];
+    for (BlioBookInfo * bookInfo in _BookInfoArray) {
+        // check to see if BlioBook record is already in the persistent store
+        // Note:  the book identifier is now the product uuid, not the isbn or bt_key.
+        BlioBook * preExistingBook = [[BlioStoreManager sharedInstance].processingDelegate bookWithSourceID:self.sourceID sourceSpecificID:bookInfo.productID];
+        BlioTransactionType incomingTransactionType = bookInfo.transactionType;
+        BlioTransactionType preExistingTransactionType = [[preExistingBook valueForKey:@"transactionType"] intValue];
+        if (preExistingBook == nil) {
+            NSLog(@"Enqueuing new book: %@",bookInfo.productID);
+            newISBNs++;
+            // AC testing: next set download to YES to test book download (though license operation will fail)
+            [[[BlioStoreManager sharedInstance] processingDelegate] enqueueBook:bookInfo download:YES/*downloadNewBooks*/];
+
+        }
+        /* No recordStatusId as yet in Media Vault
+        else if ([bookOwnershipInfo.RecordStatusId intValue] == 2) {
+            [[BlioStoreManager sharedInstance].processingDelegate deleteBook:preExistingBook attemptArchive:NO shouldSave:YES];
+            [BlioAlertManager showAlertOfSuppressedType:BlioDeletedFromArchiveAlertType
+                                                    title:NSLocalizedString(@"Book Deleted",@"\"Book Deleted"\" alert message title")
+                                                message:NSLocalizedStringWithDefaultValue(@"BOOK_DELETED",nil,[NSBundle mainBundle],@"One or more of your books have been deleted because they are no longer in your archive.",@"Alert message shown when a downloaded book has been deleted from the archive.")
+                                                delegate:self
+                                        cancelButtonTitle:@"OK"
+                                        otherButtonTitles: nil];
+        }
+         */
+        else if ((preExistingTransactionType == BlioTransactionTypeLend && incomingTransactionType == BlioTransactionTypePreorder) || ((preExistingTransactionType == BlioTransactionTypeLend || preExistingTransactionType == BlioTransactionTypePreorder) && (incomingTransactionType == BlioTransactionTypeSale || incomingTransactionType == BlioTransactionTypeSaleFromPreorder || incomingTransactionType == BlioTransactionTypePromotion || incomingTransactionType == BlioTransactionTypeFree))) {
+            NSLog(@"replacing TransactionType:%i version of ISBN:%@ with TransactionType:%i version...",preExistingTransactionType,bookInfo.productID,incomingTransactionType);
+            [[BlioStoreManager sharedInstance].processingDelegate deleteBook:preExistingBook shouldSave:YES];
+            newISBNs++;
+            // WAS
+            //[self getContentMetaDataFromISBN:bookOwnershipInfo.ISBN];
+            // NOW
+            [[[BlioStoreManager sharedInstance] processingDelegate] enqueueBook:bookInfo download:downloadNewBooks];
+        }
+        else if (incomingTransactionType == BlioTransactionTypeLend) {
+            [incomingLoanerBooks addObject:bookInfo.productID];
+            if  (preExistingTransactionType == BlioTransactionTypeLend) {
+                NSString *dateFormat = @"yyyy-MM-dd'T'HH:mm:ss";
+                NSDateFormatter *formatter = [[[NSDateFormatter alloc] init] autorelease];
+                [formatter setDateFormat: dateFormat];
+                [formatter setTimeZone:[NSTimeZone timeZoneWithAbbreviation:@"EST"]];
+                NSDate* incomingExpirationDate = bookInfo.expiration;
+                // If expiration date has changed (renewal), delete book to clear way for renewed book.
+                if (![incomingExpirationDate isEqualToDate:[preExistingBook valueForKey:@"expirationDate"]]) {
+                    [[BlioStoreManager sharedInstance].processingDelegate deleteBook:preExistingBook attemptArchive:NO shouldSave:YES];
+                    newISBNs++;
+                    // WAS
+                    //[self getContentMetaDataFromISBN:bookOwnershipInfo.ISBN];
+                    // NOW
+                    [[[BlioStoreManager sharedInstance] processingDelegate] enqueueBook:bookInfo download:downloadNewBooks];
+                    [BlioAlertManager showAlertOfSuppressedType:BlioDeletedFromArchiveAlertType
+                                                            title:NSLocalizedString(@"Book Renewal",@"\"Book Renewal"\" alert message title")
+                                                        message:NSLocalizedStringWithDefaultValue(@"BOOK_RENEWED",nil,[NSBundle mainBundle],@"One or more of your borrowed books have been renewed.  You can redownload them from your Archive.",@"Alert message shown when a downloaded borrowed book has been renewed.")
+                                                        delegate:self
+                                                cancelButtonTitle:@"OK"
+                                                otherButtonTitles: nil];
+                }
+            }
+        }
+        else {
+            NSLog(@"We already have book uuid: %@ in our persistent store, no need to get meta data for this item.",bookInfo.productID);
+        }
+    } //for
+    
+    /* Uncomment the below when we have borrowed books.
+    // Now must see whether there are any existing loaner books that are not among the incoming loaner books.
+    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
+    NSManagedObjectContext* moc = [[BlioBookManager sharedBookManager] managedObjectContextForCurrentThread];
+    [fetchRequest setEntity:[NSEntityDescription entityForName:@"BlioBook" inManagedObjectContext:moc]];
+    [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"transactionType == %@",[NSNumber numberWithInt:BlioTransactionTypeLend]]];
+    NSError *errorExecute = nil;
+    NSArray *results = [moc executeFetchRequest:fetchRequest error:&errorExecute];
+    [fetchRequest release];
+    for (BlioBook* book in results) {
+        if (![incomingLoanerBooks containsObject:[book valueForKey:@"isbn"]])
+            // Book has been returned, perhaps from another device.  Delete it.
+            [[BlioStoreManager sharedInstance].processingDelegate deleteBook:book attemptArchive:NO shouldSave:YES];
+    }
+    */
+    
+    //if (newISBNs == 0)
+    [self assessRetrieveBooksProgress];
+    
+}
+
 -(void)retrieveBooks {
 	NSLog(@"**********************%@", NSStringFromSelector(_cmd));
 	if (![BlioStoreManager sharedInstance].processingDelegate) {
@@ -591,157 +438,106 @@ static NSString * const BlioDeletedFromArchiveAlertType = @"BlioDeletedFromArchi
 	[userInfo setObject:[NSNumber numberWithInt:self.sourceID] forKey:@"sourceID"];
 	isRetrievingBooks = YES;
 	[[NSNotificationCenter defaultCenter] postNotificationName:BlioStoreRetrieveBooksStarted object:self userInfo:userInfo];
-/*
-	BookVaultSoap *vaultBinding = [[BookVault BookVaultSoap] retain];
-	vaultBinding.logXMLInOut = NO;
-//	BookVault_VaultContentsWithToken* vaultContentsRequest = [[BookVault_VaultContentsWithToken new] autorelease];
-	BookVault_VaultContentsWithTokenEx* vaultContentsRequest = [[BookVault_VaultContentsWithTokenEx new] autorelease];
-	vaultContentsRequest.token = [[BlioStoreManager sharedInstance] tokenForSourceID:BlioBookSourceOnlineStore]; 
-//	[vaultBinding VaultContentsWithTokenAsyncUsingParameters:vaultContentsRequest delegate:bookVaultDelegate];
-	[vaultBinding VaultContentsWithTokenExAsyncUsingParameters:vaultContentsRequest delegate:bookVaultDelegate];
-	[vaultBinding release];
- */
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onProductDetailsProcessingFinished:) name:BlioProductDetailsProcessingFinished object:nil];
+    if (!_session)
+        _session = [NSURLSession sessionWithConfiguration:[NSURLSessionConfiguration defaultSessionConfiguration] delegate:self delegateQueue:[NSOperationQueue mainQueue]]; // TODO: release where?    //[BlioVaultService getProducts:_session];
+    [BlioVaultService getProductsPlusDetails:_session];
+    
 }
+
 -(NSURL*)URLForBookWithID:(NSString*)sourceSpecificID {
-    return nil;
-    /*
-//	NSLog(@"%@", NSStringFromSelector(_cmd));
-	BlioBook * book = [[BlioStoreManager sharedInstance].processingDelegate bookWithSourceID:self.sourceID sourceSpecificID:sourceSpecificID];
-	BookVaultSoap *vaultBinding = [[BookVault BookVaultSoap] retain];
-	vaultBinding.logXMLInOut = NO;
-	BookVault_RequestClientDownloadWithTokenEx* downloadRequest = [[BookVault_RequestClientDownloadWithTokenEx new] autorelease];
-	downloadRequest.token = [[BlioStoreManager sharedInstance] tokenForSourceID:BlioBookSourceOnlineStore]; 
-	downloadRequest.isbn = [book valueForKey:@"isbn"];
-	downloadRequest.productType = [book valueForKey:@"productType"];
-    
-    NSString * platform = @"iPhone";
-    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
-        platform = @"iPad";
-    NSString* version = (NSString*)[[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"]; // @"CFBundleVersion" for build number
-    NSString * model = [[UIDevice currentDevice] model];
-    NSString * OSType = [[UIDevice currentDevice] systemName];
-    NSString * OSVersion = [[UIDevice currentDevice] systemVersion];
-    NSInteger screenWidth = [[UIScreen mainScreen] bounds].size.width;
-    NSInteger screenHeight = [[UIScreen mainScreen] bounds].size.height;
-    NSString * preferredFormat = @"XPS-EPUB"; // Ignored by the server.
-    
-    if ([downloadRequest.productType intValue] == BlioProductTypePreview)
-        // Sample books are not DRMed.
-        downloadRequest.clientInfo = [NSString stringWithFormat:@"<ClientInfo><Partner Id=\"Apple\"/><Platform Id=\"%@\" Version=\"%@\"/><Device Model=\"%@\" OsType=\"%@\" OsVersion = \"%@\" ScreenWidth=\"%i\" ScreenHeight=\"%i\"/><BookInfo PreferredFormat=\"%@\"/></ClientInfo>",platform,version,model,OSType,OSVersion,screenWidth,screenHeight,preferredFormat];
-    else {
-        NSString * drmType = @"KDRM";
-        //downloadRequest.clientInfo = [NSString stringWithFormat:@"<ClientInfo><Platform Id=\"%@\" Version=\"%@\"/></ClientInfo>",platform,version];
-        downloadRequest.clientInfo = [NSString stringWithFormat:@"<ClientInfo><Partner Id=\"Apple\"/><Platform Id=\"%@\" Version=\"%@\"/><Device Model=\"%@\" OsType=\"%@\" OsVersion = \"%@\" ScreenWidth=\"%i\" ScreenHeight=\"%i\"/><BookInfo PreferredFormat=\"%@\" DRM=\"%@\"/></ClientInfo>",platform,version,model,OSType,OSVersion,screenWidth,screenHeight,preferredFormat,drmType];
-    }
-    NSLog(@"%@",downloadRequest.clientInfo);
-    
-	BookVaultSoapResponse* response = [vaultBinding RequestClientDownloadWithTokenExUsingParameters:downloadRequest];
-	[vaultBinding release];
-	NSArray *responseBodyParts = response.bodyParts;
-	for(id bodyPart in responseBodyParts) {
-		if ([bodyPart isKindOfClass:[SOAPFault class]]) {
-			NSString* err = ((SOAPFault *)bodyPart).simpleFaultString;
-			NSLog(@"SOAP error for VaultContents: %@",err);
-			[BlioAlertManager showAlertOfSuppressedType:BlioBookDownloadFailureAlertType
-											  title:NSLocalizedString(@"Error Downloading Book",@"\"Error Downloading Book\" alert message title") 
-										 message:NSLocalizedStringWithDefaultValue(@"DOWNLOADURL_SERVICE_UNAVAILABLE",nil,[NSBundle mainBundle],@"The server may be temporarily unavailable. Please try again later.",@"Alert message shown when the URLForBookWithID: call fails.")
-										delegate:nil 
-							   cancelButtonTitle:nil
-							   otherButtonTitles:NSLocalizedString(@"OK",@"\"OK\" label for button used to cancel/dismiss alertview"), nil];
-			return nil;
-		}
-		else if ([bodyPart isKindOfClass:[BookVault_RequestClientDownloadWithTokenExResponse class]]) {
-			if ( [[bodyPart RequestClientDownloadWithTokenExResult].ReturnCode intValue] == 100 ) { 
-				[BlioAlertManager removeSuppressionForAlertType:BlioBookDownloadFailureAlertType];
-				NSString* url = [bodyPart RequestClientDownloadWithTokenExResult].Url;
-				//			NSLog(@"Book download url is %@",url);
-				return [NSURL URLWithString:url];
-			}
-			else {
-				NSLog(@"DownloadRequest error: %@",[bodyPart RequestClientDownloadWithTokenExResult].Message);
-                NSLog(@"[[bodyPart RequestClientDownloadWithTokenExResult].ReturnCode intValue]: %i",[[bodyPart RequestClientDownloadWithTokenExResult].ReturnCode intValue]);
-                if ( [[bodyPart RequestClientDownloadWithTokenExResult].ReturnCode intValue] == 106 ) { 
-                    [BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Error Downloading Book",@"\"Error Downloading Book\" alert message title")  
-                                                 message:[NSString stringWithFormat:NSLocalizedStringWithDefaultValue(@"DOWNLOADURL_SERVICE_106_ERROR",nil,[NSBundle mainBundle],@"The book %@ failed to download.  Please report an error 106 for ISBN %@ to Blio technical support.",@"Alert message shown when 106 error occurs."),[book title],downloadRequest.isbn]
-                                                delegate:nil  
-                                       cancelButtonTitle:NSLocalizedString(@"OK",@"\"OK\" label for button used to cancel/dismiss alertview")
-                                       otherButtonTitles:nil];
-                }
-				else if ([[bodyPart RequestClientDownloadWithTokenExResult].Message rangeOfString:@"does not own"].location != NSNotFound) {
-					[BlioAlertManager showAlertOfSuppressedType:BlioBookDownloadFailureAlertType\
-                                                          title:NSLocalizedString(@"Error Downloading Book",@"\"Error Downloading Book\" alert message title") 
-                                                        message:[bodyPart RequestClientDownloadWithTokenExResult].Message
-                                                       delegate:nil 
-                                              cancelButtonTitle:nil
-                                              otherButtonTitles:NSLocalizedString(@"OK",@"\"OK\" label for button used to cancel/dismiss alertview"), nil];				
-				}
-				else {
-					[BlioAlertManager showAlertOfSuppressedType:BlioBookDownloadFailureAlertType
-														  title:NSLocalizedString(@"Error Downloading Book",@"\"Error Downloading Book\" alert message title") 
-														message:NSLocalizedStringWithDefaultValue(@"DOWNLOADURL_SERVICE_UNAVAILABLE",nil,[NSBundle mainBundle],@"The server may be temporarily unavailable. Please try again later.",@"Alert message shown when the URLForBookWithID: call fails.")
-													   delegate:nil 
-											  cancelButtonTitle:nil
-											  otherButtonTitles:NSLocalizedString(@"OK",@"\"OK\" label for button used to cancel/dismiss alertview"), nil];
-				}
-				return nil;
-			}
-		}
-	}
-	return nil;
-     */
+    return [BlioVaultService getDownloadURL:sourceSpecificID];
 }
-/*
-- (void)getContentMetaDataFromISBN:(NSString*)isbn {
-	NSLog(@"Getting Content MetaData for ISBN: %@",isbn);
-	ContentCafeSoap *cafeBinding = [[ContentCafe ContentCafeSoap] retain];
-	cafeBinding.logXMLInOut = NO;
-//	ContentCafe_Single* singleRequest = [[ContentCafe_Single new] autorelease];
-//	singleRequest.userID = @"KNFB98704"; 
-//	singleRequest.password = @"CC19811";
-//	singleRequest.key = isbn;
-//	singleRequest.content = @"ProductDetail";
-//	ContentCafeSoapResponse* response = [cafeBinding SingleUsingParameters:singleRequest];
 
-	ContentCafe_XmlClass * xmlRequest = [[ContentCafe_XmlClass new] autorelease];
-	xmlRequest.ContentCafe = [[[ContentCafe_ContentCafeXML alloc] init] autorelease];
-	xmlRequest.ContentCafe.RequestItems = [[[ContentCafe_RequestItems alloc] init] autorelease];
-	xmlRequest.ContentCafe.RequestItems.UserID = @"KNFB98704";
-	xmlRequest.ContentCafe.RequestItems.Password = @"CC19811";
-	ContentCafe_RequestItem * xmlRequestItem = [[[ContentCafe_RequestItem alloc] init] autorelease];
-	xmlRequestItem.Key = isbn;
-//	xmlRequestItem.Key = [[[ContentCafe_Key alloc] init] autorelease];
-//	xmlRequestItem.Key.Type = ContentCafe_KeyType_ISBN;
-//	xmlRequestItem.Key.Original = isbn;
-	[xmlRequestItem.Content addObject:@"ProductDetail"];
-	[xmlRequest.ContentCafe.RequestItems.RequestItem addObject:xmlRequestItem];
-	[cafeBinding XmlClassAsyncUsingParameters:xmlRequest delegate:contentCafeDelegate];
-	[cafeBinding release];
-}
-*/
-/*
 #pragma mark -
-#pragma mark DigitalLockerConnectionDelegate methods
+#pragma mark NSURLSessionDataDelegate methods
 
-- (void)connectionDidFinishLoading:(DigitalLockerConnection *)aConnection {
-//	NSLog(@"BlioOnlineStoreHelper connectionDidFinishLoading...");
-	if ([aConnection.Request.Method isEqualToString:DigitalLockerMethodLogin]) {
-		if (aConnection.digitalLockerResponse.ReturnCode == 0 || aConnection.digitalLockerResponse.ReturnCode == 301 ) {
-			DigitalLockerResponseOutputDataRegistration * OutputDataRegistration = (DigitalLockerResponseOutputDataRegistration*)(aConnection.digitalLockerResponse.OutputData);
-			self.userNum = OutputDataRegistration.UserNum;
-			[self retrieveTokenWithUsername:currentUsername password:currentPassword];
-		}
-		else {
-			[delegate storeHelper:self receivedLoginResult:BlioLoginResultInvalidPassword];
-		}
-	}
-	
-	[aConnection release];
+- (void)URLSession:(NSURLSession *)session task:(NSURLSessionTask *)task didCompleteWithError:(NSError *)error {
+    if (error) {
+        NSLog(@"Data task failed with error: %@", [error description]);
+        return;
+    }
+    if (_data) {
+        NSLog(@"PRODUCTS:\n%@\nEND PRODUCTS\n",
+              [[NSString alloc] initWithData:_data encoding: NSUTF8StringEncoding]);
+        NSError* err;
+        __block id productsJSON = [NSJSONSerialization
+                      JSONObjectWithData:_data
+                      options:kNilOptions
+                      error:&err];
+        if (!productsJSON) {
+            NSLog(@"Error processing JSON object from products task: %@",[err description]);
+            return;
+        }
+        if (![productsJSON isKindOfClass:[NSArray class]]) {
+            NSLog(@"Error: JSON for products list is not an array.");
+            return;
+        }
+        
+        void (^processProductDetails)(NSData*, NSURLResponse*, NSError*) =
+            ^(NSData *data, NSURLResponse *response, NSError *error){
+                NSLog(@"PRODUCT DETAILS:\n%@\nEND PRODUCT DETAILS\n",
+                    [[NSString alloc] initWithData:data
+                                            encoding:NSUTF8StringEncoding]);
+                responseCount++;
+                NSError* err;
+                id productDetailsJSON = [NSJSONSerialization
+                                JSONObjectWithData:data
+                                options:kNilOptions
+                                error:&err];
+                if (!productDetailsJSON) {
+                    NSLog(@"Error processing JSON object from product details task: %@",[err description]);
+                    return;
+                }
+                if (![productDetailsJSON isKindOfClass:[NSDictionary class]]) {
+                    NSLog(@"Error: JSON for product details is not a dictionary.");
+                    return;
+                }
+                successfulResponseCount++;
+                if (responseCount==1)
+                    _BookInfoArray = [NSMutableArray arrayWithCapacity:8];
+                NSDictionary* productDict = [_books valueForKey:[productDetailsJSON objectForKey:@"UUID"]];
+                BlioBookInfo* bookInfo = [[BlioBookInfo alloc] initWithDictionary:productDict isbn:[productDetailsJSON objectForKey:@"ISBN"]];
+                @synchronized(self) {
+                    [_BookInfoArray addObject:bookInfo];
+                }
+                [bookInfo release];
+                if ([_books count] == responseCount) {
+                    [[NSNotificationCenter defaultCenter] postNotificationName:BlioProductDetailsProcessingFinished object:nil];
+                }
+            };  // block
+        
+        if (_BookInfoArray)
+            [_BookInfoArray release];
+        if (_books)
+            [_books release];
+        _books = [[NSMutableDictionary alloc] init];
+        responseCount = 0;
+        successfulResponseCount = 0;
+        for (int i=0;i<[productsJSON count];i++) {
+            NSDictionary* productDict = [productsJSON objectAtIndex:i];
+            // For now, we care only about books.  Will need to refactor.
+            if ([(NSString*)[productDict valueForKey:@"ProductType"] compare:@"Book"] == NSOrderedSame) {
+                // Build a hash table for use by the block.
+                [_books setValue:productDict forKey:(NSString*)[productDict valueForKey:@"ProductId"]];
+                NSURLSession *productIdentifiersSession = [NSURLSession sessionWithConfiguration:[NSURLSessionConfiguration defaultSessionConfiguration] delegate:nil delegateQueue: [NSOperationQueue mainQueue]];
+                // For full product details:
+                //[BlioVaultService getProductDetails:productDetailsSession product:[[productsJSON objectAtIndex:i]/*[_productIDs objectAtIndex:i]*/ valueForKey:@"ProductId"] handler:processProductDetails];
+                [BlioVaultService getProductIdentifiers:productIdentifiersSession product:[productDict valueForKey:@"ProductId"] handler:processProductDetails];
+            }
+        }
+        _data = nil;
+        // If doing only summary product details, uncomment the following:
+        //[[NSNotificationCenter defaultCenter] postNotificationName:BlioProductDetailsProcessingFinished object:nil];
+    }
 }
 
-- (void)connection:(DigitalLockerConnection *)aConnection didFailWithError:(NSError *)error {
-	[delegate storeHelper:self receivedLoginResult:BlioLoginResultConnectionError];
-	[aConnection release];
+- (void)URLSession:(NSURLSession *)session dataTask:(NSURLSessionDataTask *)dataTask didReceiveData:(NSData *)data {
+    if (data) {
+        if (!_data)
+            _data = [[NSMutableData alloc] initWithCapacity:4096];
+        [_data appendData:data];
+    }
 }
-*/
 
 @end

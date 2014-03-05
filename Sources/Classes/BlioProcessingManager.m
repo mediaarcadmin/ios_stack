@@ -17,6 +17,7 @@
 #import "BlioDrmSessionManager.h"
 #import "NSString+BlioAdditions.h"
 #import "BlioAppSettingsConstants.h"
+#import "BlioBookInfo.h"
 
 #define AUTODOWNLOAD_ALERT_TAG 15
 #define DOWNLOAD_ADVISORY_ALERT_TAG 25
@@ -205,10 +206,31 @@
 		[self enqueueBook:aBook placeholderOnly:placeholderOnly];
 	}
 }
--(void) enqueueBook:(BlioBook*)aBook {
+
+-(void)enqueueBook:(BlioBookInfo*)bookInfo download:(BOOL)downloadNewBooks {
+    [self enqueueBookWithTitle:bookInfo.title
+                       authors:bookInfo.authors
+                     coverPath:bookInfo.graphic
+                      ePubPath:nil
+                       pdfPath:nil
+                       xpsPath:nil
+                  textFlowPath:nil
+                 audiobookPath:nil
+                      sourceID:BlioBookSourceOnlineStore
+              sourceSpecificID:bookInfo.productID  // !! replace BT_KEY with product UUID
+                          ISBN:bookInfo.isbn
+                   productType:BlioProductTypeFull // for backward compatibility; no longer used
+               transactionType:bookInfo.transactionType
+                expirationDate:bookInfo.expiration
+               placeholderOnly:(!downloadNewBooks)
+     ];
+}
+
+-(void)enqueueBook:(BlioBook*)aBook {
 	[self enqueueBook:aBook resetProcessingAlertSuppression:YES];
 }
--(void) enqueueBook:(BlioBook*)aBook resetProcessingAlertSuppression:(BOOL)resetValue {
+
+-(void)enqueueBook:(BlioBook*)aBook resetProcessingAlertSuppression:(BOOL)resetValue {
 	if (resetValue) {
 		[BlioAlertManager removeSuppressionForAlertType:BlioDrmFailureAlertType];
 		[BlioAlertManager removeSuppressionForAlertType:BlioBookDownloadFailureAlertType];
@@ -1035,7 +1057,8 @@
              [[NSUserDefaults standardUserDefaults] setInteger:-1 forKey:kBlioDownloadNewBooksDefaultsKey];
              [[NSUserDefaults standardUserDefaults] synchronize];
              */
-            [BlioAlertManager showAlertWithTitle:NSLocalizedString(@"You Have Books",@"\"You Have Books\" Alert message title")
+            if (![[NSUserDefaults standardUserDefaults] valueForKey:kBlioWelcomeScreenHasShownKey])
+                [BlioAlertManager showAlertWithTitle:NSLocalizedString(@"You Have Books",@"\"You Have Books\" Alert message title")
                                     message:NSLocalizedStringWithDefaultValue(@"AUTO_DOWNLOAD_SETTING_INFO_WITHOUT_DOWNLOAD",nil,[NSBundle mainBundle],@"You can download your books by going to the Archive.  To download books automatically in the future, you can turn on your Auto-Download account setting.",@"Alert message informing the first time iOS end-user where auto-download setting can be changed.")
                                         delegate:nil
                                 cancelButtonTitle:NSLocalizedString(@"OK",@"\"OK\" label for alertview")

@@ -13,7 +13,7 @@
 
 @implementation MediaArcPlatform
 
-@synthesize acsNamespace, acsHost, drmHost, servicesHost, realmURL, termsURL, vaultURL, supportTokenURL, checkinURL;
+@synthesize acsNamespace, acsHost, drmHost, servicesHost, realmURL, termsURL, vaultURL, vaultDetailsURL, supportTokenURL, checkinURL, licenseAcquisitionURL, providersURLFormat, productIdentifiersURLFormat, productDetailURLFormat, productDownloadURLFormat;
 
 +(MediaArcPlatform*)sharedInstance
 {
@@ -51,10 +51,20 @@
     self.drmHost = @"test-drm.mediaarc.com";
 #endif
     self.acsHost = @"accesscontrol.windows.net";
+    self.providersURLFormat = @"https://%@.%@/v2/metadata/IdentityProviders.js?protocol=javascriptnotify&realm=%@&version=1.0";
     self.termsURL = @"http://www.blio.com/1010/en/terms.htm";
+    
+    // Service paths
     self.checkinURL = @"/api/user";
     self.supportTokenURL = @"/api/user/supporttoken";
     self.vaultURL = @"/api/user/vault";
+    self.vaultDetailsURL = @"/api/user/vault/detail";
+    self.productDetailURLFormat = @"/api/product/%@/detail";
+    self.productDownloadURLFormat = @"/api/product/%@/download";
+    self.productIdentifiersURLFormat = @"/api/product/uuid/%@/identities";
+    
+    // DRM
+    self.licenseAcquisitionURL = @"//LicenseHandler.ashx";
 }
 
 @end

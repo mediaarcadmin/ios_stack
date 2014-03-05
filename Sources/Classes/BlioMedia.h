@@ -1,5 +1,5 @@
 //
-//  BlioCloudMedia.h
+//  BlioMedia.h
 //  StackApp
 //
 //  Created by Arnold Chien on 2/14/14.
@@ -7,12 +7,20 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "BlioMedia.h"
+#import "BlioProcessing.h"
 
-@interface BlioCloudMedia : BlioMedia
+@interface BlioMedia : NSObject {
+    
+}
 
-@property (nonatomic, retain) NSURL* graphic;
-@property (nonatomic, retain) NSDate* transactionType;
-@property (nonatomic, retain) NSDate* loanExpiration;
+@property (nonatomic, retain) NSString* productID;
+@property (nonatomic, retain) NSString* title;
+@property (nonatomic, retain) NSString* primaryContributor;
+@property (nonatomic, retain) NSString* graphic;
+@property (nonatomic, assign) BlioTransactionType transactionType;
+@property (nonatomic, retain) NSDate* datePurchased;
+@property (nonatomic, retain) NSDate* expiration;
+
+-(id)initWithDictionary:(NSDictionary*)productDict;
 
 @end

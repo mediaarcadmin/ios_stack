@@ -125,8 +125,7 @@
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    // TODO display activity indicator in cell
-	BlioWebAuthenticationViewController *authenticationController;
+    BlioWebAuthenticationViewController *authenticationController;
     NSInteger section = [indexPath section];
     authenticationController = [[BlioWebAuthenticationViewController alloc] initWithProvider:[self.identityProviders objectAtIndex:section]];
     [self.navigationController pushViewController:authenticationController animated:YES];

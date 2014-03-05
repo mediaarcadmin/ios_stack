@@ -29,15 +29,14 @@ NSString* ScriptNotify = @"<script type=\"text/javascript\">window.external = { 
     if (self = [super init]) {
         identityProvider = provider;
         loginURL = [NSURL URLWithString:[provider objectForKey:@"LoginUrl"]];
-        
-     /*
-        activityIndicatorView = [[UIActivityIndicatorView alloc] initWithFrame:CGRectMake(0.0f, 0.0f, 32.0f, 32.0f)];
+     
+        activityIndicatorView = [[UIActivityIndicatorView alloc] initWithFrame:CGRectMake(0.0f, 0.0f, 64.0f, 64.0f)];
         CGRect screenBounds = [[UIScreen mainScreen] bounds];
         activityIndicatorView.center = CGPointMake(screenBounds.size.width/2, screenBounds.size.height/2);
         [activityIndicatorView setActivityIndicatorViewStyle:UIActivityIndicatorViewStyleGray];
-        activityIndicatorView.tag = ACTIVITY_INDICATOR;
+        //activityIndicatorView.tag = ACTIVITY_INDICATOR;
         [[[UIApplication sharedApplication] keyWindow] addSubview:activityIndicatorView];
-    */
+    
     }
     return self;
 }
@@ -54,9 +53,11 @@ NSString* ScriptNotify = @"<script type=\"text/javascript\">window.external = { 
      contentView.autoresizingMask = (UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight);
      self.view = contentView;
      [contentView release];
-     */
+    */ 
     
     loginView = [[UIWebView alloc] init];
+    loginView.autoresizesSubviews = YES;
+    loginView.autoresizingMask = (UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight);
     loginView.delegate = self;
     loginView.scalesPageToFit = YES;
     
@@ -77,6 +78,7 @@ NSString* ScriptNotify = @"<script type=\"text/javascript\">window.external = { 
 
 - (void)dealloc
 {
+    [activityIndicatorView release];
     [_data release];
     [_url release];
     [super dealloc];
@@ -239,16 +241,15 @@ NSString* ScriptNotify = @"<script type=\"text/javascript\">window.external = { 
 }
 
 -(void)webViewDidStartLoad:(UIWebView*)webView {
-	//[activityIndicatorView startAnimating];
-   // NSLog(@"Loading login page...");
+	[activityIndicatorView startAnimating];
 }
 
 - (void)webViewDidFinishLoad:(UIWebView *)webView {
-    //[activityIndicatorView stopAnimating];
+    [activityIndicatorView stopAnimating];
 }
 
 - (void)webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error {
-	//[activityIndicatorView stopAnimating];
+	[activityIndicatorView stopAnimating];
 	NSString* errorMsg = [error localizedDescription];
 	NSLog(@"Error loading web authentication page: %@",errorMsg);
     // TODO alert

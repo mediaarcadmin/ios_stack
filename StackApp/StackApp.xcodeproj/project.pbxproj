@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		A3524BC718BFCF0D004DC2FC /* BlioBookInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = A3524BC618BFCF0D004DC2FC /* BlioBookInfo.m */; };
 		A361AE04188F0DE8000268CD /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A361AE03188F0DE8000268CD /* Foundation.framework */; };
 		A361AE06188F0DE8000268CD /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A361AE05188F0DE8000268CD /* CoreGraphics.framework */; };
 		A361AE08188F0DE8000268CD /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A361AE07188F0DE8000268CD /* UIKit.framework */; };
@@ -471,6 +472,8 @@
 		A361B2D0189090DC000268CD /* paper-white-quartered~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = A361B2BF189090DC000268CD /* paper-white-quartered~ipad.png */; };
 		A361B2D1189090DC000268CD /* paper-white~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = A361B2C0189090DC000268CD /* paper-white~ipad.png */; };
 		A361B2D2189090DC000268CD /* userdoc-ipad.html in Resources */ = {isa = PBXBuildFile; fileRef = A361B2C1189090DC000268CD /* userdoc-ipad.html */; };
+		A3932E1618ABF6B200DC6501 /* BlioVaultService.m in Sources */ = {isa = PBXBuildFile; fileRef = A3932E1518ABF6B200DC6501 /* BlioVaultService.m */; };
+		A3947D0218AE805C003A9786 /* BlioMedia.m in Sources */ = {isa = PBXBuildFile; fileRef = A3947D0118AE805C003A9786 /* BlioMedia.m */; };
 		A39845FC1892F2B7004EC374 /* BlioFonts.plist in Resources */ = {isa = PBXBuildFile; fileRef = A39845FA1892F2B7004EC374 /* BlioFonts.plist */; };
 		A39BAE7C189C2B4B000822D1 /* WACloudAccessToken.m in Sources */ = {isa = PBXBuildFile; fileRef = A39BAE7B189C2B4B000822D1 /* WACloudAccessToken.m */; };
 		A39BAE80189C2B7D000822D1 /* WASimpleBase64.m in Sources */ = {isa = PBXBuildFile; fileRef = A39BAE7F189C2B7D000822D1 /* WASimpleBase64.m */; };
@@ -624,6 +627,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		A3524BC518BFCF0D004DC2FC /* BlioBookInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BlioBookInfo.h; path = ../../Sources/Classes/BlioBookInfo.h; sourceTree = "<group>"; };
+		A3524BC618BFCF0D004DC2FC /* BlioBookInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BlioBookInfo.m; path = ../../Sources/Classes/BlioBookInfo.m; sourceTree = "<group>"; };
 		A361AE00188F0DE8000268CD /* StackApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = StackApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A361AE03188F0DE8000268CD /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		A361AE05188F0DE8000268CD /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -1268,6 +1273,10 @@
 		A361B2BF189090DC000268CD /* paper-white-quartered~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "paper-white-quartered~ipad.png"; path = "../Resources-iPad/paper-white-quartered~ipad.png"; sourceTree = "<group>"; };
 		A361B2C0189090DC000268CD /* paper-white~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "paper-white~ipad.png"; path = "../Resources-iPad/paper-white~ipad.png"; sourceTree = "<group>"; };
 		A361B2C1189090DC000268CD /* userdoc-ipad.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; name = "userdoc-ipad.html"; path = "../Resources-iPad/userdoc-ipad.html"; sourceTree = "<group>"; };
+		A3932E1418ABF6B200DC6501 /* BlioVaultService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BlioVaultService.h; path = ../../Sources/Classes/BlioVaultService.h; sourceTree = "<group>"; };
+		A3932E1518ABF6B200DC6501 /* BlioVaultService.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BlioVaultService.m; path = ../../Sources/Classes/BlioVaultService.m; sourceTree = "<group>"; };
+		A3947D0018AE805C003A9786 /* BlioMedia.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BlioMedia.h; path = ../../Sources/Classes/BlioMedia.h; sourceTree = "<group>"; };
+		A3947D0118AE805C003A9786 /* BlioMedia.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BlioMedia.m; path = ../../Sources/Classes/BlioMedia.m; sourceTree = "<group>"; };
 		A39845FB1892F2B7004EC374 /* English */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = English; path = ../Resources/English.lproj/BlioFonts.plist; sourceTree = "<group>"; };
 		A39BAE72189C2A27000822D1 /* WAToolkit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = WAToolkit.h; path = ../libWAToolkitIOS/library/Library/WAToolkit.h; sourceTree = "<group>"; };
 		A39BAE78189C2B4B000822D1 /* WACloudAccessControlClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = WACloudAccessControlClient.h; path = ../libWAToolkitIOS/library/Library/ACS/WACloudAccessControlClient.h; sourceTree = "<group>"; };
@@ -1436,6 +1445,12 @@
 				A3A190291896E1E0003D76BC /* BlioLoginService.m */,
 				A39DB21318A19F5800E24E7B /* BlioAccountService.h */,
 				A39DB21418A19F5800E24E7B /* BlioAccountService.m */,
+				A3947D0018AE805C003A9786 /* BlioMedia.h */,
+				A3947D0118AE805C003A9786 /* BlioMedia.m */,
+				A3932E1418ABF6B200DC6501 /* BlioVaultService.h */,
+				A3932E1518ABF6B200DC6501 /* BlioVaultService.m */,
+				A3524BC518BFCF0D004DC2FC /* BlioBookInfo.h */,
+				A3524BC618BFCF0D004DC2FC /* BlioBookInfo.m */,
 				A39D206A1891833A009712C6 /* BlioOnlineStoreHelper.h */,
 				A39D206B1891833A009712C6 /* BlioOnlineStoreHelper.m */,
 				A39D206C1891833A009712C6 /* BlioStoreHelper.h */,
@@ -2954,6 +2969,7 @@
 				A361AF90189038B5000268CD /* SKProduct+LocalizedPrice.m in Sources */,
 				A361B0361890612B000268CD /* KNFBTOCEntry.m in Sources */,
 				A361AE85188F1847000268CD /* BlioFlowView.m in Sources */,
+				A3524BC718BFCF0D004DC2FC /* BlioBookInfo.m in Sources */,
 				A361AEE018902487000268CD /* BlioTextFlowParagraphSource.m in Sources */,
 				A361AEE118902487000268CD /* BlioTextFlowParagraphWords.m in Sources */,
 				A361AFFC1890604A000268CD /* KNFBXPSProvider.m in Sources */,
@@ -2982,6 +2998,7 @@
 				A361AEFD189025C2000268CD /* BlioCoverView.m in Sources */,
 				A361AF5A18902CCF000268CD /* BlioLibraryViewController.m in Sources */,
 				A361AF5118902BE4000268CD /* BlioAudioManager.m in Sources */,
+				A3932E1618ABF6B200DC6501 /* BlioVaultService.m in Sources */,
 				A361AE80188F1847000268CD /* BlioEPubBook.m in Sources */,
 				A361AEB5188F1D32000268CD /* BlioStoreTabViewController.m in Sources */,
 				A361AFA31890565F000268CD /* MRGridViewCell.m in Sources */,
@@ -3026,6 +3043,7 @@
 				A361AF091890265F000268CD /* BlioWebToolsViewController.m in Sources */,
 				A361AF1B189026DC000268CD /* BlioBookSearchResultsTableViewController.m in Sources */,
 				A361AECB1890233D000268CD /* BlioTextFlowCombinedBlock.m in Sources */,
+				A3947D0218AE805C003A9786 /* BlioMedia.m in Sources */,
 				A361AEDF18902487000268CD /* BlioTextFlowParagraph.m in Sources */,
 				A361AEB3188F1D32000268CD /* BlioGetBooksImportViewController.m in Sources */,
 				A361AF6918902F1D000268CD /* BlioBook.m in Sources */,
@@ -3154,6 +3172,7 @@
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
@@ -3172,6 +3191,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				ONLY_ACTIVE_ARCH = YES;
+				PROVISIONING_PROFILE = "B161C061-B255-495A-BE51-D75EB7E26409";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -3205,6 +3225,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				PROVISIONING_PROFILE = "B161C061-B255-495A-BE51-D75EB7E26409";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;

@@ -52,21 +52,6 @@
 	[storeHelpers setObject:helper forKey:[NSNumber numberWithInt:helper.sourceID]];
 	if (!currentStoreHelper) self.currentStoreHelper = helper;
 }
--(BOOL)didOpenWebStore {
-	return [[NSUserDefaults standardUserDefaults] boolForKey:kBlioDidOpenWebStoreDefaultsKey];
-}
--(void)setDidOpenWebStore:(BOOL)boolValue {
-	[[NSUserDefaults standardUserDefaults] setBool:boolValue forKey:kBlioDidOpenWebStoreDefaultsKey];
-	[[NSUserDefaults standardUserDefaults] synchronize];
-}
--(NSString*)currentStoreURL {
-	return self.currentStoreHelper.storeURL;
-}
--(void)openCurrentWebStore {
-	self.didOpenWebStore = YES;
-	NSURL* url = [NSURL URLWithString:[self currentStoreURL]];
-	[[UIApplication sharedApplication] openURL:url];			  
-}
 -(void)buyBookWithSourceSpecificID:(NSString*)sourceSpecificID {
 	[self.currentStoreHelper buyBookWithSourceSpecificID:sourceSpecificID];
 }
@@ -309,69 +294,9 @@
 	}
 
 	if (loginResult == BlioLoginResultSuccess) {
-        
-/*  With introduction of KDRM, we no longer register as part of logging in.  KDRM has
-    no registration independent of license acquistion.  (Though even with PlayReady 
-    we could defer registration until we acquire license.)
- 
-		// TODO: "DeviceRegistered" key should be refactored with multiple stores in mind.
-//		NSLog(@"[storeHelper deviceRegistered]: %i",[storeHelper deviceRegistered]);
-		if ([storeHelper deviceRegistered] != BlioDeviceRegisteredStatusRegistered) {
-			
-			BOOL success = [storeHelper setDeviceRegistered:BlioDeviceRegisteredStatusRegistered];
-            if (!success) {
-                [BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Login Error",@"\"Login Error\" alert message title") 
-                                             message:NSLocalizedStringWithDefaultValue(@"LOGIN_ERROR_REGISTRATION_FAILED",nil,[NSBundle mainBundle],@"The login process did not complete successfully. Please try again later.",@"Alert message when login was successful but registration failed.")
-                                            delegate:nil 
-                                   cancelButtonTitle:NSLocalizedString(@"OK",@"\"OK\" label for button used to cancel/dismiss alertview")
-                                   otherButtonTitles:nil];
-                [self logoutForSourceID:storeHelper.sourceID];
-            }
-//			BlioDrmSessionManager* drmSessionManager = [[BlioDrmSessionManager alloc] initWithBookID:nil];
-//			if ( ![drmSessionManager joinDomain:[[BlioStoreManager sharedInstance] tokenForSourceID:BlioBookSourceOnlineStore] domainName:@"novel"] )
-//				TODO: alert
-//			[drmSessionManager release];
-			
-			
-			// ask end-user if he/she would like to register device
-//			UIAlertView * alertView = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"This device is not registered...",@"\"This device is not registered...\" alert message title") 
-//																 message:NSLocalizedStringWithDefaultValue(@"DEVICE_NOT_REGISTERED_MESSAGE",nil,[NSBundle mainBundle],@"This device is not yet registered for viewing paid content. Would you like to register this device now?",@"Alert message when login has succeeded but device is not registered for paid content.")
-//																delegate:self 
-//													   cancelButtonTitle:nil
-//													   otherButtonTitles:@"Not Now", @"Register", nil];
-//			[self.deviceRegistrationPromptAlertViews setObject:alertView forKey:[NSNumber numberWithInt:storeHelper.sourceID]];
-//			[alertView show];
-//			[alertView release];
-		}		
-*/		
 		[[BlioStoreManager sharedInstance] loginFinishedForSourceID:storeHelper.sourceID];
 	}
 }
-
-/*
-- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
-{
-
-	NSArray * keys = [self.deviceRegistrationPromptAlertViews allKeysForObject:alertView];
-	if (keys && [keys count] > 0) {
-		[self.deviceRegistrationPromptAlertViews removeObjectForKey:[keys objectAtIndex:0]];
-		BlioStoreHelper * storeHelper = [self storeHelperForSourceID:[[keys objectAtIndex:0] intValue]];
-		if (storeHelper ) {
-			if ( buttonIndex == 1 ) {
-				[storeHelper setDeviceRegistered:BlioDeviceRegisteredStatusRegistered];
-
-//				BlioDrmSessionManager* drmSessionManager = [[BlioDrmSessionManager alloc] initWithBookID:nil];
-//				if ( ![drmSessionManager joinDomain:[[BlioStoreManager sharedInstance] tokenForSourceID:BlioBookSourceOnlineStore] domainName:@"novel"] )
-//					TODO: show alert
-//				[drmSessionManager release];
-			}
-			else if (buttonIndex == 0) {
-				[storeHelper setDeviceRegistered:BlioDeviceRegisteredStatusUnregistered];
-			}
-		}
-	}
-}
- */
 
 -(BOOL)isLoggedInForSourceID:(BlioBookSourceID)sourceID {
 	if ([storeHelpers objectForKey:[NSNumber numberWithInt:sourceID]])
@@ -391,7 +316,8 @@
 }
 - (NSString*)tokenForSourceID:(BlioBookSourceID)sourceID {
 //	return @"0cac1444-f4a7-4d47-96c8-6a926bc10a00";
-	if ([storeHelpers objectForKey:[NSNumber numberWithInt:sourceID]] && [[storeHelpers objectForKey:[NSNumber numberWithInt:sourceID]] hasValidToken]) return [[storeHelpers objectForKey:[NSNumber numberWithInt:sourceID]] token];
+	if ([storeHelpers objectForKey:[NSNumber numberWithInt:sourceID]] && [[storeHelpers objectForKey:[NSNumber numberWithInt:sourceID]] hasValidToken])
+        return [[storeHelpers objectForKey:[NSNumber numberWithInt:sourceID]] token];
 	return nil;
 }
 - (void)logoutForSourceID:(BlioBookSourceID)sourceID {

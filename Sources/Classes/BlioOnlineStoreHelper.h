@@ -16,29 +16,15 @@ static NSString * const BlioIOSStoreSiteKey = @"B870B960A5B4CB53363BB10855FDC351
 
 @class BlioOnlineStoreHelper;
 
-/*
-@interface BlioOnlineStoreHelperBookVaultDelegate : NSObject <BookVaultSoapResponseDelegate> {
-	BlioOnlineStoreHelper * delegate;
-}
-@property (assign) BlioOnlineStoreHelper * delegate;
-
-@end
-
-@interface BlioOnlineStoreHelperContentCafeDelegate : NSObject <ContentCafeSoapResponseDelegate> {
-	BlioOnlineStoreHelper * delegate;
-}
-@property (assign) BlioOnlineStoreHelper * delegate;
-
-@end
-*/
-@interface BlioOnlineStoreHelper : BlioStoreHelper /*<DigitalLockerConnectionDelegate>*/ {
-	NSMutableArray* _isbns; // array of ISBN numbers
-	NSMutableArray* _BookOwnershipInfoArray; // array of ISBN numbers
+@interface BlioOnlineStoreHelper : BlioStoreHelper<NSURLSessionDataDelegate> /*<DigitalLockerConnectionDelegate>*/ {
+    NSMutableData* _data;
+    NSURLSession* _session;
+    NSMutableDictionary* _books;
+	NSMutableArray* _BookInfoArray;
 	NSInteger newISBNs;
 	NSInteger responseCount;
 	NSInteger successfulResponseCount;
-	//BlioOnlineStoreHelperBookVaultDelegate * bookVaultDelegate;
-	//BlioOnlineStoreHelperContentCafeDelegate * contentCafeDelegate;
 }
+
 +(BlioTransactionType)transactionTypeForCode:(NSString*)code;
 @end

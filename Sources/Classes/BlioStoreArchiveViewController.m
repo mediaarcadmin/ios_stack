@@ -192,9 +192,6 @@
         [self.navigationController pushViewController:providersController animated:YES];
         [providersController release];
     }
-    else
-        // TODO alert
-        NSLog(@"Error getting identity providers.");
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
@@ -202,12 +199,6 @@
 //	[self.activityIndicatorView stopAnimating];
 	self.activityIndicatorView.hidden = YES;
 }
-
-/*
-- (void)viewDidDisappear:(BOOL)animated {
-	[super viewDidDisappear:animated];
-}
-*/
 
 - (void)didReceiveMemoryWarning {
 	// Releases the view if it doesn't have a superview.

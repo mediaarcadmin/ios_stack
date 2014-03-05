@@ -506,19 +506,7 @@ static void *background_init_thread(void * arg) {
                     [[BlioStoreManager sharedInstance] requestLoginForSourceID:BlioBookSourceOnlineStore];
                 }
                 else {
-                    /* Log in screen done up temporarily for 2.4 and Apple foolishness
-                    if (![[NSUserDefaults standardUserDefaults] objectForKey:@"FirstLoginOccurred"]) {
-                        [BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Your Account",@"\"Your Account\" alert message title") 
-                                                     message:NSLocalizedStringWithDefaultValue(@"LOGIN_GUIDANCE_ALERT",nil,[NSBundle mainBundle],@"To log in to your Blio account, go to your Archive.",@"Alert message shown to end-user upon launch when a user has never logged in.")
-                                                    delegate:self 
-                                           cancelButtonTitle:nil
-                                           otherButtonTitles:NSLocalizedString(@"Cancel",@"\"Cancel\" button title"),NSLocalizedString(@"Go",@"\"Go\" button title"),nil];	
-                    }*/
-                    if ([BlioStoreManager sharedInstance].didOpenWebStore) {
-                        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loginDismissed:) name:BlioLoginFinished object:[BlioStoreManager sharedInstance]];
-                        [[BlioStoreManager sharedInstance] requestLoginForSourceID:BlioBookSourceOnlineStore];
-                    }				
-                    else [BlioStoreManager sharedInstance].initialLoginCheckFinished = YES;
+                    [BlioStoreManager sharedInstance].initialLoginCheckFinished = YES;
                 }
             }
             else {
@@ -526,8 +514,8 @@ static void *background_init_thread(void * arg) {
     //            [[BlioStoreManager sharedInstance] retrieveBooksForSourceID:BlioBookSourceOnlineStore];
             }
         }
-        else [BlioStoreManager sharedInstance].initialLoginCheckFinished = YES;
-        [BlioStoreManager sharedInstance].didOpenWebStore = NO;
+        else
+            [BlioStoreManager sharedInstance].initialLoginCheckFinished = YES;
         
         [self.processingManager resumeProcessing];
         
@@ -622,10 +610,6 @@ static void *background_init_thread(void * arg) {
 	if (self.networkStatus != NotReachable) {
 		if ([[BlioStoreManager sharedInstance] isLoggedInForSourceID:BlioBookSourceOnlineStore] && ![[BlioStoreManager sharedInstance] storeHelperForSourceID:BlioBookSourceOnlineStore].isRetrievingBooks) {
 			[[BlioStoreManager sharedInstance] retrieveBooksForSourceID:BlioBookSourceOnlineStore];
-		}
-		else if ([BlioStoreManager sharedInstance].didOpenWebStore) {
-			[BlioStoreManager sharedInstance].didOpenWebStore = NO;
-			[[BlioStoreManager sharedInstance] requestLoginForSourceID:BlioBookSourceOnlineStore];
 		}
 	}		
 }

@@ -26,6 +26,7 @@ typedef enum  {
 static NSString * const BlioLoginFinished = @"BlioLoginFinished";
 static NSString * const BlioStoreRetrieveBooksStarted = @"BlioStoreRetrieveBooksStarted";
 static NSString * const BlioStoreRetrieveBooksFinished = @"BlioStoreRetrieveBooksFinished";
+static NSString * const BlioProductDetailsProcessingFinished = @"BlioProductDetailsProcessingFinished";
 
 static NSString * const BlioBookDownloadFailureAlertType = @"BlioBookDownloadFailureAlertType";
 
@@ -55,7 +56,6 @@ static NSString * const BlioBookDownloadFailureAlertType = @"BlioBookDownloadFai
 @property (nonatomic, assign) id<BlioProcessingDelegate> processingDelegate;
 @property (nonatomic, retain) BlioStoreHelper * currentStoreHelper;
 @property (nonatomic, assign) BOOL initialLoginCheckFinished;
-@property (nonatomic, assign) BOOL didOpenWebStore;
 
 /**
 	Returns the shared BlioStoreManager instance.
@@ -67,8 +67,6 @@ static NSString * const BlioBookDownloadFailureAlertType = @"BlioBookDownloadFai
 //-(void)clearPasswordForSourceID:(BlioBookSourceID)sourceID;
 -(void)saveRegistrationAccountID:(NSString*)accountID serviceID:(NSString*)serviceID;
 -(NSDictionary*)registrationRecords;
--(NSString*)currentStoreURL;
--(void)openCurrentWebStore;
 -(void)buyBookWithSourceSpecificID:(NSString*)sourceSpecificID;
 /**
  Passes the request to login with the included credentials to the appropriate store helper.

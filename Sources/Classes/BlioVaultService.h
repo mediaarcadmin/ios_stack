@@ -8,12 +8,22 @@
 
 #import <Foundation/Foundation.h>
 
+typedef enum {
+    Book = 0,
+    Album,
+    Track,
+    Video,
+    App
+} BlioMediaType;
+
 @interface BlioVaultService : NSObject {
     
 }
 
--(void)GetCloudMedia;
-
--(NSMutableArray*)GetCloudMediaList;
++ (void)getProductIdentifiers:(NSURLSession*)session product:(NSString*)productID handler:(void (^)(NSData *data, NSURLResponse *response, NSError *error))handler;
++ (void)getProductDetails:(NSURLSession*)session  product:(NSString*)productID handler:(void (^)(NSData *data, NSURLResponse *response, NSError *error))handler;
++ (void)getProducts:(NSURLSession*)session;
++ (void)getProductsPlusDetails:(NSURLSession*)session;
++ (NSURL*)getDownloadURL:(NSString*)productID;
 
 @end

@@ -21,6 +21,12 @@
 @property (nonatomic, assign) NSString *checkinURL;
 @property (nonatomic, assign) NSString *supportTokenURL;
 @property (nonatomic, assign) NSString *vaultURL;
+@property (nonatomic, assign) NSString *vaultDetailsURL;
+@property (nonatomic, assign) NSString *licenseAcquisitionURL;
+@property (nonatomic, assign) NSString *providersURLFormat;
+@property (nonatomic, assign) NSString *productIdentifiersURLFormat;
+@property (nonatomic, assign) NSString *productDetailURLFormat;
+@property (nonatomic, assign) NSString *productDownloadURLFormat;
 
 +(MediaArcPlatform*)sharedInstance;
 

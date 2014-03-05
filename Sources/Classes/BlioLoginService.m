@@ -37,7 +37,8 @@
 
 -(NSMutableArray*)getIdentityProviders {
     NSString* realmString = [[MediaArcPlatform sharedInstance].realmURL stringByReplacingOccurrencesOfString:@"/" withString:@"%2F"];
-    NSString* url = [NSString stringWithFormat:@"https://%@.%@/v2/metadata/IdentityProviders.js?protocol=javascriptnotify&realm=%@&version=1.0",
+    NSString* url = [NSString stringWithFormat:
+                     [MediaArcPlatform sharedInstance].providersURLFormat,
                      [MediaArcPlatform sharedInstance].acsNamespace,
                      [MediaArcPlatform sharedInstance].acsHost,
                      realmString];
@@ -45,6 +46,10 @@
     NSURLResponse* resp;
     NSData *responseData = [NSURLConnection sendSynchronousRequest:providersRequest returningResponse:&resp error:nil];
     [providersRequest release];
+    if (!responseData) {
+        NSLog(@"Could not get identity providers.");
+        return nil;
+    }
     NSError* error;
     NSMutableArray* jsonArray = [NSJSONSerialization
                           JSONObjectWithData:responseData
