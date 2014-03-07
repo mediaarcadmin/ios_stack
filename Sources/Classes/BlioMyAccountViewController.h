@@ -16,7 +16,7 @@
 	BlioDrmSessionManager* drmSessionManager;
     UITableViewCell *deregisterCell;
     id delegate;
-    NSData* supportTokenData;
+    NSMutableData* supportTokenData;
     UIActivityIndicatorView* cellActivityIndicatorView;
 }
 @property (nonatomic, retain) UIActivityIndicatorView *activityIndicator;

@@ -17,14 +17,6 @@
 #import "KDRMClient.h"
 #import "MediaArcPlatform.h"
 
-#ifdef TEST_MODE
-NSString* licenseUrl = @"http://prl.kreader.net/KDRM/LicenseHandler.ashx";
-NSString* deregistrationUrl = @"http://prl.kreader.net/KDRM/DeregistrationHandler.ashx";
-#else
-NSString* licenseUrl = @"http://bookvault.blioreader.com/KDRM/LicenseHandler.ashx";
-NSString* deregistrationUrl = @"https://bookvault.blioreader.com/KDRM/DeregistrationHandler.ashx";
-#endif
-
 @interface BlioDrmSessionManager()
 
 @property (nonatomic, retain) KDRMLicense* license;
@@ -217,8 +209,11 @@ NSString* deregistrationUrl = @"https://bookvault.blioreader.com/KDRM/Deregistra
 - (BOOL)leaveDomainKDRM:(NSString*)token {
     
     KDRMClient* client = [[KDRMClient alloc] init];
+    NSString* deregistrationURL = @"http://";
+    deregistrationURL = [deregistrationURL stringByAppendingString:[[[MediaArcPlatform sharedInstance] drmHost]
+                                                                    stringByAppendingString:[[MediaArcPlatform sharedInstance] deregistrationURL]]];
     BOOL success = [client deregister:token
-                                  url:deregistrationUrl
+                                  url:deregistrationURL
                            completion:^(NSURLRequest *request, NSURLResponse *response, NSError *error) {
                                NSString* logMsg = [NSString stringWithFormat:@"(%@, %@, %@)", request, response, error];
                                NSLog(@"%@",logMsg);

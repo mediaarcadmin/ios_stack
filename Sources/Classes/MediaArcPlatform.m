@@ -13,7 +13,7 @@
 
 @implementation MediaArcPlatform
 
-@synthesize acsNamespace, acsHost, drmHost, servicesHost, realmURL, termsURL, vaultURL, vaultDetailsURL, supportTokenURL, checkinURL, licenseAcquisitionURL, providersURLFormat, productIdentifiersURLFormat, productDetailURLFormat, productDownloadURLFormat;
+@synthesize acsNamespace, acsHost, drmHost, servicesHost, realmURL, termsURL, vaultURL, vaultDetailsURL, supportTokenURL, checkinURL, licenseAcquisitionURL, deregistrationURL, providersURLFormat, productIdentifiersURLFormat, productDetailURLFormat, productDownloadURLFormat;
 
 +(MediaArcPlatform*)sharedInstance
 {
@@ -65,6 +65,7 @@
     
     // DRM
     self.licenseAcquisitionURL = @"//LicenseHandler.ashx";
+    self.deregistrationURL = @"/DeregistrationHandler.ashx";  
 }
 
 @end

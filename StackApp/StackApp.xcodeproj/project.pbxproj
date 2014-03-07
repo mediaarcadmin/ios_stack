@@ -1435,36 +1435,15 @@
 		A361AE09188F0DE8000268CD /* Classes */ = {
 			isa = PBXGroup;
 			children = (
-				A3A190171896C45B003D76BC /* MediaArcPlatform.h */,
-				A3A190181896C45B003D76BC /* MediaArcPlatform.m */,
+				A399074618C8F9D90085B8B3 /* App Startup */,
+				A399074418C8C4800085B8B3 /* Services */,
+				A399073518C8C4040085B8B3 /* Archive */,
 				A39C4EA61898218C0051C26F /* BlioIdentityProvidersViewController.h */,
 				A39C4EA71898218C0051C26F /* BlioIdentityProvidersViewController.m */,
 				A39C4E9518981BAD0051C26F /* BlioWebAuthenticationViewController.h */,
 				A39C4E9618981BAD0051C26F /* BlioWebAuthenticationViewController.m */,
-				A3A190281896E1E0003D76BC /* BlioLoginService.h */,
-				A3A190291896E1E0003D76BC /* BlioLoginService.m */,
-				A39DB21318A19F5800E24E7B /* BlioAccountService.h */,
-				A39DB21418A19F5800E24E7B /* BlioAccountService.m */,
-				A3947D0018AE805C003A9786 /* BlioMedia.h */,
-				A3947D0118AE805C003A9786 /* BlioMedia.m */,
-				A3932E1418ABF6B200DC6501 /* BlioVaultService.h */,
-				A3932E1518ABF6B200DC6501 /* BlioVaultService.m */,
-				A3524BC518BFCF0D004DC2FC /* BlioBookInfo.h */,
-				A3524BC618BFCF0D004DC2FC /* BlioBookInfo.m */,
-				A39D206A1891833A009712C6 /* BlioOnlineStoreHelper.h */,
-				A39D206B1891833A009712C6 /* BlioOnlineStoreHelper.m */,
-				A39D206C1891833A009712C6 /* BlioStoreHelper.h */,
-				A39D206D1891833A009712C6 /* BlioStoreHelper.m */,
-				A39D206218917A41009712C6 /* BlioStoreManager.h */,
-				A39D206318917A41009712C6 /* BlioStoreManager.m */,
 				A39D205F18917A1E009712C6 /* BlioLoginViewController.h */,
 				A39D206018917A1E009712C6 /* BlioLoginViewController.m */,
-				A361AF7918903805000268CD /* BlioDefaultViewController.h */,
-				A361AF7A18903805000268CD /* BlioDefaultViewController.m */,
-				A361AF7B18903805000268CD /* BlioWelcomeViewController.h */,
-				A361AF7C18903805000268CD /* BlioWelcomeViewController.m */,
-				A361AF7218903469000268CD /* BlioAppAppDelegate.h */,
-				A361AF7318903469000268CD /* BlioAppAppDelegate.m */,
 				A361AE71188F16A5000268CD /* Books */,
 				A361B2D318909130000268CD /* Music */,
 				A361AE32188F132C000268CD /* App Settings */,
@@ -2393,6 +2372,51 @@
 			children = (
 			);
 			name = Music;
+			sourceTree = "<group>";
+		};
+		A399073518C8C4040085B8B3 /* Archive */ = {
+			isa = PBXGroup;
+			children = (
+				A39D206A1891833A009712C6 /* BlioOnlineStoreHelper.h */,
+				A39D206B1891833A009712C6 /* BlioOnlineStoreHelper.m */,
+				A39D206C1891833A009712C6 /* BlioStoreHelper.h */,
+				A39D206D1891833A009712C6 /* BlioStoreHelper.m */,
+				A39D206218917A41009712C6 /* BlioStoreManager.h */,
+				A39D206318917A41009712C6 /* BlioStoreManager.m */,
+				A3947D0018AE805C003A9786 /* BlioMedia.h */,
+				A3947D0118AE805C003A9786 /* BlioMedia.m */,
+				A3524BC518BFCF0D004DC2FC /* BlioBookInfo.h */,
+				A3524BC618BFCF0D004DC2FC /* BlioBookInfo.m */,
+			);
+			name = Archive;
+			sourceTree = "<group>";
+		};
+		A399074418C8C4800085B8B3 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				A3A190171896C45B003D76BC /* MediaArcPlatform.h */,
+				A3A190181896C45B003D76BC /* MediaArcPlatform.m */,
+				A3A190281896E1E0003D76BC /* BlioLoginService.h */,
+				A3A190291896E1E0003D76BC /* BlioLoginService.m */,
+				A39DB21318A19F5800E24E7B /* BlioAccountService.h */,
+				A39DB21418A19F5800E24E7B /* BlioAccountService.m */,
+				A3932E1418ABF6B200DC6501 /* BlioVaultService.h */,
+				A3932E1518ABF6B200DC6501 /* BlioVaultService.m */,
+			);
+			name = Services;
+			sourceTree = "<group>";
+		};
+		A399074618C8F9D90085B8B3 /* App Startup */ = {
+			isa = PBXGroup;
+			children = (
+				A361AF7918903805000268CD /* BlioDefaultViewController.h */,
+				A361AF7A18903805000268CD /* BlioDefaultViewController.m */,
+				A361AF7B18903805000268CD /* BlioWelcomeViewController.h */,
+				A361AF7C18903805000268CD /* BlioWelcomeViewController.m */,
+				A361AF7218903469000268CD /* BlioAppAppDelegate.h */,
+				A361AF7318903469000268CD /* BlioAppAppDelegate.m */,
+			);
+			name = "App Startup";
 			sourceTree = "<group>";
 		};
 		A39BAE63189C289A000822D1 /* libWAToolkitIOS */ = {

@@ -103,10 +103,10 @@ static const NSInteger kBlioSupportTokenCellActivityIndicatorViewTag = 99;
 #pragma mark Table view data source
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    // WAS: if ( [[BlioStoreManager sharedInstance] deviceRegisteredForSourceID:BlioBookSourceOnlineStore] == BlioDeviceRegisteredStatusRegistered )
-    if ([[BlioStoreManager sharedInstance] isLoggedInForSourceID:BlioBookSourceOnlineStore])
-        return 3;
-    return 2;
+    if ( [[BlioStoreManager sharedInstance] deviceRegisteredForSourceID:BlioBookSourceOnlineStore] == BlioDeviceRegisteredStatusRegistered )
+    //if ([[BlioStoreManager sharedInstance] isLoggedInForSourceID:BlioBookSourceOnlineStore])
+        return 4;
+    return 3;
 }
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     return 1;
@@ -127,6 +127,11 @@ static const NSInteger kBlioSupportTokenCellActivityIndicatorViewTag = 99;
                            cancelButtonTitle:nil
                            otherButtonTitles:NSLocalizedString(@"Not Now",@"\"Not Now\" button label within Confirm De/Registration alertview"), NSLocalizedString(@"Deregister",@"\"Deregister\" button label within Confirm Deregistration alertview"), nil];
         
+    }
+    else if (indexPath.section == 3) {
+        [[BlioAccountService sharedInstance] logout];
+        //[[BlioStoreManager sharedInstance] logoutForSourceID:BlioBookSourceOnlineStore];
+        [self.navigationController popViewControllerAnimated:YES];
     }
 }
 
@@ -164,7 +169,6 @@ static const NSInteger kBlioSupportTokenCellActivityIndicatorViewTag = 99;
             
         }
         cell.selectionStyle = UITableViewCellSelectionStyleBlue;
-        deregisterCell = cell;
         [cell setAccessibilityTraits:UIAccessibilityTraitButton];
         cellActivityIndicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
         cellActivityIndicatorView.frame = CGRectMake(cell.contentView.frame.size.width - kBlioAppSettingCellActivityIndicatorViewWidth - ((cell.contentView.frame.size.height-kBlioAppSettingCellActivityIndicatorViewWidth)/2),(cell.contentView.frame.size.height-kBlioAppSettingCellActivityIndicatorViewWidth)/2,kBlioAppSettingCellActivityIndicatorViewWidth,kBlioAppSettingCellActivityIndicatorViewWidth);
@@ -183,11 +187,24 @@ static const NSInteger kBlioSupportTokenCellActivityIndicatorViewTag = 99;
         cell = [tableView dequeueReusableCellWithIdentifier:ListCellIdentifier];
         if (cell == nil) {
             cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:ListCellIdentifier] autorelease];
-            cell.textLabel.text = NSLocalizedString(@"Log Out","\"Log Out\" cell label");
+            cell.textLabel.text = NSLocalizedString(@"Deregister","\"Deregister\" cell label");
             
         }
         cell.selectionStyle = UITableViewCellSelectionStyleBlue;
         deregisterCell = cell;
+        [cell setAccessibilityTraits:UIAccessibilityTraitButton];
+        return cell;
+    }
+    else if (indexPath.section == 3) {
+        static NSString *ListCellIdentifier = @"UITableViewCellLogoutIdentifier";
+        UITableViewCell *cell;
+        cell = [tableView dequeueReusableCellWithIdentifier:ListCellIdentifier];
+        if (cell == nil) {
+            cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:ListCellIdentifier] autorelease];
+            cell.textLabel.text = NSLocalizedString(@"Log Out","\"Log Out\" cell label");
+            
+        }
+        cell.selectionStyle = UITableViewCellSelectionStyleBlue;
         [cell setAccessibilityTraits:UIAccessibilityTraitButton];
         return cell;
     }
@@ -198,6 +215,7 @@ static const NSInteger kBlioSupportTokenCellActivityIndicatorViewTag = 99;
 	NSString *title = nil;
     return title;
 }
+
 - (NSString *)tableView:(UITableView *)tableView titleForFooterInSection:(NSInteger)section {
 	NSString *title = nil;
 	switch (section)
@@ -207,11 +225,14 @@ static const NSInteger kBlioSupportTokenCellActivityIndicatorViewTag = 99;
             title = NSLocalizedStringWithDefaultValue(@"AUTO_DOWNLOAD_EXPLANATION_FOOTER",nil,[NSBundle mainBundle],@"Your new book purchases can be downloaded automatically.  When Auto-Download is off, you can manually download titles in your Archive.",@"Explanatory message that appears at the bottom of the Auto-Download table footer.");
             break;
         }
-
 		case 1:
 		{
-			//title = NSLocalizedString(@"You may register up to five devices for reading your purchased books.",@"\"Registration text\" table header in Paid Books Settings View");
             title = NSLocalizedString(@"Before contacting customer support, you must obtain a token for identification.",@"\"Support token text\" table footer.");
+			break;
+		}
+		case 2:
+		{
+			title = NSLocalizedString(@"You may register up to five devices for reading your purchased books.",@"\"Registration text\" table header in Paid Books Settings View");
 			break;
 		}
 	}
@@ -226,19 +247,15 @@ static const NSInteger kBlioSupportTokenCellActivityIndicatorViewTag = 99;
 
 -(void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
     if (buttonIndex == 1) {
-        [[BlioAccountService sharedInstance] logout];
-        // TODO deregistration (with ACS token?)
-        BOOL changeSuccess = YES;
-		//BOOL changeSuccess = NO;
-		//changeSuccess = [[BlioStoreManager sharedInstance] setDeviceRegistered:BlioDeviceRegisteredStatusUnregistered forSourceID:BlioBookSourceOnlineStore];
+        BOOL changeSuccess = NO;
+		changeSuccess = [[BlioStoreManager sharedInstance] setDeviceRegistered:BlioDeviceRegisteredStatusUnregistered forSourceID:BlioBookSourceOnlineStore];
 		if (changeSuccess) {
+            // Figure out whether/how it makes sense to remain logged in after deregistering
             //[[BlioStoreManager sharedInstance] logoutForSourceID:BlioBookSourceOnlineStore];
             [self.navigationController popViewControllerAnimated:YES];
-            //if ([delegate respondsToSelector:@selector(setDidDeregister:)])
-            //    [delegate setDidDeregister:YES];
+            if ([delegate respondsToSelector:@selector(setDidDeregister:)])
+                [delegate setDidDeregister:YES];
         }
-         // else?
-         
 	}
     deregisterCell.selected = NO;
 }

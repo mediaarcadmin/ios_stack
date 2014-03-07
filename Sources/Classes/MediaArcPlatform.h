@@ -23,6 +23,7 @@
 @property (nonatomic, assign) NSString *vaultURL;
 @property (nonatomic, assign) NSString *vaultDetailsURL;
 @property (nonatomic, assign) NSString *licenseAcquisitionURL;
+@property (nonatomic, assign) NSString *deregistrationURL;
 @property (nonatomic, assign) NSString *providersURLFormat;
 @property (nonatomic, assign) NSString *productIdentifiersURLFormat;
 @property (nonatomic, assign) NSString *productDetailURLFormat;
