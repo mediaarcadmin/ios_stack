@@ -12,8 +12,6 @@
 #import "BlioStoreManager.h"
 
 @interface BlioStoreHelper : NSObject {
-	NSString* currentUsername;
-	NSString* currentPassword;
 	NSString* token;
 	NSDate* timeout;
 	NSString* storeTitle;
@@ -41,7 +39,6 @@
 
 -(void)buyBookWithSourceSpecificID:(NSString*)sourceSpecificID;
 -(NSString*)storeURLWithSourceSpecificID:(NSString*)sourceSpecificID;
-- (void)loginWithUsername:(NSString*)user password:(NSString*)password;
 - (void)logout;
 -(BOOL)hasValidToken;
 -(BOOL)isLoggedIn;

@@ -10,6 +10,8 @@
 #import "BlioStoreHelperDelegate.h"
 #import "BlioProcessing.h"
 
+@class BlioWelcomeViewController;
+
 typedef enum  {
 	BlioLoginResultSuccess = 0,
     BlioLoginResultInvalidPassword,
@@ -30,19 +32,12 @@ static NSString * const BlioProductDetailsProcessingFinished = @"BlioProductDeta
 
 static NSString * const BlioBookDownloadFailureAlertType = @"BlioBookDownloadFailureAlertType";
 
-@protocol BlioLoginResultReceiver
-
-- (void)receivedLoginResult:(BlioLoginResult)loginResult;
-
-@end
-
-
 @interface BlioStoreManager : NSObject<BlioStoreHelperDelegate> {
 	BOOL isShowingLoginView;
 	NSMutableDictionary * storeHelpers;
 	NSMutableDictionary * deviceRegistrationPromptAlertViews;
 	UIViewController * rootViewController;
-	UIViewController<BlioLoginResultReceiver> *loginViewController;
+	BlioWelcomeViewController  *welcomeViewController;
     id<BlioProcessingDelegate> _processingDelegate;
 	BlioStoreHelper * currentStoreHelper;
 	BOOL initialLoginCheckFinished;
@@ -51,7 +46,7 @@ static NSString * const BlioBookDownloadFailureAlertType = @"BlioBookDownloadFai
 @property (nonatomic, retain) NSMutableDictionary* storeHelpers;
 @property (nonatomic, retain) NSMutableDictionary* deviceRegistrationPromptAlertViews;
 @property (nonatomic, retain) UIViewController* rootViewController;
-@property (nonatomic, retain) UIViewController<BlioLoginResultReceiver> * loginViewController;
+@property (nonatomic, retain) BlioWelcomeViewController* welcomeViewController;
 @property (nonatomic) BOOL isShowingLoginView;
 @property (nonatomic, assign) id<BlioProcessingDelegate> processingDelegate;
 @property (nonatomic, retain) BlioStoreHelper * currentStoreHelper;
@@ -62,49 +57,42 @@ static NSString * const BlioBookDownloadFailureAlertType = @"BlioBookDownloadFai
  @returns The shared BlioStoreManager instance.
  */
 +(BlioStoreManager*)sharedInstance;
-//-(void)saveUsername:(NSString*)username;
-//-(void)saveUsername:(NSString*)user password:(NSString*)password sourceID:(BlioBookSourceID)sourceID;
-//-(void)clearPasswordForSourceID:(BlioBookSourceID)sourceID;
+-(void)saveToken;
+-(void)retrieveToken;
 -(void)saveRegistrationAccountID:(NSString*)accountID serviceID:(NSString*)serviceID;
 -(NSDictionary*)registrationRecords;
 -(void)buyBookWithSourceSpecificID:(NSString*)sourceSpecificID;
-/**
- Passes the request to login with the included credentials to the appropriate store helper.
- @param user The username for the login request (usually the email address).
- @param password The password for the login request.
- @param sourceID The BlioBookSourceID for which login has been requested.
- */
--(void)loginWithUsername:(NSString*)user password:(NSString*)password sourceID:(BlioBookSourceID)sourceID;
+
 /**
 	Returns the store helper associated with the given BlioBookSourceID.
 	@param sourceID The BlioBookSourceID by which the store helper should be identified.
 	@returns A BlioStoreHelper associated with the given BlioBookSourceID; if no BlioStoreHelper is associated, then nil is returned.
  */
+
 -(BlioStoreHelper*)storeHelperForSourceID:(BlioBookSourceID)sourceID;
 /**
 	Attempts login using stored credentials. If no stored credentials are found for given sourceID, then login view is shown.
 	@param sourceID The BlioBookSourceID for the login request.
  */
+
 -(void)requestLoginForSourceID:(BlioBookSourceID)sourceID;
 -(void)requestLoginForSourceID:(BlioBookSourceID)sourceID forceLoginDisplayUponFailure:(BOOL)forceLoginDisplay;
 -(void)showWelcomeViewForSourceID:(BlioBookSourceID)sourceID;
-/**
-	Shows login view modally; input from the login view fields are then used to login for the given sourceID.
-	@param sourceID The BlioBookSourceID to be used when the end-user attempts to login.
- */
--(void)showLoginViewForSourceID:(BlioBookSourceID)sourceID;
-//-(void)showCreateAccountViewForSourceID:(BlioBookSourceID)sourceID;
+
 /**
 	Returns a boolean login status indicated whether or not the manager is logged in for the given sourceID.
 	@param sourceID The BlioBookSourceID for which the login status is related.
 	@returns The login status.
  */
+
 -(BOOL)isLoggedInForSourceID:(BlioBookSourceID)sourceID;
 /**
 	Asynchronously retrieves books (by source-specific ID/ISBN) from the appropriate store helper associated with the given sourceID.
 	@param sourceID The BlioBookSourceID for which books should be retrieved.
  */
+
 -(NSString*)usernameForSourceID:(BlioBookSourceID)sourceID;
+
 -(void)retrieveBooksForSourceID:(BlioBookSourceID)sourceID;
 /**
 	Returns a valid token for a given sourceID. If no valid token is available, then nil is returned.
@@ -137,9 +125,6 @@ static NSString * const BlioBookDownloadFailureAlertType = @"BlioBookDownloadFai
 -(NSInteger)currentSiteNum;
 -(NSInteger)storeSiteIDForSourceID:(BlioBookSourceID)sourceID;
 -(NSString*)storeSiteKeyForSourceID:(BlioBookSourceID)sourceID;
--(NSString*)savedLoginUsername;
-//-(BOOL)hasLoginCredentials;
--(NSString*)loginHostnameForSourceID:(BlioBookSourceID)sourceID;
 /**
 	Synchronously retrieves the URL for a book identified by a source-specific ID from the appropriate store helper.
 	@param sourceID The BlioBookSourceID of the book.

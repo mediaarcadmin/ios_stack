@@ -38,7 +38,7 @@ static const CGFloat kBlioWelcomeCellMargin = 10.0f;
 
 @end
 
-@interface BlioWelcomeViewController : BlioAutorotatingViewController <BlioLoginResultReceiver> {
+@interface BlioWelcomeViewController : BlioAutorotatingViewController {
 	BlioBookSourceID sourceID;
     UIImageView * logoView;
     BlioWelcomeTitleView * welcomeTitleView;

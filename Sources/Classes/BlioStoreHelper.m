@@ -7,32 +7,30 @@
 //
 
 #import "BlioStoreHelper.h"
-
+#import "BlioAccountService.h"
 
 @implementation BlioStoreHelper
 
 @synthesize delegate, timeout, token, sourceID, storeTitle, siteID, siteKey, userNum, isRetrievingBooks,downloadNewBooks,forceLoginDisplayUponFailure;
 
 -(void) dealloc {
-	if (currentUsername) [currentUsername release];
-	if (currentPassword) [currentPassword release];
-	self.token = nil;
-	self.timeout = nil;
 	self.storeTitle = nil;
 	self.siteKey = nil;
+	self.token = nil;
+	self.timeout = nil;
+    [[BlioStoreManager sharedInstance] saveToken];
 	[super dealloc];
 }
+
 -(void)buyBookWithSourceSpecificID:(NSString*)sourceSpecificID {
 	// abstract method	
 }
+
 -(NSString*)storeURLWithSourceSpecificID:(NSString*)sourceSpecificID {
 	// abstract method	
     return nil;
 }
-- (void)loginWithUsername:(NSString*)user password:(NSString*)password {
-	// abstract method	
-	
-}
+
 - (void)logout {
 	// abstract method	
 	
@@ -41,32 +39,42 @@
 	// abstract method	
 	return NO;
 }
+
 -(BOOL)isLoggedIn {
 	return [self hasValidToken];
 }
+
 -(NSString*)loginHostname {
 	return nil;
 }
+
 -(NSString*)username {
-	if ([self isLoggedIn]) return currentUsername;
+	if ([self isLoggedIn])
+        return [[BlioAccountService sharedInstance] username];
 	else return nil;
 }
+
 -(BlioDeviceRegisteredStatus)deviceRegistered {
 	// abstract method	
 	return BlioDeviceRegisteredStatusUndefined;
 }
+
 -(BOOL) setDeviceRegisteredSettingOnly:(BlioDeviceRegisteredStatus)targetStatus {
 	return NO;
 }
+
 -(BOOL)setDeviceRegistered:(BlioDeviceRegisteredStatus)status {
 	// abstract method	
 	return NO;
 }
+
 -(void)retrieveBooks {
 	// abstract method	
 }
+
 -(NSURL*)URLForBookWithID:(NSString*)stringID {
 	// abstract method	
 	return nil;
 }
+
 @end

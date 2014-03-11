@@ -155,7 +155,6 @@ static const NSInteger kBlioGetProvidersCellActivityIndicatorViewTag = 99;
 				cell.textLabel.text = [NSString stringWithFormat:@"%@%@",
                                        NSLocalizedString(@"My Account: ",@"\"My Account: \" text label prefix for App Settings cell"),
                                        [[BlioAccountService sharedInstance] getAccountID]];
-                                       //[[BlioStoreManager sharedInstance] usernameForSourceID:BlioBookSourceOnlineStore]];
 			}
 			else {
 				cell.textLabel.text = NSLocalizedString(@"Log In",@"\"Log In\" text label for App Settings cell");// add activity indicator
@@ -255,21 +254,12 @@ static const NSInteger kBlioGetProvidersCellActivityIndicatorViewTag = 99;
 				[myAccountController release];
 			}
 			else {
-                //[self attemptLogin];
                 UIActivityIndicatorView * cellActivityIndicatorView = (UIActivityIndicatorView *)[[tableView cellForRowAtIndexPath:indexPath].contentView viewWithTag:kBlioGetProvidersCellActivityIndicatorViewTag];
                 cellActivityIndicatorView.hidden = NO;
                 [cellActivityIndicatorView.superview bringSubviewToFront:cellActivityIndicatorView];
-                [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loginDismissed:) name:BlioLoginFinished object:[BlioStoreManager sharedInstance]];
-                NSMutableArray* providers = [[BlioLoginService sharedInstance] getIdentityProviders];
                 [cellActivityIndicatorView stopAnimating];
-                if (providers) {
-                    BlioIdentityProvidersViewController* providersController = [[BlioIdentityProvidersViewController alloc] initWithProviders:providers];
-                    [self.navigationController pushViewController:providersController animated:YES];
-                    [providersController release];
-                }
-                else
-                    // TODO alert
-                    NSLog(@"Error getting identity providers.");
+                [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loginDismissed:) name:BlioLoginFinished object:[BlioStoreManager sharedInstance]];
+                [[BlioStoreManager sharedInstance] requestLoginForSourceID:BlioBookSourceOnlineStore];
 				[tableView deselectRowAtIndexPath:indexPath animated:YES];
 			}
 			break;
@@ -320,13 +310,6 @@ static const NSInteger kBlioGetProvidersCellActivityIndicatorViewTag = 99;
 			break;
 	}
 }
-
-/*
--(void)attemptLogin {
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loginDismissed:) name:BlioLoginFinished object:[BlioStoreManager sharedInstance]];
-    [[BlioStoreManager sharedInstance] requestLoginForSourceID:BlioBookSourceOnlineStore forceLoginDisplayUponFailure:YES];
-}
- */
 
 - (void)dealloc {
 	[[NSNotificationCenter defaultCenter] removeObserver:self];

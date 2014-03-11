@@ -13,7 +13,7 @@
     const NSString* supportTokenURL;
 }
 
-@property (nonatomic, retain) WACloudAccessToken* token;
+//@property (nonatomic, retain) WACloudAccessToken* token;
 @property (nonatomic, retain) NSString* username;
 @property (nonatomic, retain) NSString* email;
 @property (nonatomic, retain) NSString* handle;

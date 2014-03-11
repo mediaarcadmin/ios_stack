@@ -15,6 +15,7 @@
     BOOL registrationOn;
 	BlioDrmSessionManager* drmSessionManager;
     UITableViewCell *deregisterCell;
+    UITableViewCell *supportTokenCell;
     id delegate;
     NSMutableData* supportTokenData;
     UIActivityIndicatorView* cellActivityIndicatorView;

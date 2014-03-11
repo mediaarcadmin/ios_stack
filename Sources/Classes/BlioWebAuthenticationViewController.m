@@ -12,6 +12,8 @@
 #import "MediaArcPlatform.h"
 #import "BlioAccountService.h"
 #import "BlioStoreManager.h"
+#import "BlioAlertManager.h"
+#import "BlioStoreHelper.h"
 
 NSString* ScriptNotify = @"<script type=\"text/javascript\">window.external = { 'Notify': function(s) { document.location = 'acs://settoken?token=' + s; }, 'notify': function(s) { document.location = 'acs://settoken?token=' + s; } };</script>";
 
@@ -226,11 +228,13 @@ NSString* ScriptNotify = @"<script type=\"text/javascript\">window.external = { 
         if(pairs)
         {
             WACloudAccessToken* accessToken = [[WACloudAccessToken alloc] initWithDictionary:pairs];
-            [BlioAccountService sharedInstance].token = accessToken;
+            BlioStoreHelper* helper = [[BlioStoreManager sharedInstance] storeHelperForSourceID:BlioBookSourceOnlineStore];
+            helper.token =  accessToken.securityToken;
+            helper.timeout = accessToken.expireDate;
+            [[BlioStoreManager sharedInstance] saveToken];
+            [[BlioStoreManager sharedInstance] loginFinishedForSourceID:helper.sourceID];
             [accessToken release];
             [[BlioLoginService sharedInstance] checkin:identityProvider];
-            // TODO when going back to WelcomeViewController, the following leads to
-            // "Unbalanced calls to begin/end appearance transitions for <BlioWebAuthenticationViewController"
             [self.navigationController popToRootViewControllerAnimated:YES];
         }
         return NO;
@@ -251,8 +255,11 @@ NSString* ScriptNotify = @"<script type=\"text/javascript\">window.external = { 
 - (void)webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error {
 	[activityIndicatorView stopAnimating];
 	NSString* errorMsg = [error localizedDescription];
-	NSLog(@"Error loading web authentication page: %@",errorMsg);
-    // TODO alert
+    [BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Identity Provider Error",@"\"Identity Provider Error\" alert message title")
+                                 message:[NSString stringWithFormat:@"There was an error connecting to the identity provider: %@.  Please try again later.",errorMsg]
+                                delegate:self
+                       cancelButtonTitle:@"OK"
+                       otherButtonTitles:nil];
 }
 
 @end

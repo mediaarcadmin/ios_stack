@@ -78,16 +78,11 @@
             //[BlioAccountService sharedInstance].loginHost = [[NSURL URLWithString:[provider objectForKey:@"LoginUrl"]] host];
             [BlioAccountService sharedInstance].loginHost = [jsonDict objectForKey:@"IdentityProvider"];
             [BlioAccountService sharedInstance].logoutUrl = [provider objectForKey:@"LogoutUrl"];
-            BlioStoreHelper* helper = [[BlioStoreManager sharedInstance] storeHelperForSourceID:BlioBookSourceOnlineStore];
-            helper.token =  [BlioAccountService sharedInstance].token.securityToken;
-            helper.timeout = [[BlioAccountService sharedInstance].token expireDate];
-            [[BlioStoreManager sharedInstance] loginFinishedForSourceID:helper.sourceID]; 
             return;
         }
     }
-    [BlioAccountService sharedInstance].token = nil;
+    // If there is a checkin error, we do not retry or report it to the user, and login is still valid as long as we have token.
     NSLog(@"Checkin error: %@",[err description]);
-    // TODO alert
 }
 
 @end

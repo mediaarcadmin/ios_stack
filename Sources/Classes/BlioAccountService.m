@@ -11,7 +11,7 @@
 
 @implementation BlioAccountService
 
-@synthesize token, username, email, handle, provider, loginHost, logoutUrl;
+@synthesize username, email, handle, provider, loginHost, logoutUrl;
 
 +(BlioAccountService*)sharedInstance {
     static BlioAccountService * sharedService = nil;
@@ -68,9 +68,10 @@
 }
 
 -(NSString*)getAuthorizationHeader {
-    if (!self.token)
+    NSString* token = [[BlioStoreManager sharedInstance] tokenForSourceID:BlioBookSourceOnlineStore];
+    if (!token)
         return nil;
-    return [NSString stringWithFormat:@"OAuth2 access_token=\"%@\"",self.token.securityToken];
+    return [NSString stringWithFormat:@"OAuth2 access_token=\"%@\"",token];
 }
 
 @end

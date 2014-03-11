@@ -65,7 +65,8 @@
 	self.activityIndicatorView = [[[BlioRoundedRectActivityView alloc] initWithFrame:CGRectMake((mainScreenBounds.size.width-activityIndicatorDiameter)/2, (mainScreenBounds.size.height-activityIndicatorDiameter)/2, activityIndicatorDiameter, activityIndicatorDiameter)] autorelease];
 	[[[UIApplication sharedApplication] keyWindow] addSubview:activityIndicatorView];
 	userNum = [[BlioStoreManager sharedInstance] currentUserNum];
-	[self fetchResults];
+    if ([[BlioStoreManager sharedInstance] isLoggedInForSourceID:BlioBookSourceOnlineStore])
+        [self fetchResults];
 }
 -(void)onBlioStoreRetrieveBooksStarted:(NSNotification*)note {
 	NSLog(@"%@", NSStringFromSelector(_cmd));
@@ -168,9 +169,12 @@
 			
 		}
 		else {
+            [self.activityIndicatorView startAnimating];
 			[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loginDismissed:) name:BlioLoginFinished object:[BlioStoreManager sharedInstance]];
-            if (viewHasAppearedBefore) [self requestLogin];
-            else [self performSelector:@selector(requestLogin) withObject:nil afterDelay:1.0f];
+            if (viewHasAppearedBefore)
+                [self requestLogin];
+            else
+                [self performSelector:@selector(requestLogin) withObject:nil afterDelay:1.0f];
 		}		
 	}
 	else {
@@ -184,14 +188,9 @@
 }
 
 -(void)requestLogin {
-    //[[BlioStoreManager sharedInstance] requestLoginForSourceID:BlioBookSourceOnlineStore forceLoginDisplayUponFailure:YES];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loginDismissed:) name:BlioLoginFinished object:[BlioStoreManager sharedInstance]];
-    NSMutableArray* providers = [[BlioLoginService sharedInstance] getIdentityProviders];
-    if (providers) {
-        BlioIdentityProvidersViewController* providersController = [[BlioIdentityProvidersViewController alloc] initWithProviders:providers];
-        [self.navigationController pushViewController:providersController animated:YES];
-        [providersController release];
-    }
+    [[BlioStoreManager sharedInstance] requestLoginForSourceID:BlioBookSourceOnlineStore forceLoginDisplayUponFailure:YES];
+
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
@@ -327,13 +326,18 @@
         id <NSFetchedResultsSectionInfo> sectionInfo = [sections objectAtIndex:section];
         bookCount = [sectionInfo numberOfObjects];
     }
-	if (bookCount == 0) {
+    BOOL isLoggedIn = [[BlioStoreManager sharedInstance] isLoggedInForSourceID:BlioBookSourceOnlineStore];
+	if (bookCount == 0 || !isLoggedIn) {
 		noResultsLabel.frame = self.view.bounds;
 		noResultsLabel.hidden = NO;
 		tableView.scrollEnabled = NO;
-		if (![[BlioStoreManager sharedInstance] isLoggedInForSourceID:BlioBookSourceOnlineStore]) noResultsLabel.text = NSLocalizedString(@"You must be logged in to view your Archive.",@"\"You must be logged in to view your Archive.\" indicator");
-		else if ([[BlioStoreManager sharedInstance] storeHelperForSourceID:BlioBookSourceOnlineStore].isRetrievingBooks) noResultsLabel.text = NSLocalizedString(@"Retrieving books into your Archive...",@"\"Retrieving books into your Archive.\" indicator");
-		else noResultsLabel.text = NSLocalizedString(@"There are no books in your Archive.",@"\"There are no books in your Archive.\" indicator");
+		if (!isLoggedIn) {
+            noResultsLabel.text = NSLocalizedString(@"You must be logged in to view your Archive.",@"\"You must be logged in to view your Archive.\" indicator");
+        }
+        else if ([[BlioStoreManager sharedInstance] storeHelperForSourceID:BlioBookSourceOnlineStore].isRetrievingBooks)
+            noResultsLabel.text = NSLocalizedString(@"Retrieving books into your Archive...",@"\"Retrieving books into your Archive.\" indicator");
+        else
+            noResultsLabel.text = NSLocalizedString(@"There are no books in your Archive.",@"\"There are no books in your Archive.\" indicator");
 	}
 	else {
 		noResultsLabel.hidden = YES;
@@ -556,7 +560,8 @@
 
 - (void)dealloc {
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
-	if (self.activityIndicatorView) [self.activityIndicatorView removeFromSuperview];
+	if (self.activityIndicatorView)
+        [self.activityIndicatorView removeFromSuperview];
 	self.activityIndicatorView = nil;
 	self.processingDelegate = nil;
 	self.fetchedResultsController = nil;

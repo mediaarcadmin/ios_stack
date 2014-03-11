@@ -16,7 +16,7 @@ static NSString * const BlioIOSStoreSiteKey = @"B870B960A5B4CB53363BB10855FDC351
 
 @class BlioOnlineStoreHelper;
 
-@interface BlioOnlineStoreHelper : BlioStoreHelper<NSURLSessionDataDelegate> /*<DigitalLockerConnectionDelegate>*/ {
+@interface BlioOnlineStoreHelper : BlioStoreHelper<NSURLSessionDataDelegate> {
     NSMutableData* _data;
     NSURLSession* _session;
     NSMutableDictionary* _books;

@@ -15,6 +15,7 @@
 #import "BlioBook.h"
 #import "BlioVaultService.h"
 #import "BlioBookInfo.h"
+#import "BlioAccountService.h"
 
 // N.B. - For other stores besides the default, BlioOnlineStoreHelper should be subclassed and the init overridden.
 //#define KNFB_STORE 12151
@@ -28,7 +29,6 @@ static NSString * const BlioDeletedFromArchiveAlertType = @"BlioDeletedFromArchi
 
 @interface BlioOnlineStoreHelper (PRIVATE)
 -(void)assessRetrieveBooksProgress;
--(void)retrieveTokenWithUsername:(NSString*)user password:(NSString*)password;
 @end
  
 
@@ -46,63 +46,13 @@ static NSString * const BlioDeletedFromArchiveAlertType = @"BlioDeletedFromArchi
 }
 
 -(void) dealloc {
-	//if (_isbns)
-    //    [_isbns release];
-	if (_BookInfoArray)
-        [_BookInfoArray release];
 	[super dealloc];
 }
 
-- (void)loginWithUsername:(NSString*)user password:(NSString*)password {
-	if (currentUsername) [currentUsername release];
-	if (currentPassword) [currentPassword release];
-    currentUsername = [user retain];
-	currentPassword = [password retain];
-//	NSLog(@"self.userNum: %i",self.userNum);
-	if (!self.userNum > 0) {
-        /*
-		DigitalLockerRequest * request = [[DigitalLockerRequest alloc] init];
-		request.Service = DigitalLockerServiceRegistration;
-		request.Method = DigitalLockerMethodLogin;
-		NSMutableDictionary * inputData = [NSMutableDictionary dictionaryWithCapacity:2];
-		[inputData setObject:user forKey:DigitalLockerInputDataEmailKey];
-		[inputData setObject:password forKey:DigitalLockerInputDataPasswordKey];
-		request.InputData = inputData;
-		DigitalLockerConnection * connection = [[DigitalLockerConnection alloc] initWithDigitalLockerRequest:request siteNum:self.siteID siteKey:self.siteKey delegate:self];
-		[connection start];
-		[request release];		
-         */
-	}
-	else
-        ;
-        //[self retrieveTokenWithUsername:user password:password];
-}
 -(NSString*)loginHostname {
-    return nil;
-    /*
-	NSURL * loginURL = nil; 
-#ifdef TEST_MODE
-	loginURL = [NSURL URLWithString:DigitalLockerGatewayURLTest];
-#else	
-	loginURL = [NSURL URLWithString:DigitalLockerGatewayURLProduction];
-#endif
-	return [loginURL host];
-     */
-}
-/*
--(void)retrieveTokenWithUsername:(NSString*)user password:(NSString*)password {
-//	NSLog(@"%@", NSStringFromSelector(_cmd));
-	BookVaultSoap *vaultBinding = [[BookVault BookVaultSoap] retain];
-	//vaultBinding.logXMLInOut = YES;
-	BookVault_Login *loginRequest = [[BookVault_Login new] autorelease];
-	loginRequest.username = user;	
-	loginRequest.password = password; 
-	loginRequest.siteId =  [NSNumber numberWithInt:self.siteID];
-	[vaultBinding LoginAsyncUsingParameters:loginRequest delegate:bookVaultDelegate];
-	[vaultBinding release];
+    return [BlioAccountService sharedInstance].loginHost;
 }
 
- */
 
 +(BlioTransactionType)transactionTypeForCode:(NSString*)code {
     BlioTransactionType aTransactionType = BlioTransactionTypeNotSpecified;
@@ -216,18 +166,8 @@ static NSString * const BlioDeletedFromArchiveAlertType = @"BlioDeletedFromArchi
 - (void)logout {
 	self.token = nil;
 	self.userNum = 0;
-    /*
-	if (currentUsername) {
-		[currentUsername release];
-		currentUsername = nil;
-	}
-	if (currentPassword) {
-		[currentPassword release];
-		currentPassword = nil;
-	}
-     */
 	self.timeout = [NSDate distantPast];
-	//[[BlioStoreManager sharedInstance] saveUsername:nil password:nil sourceID:sourceID];
+    [[BlioStoreManager sharedInstance] saveToken];
 }
 
 -(void)onProductDetailsProcessingFinished:(NSNotification*)note {
@@ -401,8 +341,6 @@ static NSString * const BlioDeletedFromArchiveAlertType = @"BlioDeletedFromArchi
                 }
             };  // block
         
-        if (_BookInfoArray)
-            [_BookInfoArray release];
         if (_books)
             [_books release];
         _books = [[NSMutableDictionary alloc] init];

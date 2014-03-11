@@ -10,7 +10,6 @@
 #import "BlioWelcomeViewController.h"
 #import "UIButton+BlioAdditions.h"
 #import "BlioStoreManager.h"
-#import "BlioLoginViewController.h"
 #import <QuartzCore/QuartzCore.h>
 #import "BlioVoiceOverTextController.h"
 #import "BlioLoginService.h"
@@ -563,45 +562,22 @@
 }
 
 - (void) dismissSelf: (id) sender {
-//	[self dismissModalViewControllerAnimated:YES];
 	[[NSNotificationCenter defaultCenter] removeObserver:self name:BlioLoginFinished object:[BlioStoreManager sharedInstance]];
-	[[BlioStoreManager sharedInstance] dismissLoginView];
+    [self dismissModalViewControllerAnimated:YES];
 }
+
 -(void)firstTimeUserButtonPressed:(id)sender {
 	[[BlioStoreManager sharedInstance] loginFinishedForSourceID:sourceID];
 	[[BlioStoreManager sharedInstance] dismissLoginView];
     [[NSUserDefaults standardUserDefaults] setBool:YES forKey:kBlioWelcomeScreenHasShownKey];    
     [[NSUserDefaults standardUserDefaults] synchronize];
+}
 
-/*
-	BlioCreateAccountViewController * createAccountViewController = [[[BlioCreateAccountViewController alloc] initWithSourceID:sourceID] autorelease];
-	[self.navigationController pushViewController:createAccountViewController animated:YES];
- */
-}
 -(void)existingUserButtonPressed:(id)sender {
-    /* WAS:
-     BlioLoginViewController * loginViewController = [[[BlioLoginViewController alloc] initWithSourceID:sourceID] autorelease];
-     [self.navigationController pushViewController:loginViewController animated:YES];
-     */
-    
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(dismissSelf:) name:BlioLoginFinished object:[BlioStoreManager sharedInstance]];
-    // TODO activity indicator
-    NSMutableArray* providers = [[BlioLoginService sharedInstance] getIdentityProviders];
-    // stop activity indicator
-    if (providers) {
-        BlioIdentityProvidersViewController* providersController = [[BlioIdentityProvidersViewController alloc] initWithProviders:providers];
-        [self.navigationController pushViewController:providersController animated:YES];
-        [providersController release];
-    }
-    else
-        // TODO alert
-        NSLog(@"Error getting identity providers.");
+    [[BlioStoreManager sharedInstance] requestLoginForSourceID:BlioBookSourceOnlineStore];
 }
-- (void)receivedLoginResult:(BlioLoginResult)loginResult {
-	if ([self.navigationController.topViewController respondsToSelector:@selector(receivedLoginResult:)]) {
-		[(id)self.navigationController.topViewController receivedLoginResult:loginResult];
-	}
-}
+
 -(void)onCellPressed:(id)cell {
     if (cell == cell1) {
         cell1.selected = YES;

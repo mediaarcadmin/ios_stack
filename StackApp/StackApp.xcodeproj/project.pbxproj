@@ -495,7 +495,6 @@
 		A39D205C18917725009712C6 /* libots.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A361B05E18906344000268CD /* libots.a */; };
 		A39D205D18917725009712C6 /* libparserutils.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A361B06618906344000268CD /* libparserutils.a */; };
 		A39D205E18917725009712C6 /* libwapcaplet.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A361B06418906344000268CD /* libwapcaplet.a */; };
-		A39D206118917A1E009712C6 /* BlioLoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A39D206018917A1E009712C6 /* BlioLoginViewController.m */; };
 		A39D206418917A41009712C6 /* BlioStoreManager.m in Sources */ = {isa = PBXBuildFile; fileRef = A39D206318917A41009712C6 /* BlioStoreManager.m */; };
 		A39D206E1891833A009712C6 /* BlioOnlineStoreHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = A39D206B1891833A009712C6 /* BlioOnlineStoreHelper.m */; };
 		A39D206F1891833A009712C6 /* BlioStoreHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = A39D206D1891833A009712C6 /* BlioStoreHelper.m */; };
@@ -1299,8 +1298,6 @@
 		A39C4E9618981BAD0051C26F /* BlioWebAuthenticationViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BlioWebAuthenticationViewController.m; path = ../../Sources/Classes/BlioWebAuthenticationViewController.m; sourceTree = "<group>"; };
 		A39C4EA61898218C0051C26F /* BlioIdentityProvidersViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BlioIdentityProvidersViewController.h; path = ../../Sources/Classes/BlioIdentityProvidersViewController.h; sourceTree = "<group>"; };
 		A39C4EA71898218C0051C26F /* BlioIdentityProvidersViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BlioIdentityProvidersViewController.m; path = ../../Sources/Classes/BlioIdentityProvidersViewController.m; sourceTree = "<group>"; };
-		A39D205F18917A1E009712C6 /* BlioLoginViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BlioLoginViewController.h; path = ../../../../Blio/blioapp/Sources/Classes/BlioLoginViewController.h; sourceTree = "<group>"; };
-		A39D206018917A1E009712C6 /* BlioLoginViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BlioLoginViewController.m; path = ../../../../Blio/blioapp/Sources/Classes/BlioLoginViewController.m; sourceTree = "<group>"; };
 		A39D206218917A41009712C6 /* BlioStoreManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BlioStoreManager.h; path = ../../Sources/Classes/BlioStoreManager.h; sourceTree = "<group>"; };
 		A39D206318917A41009712C6 /* BlioStoreManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BlioStoreManager.m; path = ../../Sources/Classes/BlioStoreManager.m; sourceTree = "<group>"; };
 		A39D206A1891833A009712C6 /* BlioOnlineStoreHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BlioOnlineStoreHelper.h; path = ../../Sources/Classes/BlioOnlineStoreHelper.h; sourceTree = "<group>"; };
@@ -1442,8 +1439,6 @@
 				A39C4EA71898218C0051C26F /* BlioIdentityProvidersViewController.m */,
 				A39C4E9518981BAD0051C26F /* BlioWebAuthenticationViewController.h */,
 				A39C4E9618981BAD0051C26F /* BlioWebAuthenticationViewController.m */,
-				A39D205F18917A1E009712C6 /* BlioLoginViewController.h */,
-				A39D206018917A1E009712C6 /* BlioLoginViewController.m */,
 				A361AE71188F16A5000268CD /* Books */,
 				A361B2D318909130000268CD /* Music */,
 				A361AE32188F132C000268CD /* App Settings */,
@@ -3105,7 +3100,6 @@
 				A361AFC21890587C000268CD /* NSObject+SBJSON.m in Sources */,
 				A361B02C1890612B000268CD /* KNFBTextFlowFlowReference.m in Sources */,
 				A361AF8918903887000268CD /* NSArray+BlioAdditions.m in Sources */,
-				A39D206118917A1E009712C6 /* BlioLoginViewController.m in Sources */,
 				A361AFA21890565F000268CD /* MRGridView.m in Sources */,
 				A361AE70188F1684000268CD /* BlioXPSProvider.m in Sources */,
 				A361AF311890272E000268CD /* BlioViewSettingsSheet.m in Sources */,

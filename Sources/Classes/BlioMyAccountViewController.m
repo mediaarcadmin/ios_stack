@@ -104,7 +104,6 @@ static const NSInteger kBlioSupportTokenCellActivityIndicatorViewTag = 99;
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     if ( [[BlioStoreManager sharedInstance] deviceRegisteredForSourceID:BlioBookSourceOnlineStore] == BlioDeviceRegisteredStatusRegistered )
-    //if ([[BlioStoreManager sharedInstance] isLoggedInForSourceID:BlioBookSourceOnlineStore])
         return 4;
     return 3;
 }
@@ -114,13 +113,18 @@ static const NSInteger kBlioSupportTokenCellActivityIndicatorViewTag = 99;
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    if (indexPath.section == 1) {
+    if (indexPath.section == 0) {
+        [[BlioAccountService sharedInstance] logout];
+        //[[BlioStoreManager sharedInstance] logoutForSourceID:BlioBookSourceOnlineStore];
+        [self.navigationController popViewControllerAnimated:YES];
+    }
+    else if (indexPath.section == 2) {
         cellActivityIndicatorView.hidden = NO;
         [cellActivityIndicatorView.superview bringSubviewToFront:cellActivityIndicatorView];
         NSURLSession* session = [NSURLSession sessionWithConfiguration:[NSURLSessionConfiguration defaultSessionConfiguration] delegate:self delegateQueue:[NSOperationQueue mainQueue]];
         [BlioVaultService getSupportToken:session];
     }
-    else if (indexPath.section == 2) {
+    else if (indexPath.section == 3) {
         [BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Please Confirm",@"\"Please Confirm\" alert message title")
                                      message:NSLocalizedStringWithDefaultValue(@"CONFIRM_DEREGISTRATION_ALERT",nil,[NSBundle mainBundle],@"Are you sure you want to deregister your device for this account? Doing so will remove all books purchased under the account.",@"Prompt requesting confirmation for de-registration, explaining that doing so will remove all that account's purchased books.")
                                     delegate:self
@@ -128,15 +132,23 @@ static const NSInteger kBlioSupportTokenCellActivityIndicatorViewTag = 99;
                            otherButtonTitles:NSLocalizedString(@"Not Now",@"\"Not Now\" button label within Confirm De/Registration alertview"), NSLocalizedString(@"Deregister",@"\"Deregister\" button label within Confirm Deregistration alertview"), nil];
         
     }
-    else if (indexPath.section == 3) {
-        [[BlioAccountService sharedInstance] logout];
-        //[[BlioStoreManager sharedInstance] logoutForSourceID:BlioBookSourceOnlineStore];
-        [self.navigationController popViewControllerAnimated:YES];
-    }
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     if (indexPath.section == 0) {
+        static NSString *ListCellIdentifier = @"UITableViewCellLogoutIdentifier";
+        UITableViewCell *cell;
+        cell = [tableView dequeueReusableCellWithIdentifier:ListCellIdentifier];
+        if (cell == nil) {
+            cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:ListCellIdentifier] autorelease];
+            cell.textLabel.text = NSLocalizedString(@"Log Out","\"Log Out\" cell label");
+            
+        }
+        cell.selectionStyle = UITableViewCellSelectionStyleBlue;
+        [cell setAccessibilityTraits:UIAccessibilityTraitButton];
+        return cell;
+    }
+    else if (indexPath.section == 1) {
         static NSString *AutoDownloadCellIdentifier = @"UITableViewCellAutoDownloadIdentifier";
         UITableViewCell *cell;
         cell = [tableView dequeueReusableCellWithIdentifier:AutoDownloadCellIdentifier];
@@ -159,7 +171,7 @@ static const NSInteger kBlioSupportTokenCellActivityIndicatorViewTag = 99;
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
         return cell;
     }
-    else if (indexPath.section == 1) {
+    else if (indexPath.section == 2) {
         static NSString *ListCellIdentifier = @"UITableViewCellSupportTokenIdentifier";
         UITableViewCell *cell;
         cell = [tableView dequeueReusableCellWithIdentifier:ListCellIdentifier];
@@ -168,6 +180,7 @@ static const NSInteger kBlioSupportTokenCellActivityIndicatorViewTag = 99;
             cell.textLabel.text = NSLocalizedString(@"Get Support Token","\"Support Token\" cell label");
             
         }
+        supportTokenCell = cell;
         cell.selectionStyle = UITableViewCellSelectionStyleBlue;
         [cell setAccessibilityTraits:UIAccessibilityTraitButton];
         cellActivityIndicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
@@ -181,7 +194,7 @@ static const NSInteger kBlioSupportTokenCellActivityIndicatorViewTag = 99;
         [cellActivityIndicatorView release];
         return cell;
     }
-    else if (indexPath.section == 2) {
+    else if (indexPath.section == 3) {
         static NSString *ListCellIdentifier = @"UITableViewCellRegistrationIdentifier";
         UITableViewCell *cell;
         cell = [tableView dequeueReusableCellWithIdentifier:ListCellIdentifier];
@@ -192,19 +205,6 @@ static const NSInteger kBlioSupportTokenCellActivityIndicatorViewTag = 99;
         }
         cell.selectionStyle = UITableViewCellSelectionStyleBlue;
         deregisterCell = cell;
-        [cell setAccessibilityTraits:UIAccessibilityTraitButton];
-        return cell;
-    }
-    else if (indexPath.section == 3) {
-        static NSString *ListCellIdentifier = @"UITableViewCellLogoutIdentifier";
-        UITableViewCell *cell;
-        cell = [tableView dequeueReusableCellWithIdentifier:ListCellIdentifier];
-        if (cell == nil) {
-            cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:ListCellIdentifier] autorelease];
-            cell.textLabel.text = NSLocalizedString(@"Log Out","\"Log Out\" cell label");
-            
-        }
-        cell.selectionStyle = UITableViewCellSelectionStyleBlue;
         [cell setAccessibilityTraits:UIAccessibilityTraitButton];
         return cell;
     }
@@ -220,17 +220,17 @@ static const NSInteger kBlioSupportTokenCellActivityIndicatorViewTag = 99;
 	NSString *title = nil;
 	switch (section)
 	{
-        case 0:
+        case 1:
         {
             title = NSLocalizedStringWithDefaultValue(@"AUTO_DOWNLOAD_EXPLANATION_FOOTER",nil,[NSBundle mainBundle],@"Your new book purchases can be downloaded automatically.  When Auto-Download is off, you can manually download titles in your Archive.",@"Explanatory message that appears at the bottom of the Auto-Download table footer.");
             break;
         }
-		case 1:
+		case 2:
 		{
             title = NSLocalizedString(@"Before contacting customer support, you must obtain a token for identification.",@"\"Support token text\" table footer.");
 			break;
 		}
-		case 2:
+		case 3:
 		{
 			title = NSLocalizedString(@"You may register up to five devices for reading your purchased books.",@"\"Registration text\" table header in Paid Books Settings View");
 			break;
@@ -258,6 +258,7 @@ static const NSInteger kBlioSupportTokenCellActivityIndicatorViewTag = 99;
         }
 	}
     deregisterCell.selected = NO;
+    supportTokenCell.selected = NO;
 }
 
 #pragma mark -

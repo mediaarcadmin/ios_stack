@@ -13,7 +13,6 @@
 #import "BlioAppAppDelegate.h"
 #import "BlioLibraryViewController.h"
 #import "BlioAlertManager.h"
-#import "BlioLoginViewController.h"
 #import "BlioStoreManager.h"
 #import "BlioSocialManager.h"
 #import "BlioStoreHelper.h"
@@ -489,33 +488,20 @@ static void *background_init_thread(void * arg) {
     [defaultImageViewController fadeOutCompletlyThenDo:^{
         
         // this login block must happen after the views are attached to the window
-        if ([[Reachability reachabilityWithHostName:[[BlioStoreManager sharedInstance] loginHostnameForSourceID:BlioBookSourceOnlineStore]] currentReachabilityStatus] != NotReachable) {
-            NSLog(@"[[BlioStoreManager sharedInstance] isLoggedInForSourceID:BlioBookSourceOnlineStore]: %i",[[BlioStoreManager sharedInstance] isLoggedInForSourceID:BlioBookSourceOnlineStore]);
-            if (![[BlioStoreManager sharedInstance] isLoggedInForSourceID:BlioBookSourceOnlineStore]) {
-                // TODO? check for stored token
-                if (NO) {
-                }
-                /*
-                if ([[BlioStoreManager sharedInstance] hasLoginCredentials]) {
-                    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loginDismissed:) name:BlioLoginFinished object:[BlioStoreManager sharedInstance]];
-                    [[BlioStoreManager sharedInstance] requestLoginForSourceID:BlioBookSourceOnlineStore];
-                }
-                 */
-                else if (forceLoginAfterRestore) {
-                    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loginDismissedAfterCloudRestore:) name:BlioLoginFinished object:[BlioStoreManager sharedInstance]];
-                    [[BlioStoreManager sharedInstance] requestLoginForSourceID:BlioBookSourceOnlineStore];
-                }
-                else {
-                    [BlioStoreManager sharedInstance].initialLoginCheckFinished = YES;
-                }
+        [[BlioStoreManager sharedInstance] retrieveToken];
+        if (![[BlioStoreManager sharedInstance] isLoggedInForSourceID:BlioBookSourceOnlineStore]) {
+            if (forceLoginAfterRestore) {
+                [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loginDismissedAfterCloudRestore:) name:BlioLoginFinished object:[BlioStoreManager sharedInstance]];
+                [[BlioStoreManager sharedInstance] requestLoginForSourceID:BlioBookSourceOnlineStore];
             }
             else {
                 [BlioStoreManager sharedInstance].initialLoginCheckFinished = YES;
-    //            [[BlioStoreManager sharedInstance] retrieveBooksForSourceID:BlioBookSourceOnlineStore];
             }
         }
-        else
+        else {
             [BlioStoreManager sharedInstance].initialLoginCheckFinished = YES;
+//          [[BlioStoreManager sharedInstance] retrieveBooksForSourceID:BlioBookSourceOnlineStore];
+        }
         
         [self.processingManager resumeProcessing];
         
@@ -531,22 +517,9 @@ static void *background_init_thread(void * arg) {
         if (!welcomeScreenShown) {
             [[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithBool:YES] forKey:@"WelcomeScreenShown"]; 
             [[NSUserDefaults standardUserDefaults] synchronize];
-             if (!forceLoginAfterRestore) [[BlioStoreManager sharedInstance] showWelcomeViewForSourceID:BlioBookSourceOnlineStore]; 
+             if (!forceLoginAfterRestore)
+                 [[BlioStoreManager sharedInstance] showWelcomeViewForSourceID:BlioBookSourceOnlineStore];
         }
-        
-        /*
-        if (![[NSUserDefaults standardUserDefaults] objectForKey:@"FirstLaunchLoginScreenShown"]) {
-            [BlioStoreManager sharedInstance].initialLoginCheckFinished = NO;
-            [[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithBool:YES] forKey:@"FirstLaunchLoginScreenShown"];
-            [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loginDismissed:) name:BlioLoginFinished object:[BlioStoreManager sharedInstance]];
-    //		[[BlioStoreManager sharedInstance] showWelcomeViewForSourceID:BlioBookSourceOnlineStore];
-            
-            // Welcome Screen has been temporarily changed to a login screen to meet Apple's requirements.
-            
-            [[BlioStoreManager sharedInstance] requestLoginForSourceID:BlioBookSourceOnlineStore];
-        }
-        */
-        
         [defaultImageViewController release];
         defaultImageViewController = nil;
     }];

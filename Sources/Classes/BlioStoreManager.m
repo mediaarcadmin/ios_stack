@@ -8,15 +8,16 @@
 
 #import "BlioStoreManager.h"
 #import "BlioOnlineStoreHelper.h"
-#import "BlioLoginViewController.h"
 #import "BlioAlertManager.h"
 #import "BlioDrmSessionManager.h"
 #import "BlioAppSettingsConstants.h"
 #import "BlioWelcomeViewController.h"
+#import "BlioLoginService.h"
+#import "BlioIdentityProvidersViewController.h"
 
 @implementation BlioStoreManager
 
-@synthesize storeHelpers, isShowingLoginView, rootViewController,loginViewController,deviceRegistrationPromptAlertViews,currentStoreHelper,initialLoginCheckFinished;
+@synthesize storeHelpers, isShowingLoginView, rootViewController, welcomeViewController, deviceRegistrationPromptAlertViews,currentStoreHelper,initialLoginCheckFinished;
 @synthesize processingDelegate = _processingDelegate;
 
 +(BlioStoreManager*)sharedInstance
@@ -43,7 +44,7 @@
 	self.storeHelpers = nil;
 	self.deviceRegistrationPromptAlertViews = nil;
 	self.rootViewController = nil;
-	self.loginViewController = nil;
+	self.welcomeViewController = nil;
 	[super dealloc];
 }
 
@@ -52,174 +53,111 @@
 	[storeHelpers setObject:helper forKey:[NSNumber numberWithInt:helper.sourceID]];
 	if (!currentStoreHelper) self.currentStoreHelper = helper;
 }
+
 -(void)buyBookWithSourceSpecificID:(NSString*)sourceSpecificID {
 	[self.currentStoreHelper buyBookWithSourceSpecificID:sourceSpecificID];
 }
+
 -(void)requestLoginForSourceID:(BlioBookSourceID)sourceID {
 	[self requestLoginForSourceID:sourceID forceLoginDisplayUponFailure:NO];
 }
+
 -(void)requestLoginForSourceID:(BlioBookSourceID)sourceID forceLoginDisplayUponFailure:(BOOL)forceLoginDisplay {
-	// first check to see if login info is in NSUserDefaults
-	
-    
-    // TODO? check stored token rather than username
-	//NSDictionary * loginCredentials = [[NSUserDefaults standardUserDefaults] dictionaryForKey:kBlioUserLoginCredentialsDefaultsKey];
-    if (NO) {
+    NSMutableArray* providers = [[BlioLoginService sharedInstance] getIdentityProviders];
+    if (providers) {
+        BlioIdentityProvidersViewController* providersController = [[BlioIdentityProvidersViewController alloc] initWithProviders:providers];
+        UINavigationController * modalLoginNavigationController = [[[UINavigationController alloc] initWithRootViewController:providersController] autorelease];
+        if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+            modalLoginNavigationController.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
+            modalLoginNavigationController.modalPresentationStyle = UIModalPresentationFormSheet;
+        }
+        [((UINavigationController*)rootViewController).visibleViewController presentModalViewController:modalLoginNavigationController animated:YES];
+        isShowingLoginView = YES;
+        [providersController release];
     }
-/*
-	if ([loginCredentials objectForKey:@"username"]) {
-		NSError * error = nil;
-		NSString * password = [SFHFKeychainUtils getPasswordForUsername:[loginCredentials objectForKey:@"username"] andServiceName:kBlioUserLoginCredentialsDefaultsKey error:&error];
-		if (!error && password) {
-			[[BlioStoreManager sharedInstance] storeHelperForSourceID:sourceID].forceLoginDisplayUponFailure = forceLoginDisplay;
-			[[BlioStoreManager sharedInstance] loginWithUsername:[loginCredentials objectForKey:@"username"] password:password sourceID:sourceID];
-		}
-		else {
-			if (error) NSLog(@"ERROR: obtaining password from SFHFKeychainUtils with username %@: %@",[loginCredentials objectForKey:@"username"],[error localizedDescription]);
-			[[BlioStoreManager sharedInstance] showLoginViewForSourceID:sourceID];
-		}
-	}
- */
-	else {
-		[[BlioStoreManager sharedInstance] showLoginViewForSourceID:sourceID];
-	}
+    else
+        // TODO alert?
+        NSLog(@"Identity providers not available.");
+	
 }
+
 -(BlioStoreHelper*)storeHelperForSourceID:(BlioBookSourceID)sourceID {
 	for (id key in self.storeHelpers) {
 		if ([key intValue] == sourceID) return (BlioStoreHelper*)[self.storeHelpers objectForKey:key]; 
 	}
 	return nil;
 }
+
 -(NSString*)storeTitleForSourceID:(BlioBookSourceID)sourceID {
 	for (id key in self.storeHelpers) {
 		if ([key intValue] == sourceID) return ((BlioStoreHelper*)[self.storeHelpers objectForKey:key]).storeTitle; 
 	}
 	return nil;
 }
+
 -(NSString*)storeSiteKeyForSourceID:(BlioBookSourceID)sourceID {
 	for (id key in self.storeHelpers) {
 		if ([key intValue] == sourceID) return ((BlioStoreHelper*)[self.storeHelpers objectForKey:key]).siteKey; 
 	}
 	return nil;
 }
+
 -(NSInteger)currentSiteNum {
 	return self.currentStoreHelper.siteID;
 }
+
 -(NSInteger)storeSiteIDForSourceID:(BlioBookSourceID)sourceID {
 	for (id key in self.storeHelpers) {
 		if ([key intValue] == sourceID) return ((BlioStoreHelper*)[self.storeHelpers objectForKey:key]).siteID; 
 	}
 	return -1;
 }
+
 -(NSInteger)currentUserNum {
 	return self.currentStoreHelper.userNum;
 }
+
 -(void)showWelcomeViewForSourceID:(BlioBookSourceID)sourceID {
-	self.loginViewController = [[[BlioWelcomeViewController alloc] initWithSourceID:sourceID] autorelease];
-	UINavigationController * modalLoginNavigationController = [[[UINavigationController alloc] initWithRootViewController:loginViewController] autorelease];
+	self.welcomeViewController = [[[BlioWelcomeViewController alloc] initWithSourceID:sourceID] autorelease];
+	UINavigationController * modalWelcomeNavigationController = [[[UINavigationController alloc] initWithRootViewController:welcomeViewController] autorelease];
 	if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-		modalLoginNavigationController.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
-		modalLoginNavigationController.modalPresentationStyle = UIModalPresentationFormSheet;
+		modalWelcomeNavigationController.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
+		modalWelcomeNavigationController.modalPresentationStyle = UIModalPresentationFormSheet;
 	}
-	[((UINavigationController*)rootViewController).visibleViewController presentModalViewController:modalLoginNavigationController animated:YES];
+	[((UINavigationController*)rootViewController).visibleViewController presentModalViewController:modalWelcomeNavigationController animated:YES];
 	isShowingLoginView = YES;	
 }
--(void)showLoginViewForSourceID:(BlioBookSourceID)sourceID {
-	self.loginViewController = [[[BlioLoginViewController alloc] initWithSourceID:sourceID] autorelease];
-	
-	UINavigationController * modalLoginNavigationController = [[[UINavigationController alloc] initWithRootViewController:loginViewController] autorelease];
-	
-	if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-		modalLoginNavigationController.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
-		modalLoginNavigationController.modalPresentationStyle = UIModalPresentationFormSheet;
-	}
-	
-	[((UINavigationController*)rootViewController).visibleViewController presentModalViewController:modalLoginNavigationController animated:YES];
-	isShowingLoginView = YES;	
-}
-/*
--(void)showCreateAccountViewForSourceID:(BlioBookSourceID)sourceID {
-	self.loginViewController = [[[BlioCreateAccountViewController alloc] initWithSourceID:sourceID] autorelease];
-	
-//	self.loginViewController.navigationItem.rightBarButtonItem = [[[UIBarButtonItem alloc] 
-//											   initWithTitle:NSLocalizedString(@"Cancel",@"\"Cancel\" bar button") 
-//											   style:UIBarButtonItemStyleDone 
-//											   target:self
-//											   action:@selector(dismissLoginView)]
-//											  autorelease];
-	
-	UINavigationController * modalLoginNavigationController = [[[UINavigationController alloc] initWithRootViewController:loginViewController] autorelease];
-	
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 30200
-	if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-		modalLoginNavigationController.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
-		modalLoginNavigationController.modalPresentationStyle = UIModalPresentationFormSheet;
-	}
-#endif	
-	
-	[((UINavigationController*)rootViewController).visibleViewController presentModalViewController:modalLoginNavigationController animated:YES];
-	isShowingLoginView = YES;	
-}
- */
+
 -(void)dismissLoginView {
-	[((UINavigationController*)rootViewController).visibleViewController dismissModalViewControllerAnimated:YES];
+	[((UINavigationController*)rootViewController).visibleViewController dismissModalViewControllerAnimated:NO];
 }
+
+
 -(void)loginFinishedForSourceID:(BlioBookSourceID)sourceID {
+    [self dismissLoginView];
 	isShowingLoginView = NO;
-	self.loginViewController = nil;
 	NSMutableDictionary * userInfo = [NSMutableDictionary dictionary];
 	[userInfo setValue:[NSNumber numberWithInt:sourceID] forKey:@"sourceID"];  // TODO? other userInfo from BlioAccountService
 	[[NSNotificationCenter defaultCenter] postNotificationName:BlioLoginFinished object:self userInfo:userInfo];
 
 }
-/*
--(void)saveUsername:(NSString*)username {
-	NSString * oldUsername = [[[NSUserDefaults standardUserDefaults] dictionaryForKey:kBlioUserLoginCredentialsDefaultsKey] objectForKey:@"username"];
-	if (oldUsername && ![oldUsername isEqualToString:username]) {
-		NSError * error = nil;
-		[SFHFKeychainUtils deleteItemForUsername:oldUsername andServiceName:kBlioUserLoginCredentialsDefaultsKey error:&error];
-		if (error) {
-			NSLog(@"ERROR: deleting login credentials and password for old username %@: %@",username,[error localizedDescription]);
-		}
-	}
-	NSMutableDictionary * loginCredentials = [NSMutableDictionary dictionaryWithCapacity:2];
-	if (username) {
-		[loginCredentials setObject:[NSString stringWithString:username] forKey:@"username"];
-	}		
-	[[NSUserDefaults standardUserDefaults] setObject:loginCredentials forKey:kBlioUserLoginCredentialsDefaultsKey];
-	[[NSUserDefaults standardUserDefaults] synchronize];
-}
--(void)saveUsername:(NSString*)username password:(NSString*)password sourceID:(BlioBookSourceID)sourceID {
-	[self saveUsername:username];
-	if (username) {
-		if (password) {
-			NSError * error = nil;
-			[SFHFKeychainUtils storeUsername:username andPassword:password forServiceName:kBlioUserLoginCredentialsDefaultsKey updateExisting:YES error:&error];
-			if (error) {
-				NSLog(@"ERROR: could not store login credentials for username %@: %@",username,[error localizedDescription]);
-			}
-		}
-		else {
-			NSError * error = nil;
-			[SFHFKeychainUtils deleteItemForUsername:username andServiceName:kBlioUserLoginCredentialsDefaultsKey error:&error];
-			if (error) {
-				NSLog(@"WARNING: error deleting password for username %@: %@",username,[error localizedDescription]);
-			}
-		}
-	}
+
+-(void)retrieveToken {
+    BlioStoreHelper* helper = [[BlioStoreManager sharedInstance] storeHelperForSourceID:BlioBookSourceOnlineStore];
+    NSDictionary* userToken = [[NSUserDefaults standardUserDefaults] dictionaryForKey:kBlioUserTokenDefaultsKey];
+    helper.token = [userToken valueForKey:@"token"];
+    helper.timeout = [userToken objectForKey:@"timeout"];
 }
 
--(void)clearPasswordForSourceID:(BlioBookSourceID)sourceID {
-	NSString * currentUsername = [[[NSUserDefaults standardUserDefaults] dictionaryForKey:kBlioUserLoginCredentialsDefaultsKey] objectForKey:@"username"];
-	if (currentUsername) {
-		NSError * error = nil;
-		[SFHFKeychainUtils deleteItemForUsername:currentUsername andServiceName:kBlioUserLoginCredentialsDefaultsKey error:&error];
-		if (error) {
-			NSLog(@"WARNING: error deleting password for username %@: %@",currentUsername,[error localizedDescription]);
-		}
-	}
+-(void)saveToken {
+    BlioStoreHelper* helper = [[BlioStoreManager sharedInstance] storeHelperForSourceID:BlioBookSourceOnlineStore];
+	NSMutableDictionary * tokenDict = [NSMutableDictionary dictionaryWithCapacity:2];
+	[tokenDict setValue:helper.token forKey:@"token"];
+	[tokenDict setObject:helper.timeout forKey:@"timeout"];
+	[[NSUserDefaults standardUserDefaults] setObject:tokenDict forKey:kBlioUserTokenDefaultsKey];
+	[[NSUserDefaults standardUserDefaults] synchronize];
 }
-*/
+
 -(void)saveRegistrationAccountID:(NSString*)accountID serviceID:(NSString*)serviceID {
 //	NSLog(@"saveRegistrationAccountID: %@, serviceID: %@",accountID,serviceID);
 	NSMutableDictionary * usersDictionary = [[[NSUserDefaults standardUserDefaults] dictionaryForKey:kBlioUsersDictionaryDefaultsKey] mutableCopy];
@@ -240,6 +178,7 @@
 	}
 	[usersDictionary release];
 }
+
 -(NSDictionary*)registrationRecords {
 	NSDictionary * usersDictionary = [[NSUserDefaults standardUserDefaults] dictionaryForKey:kBlioUsersDictionaryDefaultsKey];
 	if (usersDictionary) {
@@ -252,51 +191,6 @@
 	}
 	return nil;
 }
--(void)loginWithUsername:(NSString*)user password:(NSString*)password sourceID:(BlioBookSourceID)sourceID {
-    //TODO? save token
-	//[self saveUsername:user];
-	[[storeHelpers objectForKey:[NSNumber numberWithInt:sourceID]] loginWithUsername:user password:password];
-}
--(NSString*)loginHostnameForSourceID:(BlioBookSourceID)sourceID {
-	return [[storeHelpers objectForKey:[NSNumber numberWithInt:sourceID]] loginHostname];
-}
--(void)storeHelper:(BlioStoreHelper*)storeHelper receivedLoginResult:(NSInteger)loginResult {
-//	NSLog(@"BlioStoreManager storeHelper: receivedLoginResult: %i",loginResult);
-	initialLoginCheckFinished = YES;
-	if (loginResult == BlioLoginResultInvalidPassword) {
-		//[[BlioStoreManager sharedInstance] clearPasswordForSourceID:storeHelper.sourceID];
-	}	
-	if (loginResult == BlioLoginResultInvalidPassword && isShowingLoginView == NO) {
-		[[BlioStoreManager sharedInstance] showLoginViewForSourceID:storeHelper.sourceID];
-	}
-	else if (loginResult == BlioLoginResultError && isShowingLoginView == NO) {
-		if (storeHelper.forceLoginDisplayUponFailure) {
-			[[BlioStoreManager sharedInstance] showLoginViewForSourceID:storeHelper.sourceID];
-		}	
-		else {
-			[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Server Error",@"\"Server Error\" alert message title") 
-										 message:NSLocalizedStringWithDefaultValue(@"BACKGROUND_LOGIN_ERROR_SERVER_ERROR",nil,[NSBundle mainBundle],@"You cannot log in at the current time. Please try again later by going to your Archive or account settings.",@"Alert message when the login web service has failed.")
-										delegate:nil 
-							   cancelButtonTitle:NSLocalizedString(@"OK",@"\"OK\" label for button used to cancel/dismiss alertview")
-							   otherButtonTitles:nil];		
-		}			
-	}
-	else if (loginResult == BlioLoginResultConnectionError && isShowingLoginView == NO) {
-		if (storeHelper.forceLoginDisplayUponFailure) {
-			[[BlioStoreManager sharedInstance] showLoginViewForSourceID:storeHelper.sourceID];
-		}	
-		else {
-			// silent logins currently do not show failure messages due to connection error
-		}			
-	}
-	else if (isShowingLoginView == YES) {
-		[loginViewController receivedLoginResult:loginResult];		
-	}
-
-	if (loginResult == BlioLoginResultSuccess) {
-		[[BlioStoreManager sharedInstance] loginFinishedForSourceID:storeHelper.sourceID];
-	}
-}
 
 -(BOOL)isLoggedInForSourceID:(BlioBookSourceID)sourceID {
 	if ([storeHelpers objectForKey:[NSNumber numberWithInt:sourceID]])
@@ -304,16 +198,19 @@
 	else
         return NO;
 }
+
 -(NSString*)usernameForSourceID:(BlioBookSourceID)sourceID {
 	if ([storeHelpers objectForKey:[NSNumber numberWithInt:sourceID]])
         return [[storeHelpers objectForKey:[NSNumber numberWithInt:sourceID]] username];
 	else
         return nil;
 }
+
 -(void)retrieveBooksForSourceID:(BlioBookSourceID)sourceID {
 	if ([storeHelpers objectForKey:[NSNumber numberWithInt:sourceID]]) [[storeHelpers objectForKey:[NSNumber numberWithInt:sourceID]] retrieveBooks];
 	else NSLog(@"WARNING: Cannot retrieve books, there is no store helper for sourceID: %i",sourceID);
 }
+
 - (NSString*)tokenForSourceID:(BlioBookSourceID)sourceID {
 //	return @"0cac1444-f4a7-4d47-96c8-6a926bc10a00";
 	if ([storeHelpers objectForKey:[NSNumber numberWithInt:sourceID]] && [[storeHelpers objectForKey:[NSNumber numberWithInt:sourceID]] hasValidToken])
@@ -323,38 +220,20 @@
 - (void)logoutForSourceID:(BlioBookSourceID)sourceID {
 	[[storeHelpers objectForKey:[NSNumber numberWithInt:sourceID]] logout];
 }
--(NSString*)savedLoginUsername {
-	NSDictionary * credentials = [[NSUserDefaults standardUserDefaults] dictionaryForKey:kBlioUserLoginCredentialsDefaultsKey];
-	if (credentials) {
-		return [credentials objectForKey:@"username"];
-	}
-	return nil;
-}
-/*
--(BOOL)hasLoginCredentials {
-	NSDictionary * credentials = [[NSUserDefaults standardUserDefaults] dictionaryForKey:kBlioUserLoginCredentialsDefaultsKey];
-	if (credentials && [credentials objectForKey:@"username"]) {
-		NSError * error = nil;
-		NSString * password = [SFHFKeychainUtils getPasswordForUsername:[credentials objectForKey:@"username"] andServiceName:kBlioUserLoginCredentialsDefaultsKey error:&error];
-		if (error) {
-			NSLog(@"ERROR: tried to obtain password in hasLoginCredentials: %@",[error localizedDescription]);
-			return NO;
-		}
-		else if (password) return YES;
-	}
-	return NO;
-}
-*/
+
 -(NSURL*)URLForBookWithSourceID:(BlioBookSourceID)sourceID sourceSpecificID:(NSString*)sourceSpecificID {
 	if ([storeHelpers objectForKey:[NSNumber numberWithInt:sourceID]]) return [[storeHelpers objectForKey:[NSNumber numberWithInt:sourceID]] URLForBookWithID:sourceSpecificID];
 	return nil;	
 }
+
 -(BlioDeviceRegisteredStatus)deviceRegisteredForSourceID:(BlioBookSourceID)sourceID {
 	return [[storeHelpers objectForKey:[NSNumber numberWithInt:sourceID]] deviceRegistered];
 }
+
 -(BOOL)setDeviceRegisteredSettingOnly:(BlioDeviceRegisteredStatus)status forSourceID:(BlioBookSourceID)sourceID {
 	return [[storeHelpers objectForKey:[NSNumber numberWithInt:sourceID]] setDeviceRegisteredSettingOnly:status];
 }
+
 -(BOOL)setDeviceRegistered:(BlioDeviceRegisteredStatus)status forSourceID:(BlioBookSourceID)sourceID {
 	return [[storeHelpers objectForKey:[NSNumber numberWithInt:sourceID]] setDeviceRegistered:status];
 }
