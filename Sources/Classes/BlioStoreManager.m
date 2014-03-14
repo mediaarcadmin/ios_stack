@@ -63,21 +63,10 @@
 }
 
 -(void)requestLoginForSourceID:(BlioBookSourceID)sourceID forceLoginDisplayUponFailure:(BOOL)forceLoginDisplay {
-    NSMutableArray* providers = [[BlioLoginService sharedInstance] getIdentityProviders];
-    if (providers) {
-        BlioIdentityProvidersViewController* providersController = [[BlioIdentityProvidersViewController alloc] initWithProviders:providers];
-        UINavigationController * modalLoginNavigationController = [[[UINavigationController alloc] initWithRootViewController:providersController] autorelease];
-        if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-            modalLoginNavigationController.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
-            modalLoginNavigationController.modalPresentationStyle = UIModalPresentationFormSheet;
-        }
-        [((UINavigationController*)rootViewController).visibleViewController presentModalViewController:modalLoginNavigationController animated:YES];
-        isShowingLoginView = YES;
-        [providersController release];
-    }
-    else
-        // TODO alert?
-        NSLog(@"Identity providers not available.");
+    if (sourceID != BlioBookSourceOnlineStore)
+        return;
+    NSURLSession* session = [NSURLSession sessionWithConfiguration:[NSURLSessionConfiguration defaultSessionConfiguration] delegate:self delegateQueue:[NSOperationQueue mainQueue]];
+    [[BlioLoginService sharedInstance] getIdentityProviders:session];
 	
 }
 
@@ -129,7 +118,7 @@
 }
 
 -(void)dismissLoginView {
-	[((UINavigationController*)rootViewController).visibleViewController dismissModalViewControllerAnimated:NO];
+    [((UINavigationController*)rootViewController).visibleViewController dismissModalViewControllerAnimated:NO];
 }
 
 
@@ -236,6 +225,56 @@
 
 -(BOOL)setDeviceRegistered:(BlioDeviceRegisteredStatus)status forSourceID:(BlioBookSourceID)sourceID {
 	return [[storeHelpers objectForKey:[NSNumber numberWithInt:sourceID]] setDeviceRegistered:status];
+}
+
+#pragma mark -
+#pragma mark NSURLSessionDataDelegate methods
+
+- (void)URLSession:(NSURLSession *)session task:(NSURLSessionTask *)task didCompleteWithError:(NSError *)error {
+    if (error || !providersData ) {
+        [self loginFinishedForSourceID:BlioBookSourceOnlineStore];
+        [BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Identity Providers Unavailable",@"\"Identity Providers Unavailable\" alert message title")
+                                     message:[NSString stringWithFormat:@"Identity providers could not be retrieved because of an error: %@.  Please try again later.",[error description]]
+                                    delegate:self
+                           cancelButtonTitle:@"OK"
+                           otherButtonTitles:nil];
+        return;
+    }
+    NSError* err;
+    // TODO check that providers is an array
+    NSMutableArray* providers = [NSJSONSerialization
+                                 JSONObjectWithData:providersData
+                                 options:kNilOptions
+                                 error:&err];
+    
+    if (providers) {
+        BlioIdentityProvidersViewController* providersController = [[BlioIdentityProvidersViewController alloc] initWithProviders:providers];
+        UINavigationController * modalLoginNavigationController = [[[UINavigationController alloc] initWithRootViewController:providersController] autorelease];
+        if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+            modalLoginNavigationController.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
+            modalLoginNavigationController.modalPresentationStyle = UIModalPresentationFormSheet;
+        }
+        [((UINavigationController*)rootViewController).visibleViewController presentModalViewController:modalLoginNavigationController animated:YES];
+        isShowingLoginView = YES;
+        [providersController release];
+     }
+    else {
+        [self loginFinishedForSourceID:BlioBookSourceOnlineStore];
+        [BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Identity Providers Unavailable",@"\"Identity Providers Unavailable\" alert message title")
+                                     message:[NSString stringWithFormat:@"Identity providers could not be retrieved."]
+                                    delegate:self
+                           cancelButtonTitle:@"OK"
+                           otherButtonTitles:nil];
+    }
+    providersData = nil;
+}
+
+- (void)URLSession:(NSURLSession *)session dataTask:(NSURLSessionDataTask *)dataTask didReceiveData:(NSData *)data {
+    if (data) {
+        if (!providersData)
+            providersData = [[NSMutableData alloc] initWithCapacity:16];
+        [providersData appendData:data];
+    }
 }
 
 @end

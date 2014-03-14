@@ -376,7 +376,7 @@
 
 @implementation BlioWelcomeViewController
 
-@synthesize welcomeTitleView, welcomeTextView, logoView, cellContainerView, sourceID, cell1, cell2, cell3;
+@synthesize welcomeTitleView, welcomeTextView, logoView, activityIndicatorView, cellContainerView, sourceID, cell1, cell2, cell3;
 
 - (id)initWithSourceID:(BlioBookSourceID)aSourceID {
     self = [super init];
@@ -512,6 +512,10 @@
 // Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
 - (void)viewDidLoad {
     [super viewDidLoad];
+    CGRect mainScreenBounds = [[UIScreen mainScreen] bounds];
+	CGFloat activityIndicatorDiameter = 50.0f;
+	self.activityIndicatorView = [[[BlioRoundedRectActivityView alloc] initWithFrame:CGRectMake((mainScreenBounds.size.width-activityIndicatorDiameter)/2, (mainScreenBounds.size.height-activityIndicatorDiameter)/2, activityIndicatorDiameter, activityIndicatorDiameter)] autorelease];
+	[[[UIApplication sharedApplication] keyWindow] addSubview:activityIndicatorView];
 
     
 //	[self.welcomeView.firstTimeUserButton addTarget:self action:@selector(firstTimeUserButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
@@ -527,6 +531,11 @@
     [cell1 prepareForReuse];
     [cell2 prepareForReuse];
     [cell3 prepareForReuse];
+}
+
+- (void)viewWillDisappear:(BOOL)animated {
+	[super viewWillDisappear:animated];
+	self.activityIndicatorView.hidden = YES;
 }
 
 - (void)didReceiveMemoryWarning {
@@ -547,6 +556,9 @@
     self.cell3 = nil;
     // Release any retained subviews of the main view.
     // e.g. self.myOutlet = nil;
+	if (self.activityIndicatorView)
+        [self.activityIndicatorView removeFromSuperview];
+	self.activityIndicatorView = nil;
 }
 
 
@@ -558,11 +570,15 @@
     self.cell1 = nil;
     self.cell2 = nil;
     self.cell3 = nil;
+	if (self.activityIndicatorView)
+        [self.activityIndicatorView removeFromSuperview];
+	self.activityIndicatorView = nil;
     [super dealloc];
 }
 
 - (void) dismissSelf: (id) sender {
 	[[NSNotificationCenter defaultCenter] removeObserver:self name:BlioLoginFinished object:[BlioStoreManager sharedInstance]];
+    [self.activityIndicatorView stopAnimating];
     [self dismissModalViewControllerAnimated:YES];
 }
 
@@ -575,6 +591,7 @@
 
 -(void)existingUserButtonPressed:(id)sender {
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(dismissSelf:) name:BlioLoginFinished object:[BlioStoreManager sharedInstance]];
+    [self.activityIndicatorView startAnimating];
     [[BlioStoreManager sharedInstance] requestLoginForSourceID:BlioBookSourceOnlineStore];
 }
 

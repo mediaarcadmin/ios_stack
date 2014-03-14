@@ -32,7 +32,7 @@ static NSString * const BlioProductDetailsProcessingFinished = @"BlioProductDeta
 
 static NSString * const BlioBookDownloadFailureAlertType = @"BlioBookDownloadFailureAlertType";
 
-@interface BlioStoreManager : NSObject<BlioStoreHelperDelegate> {
+@interface BlioStoreManager : NSObject<BlioStoreHelperDelegate,NSURLSessionDataDelegate> {
 	BOOL isShowingLoginView;
 	NSMutableDictionary * storeHelpers;
 	NSMutableDictionary * deviceRegistrationPromptAlertViews;
@@ -41,6 +41,7 @@ static NSString * const BlioBookDownloadFailureAlertType = @"BlioBookDownloadFai
     id<BlioProcessingDelegate> _processingDelegate;
 	BlioStoreHelper * currentStoreHelper;
 	BOOL initialLoginCheckFinished;
+    NSMutableData* providersData;
 }
 
 @property (nonatomic, retain) NSMutableDictionary* storeHelpers;
@@ -71,7 +72,7 @@ static NSString * const BlioBookDownloadFailureAlertType = @"BlioBookDownloadFai
 
 -(BlioStoreHelper*)storeHelperForSourceID:(BlioBookSourceID)sourceID;
 /**
-	Attempts login using stored credentials. If no stored credentials are found for given sourceID, then login view is shown.
+	Attempts login via selection of an identity provider.
 	@param sourceID The BlioBookSourceID for the login request.
  */
 

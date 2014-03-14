@@ -1435,10 +1435,6 @@
 				A399074618C8F9D90085B8B3 /* App Startup */,
 				A399074418C8C4800085B8B3 /* Services */,
 				A399073518C8C4040085B8B3 /* Archive */,
-				A39C4EA61898218C0051C26F /* BlioIdentityProvidersViewController.h */,
-				A39C4EA71898218C0051C26F /* BlioIdentityProvidersViewController.m */,
-				A39C4E9518981BAD0051C26F /* BlioWebAuthenticationViewController.h */,
-				A39C4E9618981BAD0051C26F /* BlioWebAuthenticationViewController.m */,
 				A361AE71188F16A5000268CD /* Books */,
 				A361B2D318909130000268CD /* Music */,
 				A361AE32188F132C000268CD /* App Settings */,
@@ -2397,6 +2393,10 @@
 				A39DB21418A19F5800E24E7B /* BlioAccountService.m */,
 				A3932E1418ABF6B200DC6501 /* BlioVaultService.h */,
 				A3932E1518ABF6B200DC6501 /* BlioVaultService.m */,
+				A39C4EA61898218C0051C26F /* BlioIdentityProvidersViewController.h */,
+				A39C4EA71898218C0051C26F /* BlioIdentityProvidersViewController.m */,
+				A39C4E9518981BAD0051C26F /* BlioWebAuthenticationViewController.h */,
+				A39C4E9618981BAD0051C26F /* BlioWebAuthenticationViewController.m */,
 			);
 			name = Services;
 			sourceTree = "<group>";

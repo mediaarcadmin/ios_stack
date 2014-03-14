@@ -85,8 +85,10 @@
 			NSInteger newUserNum = [[BlioStoreManager sharedInstance] currentUserNum];
 			if (newUserNum != userNum) {
 				userNum = newUserNum;
-				[self fetchResults];
+                // When called only here, table view was not updated after initial login.
+				//[self fetchResults];
 			}
+            [self fetchResults];
 
 		}
 		else {
@@ -212,7 +214,8 @@
 	
 	[[NSNotificationCenter defaultCenter] removeObserver:self name:BlioStoreRetrieveBooksStarted object:nil];
 	[[NSNotificationCenter defaultCenter] removeObserver:self name:BlioStoreRetrieveBooksFinished object:nil];
-	if (self.activityIndicatorView) [self.activityIndicatorView removeFromSuperview];
+	if (self.activityIndicatorView)
+        [self.activityIndicatorView removeFromSuperview];
 	self.activityIndicatorView = nil;
 
 }
@@ -243,17 +246,6 @@
 						   otherButtonTitles:nil];
 		return;
 	}
-    /* With KDRM there is no longer explicit registration.
-	if ( [[BlioStoreManager sharedInstance] deviceRegisteredForSourceID:BlioBookSourceOnlineStore] != BlioDeviceRegisteredStatusRegistered ) {
-		[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Registration Error",@"\"Registration Error\" alert message title") 
-									 message:NSLocalizedStringWithDefaultValue(@"PROCESSING_REQUIRES_REGISTRATION_MESSAGE",nil,[NSBundle mainBundle],@"Before downloading this book you must register this device for reading purchased books. Would you like to register now?",@"Alert message when the attempts to download a paid book but the device is not registered for paid content.")
-									delegate:self 
-						   cancelButtonTitle:nil
-						   otherButtonTitles:NSLocalizedString(@"Not Now",@"\"Not Now\" button label within Confirm De/Registration alertview"), NSLocalizedString(@"Register",@"\"Register\" button label within Confirm De/Registration alertview"), nil];
-		currBook = book;
-		return;
-	}
-     */
 	[self.processingDelegate enqueueBook:book];
 }
 

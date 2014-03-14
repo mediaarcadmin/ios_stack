@@ -10,9 +10,9 @@
 #import "BlioLoginService.h"
 
 @interface BlioWebAuthenticationViewController : UIViewController <UIWebViewDelegate, NSURLConnectionDelegate> {
-    NSDictionary *identityProvider;
     UIWebView *loginView;
     NSURL* loginURL;
+    NSMutableData * checkinData;
     NSMutableData *_data;
     NSURL *_url;
     UIActivityIndicatorView* activityIndicatorView;

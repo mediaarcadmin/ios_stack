@@ -20,6 +20,7 @@
 #import "BlioLoginService.h"
 #import "BlioIdentityProvidersViewController.h"
 #import "BlioAppSettingsConstants.h"
+#import "BlioAlertManager.h"
 
 static const NSInteger kBlioGetProvidersCellActivityIndicatorViewTag = 99;
 
@@ -43,6 +44,11 @@ static const NSInteger kBlioGetProvidersCellActivityIndicatorViewTag = 99;
 		[self.tableView reloadData];
 		//if ([[BlioStoreManager sharedInstance] isLoggedInForSourceID:BlioBookSourceOnlineStore])
         //    [self tableView:self.tableView didSelectRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
+        // Not strictly necessary since the entire controller is about to be dismissed,
+        // but it ties up loose ends and will be necessary if we decide to keep the controller active.
+        [loginActivityIndicatorView stopAnimating];
+        [loginActivityIndicatorView release];
+        [self.tableView deselectRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] animated:YES];
 	}
 }
 
@@ -157,16 +163,15 @@ static const NSInteger kBlioGetProvidersCellActivityIndicatorViewTag = 99;
                                        [[BlioAccountService sharedInstance] getAccountID]];
 			}
 			else {
-				cell.textLabel.text = NSLocalizedString(@"Log In",@"\"Log In\" text label for App Settings cell");// add activity indicator
-                UIActivityIndicatorView * cellActivityIndicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
-                cellActivityIndicatorView.frame = CGRectMake(cell.contentView.frame.size.width - kBlioAppSettingCellActivityIndicatorViewWidth - ((cell.contentView.frame.size.height-kBlioAppSettingCellActivityIndicatorViewWidth)/2),(cell.contentView.frame.size.height-kBlioAppSettingCellActivityIndicatorViewWidth)/2,kBlioAppSettingCellActivityIndicatorViewWidth,kBlioAppSettingCellActivityIndicatorViewWidth);
-                cellActivityIndicatorView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin;
-                cellActivityIndicatorView.hidden = YES;
-                [cellActivityIndicatorView startAnimating];
-                cellActivityIndicatorView.hidesWhenStopped = YES;
-                cellActivityIndicatorView.tag = kBlioGetProvidersCellActivityIndicatorViewTag;
-                [cell.contentView addSubview:cellActivityIndicatorView];
-                [cellActivityIndicatorView release];
+				cell.textLabel.text = NSLocalizedString(@"Log In",@"\"Log In\" text label for App Settings cell");
+                loginActivityIndicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
+                loginActivityIndicatorView.frame = CGRectMake(cell.contentView.frame.size.width - kBlioAppSettingCellActivityIndicatorViewWidth - ((cell.contentView.frame.size.height-kBlioAppSettingCellActivityIndicatorViewWidth)/2),(cell.contentView.frame.size.height-kBlioAppSettingCellActivityIndicatorViewWidth)/2,kBlioAppSettingCellActivityIndicatorViewWidth,kBlioAppSettingCellActivityIndicatorViewWidth);
+                loginActivityIndicatorView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin;
+                loginActivityIndicatorView.hidden = YES;
+                [loginActivityIndicatorView startAnimating];
+                loginActivityIndicatorView.hidesWhenStopped = YES;
+                loginActivityIndicatorView.tag = kBlioGetProvidersCellActivityIndicatorViewTag;
+                [cell.contentView addSubview:loginActivityIndicatorView];
 			}
 			break;
 		case 2:
@@ -254,13 +259,11 @@ static const NSInteger kBlioGetProvidersCellActivityIndicatorViewTag = 99;
 				[myAccountController release];
 			}
 			else {
-                UIActivityIndicatorView * cellActivityIndicatorView = (UIActivityIndicatorView *)[[tableView cellForRowAtIndexPath:indexPath].contentView viewWithTag:kBlioGetProvidersCellActivityIndicatorViewTag];
-                cellActivityIndicatorView.hidden = NO;
-                [cellActivityIndicatorView.superview bringSubviewToFront:cellActivityIndicatorView];
-                [cellActivityIndicatorView stopAnimating];
+                //UIActivityIndicatorView * loginActivityIndicatorView = (UIActivityIndicatorView *)[[tableView cellForRowAtIndexPath:indexPath].contentView viewWithTag:kBlioGetProvidersCellActivityIndicatorViewTag];
+                loginActivityIndicatorView.hidden = NO;
+                [loginActivityIndicatorView.superview bringSubviewToFront:loginActivityIndicatorView];
                 [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loginDismissed:) name:BlioLoginFinished object:[BlioStoreManager sharedInstance]];
                 [[BlioStoreManager sharedInstance] requestLoginForSourceID:BlioBookSourceOnlineStore];
-				[tableView deselectRowAtIndexPath:indexPath animated:YES];
 			}
 			break;
 		case 2:

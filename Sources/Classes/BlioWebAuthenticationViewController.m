@@ -29,9 +29,8 @@ NSString* ScriptNotify = @"<script type=\"text/javascript\">window.external = { 
 
 - (id)initWithProvider:(NSDictionary *)provider {
     if (self = [super init]) {
-        identityProvider = provider;
+        [BlioAccountService sharedInstance].logoutUrl = [provider objectForKey:@"LogoutUrl"];
         loginURL = [NSURL URLWithString:[provider objectForKey:@"LoginUrl"]];
-     
         activityIndicatorView = [[UIActivityIndicatorView alloc] initWithFrame:CGRectMake(0.0f, 0.0f, 64.0f, 64.0f)];
         CGRect screenBounds = [[UIScreen mainScreen] bounds];
         activityIndicatorView.center = CGPointMake(screenBounds.size.width/2, screenBounds.size.height/2);
@@ -221,22 +220,21 @@ NSString* ScriptNotify = @"<script type=\"text/javascript\">window.external = { 
     NSString* scheme = [_url scheme];
     if([scheme isEqualToString:@"acs"])
     {
-        //NSString* stringWithToken = [_url absoluteString];
-        //NSLog(@"Javascript received string: %@", stringWithToken);
+        //NSLog(@"Javascript received string: %@", [_url absoluteString]);
         
         NSDictionary* pairs = [self parsePairs:[_url absoluteString]];
-        if(pairs)
+        BlioStoreHelper* helper = [[BlioStoreManager sharedInstance] storeHelperForSourceID:BlioBookSourceOnlineStore];
+        if (pairs)
         {
             WACloudAccessToken* accessToken = [[WACloudAccessToken alloc] initWithDictionary:pairs];
-            BlioStoreHelper* helper = [[BlioStoreManager sharedInstance] storeHelperForSourceID:BlioBookSourceOnlineStore];
             helper.token =  accessToken.securityToken;
             helper.timeout = accessToken.expireDate;
             [[BlioStoreManager sharedInstance] saveToken];
-            [[BlioStoreManager sharedInstance] loginFinishedForSourceID:helper.sourceID];
             [accessToken release];
-            [[BlioLoginService sharedInstance] checkin:identityProvider];
-            [self.navigationController popToRootViewControllerAnimated:YES];
+            [[BlioLoginService sharedInstance] checkin];
+            [self.navigationController popToRootViewControllerAnimated:NO];
         }
+        [[BlioStoreManager sharedInstance] loginFinishedForSourceID:helper.sourceID];
         return NO;
     }
     [NSURLConnection connectionWithRequest:request delegate:self];
@@ -255,11 +253,13 @@ NSString* ScriptNotify = @"<script type=\"text/javascript\">window.external = { 
 - (void)webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error {
 	[activityIndicatorView stopAnimating];
 	NSString* errorMsg = [error localizedDescription];
+    [[BlioStoreManager sharedInstance] loginFinishedForSourceID:BlioBookSourceOnlineStore];
     [BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Identity Provider Error",@"\"Identity Provider Error\" alert message title")
                                  message:[NSString stringWithFormat:@"There was an error connecting to the identity provider: %@.  Please try again later.",errorMsg]
                                 delegate:self
                        cancelButtonTitle:@"OK"
                        otherButtonTitles:nil];
 }
+
 
 @end

@@ -7,6 +7,7 @@
 //
 
 #import "BlioAccountService.h"
+#import "BlioAppSettingsConstants.h"
 #import "BlioStoreHelper.h"
 
 @implementation BlioAccountService
@@ -29,26 +30,53 @@
 	return self;
 }
 
+-(void)retrieveAccountSettings {
+    NSDictionary* accountDict = [[NSUserDefaults standardUserDefaults] dictionaryForKey:kBlioAccountSettingsDefaultsKey];
+    self.username = [accountDict valueForKey:@"username"];
+    self.email = [accountDict objectForKey:@"email"];
+    self.handle = [accountDict objectForKey:@"handle"];
+    self.loginHost = [accountDict objectForKey:@"loginHost"];
+    self.logoutUrl = [accountDict objectForKey:@"logoutUrl"];
+}
+
+-(void)saveAccountSettings {
+    NSMutableDictionary * accountDict = [NSMutableDictionary dictionaryWithCapacity:5];
+    if (self.username && (![self.username isEqual:[NSNull null]]))
+        [accountDict setValue:self.username forKey:@"username"];
+    if (self.email && (![self.email isEqual:[NSNull null]]))
+        [accountDict setValue:self.email forKey:@"email"];
+    if (self.handle && (![self.handle isEqual:[NSNull null]]))
+        [accountDict setValue:self.handle forKey:@"handle"];
+    if (self.loginHost && (![self.loginHost isEqual:[NSNull null]]))
+        [accountDict setValue:self.loginHost forKey:@"loginHost"];
+    if (self.logoutUrl && (![self.logoutUrl isEqual:[NSNull null]]))
+        [accountDict setValue:self.logoutUrl forKey:@"logoutUrl"];
+    [[NSUserDefaults standardUserDefaults] setObject:accountDict forKey:kBlioAccountSettingsDefaultsKey];
+	[[NSUserDefaults standardUserDefaults] synchronize];
+}
+
 -(void)logout {
     if (self.logoutUrl) {
         NSMutableURLRequest* logoutRequest = [[[NSMutableURLRequest alloc] initWithURL:[NSURL URLWithString:self.logoutUrl]]
                                                autorelease];
-        NSError* err;
-        NSData *responseData = [NSURLConnection sendSynchronousRequest:logoutRequest returningResponse:nil error:&err];
-        if (responseData) {
-            // TODO?  Should we analyze anything in the response?
-            //NSString *responseString = [[NSString alloc] initWithData:responseData encoding: NSUTF8StringEncoding];
-            [BlioAccountService sharedInstance].username = nil;
-            [BlioAccountService sharedInstance].email = nil;
-            [BlioAccountService sharedInstance].handle = nil;
-            [BlioAccountService sharedInstance].loginHost = nil;
-            [[BlioStoreManager sharedInstance] logoutForSourceID:BlioBookSourceOnlineStore];
-        }
+        [NSURLConnection sendAsynchronousRequest:logoutRequest queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *response, NSData *data, NSError *error)
+            {
+                if (error)
+                    NSLog(@"There was a logout error: %@", [error description]);
+                    // But we count logout as successful anyway
+                //else  {
+                        // TODO?  Should we analyze anything in the response?
+                        //NSString *responseString = [[NSString alloc] initWithData:responseData encoding: NSUTF8StringEncoding];
+                //}
+                self.username = nil;
+                self.email = nil;
+                self.handle = nil;
+                self.loginHost = nil;
+                self.logoutUrl = nil;
+                [self saveAccountSettings];
+            }];
     }
     // else get oem-specific url?
-    
-    // TODO alert
-    NSLog(@"Could not log out.");
 }
 
 -(NSString*)getAccountID {

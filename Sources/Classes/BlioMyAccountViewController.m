@@ -26,10 +26,6 @@ static const NSInteger kBlioSupportTokenCellActivityIndicatorViewTag = 99;
 - (id)init {
     if ((self = [super initWithStyle:UITableViewStyleGrouped])) {
 		self.title = NSLocalizedString(@"My Account",@"\"My Account\" view controller title.");
-        // TICKET 507: remove Logout button
-//		UIBarButtonItem * aButton = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Logout",@"\"Logout\" bar button text label within My Account.") style:UIBarButtonItemStyleBordered target:self action:@selector(logoutButtonPressed:)];
-//		self.navigationItem.rightBarButtonItem = aButton;
-//		[aButton release];
 		if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
 			self.contentSizeForViewInPopover = CGSizeMake(320, 600);
 		}
@@ -59,21 +55,6 @@ static const NSInteger kBlioSupportTokenCellActivityIndicatorViewTag = 99;
 	self.contentSizeForViewInPopover = CGSizeMake(320, viewHeight);	
 	
 }
-/*
-- (void)viewDidAppear:(BOOL)animated {
-    [super viewDidAppear:animated];
-}
-*/
-/*
-- (void)viewWillDisappear:(BOOL)animated {
-    [super viewWillDisappear:animated];
-}
-*/
-/*
-- (void)viewDidDisappear:(BOOL)animated {
-    [super viewDidDisappear:animated];
-}
-*/
 
 #pragma mark Event handlers
 
@@ -114,8 +95,7 @@ static const NSInteger kBlioSupportTokenCellActivityIndicatorViewTag = 99;
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if (indexPath.section == 0) {
-        [[BlioAccountService sharedInstance] logout];
-        //[[BlioStoreManager sharedInstance] logoutForSourceID:BlioBookSourceOnlineStore];
+        [[BlioStoreManager sharedInstance] logoutForSourceID:BlioBookSourceOnlineStore];
         [self.navigationController popViewControllerAnimated:YES];
     }
     else if (indexPath.section == 2) {

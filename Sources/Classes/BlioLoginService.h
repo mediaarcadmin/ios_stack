@@ -25,7 +25,8 @@
 
 +(BlioLoginService*)sharedInstance;
 
--(void)checkin:(NSDictionary*)provider;
--(NSMutableArray*)getIdentityProviders;
+-(void)checkin;
+-(NSMutableArray*)getIdentityProvidersSync;
+-(void)getIdentityProviders:(NSURLSession*)session;
 
 @end

@@ -91,6 +91,7 @@ static NSString * const BlioDeletedFromArchiveAlertType = @"BlioDeletedFromArchi
 		[[NSNotificationCenter defaultCenter] postNotificationName:BlioStoreRetrieveBooksFinished object:self userInfo:userInfo];		 
 	}
 }
+
 -(BOOL)hasValidToken {
 	if (self.token == nil)
         return NO;
@@ -149,7 +150,6 @@ static NSString * const BlioDeletedFromArchiveAlertType = @"BlioDeletedFromArchi
 	}
 	BlioDrmSessionManager* drmSessionManager = [[BlioDrmSessionManager alloc] initWithBookID:nil];
     if ( ![drmSessionManager leaveDomain:self.token] ) {
-        // TODO:  will this work for ACS tokens?
         // Alert shown in drmSessionManager to display error code.
         [drmSessionManager release];
         return NO;
@@ -167,6 +167,7 @@ static NSString * const BlioDeletedFromArchiveAlertType = @"BlioDeletedFromArchi
 	self.token = nil;
 	self.userNum = 0;
 	self.timeout = [NSDate distantPast];
+    [[BlioAccountService sharedInstance] logout];
     [[BlioStoreManager sharedInstance] saveToken];
 }
 
@@ -253,6 +254,7 @@ static NSString * const BlioDeletedFromArchiveAlertType = @"BlioDeletedFromArchi
     }
     */
     
+    // TODO: why not call assessRetrieveBooksProgress unconditionally here, once, instead of after each enqueue of a new book?
     if (newISBNs == 0)
         [self assessRetrieveBooksProgress];
     

@@ -26,5 +26,7 @@
 -(NSString*)getAuthorizationHeader;
 -(NSString*)getAccountID;
 -(void)logout;
+-(void)saveAccountSettings;
+-(void)retrieveAccountSettings;
 
 @end

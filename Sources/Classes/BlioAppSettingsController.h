@@ -11,8 +11,9 @@
 
 @interface BlioAppSettingsController : BlioAutorotatingTableViewController {
     BOOL didDeregister;
+    UIActivityIndicatorView* loginActivityIndicatorView;
 }
 @property (nonatomic, assign) BOOL didDeregister;
--(void)attemptLogin;
+//-(void)attemptLogin;
 
 @end

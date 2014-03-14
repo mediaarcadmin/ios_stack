@@ -27,6 +27,7 @@
 #import <libEucalyptus/THUIDeviceAdditions.h>
 #import "BlioWelcomeViewController.h"
 #import "BlioAcapelaAudioManager.h"
+#import "BlioAccountService.h"
 
 @interface BlioAppAppDelegate ()
 
@@ -489,6 +490,7 @@ static void *background_init_thread(void * arg) {
         
         // this login block must happen after the views are attached to the window
         [[BlioStoreManager sharedInstance] retrieveToken];
+        [[BlioAccountService sharedInstance] retrieveAccountSettings];
         if (![[BlioStoreManager sharedInstance] isLoggedInForSourceID:BlioBookSourceOnlineStore]) {
             if (forceLoginAfterRestore) {
                 [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loginDismissedAfterCloudRestore:) name:BlioLoginFinished object:[BlioStoreManager sharedInstance]];
