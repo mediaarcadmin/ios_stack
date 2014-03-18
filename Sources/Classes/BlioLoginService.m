@@ -64,11 +64,19 @@
         return nil;
     }
     NSError* error;
-    NSMutableArray* jsonArray = [NSJSONSerialization
+    id jsonArray = [NSJSONSerialization
                           JSONObjectWithData:responseData
                           options:kNilOptions
-                          error:&error];
-    return jsonArray;
+                    error:&error];
+    if (!jsonArray) {
+        NSLog(@"Error: could not parse JSON for identity providers.");
+        return nil;
+    }
+    if (![jsonArray isKindOfClass:[NSArray class]]) {
+        NSLog(@"Error: JSON for identity providers is not an array.");
+        return nil;
+    }
+    return (NSMutableArray*)jsonArray;
 }
 
 - (void)checkin {
@@ -81,11 +89,17 @@
      {
          if (!error) {
              NSError* err;
-             NSDictionary* jsonDict = [NSJSONSerialization
+             id jsonDict = [NSJSONSerialization
                                        JSONObjectWithData:data
                                        options:kNilOptions
                                        error:&err];
-             if (jsonDict) {
+             if (!jsonDict) {
+                 NSLog(@"Could not parse JSON for checkin: %@", [err description]);
+             }
+             else if (![jsonDict isKindOfClass:[NSDictionary class]]) {
+                 NSLog(@"Error: JSON for checkin is not a dictionary.");
+             }
+             else {
                  [BlioAccountService sharedInstance].username = [jsonDict objectForKey:@"Name"];
                  [BlioAccountService sharedInstance].email = [jsonDict objectForKey:@"Email"];
                  [BlioAccountService sharedInstance].handle = [jsonDict objectForKey:@"Handle"];
@@ -94,9 +108,6 @@
                  [[BlioAccountService sharedInstance] saveAccountSettings];
                  return;
              }
-             else
-                 NSLog(@"Checkin error: %@",[err description]);
-                // But we count login as successful anyway
          }
          else
              NSLog(@"Checkin error: %@",[error description]);

@@ -42,6 +42,7 @@ static NSString * const BlioBookDownloadFailureAlertType = @"BlioBookDownloadFai
 	BlioStoreHelper * currentStoreHelper;
 	BOOL initialLoginCheckFinished;
     NSMutableData* providersData;
+    NSInteger numImages;
 }
 
 @property (nonatomic, retain) NSMutableDictionary* storeHelpers;

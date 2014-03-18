@@ -18,6 +18,6 @@
     UIActivityIndicatorView* activityIndicatorView;
 }
 
-- (id)initWithProvider:(NSDictionary *)provider;
+- (id)initWithURL:(NSString *)url;
 
 @end

@@ -17,43 +17,39 @@
 
 @implementation BlioIdentityProvidersViewController
 
-@synthesize identityProviders;
-
-- (id)initWithProviders:(NSArray*)providers {
+- (id)initWithProviders:(NSDictionary*)providers {
     self = [super initWithStyle:UITableViewStyleGrouped];
     if (self) {
-        self.identityProviders = providers;
         self.title = @"Choose an Account";
         images = [[NSMutableArray alloc] initWithCapacity:[providers count]];
         names = [[NSMutableArray alloc] initWithCapacity:[providers count]];
-        for(int i=0;i<[providers count];i++)
-        {
-            NSString* name = [[providers objectAtIndex:i] objectForKey:@"Name"];
-            [names addObject:name];
-            NSString* imageURL = [[providers objectAtIndex:i] objectForKey:@"ImageUrl"];
-            NSMutableURLRequest *imageRequest = [[NSMutableURLRequest alloc] initWithURL:[NSURL URLWithString:imageURL]];
-            NSError* err;
-            NSData *responseData = [NSURLConnection sendSynchronousRequest:imageRequest returningResponse:nil error:&err];
-            [imageRequest release];
-            if (responseData) {
-                UIImage *image = [UIImage imageWithData:responseData scale:2.0];
-                [images addObject:image];
-            }
-            else
-                NSLog(@"Could not obtain image for provider %@",name);
-        }
+        loginURLs = [[NSMutableArray alloc] initWithCapacity:[providers count]];
+        logoutURLs = [[NSMutableArray alloc] initWithCapacity:[providers count]];
+        [providers enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
+            [names addObject:key];
+            [images addObject:[(NSDictionary*)obj valueForKey:@"Image"]];
+            [loginURLs addObject:[(NSDictionary*)obj valueForKey:@"LoginURL"]];
+            [logoutURLs addObject:[(NSDictionary*)obj valueForKey:@"LogoutURL"]];
+         }];
     }
     return self;
 }
 
 - (void)dealloc {
-    self.identityProviders = nil;
     images = nil;
     names = nil;
+    loginURLs = nil;
+    logoutURLs = nil;
     [super dealloc];
 }
 
+- (void)viewDidAppear:(BOOL)animated {
+    
+    [super viewDidAppear:animated];
+}
+
 - (void)viewWillAppear:(BOOL)animated {
+    
     [super viewWillAppear:animated];
 	[self.tableView reloadData];
 	
@@ -102,7 +98,7 @@
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-    return [images count];
+    return [names count];
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
@@ -119,17 +115,22 @@
     }
     cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
     NSInteger ix = [indexPath section];
-    [cell.textLabel setText:[names objectAtIndex:ix]];
-    cell.imageView.image = [images objectAtIndex:ix];
+    if ([names count] && [images count]) {
+        cell.textLabel.text = names[ix];
+        cell.imageView.image = images[ix];
+    }
     return cell;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     BlioWebAuthenticationViewController *authenticationController;
     NSInteger section = [indexPath section];
-    authenticationController = [[BlioWebAuthenticationViewController alloc] initWithProvider:[self.identityProviders objectAtIndex:section]];
+    authenticationController = [[BlioWebAuthenticationViewController alloc] initWithURL:[loginURLs objectAtIndex:section]];
     [self.navigationController pushViewController:authenticationController animated:YES];
     [authenticationController release];
+    if ([BlioAccountService sharedInstance].logoutUrl)
+        [[BlioAccountService sharedInstance].logoutUrl release];
+    [BlioAccountService sharedInstance].logoutUrl = [logoutURLs objectAtIndex:section];
 }
 
 /*

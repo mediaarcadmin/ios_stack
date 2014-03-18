@@ -241,24 +241,11 @@
         return;
     }
     NSError* err;
-    // TODO check that providers is an array
-    NSMutableArray* providers = [NSJSONSerialization
+    id providers = [NSJSONSerialization
                                  JSONObjectWithData:providersData
                                  options:kNilOptions
-                                 error:&err];
-    
-    if (providers) {
-        BlioIdentityProvidersViewController* providersController = [[BlioIdentityProvidersViewController alloc] initWithProviders:providers];
-        UINavigationController * modalLoginNavigationController = [[[UINavigationController alloc] initWithRootViewController:providersController] autorelease];
-        if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-            modalLoginNavigationController.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
-            modalLoginNavigationController.modalPresentationStyle = UIModalPresentationFormSheet;
-        }
-        [((UINavigationController*)rootViewController).visibleViewController presentModalViewController:modalLoginNavigationController animated:YES];
-        isShowingLoginView = YES;
-        [providersController release];
-     }
-    else {
+                    error:&err];
+    if (!providers || ![providers isKindOfClass:[NSArray class]]) {
         [self loginFinishedForSourceID:BlioBookSourceOnlineStore];
         [BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Identity Providers Unavailable",@"\"Identity Providers Unavailable\" alert message title")
                                      message:[NSString stringWithFormat:@"Identity providers could not be retrieved."]
@@ -266,6 +253,53 @@
                            cancelButtonTitle:@"OK"
                            otherButtonTitles:nil];
     }
+    else {
+        // Get the thumbnail image for each provider.
+        // Don't know why "__block" isn't needed here; on the contrary it makes the variable inaccessible in the block.
+        NSMutableDictionary* providersInfo = [NSMutableDictionary dictionaryWithCapacity:[providers count]];
+        numImages = 0;
+        for(int i=0;i<[providers count];i++)
+        {
+            NSDictionary* provider = [providers objectAtIndex:i];
+            NSString* name = [provider objectForKey:@"Name"];
+            NSMutableDictionary* providerDict = [NSMutableDictionary dictionaryWithCapacity:3];
+            [providerDict setValue:[provider valueForKey:@"LogoutUrl"] forKey:@"LogoutURL"];
+            [providerDict setValue:[provider valueForKey:@"LoginUrl"] forKey:@"LoginURL"];
+            [providersInfo setValue:providerDict forKey:name];
+            NSString* imageURL = [[providers objectAtIndex:i] objectForKey:@"ImageUrl"];
+            NSMutableURLRequest *imageRequest = [[NSMutableURLRequest alloc] initWithURL:[NSURL URLWithString:imageURL]];
+            NSURLSession* session = [NSURLSession sessionWithConfiguration:[NSURLSessionConfiguration defaultSessionConfiguration] delegate:nil delegateQueue:[NSOperationQueue mainQueue]];
+                __block NSURLSessionDataTask* task = [session dataTaskWithRequest:imageRequest completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
+                //NSLog(@"Got response %@ with error %@.\n", response, error);
+                //NSLog(@"In handler for provider %@",task.taskDescription);
+                if (!error) {
+                    UIImage *image = [UIImage imageWithData:data scale:2.0];
+                    NSDictionary* dict = [providersInfo valueForKey:task.taskDescription];
+                    [dict setValue:image forKey:@"Image"];
+                    @synchronized(self) {
+                        [providersInfo setValue:dict forKey:task.taskDescription];
+                    }
+                }
+                else
+                    NSLog(@"Image retrieval failed for %@",task.taskDescription);
+                if (++numImages == [providers count]) {
+                    BlioIdentityProvidersViewController* providersController = [[BlioIdentityProvidersViewController alloc] initWithProviders:providersInfo];
+                    UINavigationController * modalLoginNavigationController = [[[UINavigationController alloc] initWithRootViewController:providersController] autorelease];
+                    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+                        modalLoginNavigationController.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
+                        modalLoginNavigationController.modalPresentationStyle = UIModalPresentationFormSheet;
+                    }
+                    [((UINavigationController*)rootViewController).visibleViewController presentModalViewController:modalLoginNavigationController animated:YES];
+                    isShowingLoginView = YES;
+                    [providersController release];
+                }
+            }];
+            [imageRequest release];
+            task.taskDescription = name;
+            [task resume];
+        }
+        
+     }
     providersData = nil;
 }
 

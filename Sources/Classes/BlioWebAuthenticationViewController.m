@@ -27,15 +27,13 @@ NSString* ScriptNotify = @"<script type=\"text/javascript\">window.external = { 
 
 @implementation BlioWebAuthenticationViewController 
 
-- (id)initWithProvider:(NSDictionary *)provider {
+- (id)initWithURL:(NSString *)url {
     if (self = [super init]) {
-        [BlioAccountService sharedInstance].logoutUrl = [provider objectForKey:@"LogoutUrl"];
-        loginURL = [NSURL URLWithString:[provider objectForKey:@"LoginUrl"]];
+        loginURL = [NSURL URLWithString:url];
         activityIndicatorView = [[UIActivityIndicatorView alloc] initWithFrame:CGRectMake(0.0f, 0.0f, 64.0f, 64.0f)];
         CGRect screenBounds = [[UIScreen mainScreen] bounds];
         activityIndicatorView.center = CGPointMake(screenBounds.size.width/2, screenBounds.size.height/2);
         [activityIndicatorView setActivityIndicatorViewStyle:UIActivityIndicatorViewStyleGray];
-        //activityIndicatorView.tag = ACTIVITY_INDICATOR;
         [[[UIApplication sharedApplication] keyWindow] addSubview:activityIndicatorView];
     
     }
@@ -79,6 +77,8 @@ NSString* ScriptNotify = @"<script type=\"text/javascript\">window.external = { 
 
 - (void)dealloc
 {
+    // See http://stackoverflow.com/questions/7883899/ios-5-uiwebview-delegate-webkit-discarded-an-uncaught-exception-in-the-webview
+    ((UIWebView*)self.view).delegate = nil;
     [activityIndicatorView release];
     [_data release];
     [_url release];
@@ -254,12 +254,27 @@ NSString* ScriptNotify = @"<script type=\"text/javascript\">window.external = { 
 	[activityIndicatorView stopAnimating];
 	NSString* errorMsg = [error localizedDescription];
     [[BlioStoreManager sharedInstance] loginFinishedForSourceID:BlioBookSourceOnlineStore];
+    /* TODO Sometimes crashes when dismissed.
     [BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Identity Provider Error",@"\"Identity Provider Error\" alert message title")
                                  message:[NSString stringWithFormat:@"There was an error connecting to the identity provider: %@.  Please try again later.",errorMsg]
                                 delegate:self
                        cancelButtonTitle:@"OK"
                        otherButtonTitles:nil];
+     */
+    NSLog(@"Error loading login web page for identity provider: %@", errorMsg);
 }
+
+/*
+#pragma mark -
+#pragma mark UIAlertViewDelegate
+
+-(void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
+    if (buttonIndex == 0) {
+        ;
+	}
+    [[BlioStoreManager sharedInstance] loginFinishedForSourceID:BlioBookSourceOnlineStore];
+}
+*/
 
 
 @end
