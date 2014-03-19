@@ -2805,11 +2805,8 @@
 		A3A190281896E1E0003D76BC /* BlioLoginService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BlioLoginService.h; path = ../../Sources/Classes/BlioLoginService.h; sourceTree = "<group>"; };
 		A3A190291896E1E0003D76BC /* BlioLoginService.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BlioLoginService.m; path = ../../Sources/Classes/BlioLoginService.m; sourceTree = "<group>"; };
 		A3E448DE18DA1D1B00C154B3 /* StackApp PROD copy.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "StackApp PROD copy.app"; sourceTree = BUILT_PRODUCTS_DIR; };
-		A3E448DF18DA1D1C00C154B3 /* StackApp PROD copy-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "StackApp PROD copy-Info.plist"; path = "/Users/arnoldchien/Dev/Stack/ios_stack/StackApp/StackApp PROD copy-Info.plist"; sourceTree = "<absolute>"; };
 		A3E44AE318DA1ED200C154B3 /* StackApp PROD copy.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "StackApp PROD copy.app"; sourceTree = BUILT_PRODUCTS_DIR; };
-		A3E44AE418DA1ED300C154B3 /* StackApp PROD copy2-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "StackApp PROD copy2-Info.plist"; path = "/Users/arnoldchien/Dev/Stack/ios_stack/StackApp/StackApp PROD copy2-Info.plist"; sourceTree = "<absolute>"; };
 		A3E44CE718DA1EE900C154B3 /* StackApp DEV copy.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "StackApp DEV copy.app"; sourceTree = BUILT_PRODUCTS_DIR; };
-		A3E44CE818DA1EEA00C154B3 /* StackApp DEV copy-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "StackApp DEV copy-Info.plist"; path = "/Users/arnoldchien/Dev/Stack/ios_stack/StackApp/StackApp DEV copy-Info.plist"; sourceTree = "<absolute>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -3028,9 +3025,6 @@
 				A361AE02188F0DE8000268CD /* Frameworks */,
 				A361AFDC18905BEF000268CD /* Libraries */,
 				A361AE01188F0DE8000268CD /* Products */,
-				A3E448DF18DA1D1C00C154B3 /* StackApp PROD copy-Info.plist */,
-				A3E44AE418DA1ED300C154B3 /* StackApp PROD copy2-Info.plist */,
-				A3E44CE818DA1EEA00C154B3 /* StackApp DEV copy-Info.plist */,
 			);
 			sourceTree = "<group>";
 		};
@@ -6503,7 +6497,7 @@
 					"\"$(OBJROOT)/UninstalledProducts/include\"",
 					"\"$(SDKROOT)/usr/include/libxml2\"",
 				);
-				INFOPLIST_FILE = "StackApp PROD copy-Info.plist";
+				INFOPLIST_FILE = "StackApp-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
@@ -6541,7 +6535,7 @@
 					"\"$(OBJROOT)/UninstalledProducts/include\"",
 					"\"$(SDKROOT)/usr/include/libxml2\"",
 				);
-				INFOPLIST_FILE = "StackApp PROD copy-Info.plist";
+				INFOPLIST_FILE = "StackApp-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
@@ -6580,7 +6574,7 @@
 					"\"$(OBJROOT)/UninstalledProducts/include\"",
 					"\"$(SDKROOT)/usr/include/libxml2\"",
 				);
-				INFOPLIST_FILE = "StackApp PROD copy2-Info.plist";
+				INFOPLIST_FILE = "ToshibaApp-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
@@ -6621,7 +6615,7 @@
 					"\"$(OBJROOT)/UninstalledProducts/include\"",
 					"\"$(SDKROOT)/usr/include/libxml2\"",
 				);
-				INFOPLIST_FILE = "StackApp PROD copy2-Info.plist";
+				INFOPLIST_FILE = "ToshibaApp-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
@@ -6663,7 +6657,7 @@
 					"\"$(OBJROOT)/UninstalledProducts/include\"",
 					"\"$(SDKROOT)/usr/include/libxml2\"",
 				);
-				INFOPLIST_FILE = "StackApp DEV copy-Info.plist";
+				INFOPLIST_FILE = "ToshibaApp-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
@@ -6704,7 +6698,7 @@
 					"\"$(OBJROOT)/UninstalledProducts/include\"",
 					"\"$(SDKROOT)/usr/include/libxml2\"",
 				);
-				INFOPLIST_FILE = "StackApp DEV copy-Info.plist";
+				INFOPLIST_FILE = "ToshibaApp-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
