@@ -2804,9 +2804,9 @@
 		A3A190181896C45B003D76BC /* MediaArcPlatform.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MediaArcPlatform.m; path = ../../Sources/Classes/MediaArcPlatform.m; sourceTree = "<group>"; };
 		A3A190281896E1E0003D76BC /* BlioLoginService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BlioLoginService.h; path = ../../Sources/Classes/BlioLoginService.h; sourceTree = "<group>"; };
 		A3A190291896E1E0003D76BC /* BlioLoginService.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BlioLoginService.m; path = ../../Sources/Classes/BlioLoginService.m; sourceTree = "<group>"; };
-		A3E448DE18DA1D1B00C154B3 /* StackApp PROD copy.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "StackApp PROD copy.app"; sourceTree = BUILT_PRODUCTS_DIR; };
-		A3E44AE318DA1ED200C154B3 /* StackApp PROD copy.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "StackApp PROD copy.app"; sourceTree = BUILT_PRODUCTS_DIR; };
-		A3E44CE718DA1EE900C154B3 /* StackApp DEV copy.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "StackApp DEV copy.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		A3E448DE18DA1D1B00C154B3 /* StackApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = StackApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		A3E44AE318DA1ED200C154B3 /* ToshibaApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ToshibaApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		A3E44CE718DA1EE900C154B3 /* ToshibaApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ToshibaApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -3033,9 +3033,9 @@
 			children = (
 				A361AE00188F0DE8000268CD /* StackApp.app */,
 				A361AE1B188F0DE8000268CD /* StackAppTests.xctest */,
-				A3E448DE18DA1D1B00C154B3 /* StackApp PROD copy.app */,
-				A3E44AE318DA1ED200C154B3 /* StackApp PROD copy.app */,
-				A3E44CE718DA1EE900C154B3 /* StackApp DEV copy.app */,
+				A3E448DE18DA1D1B00C154B3 /* StackApp.app */,
+				A3E44AE318DA1ED200C154B3 /* ToshibaApp.app */,
+				A3E44CE718DA1EE900C154B3 /* ToshibaApp.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -4168,7 +4168,7 @@
 			);
 			name = "StackApp DEV";
 			productName = StackApp;
-			productReference = A3E448DE18DA1D1B00C154B3 /* StackApp PROD copy.app */;
+			productReference = A3E448DE18DA1D1B00C154B3 /* StackApp.app */;
 			productType = "com.apple.product-type.application";
 		};
 		A3E448EF18DA1ED200C154B3 /* ToshibaApp PROD */ = {
@@ -4186,7 +4186,7 @@
 			);
 			name = "ToshibaApp PROD";
 			productName = StackApp;
-			productReference = A3E44AE318DA1ED200C154B3 /* StackApp PROD copy.app */;
+			productReference = A3E44AE318DA1ED200C154B3 /* ToshibaApp.app */;
 			productType = "com.apple.product-type.application";
 		};
 		A3E44AF318DA1EE900C154B3 /* ToshibaApp DEV */ = {
@@ -4204,7 +4204,7 @@
 			);
 			name = "ToshibaApp DEV";
 			productName = StackApp;
-			productReference = A3E44CE718DA1EE900C154B3 /* StackApp DEV copy.app */;
+			productReference = A3E44CE718DA1EE900C154B3 /* ToshibaApp.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -6497,7 +6497,7 @@
 					"\"$(OBJROOT)/UninstalledProducts/include\"",
 					"\"$(SDKROOT)/usr/include/libxml2\"",
 				);
-				INFOPLIST_FILE = "StackApp-Info.plist";
+				INFOPLIST_FILE = "StackApp/StackApp-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
@@ -6511,7 +6511,7 @@
 					"-all_load",
 					"-fobjc-arc",
 				);
-				PRODUCT_NAME = "StackApp PROD copy";
+				PRODUCT_NAME = StackApp;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -6535,7 +6535,7 @@
 					"\"$(OBJROOT)/UninstalledProducts/include\"",
 					"\"$(SDKROOT)/usr/include/libxml2\"",
 				);
-				INFOPLIST_FILE = "StackApp-Info.plist";
+				INFOPLIST_FILE = "StackApp/StackApp-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
@@ -6549,7 +6549,7 @@
 					"-all_load",
 					"-fobjc-arc",
 				);
-				PRODUCT_NAME = "StackApp PROD copy";
+				PRODUCT_NAME = StackApp;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;
@@ -6591,7 +6591,7 @@
 					"-all_load",
 					"-fobjc-arc",
 				);
-				PRODUCT_NAME = "StackApp PROD copy";
+				PRODUCT_NAME = ToshibaApp;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -6632,7 +6632,7 @@
 					"-all_load",
 					"-fobjc-arc",
 				);
-				PRODUCT_NAME = "StackApp PROD copy";
+				PRODUCT_NAME = ToshibaApp;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;
@@ -6674,7 +6674,7 @@
 					"-all_load",
 					"-fobjc-arc",
 				);
-				PRODUCT_NAME = "StackApp DEV copy";
+				PRODUCT_NAME = ToshibaApp;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -6715,7 +6715,7 @@
 					"-all_load",
 					"-fobjc-arc",
 				);
-				PRODUCT_NAME = "StackApp DEV copy";
+				PRODUCT_NAME = ToshibaApp;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;

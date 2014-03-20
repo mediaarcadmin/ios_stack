@@ -173,6 +173,10 @@ static NSString * const BlioDeletedFromArchiveAlertType = @"BlioDeletedFromArchi
 
 -(void)onProductDetailsProcessingFinished:(NSNotification*)note {
 	[[NSNotificationCenter defaultCenter] removeObserver:self name:BlioProductDetailsProcessingFinished object:nil];
+    if (!_BookInfoArray || ![_BookInfoArray count]) {
+        [self assessRetrieveBooksProgress];
+        return;
+    }
     if ( [[NSUserDefaults standardUserDefaults] integerForKey:kBlioDownloadNewBooksDefaultsKey] >= 0)
         downloadNewBooks = YES;
     else
@@ -276,7 +280,7 @@ static NSString * const BlioDeletedFromArchiveAlertType = @"BlioDeletedFromArchi
 	[[NSNotificationCenter defaultCenter] postNotificationName:BlioStoreRetrieveBooksStarted object:self userInfo:userInfo];
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onProductDetailsProcessingFinished:) name:BlioProductDetailsProcessingFinished object:nil];
     if (!_session)
-        _session = [NSURLSession sessionWithConfiguration:[NSURLSessionConfiguration defaultSessionConfiguration] delegate:self delegateQueue:[NSOperationQueue mainQueue]]; // TODO: release where?    //[BlioVaultService getProducts:_session];
+        _session = [NSURLSession sessionWithConfiguration:[NSURLSessionConfiguration defaultSessionConfiguration] delegate:self delegateQueue:[NSOperationQueue mainQueue]];   //[BlioVaultService getProducts:_session];
     [BlioVaultService getProductsPlusDetails:_session];
     
 }
@@ -307,6 +311,11 @@ static NSString * const BlioDeletedFromArchiveAlertType = @"BlioDeletedFromArchi
         }
         if (![productsJSON isKindOfClass:[NSArray class]]) {
             NSLog(@"Error: JSON for products list is not an array.");
+            return;
+        }
+        if (![productsJSON count]) {
+            [[NSNotificationCenter defaultCenter] postNotificationName:BlioProductDetailsProcessingFinished object:nil];
+            _data = nil;
             return;
         }
         

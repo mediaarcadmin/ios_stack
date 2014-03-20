@@ -8,9 +8,6 @@
 
 #import "MediaArcPlatform.h"
 
-// Move to build settings when we have more targets
-#define PROD
-
 @implementation MediaArcPlatform
 
 @synthesize acsNamespace, acsHost, drmHost, servicesHost, realmURL, termsURL, vaultURL, vaultDetailsURL, supportTokenURL, checkinURL, licenseAcquisitionURL, deregistrationURL, providersURLFormat, productIdentifiersURLFormat, productDetailURLFormat, productDownloadURLFormat;

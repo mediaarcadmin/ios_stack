@@ -16,6 +16,7 @@
     NSMutableData *_data;
     NSURL *_url;
     UIActivityIndicatorView* activityIndicatorView;
+    BOOL intentionalPageAbort;
 }
 
 - (id)initWithURL:(NSString *)url;

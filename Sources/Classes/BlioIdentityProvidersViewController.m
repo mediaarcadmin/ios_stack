@@ -129,7 +129,7 @@
     [self.navigationController pushViewController:authenticationController animated:YES];
     [authenticationController release];
     if ([BlioAccountService sharedInstance].logoutUrl)
-        [[BlioAccountService sharedInstance].logoutUrl release];
+        [BlioAccountService sharedInstance].logoutUrl = nil;
     [BlioAccountService sharedInstance].logoutUrl = [logoutURLs objectAtIndex:section];
 }
 

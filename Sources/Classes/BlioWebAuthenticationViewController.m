@@ -29,6 +29,7 @@ NSString* ScriptNotify = @"<script type=\"text/javascript\">window.external = { 
 
 - (id)initWithURL:(NSString *)url {
     if (self = [super init]) {
+        intentionalPageAbort = NO;
         loginURL = [NSURL URLWithString:url];
         activityIndicatorView = [[UIActivityIndicatorView alloc] initWithFrame:CGRectMake(0.0f, 0.0f, 64.0f, 64.0f)];
         CGRect screenBounds = [[UIScreen mainScreen] bounds];
@@ -67,6 +68,11 @@ NSString* ScriptNotify = @"<script type=\"text/javascript\">window.external = { 
     NSURLRequest *request = [NSURLRequest requestWithURL:loginURL];
     [loginView loadRequest:request];
 
+}
+
+-(void)viewWillDisappear:(BOOL)animated {
+    [activityIndicatorView stopAnimating];
+    [super viewWillDisappear:animated];
 }
 
 - (void)didReceiveMemoryWarning
@@ -197,6 +203,7 @@ NSString* ScriptNotify = @"<script type=\"text/javascript\">window.external = { 
 
 - (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType
 {
+    intentionalPageAbort = NO;
     NSString* urlString = [request.URL absoluteString];
     NSRange hostnameRange;
     NSRange firstDotRange = [urlString rangeOfString:@"."];
@@ -235,9 +242,11 @@ NSString* ScriptNotify = @"<script type=\"text/javascript\">window.external = { 
             [self.navigationController popToRootViewControllerAnimated:NO];
         }
         [[BlioStoreManager sharedInstance] loginFinishedForSourceID:helper.sourceID];
+        intentionalPageAbort = YES;
         return NO;
     }
     [NSURLConnection connectionWithRequest:request delegate:self];
+    intentionalPageAbort = YES;
     return NO;
     
 }
@@ -250,31 +259,25 @@ NSString* ScriptNotify = @"<script type=\"text/javascript\">window.external = { 
     [activityIndicatorView stopAnimating];
 }
 
+
 - (void)webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error {
-	[activityIndicatorView stopAnimating];
-	NSString* errorMsg = [error localizedDescription];
-    [[BlioStoreManager sharedInstance] loginFinishedForSourceID:BlioBookSourceOnlineStore];
-    /* TODO Sometimes crashes when dismissed.
-    [BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Identity Provider Error",@"\"Identity Provider Error\" alert message title")
-                                 message:[NSString stringWithFormat:@"There was an error connecting to the identity provider: %@.  Please try again later.",errorMsg]
-                                delegate:self
-                       cancelButtonTitle:@"OK"
-                       otherButtonTitles:nil];
-     */
-    NSLog(@"Error loading login web page for identity provider: %@", errorMsg);
+    if (!intentionalPageAbort) {
+        [activityIndicatorView stopAnimating];
+        NSString* errorMsg = [error localizedDescription];
+        [BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Identity Provider Error",@"\"Identity Provider Error\" alert message title")
+                                     message:[NSString stringWithFormat:@"There was an error connecting to the identity provider: %@.  Please try again later.",errorMsg]
+                                    delegate:self
+                           cancelButtonTitle:@"OK"
+                           otherButtonTitles:nil];
+    }
 }
 
-/*
 #pragma mark -
 #pragma mark UIAlertViewDelegate
 
 -(void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
-    if (buttonIndex == 0) {
-        ;
-	}
     [[BlioStoreManager sharedInstance] loginFinishedForSourceID:BlioBookSourceOnlineStore];
 }
-*/
 
 
 @end
