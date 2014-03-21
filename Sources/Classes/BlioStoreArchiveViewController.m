@@ -40,6 +40,7 @@
         self.tabBarItem = theItem;
 		self.currBook = nil;
         [theItem release];
+        viewHasAppearedBefore = NO;
     }
     return self;
 }
@@ -96,6 +97,7 @@
 			userDismissedLogin = YES;
 		}
 	}
+    [self.activityIndicatorView stopAnimating];
 }
 - (void)fetchResults {
 	NSError *error = nil; 
@@ -139,7 +141,7 @@
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
 }
-*/
+ */
 
 - (void)viewDidAppear:(BOOL)animated {
 	NSLog(@"viewDidAppear");
@@ -174,13 +176,15 @@
             [self.activityIndicatorView startAnimating];
 			[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loginDismissed:) name:BlioLoginFinished object:[BlioStoreManager sharedInstance]];
             if (viewHasAppearedBefore)
-                [self requestLogin];
+                // We no longer repeatedly prompt for login after a user has canceled login.  
+                //[self requestLogin];
+                [self.activityIndicatorView stopAnimating];
             else
                 [self performSelector:@selector(requestLogin) withObject:nil afterDelay:1.0f];
 		}		
 	}
 	else {
-		[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Attention",@"\"Attention\" alert message title") 
+		[BlioAlertManager showAlertWithTitle:NSLocalizedString(@"No Connection",@"\"No Connection\" alert message title")
 									 message:NSLocalizedStringWithDefaultValue(@"INTERNET_REQUIRED_FOR_VAULT",nil,[NSBundle mainBundle],@"An internet connection is required to update your Archive.",@"Alert message when the user views the Archive screen without an Internet connection.")
 									delegate:nil 
 						   cancelButtonTitle:NSLocalizedString(@"OK",@"\"OK\" label for button used to cancel/dismiss alertview")
@@ -489,58 +493,6 @@
             break;
     }
 }
-
-/*
-#pragma mark BookVaultSoapResponseDelegate method
-
-- (void) operation:(BookVaultSoapOperation *)operation completedWithResponse:(BookVaultSoapResponse *)response {
-	if (!response.responseType) {
-		NSLog(@"ERROR: response has no response type!");
-		return;
-	}
-	if ([response.responseType isEqualToString:BlioBookVaultResponseTypeDeleteBook]) {
-		
-		NSArray *responseBodyParts = response.bodyParts;
-		for(id bodyPart in responseBodyParts) {
-            NSLog(@"DeleteBook response bodyPart: %@",bodyPart);
-		}
-        
-		for(id bodyPart in responseBodyParts) {
-			if ([bodyPart isKindOfClass:[SOAPFault class]]) {
-				NSString* err = ((SOAPFault *)bodyPart).simpleFaultString;
-				NSLog(@"SOAP error for book deletion: %@",err);
-                NSString* errorMessage = @"There was an error deleting this book: ";
-                [BlioAlertManager showTaggedAlertWithTitle:NSLocalizedString(@"Delete from Archive",@"\"Delete from Archive\" alert message title")
-                                                   message:[errorMessage stringByAppendingString:err]
-                                                  delegate:self
-                                                       tag:ARCHIVE_DELETE_ERROR_TAG
-                                         cancelButtonTitle:NSLocalizedString(@"OK",@"\"OK\" label for button used to cancel/dismiss alertview")
-                                         otherButtonTitles: nil];
-				return;
-			}
-            else if ( [[bodyPart DeleteBookResult].ReturnCode intValue] == 0 ) {
-                // Success.  Now update the data source.
-                NSError* err = nil;
-                [self.managedObjectContext deleteObject:currBook];
-                if (![self.managedObjectContext save:&err])
-                    NSLog(@"Error deleting book from core data: %@",[err localizedDescription]);
-				return;
-			}
-			else {
-                NSString* errorMessage = [bodyPart DeleteBookResult].Message;
-				NSLog(@"Error %@ deleting book from archive: %@",[[[bodyPart DeleteBookResult] ReturnCode] stringValue], errorMessage);
-                [BlioAlertManager showTaggedAlertWithTitle:NSLocalizedString(@"Delete from Archive",@"\"Delete from Archive\" alert message title")
-                                                   message:errorMessage
-                                                  delegate:self
-                                                       tag:ARCHIVE_DELETE_ERROR_TAG
-                                         cancelButtonTitle:NSLocalizedString(@"OK",@"\"OK\" label for button used to cancel/dismiss alertview")
-                                         otherButtonTitles: nil];
-				return;
-			}
-		}
-	}
-}
-*/
 
 #pragma mark -
 #pragma mark Core Data Multi-Threading

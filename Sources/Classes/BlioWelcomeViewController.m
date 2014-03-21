@@ -146,7 +146,7 @@
 		blioLabel.font = [UIFont systemFontOfSize:30.0f];
 		blioLabel.text = NSLocalizedString(@"Book Place",@"\"Book Place\" header on welcome view controller.");
 #else
-		blioLabel.font = [UIFont systemFontOfSize:65.0f];
+		blioLabel.font = [UIFont systemFontOfSize:35.0f];
 		blioLabel.text = NSLocalizedString(@"Media Arc",@"\"Media Arc\" header on welcome view controller.");
 #endif
 		[self addSubview:blioLabel];

@@ -121,6 +121,9 @@
     [((UINavigationController*)rootViewController).visibleViewController dismissModalViewControllerAnimated:NO];
 }
 
+-(void)loginFinished {
+    [self loginFinishedForSourceID:BlioBookSourceOnlineStore];
+}
 
 -(void)loginFinishedForSourceID:(BlioBookSourceID)sourceID {
     [self dismissLoginView];
@@ -288,6 +291,9 @@
                     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
                         modalLoginNavigationController.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
                         modalLoginNavigationController.modalPresentationStyle = UIModalPresentationFormSheet;
+                        // Cancel button does not appear by default as on iPhone.
+                        modalLoginNavigationController.navigationBar.topItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(loginFinished)];
+
                     }
                     [((UINavigationController*)rootViewController).visibleViewController presentModalViewController:modalLoginNavigationController animated:YES];
                     isShowingLoginView = YES;
