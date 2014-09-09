@@ -46,6 +46,6 @@
 -(BlioDeviceRegisteredStatus)deviceRegistered;
 -(BOOL) setDeviceRegisteredSettingOnly:(BlioDeviceRegisteredStatus)targetStatus;
 -(BOOL)setDeviceRegistered:(BlioDeviceRegisteredStatus)status;
--(void)retrieveBooks;
--(NSURL*)URLForBookWithID:(NSString*)stringID;
+-(void)retrieveMedia;
+-(NSURL*)URLForProductWithID:(NSString*)stringID;
 @end

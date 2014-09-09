@@ -7,7 +7,12 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "BlioMediaInfo.h"
 
-@interface BlioAlbumInfo : NSObject
+@interface BlioAlbumInfo : BlioMediaInfo
+
+@property (nonatomic, retain) NSString* artist;
+
+-(id)initWithDictionary:(NSDictionary*)productDict;
 
 @end

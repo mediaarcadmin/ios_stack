@@ -198,9 +198,11 @@
         return nil;
 }
 
--(void)retrieveBooksForSourceID:(BlioBookSourceID)sourceID {
-	if ([storeHelpers objectForKey:[NSNumber numberWithInt:sourceID]]) [[storeHelpers objectForKey:[NSNumber numberWithInt:sourceID]] retrieveBooks];
-	else NSLog(@"WARNING: Cannot retrieve books, there is no store helper for sourceID: %i",sourceID);
+-(void)retrieveMediaForSourceID:(BlioMediaSourceID)sourceID {
+	if ([storeHelpers objectForKey:[NSNumber numberWithInt:sourceID]])
+        [[storeHelpers objectForKey:[NSNumber numberWithInt:sourceID]] retrieveMedia];
+	else
+        NSLog(@"WARNING: Cannot retrieve books, there is no store helper for sourceID: %i",sourceID);
 }
 
 - (NSString*)tokenForSourceID:(BlioBookSourceID)sourceID {
@@ -209,12 +211,13 @@
         return [[storeHelpers objectForKey:[NSNumber numberWithInt:sourceID]] token];
 	return nil;
 }
+
 - (void)logoutForSourceID:(BlioBookSourceID)sourceID {
 	[[storeHelpers objectForKey:[NSNumber numberWithInt:sourceID]] logout];
 }
 
--(NSURL*)URLForBookWithSourceID:(BlioBookSourceID)sourceID sourceSpecificID:(NSString*)sourceSpecificID {
-	if ([storeHelpers objectForKey:[NSNumber numberWithInt:sourceID]]) return [[storeHelpers objectForKey:[NSNumber numberWithInt:sourceID]] URLForBookWithID:sourceSpecificID];
+-(NSURL*)URLForProductWithSourceID:(BlioBookSourceID)sourceID sourceSpecificID:(NSString*)sourceSpecificID {
+	if ([storeHelpers objectForKey:[NSNumber numberWithInt:sourceID]]) return [[storeHelpers objectForKey:[NSNumber numberWithInt:sourceID]] URLForProductWithID:sourceSpecificID];
 	return nil;	
 }
 

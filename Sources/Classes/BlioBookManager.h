@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 #import <CoreData/CoreData.h>
 
-@class BlioBook, BlioTextFlow, BlioEPubBook, BlioXPSProvider, EucEPubBook;
+@class BlioBook, BlioTextFlow, BlioEPubBook, BlioXPSProvider, EucEPubBook, BlioSong;
 @protocol BlioParagraphSource, BlioEPubBookmarkPointTranslation;
 
 @interface BlioBookManager : NSObject {
@@ -29,7 +29,6 @@
 // Saves the current thread's managed object context.
 - (BOOL)save:(NSError **)error;
 
-
 // Public methods:
 
 // Returns an object that should be used only on the thread the call is made from.
@@ -37,6 +36,8 @@
 // you're planning to modify the book and other threads might be modifying 
 // it simultaneously!
 - (BlioBook *)bookWithID:(NSManagedObjectID *)aBookID;
+
+- (BlioSong *)songWithID:(NSManagedObjectID *)aSongID;
 
 // For all methds below, a check-out must be balanced with a check-in.
 

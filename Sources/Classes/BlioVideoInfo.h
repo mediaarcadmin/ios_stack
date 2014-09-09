@@ -10,4 +10,11 @@
 
 @interface BlioVideoInfo : BlioMediaInfo
 
+@property (nonatomic, retain) NSString* genres;
+@property (nonatomic, retain) NSString* directors;
+@property (nonatomic, retain) NSString* actors;
+@property (nonatomic, retain) NSString* publishers;
+@property (nonatomic, retain) NSString* filePath;
+@property (nonatomic, assign) double duration;
+
 @end

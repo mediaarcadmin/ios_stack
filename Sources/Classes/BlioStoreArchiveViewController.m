@@ -44,6 +44,7 @@
     }
     return self;
 }
+
 -(void) loadView {
 	[super loadView];
 	noResultsLabel = [[UILabel alloc] initWithFrame:self.view.bounds];
@@ -55,6 +56,7 @@
 	[self.view addSubview:noResultsLabel];
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
 }
+
 - (void)viewDidLoad {
     [super viewDidLoad];
 	BlioStoreHelper * helper = [[BlioStoreManager sharedInstance] storeHelperForSourceID:BlioBookSourceOnlineStore];
@@ -69,16 +71,19 @@
     if ([[BlioStoreManager sharedInstance] isLoggedInForSourceID:BlioBookSourceOnlineStore])
         [self fetchResults];
 }
+
 -(void)onBlioStoreRetrieveBooksStarted:(NSNotification*)note {
 	NSLog(@"%@", NSStringFromSelector(_cmd));
 	[self.activityIndicatorView startAnimating];
 	[self.tableView reloadData];
 }
+
 -(void)onBlioStoreRetrieveBooksFinished:(NSNotification*)note {
 	NSLog(@"%@", NSStringFromSelector(_cmd));
 	[self.activityIndicatorView stopAnimating];
 	[self.tableView reloadData];
 }
+
 -(void)loginDismissed:(NSNotification*)note {
 	if ([[[note userInfo] valueForKey:@"sourceID"] intValue] == BlioBookSourceOnlineStore) {
 		[[NSNotificationCenter defaultCenter] removeObserver:self name:BlioLoginFinished object:[BlioStoreManager sharedInstance]];
@@ -99,6 +104,7 @@
 	}
     [self.activityIndicatorView stopAnimating];
 }
+
 - (void)fetchResults {
 	NSError *error = nil; 
     NSManagedObjectContext *moc = [self managedObjectContext]; 
@@ -110,8 +116,10 @@
     NSArray *sorters = [NSArray arrayWithObject:libraryPositionSort]; 
     [libraryPositionSort release];
     
-    [request setFetchBatchSize:30]; // Never fetch more than 30 books at one time
+    [request setFetchBatchSize:30];
     [request setEntity:[NSEntityDescription entityForName:@"BlioBook" inManagedObjectContext:moc]];
+    // TODO in future:
+    //[request setEntity:[NSEntityDescription entityForName:@"BlioMedia" inManagedObjectContext:moc]];
     [request setSortDescriptors:sorters];
 //	[request setPredicate:[NSPredicate predicateWithFormat:@"processingState <= %@ && sourceID == %@", [NSNumber numberWithInt:kBlioBookProcessingStatePlaceholderOnly],[NSNumber numberWithInt:BlioBookSourceOnlineStore]]];
 	[request setPredicate:[NSPredicate predicateWithFormat:@"processingState != %@ && sourceID == %@ && userNum == %@ && transactionType != %@", [NSNumber numberWithInt:kBlioBookProcessingStateComplete],[NSNumber numberWithInt:BlioBookSourceOnlineStore],[NSNumber numberWithInt:userNum],[NSNumber numberWithInt:BlioTransactionTypePreorder]]];
@@ -160,7 +168,7 @@
             if (![[NSUserDefaults standardUserDefaults] boolForKey:kBlioHasRestoredPurchasedBooksKey] && [[NSUserDefaults standardUserDefaults] integerForKey:kBlioDownloadNewBooksDefaultsKey] >= 0) {
                 self.processingDelegate.notifyProcessingComplete = YES;
             }
-			[[BlioStoreManager sharedInstance] retrieveBooksForSourceID:BlioBookSourceOnlineStore];
+			[[BlioStoreManager sharedInstance] retrieveMediaForSourceID:BlioBookSourceOnlineStore];
 			// The following is an instructional alert view that only shows once; we've decided to disable it for now, since the Archive view is not as prominent with paid books automatically downloading.
 //			if (![[NSUserDefaults standardUserDefaults] objectForKey:@"AlertArchive"]) {
 //				[[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithBool:YES] forKey:@"AlertArchive"];
@@ -225,6 +233,7 @@
 }
 
 -(void) configureTableCell:(BlioLibraryListCell*)cell atIndexPath:(NSIndexPath*)indexPath {
+    // TODO refactor BlioLibraryListCell to handle other media types.
 	cell.book = [self.fetchedResultsController objectAtIndexPath:indexPath];
 	cell.delegate = self;
 	if ([indexPath row] % 2)
@@ -233,9 +242,11 @@
 		cell.backgroundView = [[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"row-dark.png"]] autorelease];
 	cell.showsReorderControl = YES;	
 }
+
 -(void) reprocessCoverThumbnailsForBook:(BlioBook*)aBook {
 	[self.processingDelegate reprocessCoverThumbnailsForBook:aBook];
 }
+
 -(void) pauseProcessingForBook:(BlioBook*)book {
 	[self.processingDelegate pauseProcessingForBook:book];
 }

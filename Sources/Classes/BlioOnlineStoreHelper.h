@@ -20,11 +20,16 @@ static NSString * const BlioIOSStoreSiteKey = @"B870B960A5B4CB53363BB10855FDC351
     NSMutableData* _data;
     NSURLSession* _session;
     NSMutableDictionary* _books;
-	NSMutableArray* _BookInfoArray;
-	NSInteger newISBNs;
+	NSInteger newMedia;
+	NSInteger bookResponseCount;
 	NSInteger responseCount;
 	NSInteger successfulResponseCount;
 }
+
+
+@property (nonatomic, retain) NSMutableArray* songInfoArray;
+@property (nonatomic, retain) NSMutableArray* videoInfoArray;
+@property (nonatomic, retain) NSMutableArray* bookInfoArray;
 
 +(BlioTransactionType)transactionTypeForCode:(NSString*)code;
 @end

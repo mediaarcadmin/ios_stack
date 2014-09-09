@@ -6,24 +6,27 @@
 //  Copyright (c) 2014 Arnold Chien. All rights reserved.
 //
 
-#import "BlioMedia.h"
+#import "BlioMediaInfo.h"
 
-@implementation BlioMedia
+@implementation BlioMediaInfo
 
-@synthesize productID, title, primaryContributor, graphic, transactionType, datePurchased, expiration;
+@synthesize productID, title, graphic, transactionType, datePurchased, canExpire;
 
 -(id)initWithDictionary:(NSDictionary*)productDict {
     if (self = [super init]) {
         self.productID = [productDict valueForKey:@"ProductId"];
         self.title = [productDict valueForKey:@"Title"];
         self.graphic = [productDict valueForKey:@"Graphic"];
-        // Next two not currently returned in product list.
-        self.expiration = nil;
+        // Next three are not currently returned in vault details, so set to default values.
+        // Are they needed for iOS app?  If so, get from full product details or ask that they be returned in vault details.
         self.datePurchased = nil;
-        // TODO: figure out from [productDict valueForKey:@"Contributor"]
-        self.primaryContributor = @"";
+        self.canExpire = 0;
         // Note: transactionType assumed to be sale for now.  In future will read from JSON.
         self.transactionType = BlioTransactionTypeSale;
+        // Next two are obsolete for this class.
+        //self.expiration = nil;
+        // TODO: ?figure out from [productDict valueForKey:@"Contributor"]
+        //self.primaryContributor = @"";
     }
     return self;
 }

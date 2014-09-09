@@ -50,7 +50,7 @@
         EucEPubBookReference *bookReference = [[EucEPubBookReference alloc] initWithDataProvider:dataProvider];
         if(bookReference) {
             if ((self = [super initWithBookReference:bookReference 
-                                 cacheDirectoryPath:[book.bookCacheDirectory stringByAppendingPathComponent:BlioBookEucalyptusCacheDir]])) {
+                                 cacheDirectoryPath:[book.cacheDirectory stringByAppendingPathComponent:BlioBookEucalyptusCacheDir]])) {
                 self.blioBookID = aBookID;
                 initted = YES;
             }

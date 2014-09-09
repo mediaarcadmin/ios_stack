@@ -12,13 +12,7 @@
 #import "BlioBookmark.h"
 #import "BlioXPSProvider.h"
 #import "KNFBXPSConstants.h"
-
-static const CGFloat kBlioCoverListThumbWidth = 42;
-static const CGFloat kBlioCoverListThumbHeight = 64;
-static const CGFloat kBlioCoverGridThumbWidthPhone = 84;
-static const CGFloat kBlioCoverGridThumbHeightPhone = 118;
-static const CGFloat kBlioCoverGridThumbWidthPad = 140;
-static const CGFloat kBlioCoverGridThumbHeightPad = 210;
+#import "BlioMedia.h"
 
 static const NSInteger kBlioBookProcessingStateToBeDeleted = -1;
 static const NSInteger kBlioBookProcessingStateNotProcessed = 0;
@@ -62,8 +56,6 @@ static NSString * const BlioManifestEntryLocationKey = @"BlioManifestEntryLocati
 static NSString * const BlioManifestEntryPathKey = @"BlioManifestEntryPathKey";
 
 static NSString * const BlioBookEucalyptusCacheDir = @"libEucalyptusCache";
-static NSString * const BlioBookThumbnailsDir = @"thumbnails";
-static NSString * const BlioBookThumbnailPrefix = @"thumbnail";
 
 #define BlioXPSEncryptedUriMap KNFBXPSEncryptedUriMap
 #define BlioXPSEncryptedPagesDir KNFBXPSEncryptedPagesDir
@@ -94,7 +86,7 @@ static NSString * const BlioBookThumbnailPrefix = @"thumbnail";
 @class BlioTextFlow;
 @class BlioXPSProvider;
 
-@interface BlioBook : NSManagedObject <BlioBookText> {
+@interface BlioBook : BlioMedia <BlioBookText> {
     BlioTextFlow *textFlow;
     BlioXPSProvider *xpsProvider;
 }
@@ -103,16 +95,16 @@ static NSString * const BlioBookThumbnailPrefix = @"thumbnail";
 @property (nonatomic, retain) NSString *author;
 @property (nonatomic, retain) NSDate *expirationDate;
 @property (nonatomic, retain) NSNumber *layoutPageEquivalentCount;
-@property (nonatomic, retain) NSNumber *libraryPosition;
-@property (nonatomic, retain) NSNumber *progress;
-@property (nonatomic, retain) NSNumber *processingState;
-@property (nonatomic, retain) NSNumber *reflowRight;
-@property (nonatomic, retain) NSNumber *sourceID;
-@property (nonatomic, retain) NSString *sourceSpecificID;
-@property (nonatomic, retain) NSString *title;
-@property (nonatomic, retain) NSString *titleSortable;
-@property (nonatomic, retain) NSNumber *transactionType;
 @property (nonatomic, retain) NSNumber *twoPageSpread;
+@property (nonatomic, retain) NSNumber *reflowRight;
+//@property (nonatomic, retain) NSNumber *libraryPosition;
+//@property (nonatomic, retain) NSNumber *progress;
+//@property (nonatomic, retain) NSNumber *processingState;
+//@property (nonatomic, retain) NSNumber *sourceID;
+//@property (nonatomic, retain) NSString *sourceSpecificID;
+//@property (nonatomic, retain) NSString *title;
+//@property (nonatomic, retain) NSString *titleSortable;
+//@property (nonatomic, retain) NSNumber *transactionType;
 
 
 // the following two attributes are used to quickly calculate the number of TTS-compatible books
@@ -134,13 +126,10 @@ static NSString * const BlioBookThumbnailPrefix = @"thumbnail";
 @property (nonatomic, retain, readonly) BlioTextFlow *textFlow;
 
 // Core data attribute-backed convenience accessors
-@property (nonatomic, assign, readonly) NSString* bookCacheDirectory;
-@property (nonatomic, assign, readonly) NSString* bookTempDirectory;
+@property (nonatomic, assign, readonly) NSString* cacheDirectory;
+@property (nonatomic, assign, readonly) NSString* tempDirectory;
 
 // Book manifest-backed convenience accessors
-@property (nonatomic, assign, readonly) UIImage *coverImage;
-@property (nonatomic, assign, readonly) UIImage *coverThumbForGrid;
-@property (nonatomic, assign, readonly) UIImage *coverThumbForList;
 @property (nonatomic, assign, readonly) NSString *ePubPath;
 @property (nonatomic, assign, readonly) NSString *pdfPath;
 @property (nonatomic, assign, readonly) NSString *xpsPath;
@@ -152,18 +141,19 @@ static NSString * const BlioBookThumbnailPrefix = @"thumbnail";
 @property (nonatomic, assign, readonly) BOOL hasTextFlow;
 @property (nonatomic, assign, readonly) BOOL isEncrypted;
 @property (nonatomic, assign, readonly) BOOL decryptionIsAvailable;
-@property (nonatomic, assign, readonly) BOOL hasAppropriateCoverThumbForList;
-@property (nonatomic, assign, readonly) BOOL hasAppropriateCoverThumbForGrid;
 @property (nonatomic, assign, readonly) BOOL firstLayoutPageOnLeft;
 @property (nonatomic, assign, readonly) BOOL hasSearch;
 @property (nonatomic, assign, readonly) BOOL hasTOC;
+//@property (nonatomic, assign, readonly) UIImage *coverImage;
+//@property (nonatomic, assign, readonly) UIImage *coverThumbForGrid;
+//@property (nonatomic, assign, readonly) UIImage *coverThumbForList;
+//@property (nonatomic, assign, readonly) BOOL hasAppropriateCoverThumbForList;
+//@property (nonatomic, assign, readonly) BOOL hasAppropriateCoverThumbForGrid;
 
 
 // Call to release all derived (i.e. not stored in CoreData) attributes 
 // (textflow etc.)
 - (void)flushCaches;
-// Not used in KDRM
-//- (void)reportReadingIfRequired;
 
 - (NSArray *)sortedBookmarks;
 - (NSArray *)sortedBookmarksForRange:(BlioBookmarkRange *)range;

@@ -1710,6 +1710,9 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
     [self setBook:newBook forLayout:kBlioLibraryLayoutGrid];
 }
 
+// TODO setSong which is like this except calls hasAppropriateCoverThumbForGrid/List
+// and coverThumbForGrid/List with image data not gotten from manifest; use
+// BlioSong:pixelSpecificCoverDataForKey
 - (void)setBook:(BlioBook *)newBook forLayout:(BlioLibraryLayout)layout {
     [newBook retain];
     [book release];
@@ -1720,12 +1723,14 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 	
     if (layout == kBlioLibraryLayoutList) {
 //		NSLog(@"Searching for appropriate cover for list...");
-		hasAppropriateCoverThumb = [newBook hasAppropriateCoverThumbForList];
-        newImage = [newBook coverThumbForList];
+        NSString * pixelSpecificKey = [newBook getPixelSpecificKeyForList];
+		hasAppropriateCoverThumb = [newBook hasAppropriateCoverThumbForList:[newBook manifestDataForKey:pixelSpecificKey]];
+        newImage = [newBook coverThumbForList:[newBook manifestDataForKey:pixelSpecificKey]];
     } else {
 //		NSLog(@"Searching for appropriate cover for grid...");
-		hasAppropriateCoverThumb = [newBook hasAppropriateCoverThumbForGrid];
-        newImage = [newBook coverThumbForGrid];
+        NSString * pixelSpecificKey = [newBook getPixelSpecificKeyForGrid];
+        hasAppropriateCoverThumb = [newBook hasAppropriateCoverThumbForGrid:[newBook manifestDataForKey:pixelSpecificKey]];
+        newImage = [newBook coverThumbForGrid:[newBook manifestDataForKey:pixelSpecificKey]];
     }    
     [self.imageView setImage:newImage];
     
@@ -1746,7 +1751,7 @@ static NSString * const BlioMaxLayoutPageEquivalentCountChanged = @"BlioMaxLayou
 }
 
 - (BlioCoverView *)coverView {
-    UIImage *coverImage = [[self book] coverImage];
+    UIImage *coverImage = [[self book] coverImage:[[self book] manifestDataForKey:BlioManifestCoverKey]];
 
     BlioCoverView *coverView = [[BlioCoverView alloc] initWithFrame:[self convertRect:self.imageView.frame fromView:self.imageView] coverImage:coverImage];
     return [coverView autorelease];

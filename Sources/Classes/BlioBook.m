@@ -14,9 +14,9 @@
 #import <pthread.h>
 
 @interface BlioBook (PRIVATE_DO_NOT_MAKE_PUBLIC)
-- (NSString *)fullPathOfFileSystemItemAtPath:(NSString *)path;
+//- (NSString *)fullPathOfFileSystemItemAtPath:(NSString *)path;
 - (NSString *)fullPathOfTextFlowItemAtPath:(NSString *)path;
-- (NSData *)dataFromFileSystemAtPath:(NSString *)path;
+// - (NSData *)dataFromFileSystemAtPath:(NSString *)path;
 - (NSData *)dataFromXPSAtPath:(NSString *)path;
 - (NSData *)dataFromTextFlowAtPath:(NSString *)path;
 - (BOOL)componentExistsInXPSAtPath:(NSString *)path;
@@ -27,22 +27,23 @@
 @implementation BlioBook
 
 // Dynamic properties (map to core data attributes)
-@dynamic audiobook;
 @dynamic author;
 @dynamic expirationDate;
 @dynamic layoutPageEquivalentCount;
-@dynamic libraryPosition;
-@dynamic progress;
-@dynamic processingState;
+@dynamic twoPageSpread;
 @dynamic reflowRight;
-@dynamic sourceID;
-@dynamic sourceSpecificID;
-@dynamic title;
-@dynamic titleSortable;
-@dynamic transactionType;
+//@dynamic title;
+//@dynamic titleSortable;
+//@dynamic libraryPosition;
+//@dynamic progress;
+//@dynamic processingState;
+//@dynamic sourceID;
+//@dynamic sourceSpecificID;
+//@dynamic transactionType;
+
+@dynamic audiobook;
 @dynamic ttsRight;
 @dynamic ttsCapable;
-@dynamic twoPageSpread;
 
 - (void)dealloc {    
     [self flushCaches];
@@ -148,14 +149,14 @@
 }
  */
 
-- (NSString *)bookCacheDirectory {
+- (NSString *)cacheDirectory {
     NSArray *paths = NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES);
     NSString *docsPath = ([paths count] > 0) ? [paths objectAtIndex:0] : nil;
     NSString *bookPath = [docsPath stringByAppendingPathComponent:[self valueForKey:@"uuid"]];
     return bookPath;
 }
 
-- (NSString *)bookTempDirectory {
+- (NSString *)tempDirectory {
     NSArray *paths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
     NSString *docsPath = ([paths count] > 0) ? [paths objectAtIndex:0] : nil;
     NSString *bookPath = [docsPath stringByAppendingPathComponent:[self valueForKey:@"uuid"]];
@@ -252,6 +253,7 @@
     return [self hasManifestValueForKey:BlioManifestFirstLayoutPageOnLeftKey];
 }
 
+/*
 - (UIImage *)missingCoverImageOfSize:(CGSize)size {
     if(UIGraphicsBeginImageContextWithOptions != nil) {
         UIGraphicsBeginImageContextWithOptions(size, NO, 0);
@@ -444,7 +446,7 @@
         return [self missingCoverImageOfSize:CGSizeMake(targetThumbWidth, targetThumbHeight)];
     }
 }
-
+*/
 - (NSArray *)sortedBookmarks {
     NSSortDescriptor *sortPageDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"range.startPoint.layoutPage" ascending:YES] autorelease];
     NSSortDescriptor *sortParaDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"range.startPoint.blockOffset" ascending:YES] autorelease];
@@ -758,14 +760,17 @@ static void sortedBookmarkRangePredicateInit() {
 		}
 }
 
+/*
 - (NSString *)fullPathOfFileSystemItemAtPath:(NSString *)path {
     return [self.bookCacheDirectory stringByAppendingPathComponent:path];
 }
+ */
 
 - (NSString *)fullPathOfTextFlowItemAtPath:(NSString *)path {
-    return [[self.bookCacheDirectory stringByAppendingPathComponent:@"TextFlow"] stringByAppendingPathComponent:path];
+    return [[self.cacheDirectory stringByAppendingPathComponent:@"TextFlow"] stringByAppendingPathComponent:path];
 }
 
+/*
 - (NSData *)dataFromFileSystemAtPath:(NSString *)path {
     NSData *data = nil;
     NSString *filePath = [self fullPathOfFileSystemItemAtPath:path];
@@ -776,6 +781,7 @@ static void sortedBookmarkRangePredicateInit() {
     
     return data;
 }
+ */
 
 - (NSData *)dataFromXPSAtPath:(NSString *)path {
     return [[self xpsProvider] dataForComponentAtPath:path];

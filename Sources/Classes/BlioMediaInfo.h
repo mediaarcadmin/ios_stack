@@ -9,17 +9,18 @@
 #import <Foundation/Foundation.h>
 #import "BlioProcessing.h"
 
-@interface BlioMedia : NSObject {
+@interface BlioMediaInfo : NSObject {
     
 }
 
 @property (nonatomic, retain) NSString* productID;
 @property (nonatomic, retain) NSString* title;
-@property (nonatomic, retain) NSString* primaryContributor;
 @property (nonatomic, retain) NSString* graphic;
 @property (nonatomic, assign) BlioTransactionType transactionType;
 @property (nonatomic, retain) NSDate* datePurchased;
-@property (nonatomic, retain) NSDate* expiration;
+@property (nonatomic, assign) NSInteger canExpire;
+//@property (nonatomic, retain) NSDate* expiration;
+//@property (nonatomic, retain) NSString* primaryContributor;
 
 -(id)initWithDictionary:(NSDictionary*)productDict;
 

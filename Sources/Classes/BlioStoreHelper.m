@@ -68,12 +68,17 @@
 	return NO;
 }
 
--(void)retrieveBooks {
+-(void)retrieveMedia {
 	// abstract method	
 }
 
--(NSURL*)URLForBookWithID:(NSString*)stringID {
+-(NSURL*)URLForProductWithID:(NSString*)stringID {
 	// abstract method	
+	return nil;
+}
+
+-(NSURL*)URLForSongWithID:(NSString*)stringID {
+	// abstract method
 	return nil;
 }
 

@@ -8,6 +8,7 @@
 
 #import "BlioBookManager.h"
 #import "BlioBook.h"
+#import "BlioSong.h"
 #import "BlioTextFlow.h"
 #import "BlioEPubBook.h"
 #import "BlioEPubBook.h"
@@ -104,6 +105,31 @@ static pthread_key_t sManagedObjectContextKey;
     return [self.managedObjectContextForCurrentThread save:error];
 }
 
+- (BlioSong *)songWithID:(NSManagedObjectID *)aSongID
+{
+    // If we don't do a refresh here, we run the risk that another thread has
+    // modified the object while it's been cached by this thread's managed
+    // object context.
+    // If I were redesigning this, I'd make only one thread allowed to modify
+    // the books, and call
+    // - (void)mergeChangesFromContextDidSaveNotification:(NSNotification *)notification
+    // on the other threads when it saved.
+    NSManagedObjectContext *context = self.managedObjectContextForCurrentThread;
+    BlioSong *song = nil;
+    
+    if (aSongID) {
+        song = (BlioSong *)[context objectWithID:aSongID];
+    }
+    else
+        NSLog(@"WARNING: BlioBookManager songWithID: aSongID is nil!");
+    if (song) {
+        [context refreshObject:song mergeChanges:YES];
+    }
+    
+    return song;
+}
+
+
 - (BlioBook *)bookWithID:(NSManagedObjectID *)aBookID
 {
     // If we don't do a refresh here, we run the risk that another thread has
@@ -119,7 +145,8 @@ static pthread_key_t sManagedObjectContextKey;
     if (aBookID) {
         book = (BlioBook *)[context objectWithID:aBookID];
     }
-    else NSLog(@"WARNING: BlioBookManager bookWithID: aBookID is nil!");
+    else
+        NSLog(@"WARNING: BlioBookManager bookWithID: aBookID is nil!");
     if (book) {
         [context refreshObject:book mergeChanges:YES];
     }

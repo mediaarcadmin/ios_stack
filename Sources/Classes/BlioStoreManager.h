@@ -76,7 +76,6 @@ static NSString * const BlioBookDownloadFailureAlertType = @"BlioBookDownloadFai
 	Attempts login via selection of an identity provider.
 	@param sourceID The BlioBookSourceID for the login request.
  */
-
 -(void)requestLoginForSourceID:(BlioBookSourceID)sourceID;
 -(void)requestLoginForSourceID:(BlioBookSourceID)sourceID forceLoginDisplayUponFailure:(BOOL)forceLoginDisplay;
 -(void)showWelcomeViewForSourceID:(BlioBookSourceID)sourceID;
@@ -86,37 +85,41 @@ static NSString * const BlioBookDownloadFailureAlertType = @"BlioBookDownloadFai
 	@param sourceID The BlioBookSourceID for which the login status is related.
 	@returns The login status.
  */
-
 -(BOOL)isLoggedInForSourceID:(BlioBookSourceID)sourceID;
-/**
-	Asynchronously retrieves books (by source-specific ID/ISBN) from the appropriate store helper associated with the given sourceID.
-	@param sourceID The BlioBookSourceID for which books should be retrieved.
- */
 
 -(NSString*)usernameForSourceID:(BlioBookSourceID)sourceID;
 
--(void)retrieveBooksForSourceID:(BlioBookSourceID)sourceID;
+/**
+ Asynchronously retrieves books (by source-specific ID/ISBN) from the appropriate store helper associated with the given sourceID.
+ @param sourceID The BlioBookSourceID for which books should be retrieved.
+ */
+-(void)retrieveMediaForSourceID:(BlioMediaSourceID)sourceID;
+
 /**
 	Returns a valid token for a given sourceID. If no valid token is available, then nil is returned.
 	@param sourceID The BlioBookSourceID associated with the prospective token requested.
 	@returns The token as NSString if available and valid; otherwise nil is returned.
  */
 - (NSString*)tokenForSourceID:(BlioBookSourceID)sourceID;
+
 /**
 	Discards token for given sourceID; however, the login credentials (i.e. username and password) are not necessarily forgotten.
 	@param sourceID The BlioBookSourceID for which logout should occur.
  */
 -(void)logoutForSourceID:(BlioBookSourceID)sourceID;
+
 /**
 	This method is used to communicate to the BlioStoreManager that the login process has finished for a given sourceID; this usually happens when a login view is dismissed or a login is accomplished with credentials. The method performs any necessary clean-up operations and is responsible for broadcasting a notification indicating to any interested listeners that the login process has finished for a particular sourceID.
 	@param sourceID The BlioBookSourceID for which the login process has finished.
  */
 -(void)loginFinishedForSourceID:(BlioBookSourceID)sourceID;
+
 /**
 	Adds a given store helper to the BlioStoreManager's dictionary of store helpers.
 	@param helper The store helper to be added.
  */
 -(void)addStoreHelper:(BlioStoreHelper*)helper;
+
 /**
 	Returns the title of the store that handles the given sourceID.
 	@param sourceID The BlioBookSourceID used to determine which store's title should be returned.
@@ -127,13 +130,14 @@ static NSString * const BlioBookDownloadFailureAlertType = @"BlioBookDownloadFai
 -(NSInteger)currentSiteNum;
 -(NSInteger)storeSiteIDForSourceID:(BlioBookSourceID)sourceID;
 -(NSString*)storeSiteKeyForSourceID:(BlioBookSourceID)sourceID;
+
 /**
 	Synchronously retrieves the URL for a book identified by a source-specific ID from the appropriate store helper.
 	@param sourceID The BlioBookSourceID of the book.
 	@param sourceSpecificID The source-specific ID of the book.
 	@returns An NSURL pointing to the book asset.
  */
--(NSURL*)URLForBookWithSourceID:(BlioBookSourceID)sourceID sourceSpecificID:(NSString*)sourceSpecificID;
+-(NSURL*)URLForProductWithSourceID:(BlioBookSourceID)sourceID sourceSpecificID:(NSString*)sourceSpecificID;
 -(void)dismissLoginView;
 -(BlioDeviceRegisteredStatus)deviceRegisteredForSourceID:(BlioBookSourceID)sourceID;
 -(BOOL)setDeviceRegisteredSettingOnly:(BlioDeviceRegisteredStatus)status forSourceID:(BlioBookSourceID)sourceID;

@@ -10,7 +10,7 @@
 
 @implementation BlioBookInfo
 
-@synthesize authors, isbn;
+@synthesize authors, isbn, expiration;
 
 -(id)initWithDictionary:(NSDictionary*)productDict isbn:(NSString*)anIsbn {
     if (self = [super initWithDictionary:productDict]) {
@@ -26,6 +26,7 @@
         //For now.  Will need [productDict valueForKey:@"Contributor"], but that's always empty at the moment.
         self.authors = nil;
         self.isbn = anIsbn;
+        self.expiration = nil;
     }
     return self;
 }

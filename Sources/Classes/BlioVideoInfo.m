@@ -10,4 +10,19 @@
 
 @implementation BlioVideoInfo
 
+@synthesize genres, directors, actors, publishers, filePath, duration;
+
+-(id)initWithDictionary:(NSDictionary*)productDict {
+    if (self = [super initWithDictionary:productDict]) {
+        // For now.
+        self.genres = @"";
+        self.actors = @"";
+        self.directors = @"";
+        self.publishers = @"";
+        self.filePath = @"";
+        self.duration = 0;
+    }
+    return self;
+}
+
 @end

@@ -38,7 +38,7 @@
     if(blioBook) {
         BlioTextFlow *aTextFlow = [bookManager checkOutTextFlowForBookWithID:blioBookID];
         BOOL aFakeCover = aTextFlow.flowTreeKind == BlioTextFlowFlowTreeKindFlow && [blioBook hasManifestValueForKey:BlioManifestCoverKey];
-        NSString *aCacheDirectoryPath = [blioBook.bookCacheDirectory stringByAppendingPathComponent:BlioBookEucalyptusCacheDir];
+        NSString *aCacheDirectoryPath = [blioBook.cacheDirectory stringByAppendingPathComponent:BlioBookEucalyptusCacheDir];
         
         if ((self = [super initWithBookID:blioBookID
                        cacheDirectoryPath:aCacheDirectoryPath
