@@ -18,6 +18,8 @@
 #import "KNFBXMLParserLock.h"
 #import "BlioLayoutPDFDataSource.h"
 #import "BlioEPubMetadataReader.h"
+#import "BlioSong.h"
+#import "BlioVaultService.h"
 
 @implementation BlioProcessingAggregateOperation
 
@@ -63,14 +65,19 @@
 
 @synthesize processingDelegate = _processingDelegate;
 
+
 - (void)main {
-    NSLog(@"bookID: %@",bookID);
+    //NSLog(@"bookID: %@",bookID);
     if ([self isCancelled]) {
 		NSLog(@"BlioProcessingCompleteOperation cancelled before starting (perhaps due to pause, broken internet connection, crash, or application exit)");
 		NSLog(@"CompleteOperation dependencies: %@",[self dependencies]);
 		return;
 	}
-	NSInteger currentProcessingState = [[self getBookValueForKey:@"processingState"] intValue];
+    NSInteger currentProcessingState;
+    if (self.bookID)
+        currentProcessingState = [[self getBookValueForKey:@"processingState"] intValue];
+    else if (self.songID)
+        currentProcessingState = [[self getSongValueForKey:@"processingState"] intValue];
 //	NSMutableDictionary * userInfo = [NSMutableDictionary dictionaryWithCapacity:3];
 //	[userInfo setObject:self.bookID forKey:@"bookID"];
 //	[userInfo setObject:[NSNumber numberWithInt:self.sourceID] forKey:@"sourceID"];
@@ -98,8 +105,18 @@
 	}
 #endif
 	
-    if (currentProcessingState == kBlioBookProcessingStateNotProcessed) [self setBookValue:[NSNumber numberWithInt:kBlioBookProcessingStatePlaceholderOnly] forKey:@"processingState"];
-	else if (currentProcessingState != kBlioBookProcessingStateNotSupported) [self setBookValue:[NSNumber numberWithInt:kBlioBookProcessingStateComplete] forKey:@"processingState"];
+    if (currentProcessingState == kBlioBookProcessingStateNotProcessed) {
+        if (self.bookID)
+            [self setBookValue:[NSNumber numberWithInt:kBlioBookProcessingStatePlaceholderOnly] forKey:@"processingState"];
+        else if (self.songID)
+            [self setSongValue:[NSNumber numberWithInt:kBlioBookProcessingStatePlaceholderOnly] forKey:@"processingState"];
+    }
+    else if (currentProcessingState != kBlioBookProcessingStateNotSupported) {
+        if (self.bookID)
+            [self setBookValue:[NSNumber numberWithInt:kBlioBookProcessingStateComplete] forKey:@"processingState"];
+        else if (self.songID)
+            [self setSongValue:[NSNumber numberWithInt:kBlioBookProcessingStateComplete] forKey:@"processingState"];
+    }
 	NSLog(@"Processing complete for book with sourceID:%i sourceSpecificID:%@", [self sourceID],[self sourceSpecificID]);
 	
 	if (![[NSFileManager defaultManager] removeItemAtPath:dirPath error:&downloadDirError]) {
@@ -320,7 +337,7 @@
 
 @implementation BlioProcessingDownloadOperation
 
-@synthesize url, filenameKey, localFilename, tempFilename, connection, headConnection, downloadFile,resume,expectedContentLength,requestHTTPBody,serverMimetype,serverFilename, statusCode;
+@synthesize url, filenameKey, localFilename, tempFilename, connection, headConnection, downloadFile,resume,expectedContentLength,requestHTTPBody,serverMimetype,serverFilename, statusCode, mustReport;
 
 - (void) dealloc {
 //	NSLog(@"BlioProcessingDownloadOperation %@ dealloc entered.",self);
@@ -486,9 +503,11 @@
         [self startDownload];
     }
 }
+
 -(NSString*)temporaryPath {
 	return [[self.tempDirectory stringByAppendingPathComponent:self.filenameKey] stringByStandardizingPath];
 }
+
 - (void)startDownload {
 	
     NSString *temporaryPath = [self temporaryPath];
@@ -694,7 +713,8 @@
 			self.percentageComplete = [self.downloadFile seekToEndOfFile]*100/expectedContentLength;
 //			NSLog(@"Download operation percentageComplete for asset %@: %f",self.sourceSpecificID,self.percentageComplete);
 		}
-		else self.percentageComplete = 50;
+		else
+            self.percentageComplete = 50;
 	}
 }
 
@@ -725,10 +745,17 @@
 	}
 }
 
+-(void)setMediaID:(NSMutableDictionary*)dict {
+    if (self.bookID)
+        [dict setObject:self.bookID forKey:@"bookID"];
+    else if (self.songID)
+        [dict setObject:self.songID forKey:@"songID"];
+}
+
 - (void)downloadDidFinishSuccessfully:(BOOL)success {
 //	if (success) NSLog(@"Download finished successfully"); 
 	NSMutableDictionary * userInfo = [NSMutableDictionary dictionaryWithCapacity:3];
-	[userInfo setObject:self.bookID forKey:@"bookID"];
+    [self setMediaID:userInfo];
 	[userInfo setObject:[NSNumber numberWithInt:self.sourceID] forKey:@"sourceID"];
 	[userInfo setObject:self.sourceSpecificID forKey:@"sourceSpecificID"];
 	if (!success) {
@@ -776,15 +803,26 @@
         }
 		else {
             
-            if (![self shouldBackupDownload]) [BlioProcessingOperation addSkipBackupAttributeToItemAtURL:[NSURL fileURLWithPath:cachedPath]];
+            if (![self shouldBackupDownload])
+                [BlioProcessingOperation addSkipBackupAttributeToItemAtURL:[NSURL fileURLWithPath:cachedPath]];
 
 			//[self setBookValue:[NSString stringWithString:(NSString *)uniqueString] forKey:self.filenameKey];
-            NSDictionary *manifestEntry = [NSMutableDictionary dictionary];
-            [manifestEntry setValue:BlioManifestEntryLocationFileSystem forKey:BlioManifestEntryLocationKey];
-            [manifestEntry setValue:(NSString *)uniqueString forKey:BlioManifestEntryPathKey];
             
-//          [self setBookValue:[NSString stringWithString:(NSString *)uniqueString] forKey:self.filenameKey];
-            [self setBookManifestValue:manifestEntry forKey:self.filenameKey];
+            if (self.bookID) {
+                NSDictionary *manifestEntry = [NSMutableDictionary dictionary];
+                [manifestEntry setValue:BlioManifestEntryLocationFileSystem forKey:BlioManifestEntryLocationKey];
+                [manifestEntry setValue:(NSString *)uniqueString forKey:BlioManifestEntryPathKey];
+            
+                //          [self setBookValue:[NSString stringWithString:(NSString *)uniqueString] forKey:self.filenameKey];
+                [self setBookManifestValue:manifestEntry forKey:self.filenameKey];
+            }
+            else if (self.songID) {
+                [self setSongValue:uniqueString forKey:filenameKey];
+                // Inform server that download was successful.
+                // Once this happens, download will no longer be available.  So uncomment only when done testing.
+                // if (self.mustReport)
+                //[BlioVaultService reportDownloadCompleted:self.sourceSpecificID];
+            }
 			self.operationSuccess = YES;
 			self.percentageComplete = 100;
 			[[NSNotificationCenter defaultCenter] postNotificationName:BlioProcessingOperationCompleteNotification object:self userInfo:userInfo];			
@@ -819,7 +857,7 @@
         if ([[BlioStoreManager sharedInstance] tokenForSourceID:self.sourceID]) {
             if ([[self getBookValueForKey:@"userNum"] intValue] == [[BlioStoreManager sharedInstance] currentUserNum]) {
                 // app will contact Store for a new limited-lifetime URL.
-                NSURL * newXPSURL = [[BlioStoreManager sharedInstance] URLForBookWithSourceID:sourceID sourceSpecificID:sourceSpecificID];
+                NSURL * newXPSURL = [[BlioStoreManager sharedInstance] URLForProductWithSourceID:sourceID sourceSpecificID:sourceSpecificID];
                 if (newXPSURL) {
                     NSLog(@"new XPS URL: %@",[newXPSURL absoluteString]);
                     self.url = newXPSURL;
@@ -846,6 +884,55 @@
             NSLog(@"App does not have valid token! Cancelling BlioProcessingDownloadPaidBookOperation...");
             NSMutableDictionary * userInfo = [NSMutableDictionary dictionary];
             [userInfo setObject:self.bookID forKey:@"bookID"];
+            [[NSNotificationCenter defaultCenter] postNotificationName:BlioProcessingDownloadPaidBookTokenRequiredNotification object:self userInfo:userInfo];
+        }
+    }
+    
+    [super prepareForStartOnBackgroundThread];
+}
+-(BOOL)shouldBackupDownload {
+    return NO;
+}
+
+@end
+
+#pragma mark -
+@implementation BlioProcessingDownloadPaidSongOperation
+
+- (id)initWithUrl:(NSURL *)aURL {
+    if ((self = [super initWithUrl:aURL])) {
+        self.filenameKey = BlioSongKey;
+        self.mustReport = YES;
+    }
+    return self;
+}
+
+- (void)prepareForStartOnBackgroundThread {
+    if (!self.url)  {
+        if ([[BlioStoreManager sharedInstance] tokenForSourceID:self.sourceID]) {
+            if ([[self getSongValueForKey:@"userNum"] intValue] == [[BlioStoreManager sharedInstance] currentUserNum]) {
+                NSURL * newSongURL = [[BlioStoreManager sharedInstance] URLForProductWithSourceID:sourceID sourceSpecificID:sourceSpecificID];
+                if (newSongURL) {
+                    NSLog(@"new Song URL: %@",[newSongURL absoluteString]);
+                    self.url = newSongURL;
+                }
+                else {
+                    NSLog(@"new Song URL was not able to be obtained from server! Cancelling BlioProcessingDownloadPaidSongOperation...");
+                }
+            }
+            else {
+                NSLog(@"Song userNum and currentUserNum do not match! Cancelling BlioProcessingDownloadPaidSongOperation...");
+                NSMutableDictionary * userInfo = [NSMutableDictionary dictionary];
+                [userInfo setObject:self.songID forKey:@"songID"];
+                // TODO does notification handler(s) need songID?
+                [[NSNotificationCenter defaultCenter] postNotificationName:BlioProcessingDownloadPaidBookNonMatchingUserNotification object:self userInfo:userInfo];
+            }
+        }
+        else {
+            NSLog(@"App does not have valid token! Cancelling BlioProcessingDownloadPaidSongOperation...");
+            NSMutableDictionary * userInfo = [NSMutableDictionary dictionary];
+            [userInfo setObject:self.songID forKey:@"songID"];
+            // TODO does notification handler(s) need songID?
             [[NSNotificationCenter defaultCenter] postNotificationName:BlioProcessingDownloadPaidBookTokenRequiredNotification object:self userInfo:userInfo];
         }
     }
@@ -953,9 +1040,9 @@
         // move file cover to CoverImage within cache directory
         if ([[book manifestLocationForKey:BlioManifestCoverKey] isEqualToString:BlioManifestEntryLocationFileSystem]) {
             NSString * currentCoverPath = [book manifestPathForKey:BlioManifestCoverKey];
-            if (![[NSFileManager defaultManager] fileExistsAtPath:[[book bookCacheDirectory] stringByAppendingPathComponent:BlioManifestCoverKey]]) {
+            if (![[NSFileManager defaultManager] fileExistsAtPath:[[book cacheDirectory] stringByAppendingPathComponent:BlioManifestCoverKey]]) {
                 NSError * moveOldCoverError = nil;
-                [[NSFileManager defaultManager] moveItemAtPath:currentCoverPath toPath:[[book bookCacheDirectory] stringByAppendingPathComponent:BlioManifestCoverKey] error:&moveOldCoverError];
+                [[NSFileManager defaultManager] moveItemAtPath:currentCoverPath toPath:[[book cacheDirectory] stringByAppendingPathComponent:BlioManifestCoverKey] error:&moveOldCoverError];
                 if (moveOldCoverError) NSLog(@"ERROR: moving old book cover in preparation for XPS cover use: %@",[moveOldCoverError localizedDescription]);
             }
         }
@@ -1452,7 +1539,6 @@
 - (id)initWithUrl:(NSURL *)aURL {
     if ((self = [super initWithUrl:aURL])) {
         self.localFilename = @"cover";
-		self.filenameKey = BlioManifestCoverKey;
     }
     return self;
 }
@@ -1574,21 +1660,28 @@
     }
     
     NSData *imageData = nil;
-    BOOL hasCover = [self hasBookManifestValueForKey:BlioManifestCoverKey];
-    
-    if (hasCover) {
-        imageData = [self getBookManifestDataForKey:BlioManifestCoverKey];
-    }
-    
-    if (!imageData) {
-        BOOL isPDF = [self hasBookManifestValueForKey:BlioManifestPDFKey];
-        
-        if (isPDF) {
-            CGSize screenSize = [[UIScreen mainScreen] bounds].size;
-            imageData = [self generatePDFCoverImageOfSize:screenSize maintainAspectRatio:YES];
+    BOOL hasCover;
+    if (self.bookID) {
+        hasCover = [self hasBookManifestValueForKey:BlioManifestCoverKey];
+        if (hasCover) {
+            imageData = [self getBookManifestDataForKey:BlioManifestCoverKey];
+        }
+        if (!imageData) {
+            BOOL isPDF = [self hasBookManifestValueForKey:BlioManifestPDFKey];
+            if (isPDF) {
+                CGSize screenSize = [[UIScreen mainScreen] bounds].size;
+                imageData = [self generatePDFCoverImageOfSize:screenSize maintainAspectRatio:YES];
+            }
         }
     }
-
+    else if (self.songID) {
+        BlioSong *song = [[BlioBookManager sharedBookManager] songWithID:self.songID];
+        if (song) {
+            imageData = [song coverData]; 
+        }
+        else
+            NSLog(@"Failed to retrieve song in BlioProcessingGenerateCoverThumbsOperation main.");
+    }
     if (nil == imageData) {
         if (!hasCover) {
             NSLog(@"Failed to create generate cover thumbs because cover image from manifest value is nil.");
@@ -1681,11 +1774,17 @@
     [gridData writeToFile:gridThumbPath atomically:YES];
     [gridThumb release];
     
-    NSDictionary *gridThumbManifestEntry = [NSMutableDictionary dictionary];
-    [gridThumbManifestEntry setValue:BlioManifestEntryLocationFileSystem forKey:BlioManifestEntryLocationKey];
-    [gridThumbManifestEntry setValue:[BlioBookThumbnailsDir stringByAppendingPathComponent:pixelSpecificFilename] forKey:BlioManifestEntryPathKey];
-    [self setBookManifestValue:gridThumbManifestEntry forKey:pixelSpecificKey];
-
+    NSMutableDictionary * resizedCovers = [NSMutableDictionary dictionaryWithCapacity:4];
+    if (self.bookID) {
+        NSDictionary *gridThumbManifestEntry = [NSMutableDictionary dictionary];
+        [gridThumbManifestEntry setValue:BlioManifestEntryLocationFileSystem forKey:BlioManifestEntryLocationKey];
+        [gridThumbManifestEntry setValue:[BlioBookThumbnailsDir stringByAppendingPathComponent:pixelSpecificFilename] forKey:BlioManifestEntryPathKey];
+        [self setBookManifestValue:gridThumbManifestEntry forKey:pixelSpecificKey];
+    }
+    else if (self.songID) {
+        [resizedCovers setValue:[BlioBookThumbnailsDir stringByAppendingPathComponent:pixelSpecificFilename] forKey:pixelSpecificKey];
+    }
+    
     if ([self isCancelled]) {
         [pool drain];
         return;
@@ -1729,11 +1828,17 @@
     NSString *listThumbPath = [listThumbDir stringByAppendingPathComponent:pixelSpecificFilename];
     [listData writeToFile:listThumbPath atomically:YES];
     [listThumb release];
-    	
-    NSDictionary *listThumbManifestEntry = [NSMutableDictionary dictionary];
-    [listThumbManifestEntry setValue:BlioManifestEntryLocationFileSystem forKey:BlioManifestEntryLocationKey];
-    [listThumbManifestEntry setValue:[BlioBookThumbnailsDir stringByAppendingPathComponent:pixelSpecificFilename] forKey:BlioManifestEntryPathKey];
-    [self setBookManifestValue:listThumbManifestEntry forKey:pixelSpecificKey];
+    
+    if (self.bookID) {
+        NSDictionary *listThumbManifestEntry = [NSMutableDictionary dictionary];
+        [listThumbManifestEntry setValue:BlioManifestEntryLocationFileSystem forKey:BlioManifestEntryLocationKey];
+        [listThumbManifestEntry setValue:[BlioBookThumbnailsDir stringByAppendingPathComponent:pixelSpecificFilename] forKey:BlioManifestEntryPathKey];
+        [self setBookManifestValue:listThumbManifestEntry forKey:pixelSpecificKey];
+    }
+    else if (self.songID) {
+        [resizedCovers setValue:[BlioBookThumbnailsDir stringByAppendingPathComponent:pixelSpecificFilename] forKey:pixelSpecificKey];
+        [self setSongValue:resizedCovers forKey:BlioSongCoversDictionaryKey];
+    }
 
 #if __IPHONE_OS_VERSION_MAX_ALLOWED >= 40000
 	if([application respondsToSelector:@selector(endBackgroundTask:)]) {

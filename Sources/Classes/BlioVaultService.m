@@ -21,16 +21,87 @@
     NSError* err;
     NSData *responseData = [NSURLConnection sendSynchronousRequest:downloadUrlRequest returningResponse:nil error:&err];
     [downloadUrlRequest release];
-    NSString * responseStr;
     if (responseData) {
-        responseStr = [[NSString alloc] initWithData:responseData encoding: NSUTF8StringEncoding];
-        responseStr = [responseStr stringByTrimmingCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@"\""]];
-        //responseStr = [responseStr stringByAddingPercentEscapesUsingEncoding:(NSStringEncoding)NSUTF8StringEncoding];
-        return [NSURL URLWithString:responseStr];
+        NSError* err;
+        id jsonObj = [NSJSONSerialization
+                       JSONObjectWithData:responseData
+                       options:kNilOptions
+                       error:&err];
+        if (!jsonObj) {
+            NSString * responseStr;
+            responseStr = [[[NSString alloc] initWithData:responseData encoding: NSUTF8StringEncoding] autorelease];
+            if (responseStr) {
+                responseStr = [responseStr stringByTrimmingCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@"\""]];
+                return [NSURL URLWithString:responseStr];
+            }
+            else {
+                NSLog(@"Download URL is corrupt.");
+                return nil;
+            }
+        }
+        // else if a song, not an album
+        else if ([jsonObj isKindOfClass:[NSDictionary class]]) {
+            NSArray* discsArray = [jsonObj objectForKey:@"Discs"];
+            if (!discsArray) {
+                NSLog(@"Download URL is corrupt.");
+                return nil;
+            }
+            NSDictionary* disc1Dict = [discsArray objectAtIndex:0];
+            if (!disc1Dict) {
+                NSLog(@"Download URL is corrupt.");
+                return nil;
+            }
+            NSArray* tracksArray = [disc1Dict objectForKey:@"Tracks"];
+            if (!tracksArray) {
+                NSLog(@"Download URL is corrupt.");
+                return nil;
+            }
+            for (NSDictionary* track in tracksArray) {
+                NSDictionary* digitalAssetsDict = [track objectForKey:@"DigitalAsset"];
+                if (!digitalAssetsDict) {
+                    NSLog(@"Download URL is corrupt.");
+                    return nil;
+                }
+                NSDictionary* fileInfoDict = [digitalAssetsDict objectForKey:@"FileInfo"];
+                if (!fileInfoDict) {
+                    NSLog(@"Download URL is corrupt.");
+                    return nil;
+                }
+                id downloadURL = [fileInfoDict objectForKey:@"Location"];
+                if (downloadURL != [NSNull null])
+                    return [NSURL URLWithString:downloadURL];
+            }
+            return nil;
+        }
+        else {
+            NSLog(@"Download URL is corrupt.");
+            return nil;
+        }
     }
     else {
-        NSLog(@"Error getting download url.");
+        NSLog(@"No download URL available.");
         return nil;
+    }
+}
+
++ (void)reportDownloadCompleted:(NSString*)productID {
+    NSString* requestURL = @"https://";
+    requestURL = [[requestURL stringByAppendingString:[MediaArcPlatform sharedInstance].servicesHost] stringByAppendingString:[MediaArcPlatform sharedInstance].productDownloadURLFormat];
+    requestURL = [NSString stringWithFormat:requestURL,productID];
+    NSMutableURLRequest *reportDownloadRequest = [[NSMutableURLRequest alloc] initWithURL:[NSURL URLWithString:requestURL]];
+    [reportDownloadRequest setValue:[[BlioAccountService sharedInstance] getAuthorizationHeader] forHTTPHeaderField:@"Authorization"];
+    [reportDownloadRequest setHTTPMethod:@"POST"];
+    NSError* err;
+    NSData *responseData = [NSURLConnection sendSynchronousRequest:reportDownloadRequest returningResponse:nil error:&err];
+    [reportDownloadRequest release];
+    // TODO remove after testing
+    if (responseData) {
+        NSString * responseStr;
+        responseStr = [[[NSString alloc] initWithData:responseData encoding: NSUTF8StringEncoding] autorelease];
+        if (responseStr)
+            NSLog(@"ReportDownloadCompleted returned %@",responseStr);
+        else
+            NSLog(@"ReportDownloadCompleted did not return a string.");
     }
 }
 

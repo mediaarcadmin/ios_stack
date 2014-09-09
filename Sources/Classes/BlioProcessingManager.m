@@ -18,6 +18,8 @@
 #import "NSString+BlioAdditions.h"
 #import "BlioAppSettingsConstants.h"
 #import "BlioBookInfo.h"
+#import "BlioSongInfo.h"
+#import "BlioSong.h"
 
 #define AUTODOWNLOAD_ALERT_TAG 15
 #define DOWNLOAD_ADVISORY_ALERT_TAG 25
@@ -27,6 +29,7 @@
 
 - (void)addTextFlowOpToBookOps:(NSMutableArray *)bookOps forBook:(BlioBook *)aBook manifestLocation:(NSString *)manifestLocation withDependency:(NSOperation *)dependencyOp;
 - (void)addCoverOpToBookOps:(NSMutableArray *)bookOps forBook:(BlioBook *)aBook manifestLocation:(NSString *)manifestLocation withDependency:(NSOperation *)dependencyOp;
+- (void)addCoverOpToSongOps:(NSMutableArray *)songOps forSong:(BlioSong *)aSong withDependency:(NSOperation *)dependencyOp;
 
 @end 
 
@@ -61,11 +64,247 @@
 
 #pragma mark -
 #pragma mark BlioProcessingDelegate
+
+-(void) enqueueSong:(BlioSong*)aSong placeholderOnly:(BOOL)placeholderOnly {
+    
+	// NOTE: we're making the assumption that the processing manager is using the same MOC as the LibraryView!!!
+    NSManagedObjectContext *moc = [[BlioBookManager sharedBookManager] managedObjectContextForCurrentThread];
+    if (moc == nil) {
+		NSLog(@"WARNING: enqueueing song attempted while Processing Manager MOC == nil!");
+		return;
+	}
+
+    //	NSLog(@"processingState before: %i",[[aBook valueForKey:@"processingState"] intValue]);
+	[moc refreshObject:aSong mergeChanges:YES];
+    //	NSLog(@"processingState after: %i",[[aBook valueForKey:@"processingState"] intValue]);
+    
+    if ([[aSong valueForKey:@"transactionType"] intValue] == BlioTransactionTypePreorder) {
+		NSLog(@"WARNING: enqueue method called on pre-ordered song!");
+		NSLog(@"Aborting enqueue by prematurely returning...");
+		return;
+	}
+    
+	if ([[aSong valueForKey:@"processingState"] intValue] == kBlioBookProcessingStateComplete) {
+		NSLog(@"WARNING: enqueue method called on already complete song!");
+		NSLog(@"Aborting enqueue by prematurely returning...");
+		return;
+	}
+	if ([[aSong valueForKey:@"processingState"] intValue] != kBlioBookProcessingStateNotProcessed && placeholderOnly) {
+		NSLog(@"WARNING: enqueue method with placeholderOnly called on a song that is in a state other than NotProcessed!");
+		NSLog(@"Aborting enqueue by prematurely returning...");
+		return;
+	}
+	
+	if ([[aSong valueForKey:@"processingState"] intValue] != kBlioBookProcessingStateIncomplete && [[aSong valueForKey:@"processingState"] intValue] != kBlioBookProcessingStateNotProcessed && !placeholderOnly) {
+		// if song is paused, reflect unpausing in state
+		[aSong setValue:[NSNumber numberWithInt:kBlioBookProcessingStateIncomplete] forKey:@"processingState"];
+		NSError * error;
+		if (![moc save:&error]) {
+			NSLog(@"[BlioProcessingManager enqueueSong:placeholderOnly:] (changing state to incomplete) Save failed with error: %@, %@", error, [error userInfo]);
+		}
+	}
+    
+	NSManagedObjectID *songID = [aSong objectID];
+    NSString *cacheDir = [aSong cacheDirectory];
+	NSString *tempDir = [aSong tempDirectory];
+    BlioMediaSourceID sourceID = [[aSong sourceID] intValue];
+	NSString *sourceSpecificID = [aSong sourceSpecificID];
+	
+	if ([[aSong valueForKey:@"processingState"] intValue] == kBlioBookProcessingStateIncomplete) {
+		// status is incomplete; operations involved with this book may or may not be in the queue, so we'll cancel the CompleteOperation for this book if it exists and co-opt the other operations if they haven't been cancelled yet
+		BlioProcessingOperation * oldCompleteOperation = [self processingCompleteOperationForSourceID: sourceID sourceSpecificID:sourceSpecificID];
+		if (oldCompleteOperation)
+            [oldCompleteOperation cancel];
+	}
+	
+	NSError * error;
+	if (![[NSFileManager defaultManager] createDirectoryAtPath:cacheDir withIntermediateDirectories:YES attributes:nil error:&error])
+		NSLog(@"Failed to create song cache directory in processing manager with error: %@, %@", error, [error userInfo]);
+    
+	NSMutableArray *songOps = [NSMutableArray array];
+	
+	NSURL * url = nil;
+	NSUInteger alreadyCompletedOperations = 0;
+	
+    if ([aSong valueForKey:BlioSongCoverKey]) {
+        url = nil;
+        alreadyCompletedOperations++;
+    }
+    else {
+        // Don't handle the cover for a paid book here - we do it in paid book processing
+        [self addCoverOpToSongOps:songOps forSong:aSong withDependency:nil];
+    }
+    
+    if (sourceID == BlioBookSourceOnlineStore) {
+		
+        BlioProcessingDownloadPaidSongOperation * paidSongOp = nil;
+		//if (placeholderOnly || (manifestLocation && [manifestLocation isEqualToString:BlioManifestEntryLocationFileSystem])) {
+        if (placeholderOnly || [aSong valueForKey:BlioSongKey]) {
+			alreadyCompletedOperations++;
+			url = nil;
+		}
+		else {
+            // we still need to finish downloading this file
+            // so check to see if operation already exists
+            paidSongOp = (BlioProcessingDownloadPaidSongOperation*)[self operationByClass:[BlioProcessingDownloadPaidSongOperation class] forSourceID:sourceID sourceSpecificID:sourceSpecificID];
+            if (!paidSongOp || paidSongOp.isCancelled) {
+                // Bundled song currently not supported, otherwise url could be set to app bundle path.
+                url = nil;
+                paidSongOp = [[[BlioProcessingDownloadPaidSongOperation alloc] initWithUrl:url] autorelease];
+                paidSongOp.songID = songID;
+                paidSongOp.sourceID = sourceID;
+                paidSongOp.sourceSpecificID = sourceSpecificID;
+                paidSongOp.cacheDirectory = cacheDir;
+                paidSongOp.tempDirectory = tempDir;
+                // Not setting localFilename because unneeded.
+                //paidSongOp.localFilename = [aBook manifestPathForKey:paidSongOp.filenameKey];
+                [self.preAvailabilityQueue addOperation:paidSongOp];
+            }
+            else {
+                // we reuse existing one
+                //					usedPreExistingOperation = YES;
+            }
+            [songOps addObject:paidSongOp];
+		}
+	}
+	[self completeOperationQueued];
+    NSLog(@"songID: %@",songID);
+	BlioProcessingCompleteOperation *completeOp = [[BlioProcessingCompleteOperation alloc] init];
+    completeOp.processingDelegate = self;
+	[completeOp setQueuePriority:NSOperationQueuePriorityVeryHigh];
+	completeOp.alreadyCompletedOperations = alreadyCompletedOperations;
+	completeOp.songID = songID;
+	completeOp.sourceID = sourceID;
+	completeOp.sourceSpecificID = sourceSpecificID;
+	completeOp.cacheDirectory = cacheDir;
+	completeOp.tempDirectory = tempDir;
+	
+	
+	for (NSOperation *op in songOps) {
+		[completeOp addDependency:op];
+	}
+	
+	[self.preAvailabilityQueue addOperation:completeOp];
+	[completeOp calculateProgress];
+	
+	// send notification to relevant library cells that progress is now available
+	
+	[completeOp release];
+	
+}
+
+-(void)enqueueSongWithTitle:(NSString *)title
+                            authors:(NSArray *)authors
+                          coverPath:(NSString *)coverPath
+                           sourceID:(BlioMediaSourceID)sourceID
+                   sourceSpecificID:(NSString*)sourceSpecificID
+                    transactionType:(BlioTransactionType)aTransactionType
+                    placeholderOnly:(BOOL)placeholderOnly {
+    NSManagedObjectContext *moc = [[BlioBookManager sharedBookManager] managedObjectContextForCurrentThread];
+    if (nil != moc) {
+        
+        NSFetchRequest *request = [[NSFetchRequest alloc] init];
+        [request setEntity:[NSEntityDescription entityForName:@"BlioSong" inManagedObjectContext:moc]];
+        
+        NSError *error;
+        BlioSong *aSong = nil;
+        
+        NSUInteger count = [moc countForFetchRequest:request error:&error];
+        [request release];
+        if (count == NSNotFound) {
+            NSLog(@"Failed to retrieve song count with error: %@, %@", error, [error userInfo]);
+            return;
+        }
+		NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
+		[fetchRequest setEntity:[NSEntityDescription entityForName:@"BlioSong" inManagedObjectContext:moc]];
+        //			NSLog(@"sourceSpecificID: %@",sourceSpecificID);
+        //			NSLog(@"sourceID: %i",sourceID);
+		[fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"sourceSpecificID == %@ && sourceID == %@", sourceSpecificID,[NSNumber numberWithInt:sourceID]]];
+		
+		NSError *errorExecute = nil;
+		NSArray *results = [moc executeFetchRequest:fetchRequest error:&errorExecute];
+		[fetchRequest release];
+		if (errorExecute) {
+			NSLog(@"Error getting executeFetchRequest results. %@, %@", errorExecute, [errorExecute userInfo]);
+			return;
+		}
+		if ([results count] >= 1) {
+			if ([results count] != 1)
+                NSLog(@"WARNING: More than one song found with sourceSpecificID:%@ and sourceID:%i",sourceSpecificID,sourceID);
+			aSong = [results objectAtIndex:0];
+			NSLog(@"Processing Manager: Found song in context already");
+			if (placeholderOnly) {
+                NSLog(@"Therefore no need to fulfill a placeholderOnly enqueue new song command. Aborting...");
+                return;
+            }
+            if ([[aSong valueForKey:@"processingState"] intValue] == kBlioBookProcessingStateComplete) {
+                NSLog(@"WARNING: enqueue method called on already complete song with sourceSpecificID:%@ and sourceID:%i",sourceSpecificID,sourceID);
+                NSLog(@"Aborting enqueue by prematurely returning...");
+                return;
+            }
+		}
+		else {
+			// create a new song in context from scratch
+            NSLog(@"Processing Manager: Creating new song");
+            aSong = [NSEntityDescription insertNewObjectForEntityForName:@"BlioSong" inManagedObjectContext:moc];
+			[aSong setValue:[NSNumber numberWithInt:count] forKey:@"libraryPosition"];
+		}
+		
+        [aSong setValue:title forKey:@"title"];
+        [aSong setValue:[title sansInitialArticle] forKey:@"titleSortable"];
+        [aSong setValue:[NSNumber numberWithInt:sourceID] forKey:@"sourceID"];
+        [aSong setValue:sourceSpecificID forKey:@"sourceSpecificID"];
+        [aSong setValue:[NSNumber numberWithInt:aTransactionType] forKey:@"transactionType"];
+		if (sourceID == BlioBookSourceOnlineStore) {
+			NSInteger siteNum = [[BlioStoreManager sharedInstance] currentSiteNum];
+			NSInteger userNum = [[BlioStoreManager sharedInstance] currentUserNum];
+			[aSong setValue:[NSNumber numberWithInt:siteNum] forKey:@"siteNum"];
+			[aSong setValue:[NSNumber numberWithInt:userNum] forKey:@"userNum"];
+		}
+		NSString * artistsValue = @"";
+		for (int i = 0; i < [authors count]; i++) {
+			if (i != 0) artistsValue = [artistsValue stringByAppendingString:@"|"];
+			artistsValue = [artistsValue stringByAppendingString:[authors objectAtIndex:i]];
+		}
+		[aSong setValue:artistsValue forKey:@"artist"];
+        if (placeholderOnly)
+            [aSong setValue:[NSNumber numberWithInt:kBlioBookProcessingStateNotProcessed] forKey:@"processingState"];
+        else
+            [aSong setValue:[NSNumber numberWithInt:kBlioBookProcessingStateIncomplete] forKey:@"processingState"];
+        if (coverPath != nil) {
+            [aSong setValue:coverPath forKey:@"coverURL"];
+        }
+		if ([aSong valueForKey:@"uuid"] == nil)
+		{
+            // Since titles can be shared among books/movies/songs/albums, add some uniqueness.
+            NSString *uniqueString = [NSString uniqueStringWithBaseString:[title stringByAppendingString:artistsValue]];
+			[aSong setValue:uniqueString forKey:@"uuid"];
+		}
+        if (![moc save:&error]) {
+            NSLog(@"[BlioProcessingManager enqueueSongWithTitle:] (saving UUID) Save failed with error: %@, %@", error, [error userInfo]);
+        }
+        
+		[self enqueueSong:aSong placeholderOnly:placeholderOnly];
+	}
+}
+
+-(void)enqueueSong:(BlioSongInfo*)songInfo download:(BOOL)downloadNewSongs {
+    [self enqueueSongWithTitle:songInfo.title
+                       authors:nil // array from songInfo.artist
+                     coverPath:songInfo.graphic
+                      sourceID:BlioBookSourceOnlineStore
+              sourceSpecificID:songInfo.productID
+               transactionType:songInfo.transactionType
+               placeholderOnly:(!downloadNewSongs)
+     ];
+}
+
 - (void)enqueueBookWithTitle:(NSString *)title authors:(NSArray *)authors coverPath:(NSString *)coverPath 
 					ePubPath:(NSString *)ePubPath pdfPath:(NSString *)pdfPath  xpsPath:(NSString *)xpsPath textFlowPath:(NSString *)textFlowPath 
 			   audiobookPath:(NSString *)audiobookPath sourceID:(BlioBookSourceID)sourceID sourceSpecificID:(NSString*)sourceSpecificID placeholderOnly:(BOOL)placeholderOnly {    
 	[self enqueueBookWithTitle:title authors:authors coverPath:coverPath ePubPath:ePubPath pdfPath:pdfPath xpsPath:xpsPath textFlowPath:textFlowPath audiobookPath:audiobookPath sourceID:sourceID sourceSpecificID:sourceSpecificID ISBN:nil productType:BlioProductTypeFull transactionType:BlioTransactionTypeNotSpecified expirationDate:nil placeholderOnly:placeholderOnly];
 }
+
 - (void)enqueueBookWithTitle:(NSString *)title authors:(NSArray *)authors coverPath:(NSString *)coverPath 
 					ePubPath:(NSString *)ePubPath pdfPath:(NSString *)pdfPath  xpsPath:(NSString *)xpsPath textFlowPath:(NSString *)textFlowPath 
 			   audiobookPath:(NSString *)audiobookPath sourceID:(BlioBookSourceID)sourceID sourceSpecificID:(NSString*)sourceSpecificID ISBN:(NSString*)anISBN productType:(BlioProductType)aProductType transactionType:(BlioTransactionType)aTransactionType expirationDate:(NSDate *)anExpirationDate placeholderOnly:(BOOL)placeholderOnly {    
@@ -150,10 +389,14 @@
         else [aBook setValue:[NSNumber numberWithInt:kBlioBookProcessingStateIncomplete] forKey:@"processingState"];
         
 		NSString * locationValue = nil;
-		if (sourceID == BlioBookSourceLocalBundle || sourceID == BlioBookSourceLocalBundleDRM) locationValue = BlioManifestEntryLocationBundle;
-		else if (sourceID == BlioBookSourceFileSharing) locationValue = BlioManifestEntryLocationDocumentsDirectory;
-		else if (sourceID == BlioBookSourceOtherApplications) locationValue = BlioManifestEntryLocationFileSystemOther;
-		else locationValue = BlioManifestEntryLocationWeb;
+		if (sourceID == BlioBookSourceLocalBundle || sourceID == BlioBookSourceLocalBundleDRM)
+            locationValue = BlioManifestEntryLocationBundle;
+		else if (sourceID == BlioBookSourceFileSharing)
+            locationValue = BlioManifestEntryLocationDocumentsDirectory;
+		else if (sourceID == BlioBookSourceOtherApplications)
+            locationValue = BlioManifestEntryLocationFileSystemOther;
+		else
+            locationValue = BlioManifestEntryLocationWeb;
         if (coverPath != nil) {
             NSDictionary *manifestEntry = [NSMutableDictionary dictionary];
             [manifestEntry setValue:locationValue forKey:BlioManifestEntryLocationKey];
@@ -302,8 +545,8 @@
 	}					
 
 	NSManagedObjectID *bookID = [aBook objectID];
-	NSString *cacheDir = [aBook bookCacheDirectory];
-	NSString *tempDir = [aBook bookTempDirectory];
+	NSString *cacheDir = [aBook cacheDirectory];
+	NSString *tempDir = [aBook tempDirectory];
 	BlioBookSourceID sourceID = [[aBook sourceID] intValue];
 	NSString *sourceSpecificID = [aBook sourceSpecificID];
 	
@@ -729,11 +972,14 @@
 				manifestOp.sourceSpecificID = sourceSpecificID;
 				manifestOp.cacheDirectory = cacheDir;
 				manifestOp.tempDirectory = tempDir;
-				if (licenseOp) [manifestOp addDependency:licenseOp];
+				if (licenseOp)
+                    [manifestOp addDependency:licenseOp];
 				[self.preAvailabilityQueue addOperation:manifestOp];
 			} else {
-				if (paidBookOp && ![[manifestOp dependencies] containsObject:paidBookOp]) [manifestOp addDependency:paidBookOp];
-				if (licenseOp && ![[manifestOp dependencies] containsObject:licenseOp]) [manifestOp addDependency:licenseOp];
+				if (paidBookOp && ![[manifestOp dependencies] containsObject:paidBookOp])
+                    [manifestOp addDependency:paidBookOp];
+				if (licenseOp && ![[manifestOp dependencies] containsObject:licenseOp])
+                    [manifestOp addDependency:licenseOp];
             }
 			[xpsOps addObject:manifestOp];
 
@@ -797,6 +1043,56 @@
 	
 }
 
+- (void)addCoverOpToSongOps:(NSMutableArray *)songOps forSong:(BlioSong *)aSong withDependency:(NSOperation *)dependencyOp {
+    
+    NSString *stringURL = [aSong valueForKey:@"coverURL"];
+    BlioProcessingDownloadCoverOperation * coverOp = nil;
+    
+    NSURL *url = nil;
+    NSManagedObjectID *songID = [aSong objectID];
+	NSString *cacheDir = [aSong cacheDirectory];
+	NSString *tempDir = [aSong tempDirectory];
+	BlioBookSourceID sourceID = [[aSong sourceID] intValue];
+	NSString *sourceSpecificID = [aSong sourceSpecificID];
+    
+    if (stringURL != nil) {
+        // TODO what if the song is bundled, or imported?
+        url = [NSURL URLWithString:stringURL];
+    
+        coverOp = [[BlioProcessingDownloadCoverOperation alloc] initWithUrl:url];
+        coverOp.songID = songID;
+        coverOp.sourceID = sourceID;
+        coverOp.sourceSpecificID = sourceSpecificID;
+        // Not needed.
+        //coverOp.localFilename = [aSong manifestPathForKey:coverOp.filenameKey];
+        coverOp.cacheDirectory = cacheDir;
+        coverOp.tempDirectory = tempDir;
+        coverOp.filenameKey = BlioSongCoverKey;
+        [coverOp setQueuePriority:NSOperationQueuePriorityHigh];
+        [self.preAvailabilityQueue addOperation:coverOp];
+        if (songOps)
+            [songOps addObject:coverOp];
+        [coverOp release];
+    }
+    
+	BlioProcessingGenerateCoverThumbsOperation *thumbsOp = [[BlioProcessingGenerateCoverThumbsOperation alloc] init];
+	thumbsOp.songID = songID;
+	thumbsOp.sourceID = sourceID;
+	thumbsOp.sourceSpecificID = sourceSpecificID;
+	thumbsOp.cacheDirectory = cacheDir;
+	thumbsOp.tempDirectory = tempDir;
+	if (coverOp)
+        [thumbsOp addDependency:coverOp];
+	if (dependencyOp)
+        [thumbsOp addDependency:dependencyOp];
+	[thumbsOp setQueuePriority:NSOperationQueuePriorityVeryHigh];
+	[self.preAvailabilityQueue addOperation:thumbsOp];
+	if (songOps)
+        [songOps addObject:thumbsOp];
+	[thumbsOp release];
+    
+}
+
 - (void)addCoverOpToBookOps:(NSMutableArray *)bookOps forBook:(BlioBook *)aBook manifestLocation:(NSString *)manifestLocation withDependency:(NSOperation *)dependencyOp {
     
     NSString *stringURL = [aBook manifestPathForKey:BlioManifestCoverKey];
@@ -804,8 +1100,8 @@
     
     NSURL *url = nil;
     NSManagedObjectID *bookID = [aBook objectID];
-	NSString *cacheDir = [aBook bookCacheDirectory];
-	NSString *tempDir = [aBook bookTempDirectory];
+	NSString *cacheDir = [aBook cacheDirectory];
+	NSString *tempDir = [aBook tempDirectory];
 	BlioBookSourceID sourceID = [[aBook sourceID] intValue];
 	NSString *sourceSpecificID = [aBook sourceSpecificID];
     
@@ -827,9 +1123,11 @@
         coverOp.localFilename = [aBook manifestPathForKey:coverOp.filenameKey];
         coverOp.cacheDirectory = cacheDir;
         coverOp.tempDirectory = tempDir;
+        coverOp.filenameKey = BlioManifestCoverKey;
         [coverOp setQueuePriority:NSOperationQueuePriorityHigh];
         [self.preAvailabilityQueue addOperation:coverOp];
-        if (bookOps) [bookOps addObject:coverOp];
+        if (bookOps)
+            [bookOps addObject:coverOp];
         [coverOp release];
     }
         
@@ -853,8 +1151,8 @@
     BlioProcessingDownloadTextFlowOperation * textFlowOp = nil;
     NSURL *url = nil;
     NSManagedObjectID *bookID = [aBook objectID];
-	NSString *cacheDir = [aBook bookCacheDirectory];
-	NSString *tempDir = [aBook bookTempDirectory];
+	NSString *cacheDir = [aBook cacheDirectory];
+	NSString *tempDir = [aBook tempDirectory];
 	BlioBookSourceID sourceID = [[aBook sourceID] intValue];
 	NSString *sourceSpecificID = [aBook sourceSpecificID];
     
@@ -1043,29 +1341,20 @@
 		[self resumeProcessingForSourceID:BlioBookSourceOnlineStore];
 		[self resumeProcessingForSourceID:BlioBookSourceLocalBundleDRM];
         if (![[NSUserDefaults standardUserDefaults] boolForKey:kBlioHasLoggedInKey]) {
-            // As of 3.8, we turn off AutoDownload by default.  And why was this ever a BOOL?
-            //[[NSUserDefaults standardUserDefaults] setBool:YES forKey:kBlioDownloadNewBooksDefaultsKey];
+            // Turn off AutoDownload by default. 
             [[NSUserDefaults standardUserDefaults] setInteger:-1 forKey:kBlioDownloadNewBooksDefaultsKey];
             [[NSUserDefaults standardUserDefaults] setBool:YES forKey:kBlioHasLoggedInKey];
             [[NSUserDefaults standardUserDefaults] synchronize];
-            /* As of 3.8 we also no longer let the user initially choose to auto-download.
-            [BlioAlertManager showAlertWithTitle:NSLocalizedString(@"You Have Books",@"\"You Have Books\" Alert message title")
-                                         message:NSLocalizedStringWithDefaultValue(@"AUTO_DOWNLOAD_BOOKS_FIRST_TIME",nil,[NSBundle mainBundle],@"Would you like to download the books in your account now?",@"Alert message informing the first time iOS end-user of the option to download all the user's books.")
-                                        delegate:self
-                               cancelButtonTitle:NSLocalizedString(@"Not Now",@"\"Not Now\" label for button used to cancel/dismiss alertview")
-             otherButtonTitles:NSLocalizedString(@"OK",@"\"OK\" label for alertview"),nil];
-             [[NSUserDefaults standardUserDefaults] setInteger:-1 forKey:kBlioDownloadNewBooksDefaultsKey];
-             [[NSUserDefaults standardUserDefaults] synchronize];
-             */
             if (![[NSUserDefaults standardUserDefaults] valueForKey:kBlioWelcomeScreenHasShownKey])
-                [BlioAlertManager showAlertWithTitle:NSLocalizedString(@"You Have Books",@"\"You Have Books\" Alert message title")
+                [BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Download Your Books",@"\"Download Your Books\" Alert message title")
                                     message:NSLocalizedStringWithDefaultValue(@"AUTO_DOWNLOAD_SETTING_INFO_WITHOUT_DOWNLOAD",nil,[NSBundle mainBundle],@"You can download your books by going to the Archive.  To download books automatically in the future, you can turn on your Auto-Download account setting.",@"Alert message informing the first time iOS end-user where auto-download setting can be changed.")
                                         delegate:nil
                                 cancelButtonTitle:NSLocalizedString(@"OK",@"\"OK\" label for alertview")
                                 otherButtonTitles:nil];
         }
         else if ( [[NSUserDefaults standardUserDefaults] integerForKey:kBlioDownloadNewBooksDefaultsKey] > 0) {
-            [[BlioStoreManager sharedInstance] retrieveBooksForSourceID:BlioBookSourceOnlineStore];
+            //[[BlioStoreManager sharedInstance] retrieveBooksForSourceID:BlioBookSourceOnlineStore];
+            [[BlioStoreManager sharedInstance] retrieveMediaForSourceID:BlioBookSourceOnlineStore];
         }
 
 	}
@@ -1080,6 +1369,30 @@
     [[NSUserDefaults standardUserDefaults] setBool:YES forKey:kBlioWelcomeScreenHasShownKey];
     [[NSUserDefaults standardUserDefaults] synchronize];
 
+}
+
+
+-(BlioSong*)songWithSourceID:(BlioBookSourceID)sourceID sourceSpecificID:(NSString*)sourceSpecificID {
+    NSManagedObjectContext *moc = [[BlioBookManager sharedBookManager] managedObjectContextForCurrentThread];
+	
+	NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
+	[fetchRequest setEntity:[NSEntityDescription entityForName:@"BlioSong" inManagedObjectContext:moc]];
+	[fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"sourceID == %@ && sourceSpecificID == %@",[NSNumber numberWithInt:sourceID],sourceSpecificID]];
+	
+	NSError *errorExecute = nil;
+	NSArray *results = [moc executeFetchRequest:fetchRequest error:&errorExecute];
+	[fetchRequest release];
+	if (errorExecute) {
+		NSLog(@"Error searching for paid song in MOC. %@, %@", errorExecute, [errorExecute userInfo]);
+		return nil;
+	}
+	if ([results count] == 1) {
+		return (BlioSong*)[results objectAtIndex:0];
+	}
+	else if ([results count] > 1) {
+		NSLog(@"WARNING: multiple songs found with same sourceID and sourceSpecificID!");
+	}
+	return nil;
 }
 
 -(BlioBook*)bookWithSourceID:(BlioBookSourceID)sourceID sourceSpecificID:(NSString*)sourceSpecificID {
@@ -1104,6 +1417,7 @@
 	}
 	return nil;
 }
+
 -(BlioBook*)bookWithSourceID:(BlioBookSourceID)sourceID ISBN:(NSString*)anISBN {
     NSManagedObjectContext *moc = [[BlioBookManager sharedBookManager] managedObjectContextForCurrentThread];
 	
@@ -1126,6 +1440,7 @@
 	}
 	return nil;
 }
+
 - (void)pauseProcessingForBook:(BlioBook*)aBook {
 	NSLog(@"BlioProcessingManager pauseProcessingForBook entered");
     NSManagedObjectContext *moc = [[BlioBookManager sharedBookManager] managedObjectContextForCurrentThread];
@@ -1485,8 +1800,8 @@
 	NSFileManager *fileManager = [NSFileManager defaultManager];
 	
 	// delete temporary files (which are only present if processing is not complete)
-	if ([fileManager fileExistsAtPath:[aBook bookTempDirectory]]) {
-		if (![fileManager removeItemAtPath:[aBook bookTempDirectory] error:&error]) {
+	if ([fileManager fileExistsAtPath:[aBook tempDirectory]]) {
+		if (![fileManager removeItemAtPath:[aBook tempDirectory] error:&error]) {
 			NSLog(@"WARNING: deletion of temporary directory for book failed. %@, %@", error, [error userInfo]);
 		}
 	}
@@ -1496,7 +1811,7 @@
 		NSString * coverFilename = [aBook manifestPathForKey:BlioManifestCoverKey];
         if (coverFilename) coverFilename = [[aBook manifestPathForKey:BlioManifestCoverKey] lastPathComponent];
         else {
-            if ([[NSFileManager defaultManager] fileExistsAtPath:[[aBook bookCacheDirectory] stringByAppendingPathComponent:BlioManifestCoverKey]]) {
+            if ([[NSFileManager defaultManager] fileExistsAtPath:[[aBook cacheDirectory] stringByAppendingPathComponent:BlioManifestCoverKey]]) {
                 coverFilename = BlioManifestCoverKey;
                 
                 // restore entry to point to CoverImage on disk, since placeholders do not have XPS available.
@@ -1509,13 +1824,13 @@
         }
         NSLog(@"coverFilename: %@",coverFilename);
 		NSString * thumbnailsDirectory = BlioBookThumbnailsDir;
-		if ([fileManager fileExistsAtPath:[aBook bookCacheDirectory]]) {
+		if ([fileManager fileExistsAtPath:[aBook cacheDirectory]]) {
 			NSError * directoryContentError;
-			NSArray *fileList = [fileManager contentsOfDirectoryAtPath:[aBook bookCacheDirectory] error:&directoryContentError];
+			NSArray *fileList = [fileManager contentsOfDirectoryAtPath:[aBook cacheDirectory] error:&directoryContentError];
 			if (fileList != nil) {
 				for (NSString * fileName in fileList) {
 					if (![fileName isEqualToString:coverFilename] && ![fileName isEqualToString:thumbnailsDirectory] && [fileName rangeOfString:BlioBookThumbnailPrefix].location == NSNotFound) {
-						if (![fileManager removeItemAtPath:[[aBook bookCacheDirectory] stringByAppendingPathComponent:fileName] error:&error]) {
+						if (![fileManager removeItemAtPath:[[aBook cacheDirectory] stringByAppendingPathComponent:fileName] error:&error]) {
 							NSLog(@"WARNING: deletion of asset for paid book failed. %@, %@", error, [error userInfo]);
 						}
 					}
@@ -1558,7 +1873,7 @@
 	}
 	else {
 		// delete permanent files
-		if (![fileManager removeItemAtPath:[aBook bookCacheDirectory] error:&error]) {
+		if (![fileManager removeItemAtPath:[aBook cacheDirectory] error:&error]) {
 			NSLog(@"WARNING: deletion of cache directory for book failed. %@, %@", error, [error userInfo]);
 		}
 		
@@ -1680,49 +1995,5 @@
     }
     NSLog(@"decrementing - _queuedCompleteOperations: %u",_queuedCompleteOperations);
 }
-
-#pragma mark -
-#pragma mark UIAlertViewDelegate methods
-
-/* As of 3.8, we now set AutoDownload off by default.
-- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex{
-	if (buttonIndex == 0) {
-        if (alertView.tag == DOWNLOAD_ADVISORY_ALERT_TAG) {
-            if (![[NSUserDefaults standardUserDefaults] boolForKey:kBlioHasRestoredPurchasedBooksKey]) {
-                _notifyProcessingComplete = YES;
-            }
-            [self processArchivedBooks];
-            [[BlioStoreManager sharedInstance] retrieveBooksForSourceID:BlioBookSourceOnlineStore];
-        }
-        else if (alertView.tag == AUTODOWNLOAD_ALERT_TAG) {
-            [BlioAlertManager showTaggedAlertWithTitle:NSLocalizedString(@"Download Advisory",@"\"Download Advisory\" Alert message title")
-                                         message:NSLocalizedStringWithDefaultValue(@"DOWNLOAD_ADVISORY_INFO",nil,[NSBundle mainBundle],@"If you have a large library, it may take several minutes for your books to download.  For best results you should not exit  or lock the screen until downloading is complete.",@"Alert message advising the user that download of her library may take time, during which she'd best not exit or background the app.")
-                                        delegate:self
-                                             tag:DOWNLOAD_ADVISORY_ALERT_TAG
-                               cancelButtonTitle:NSLocalizedString(@"OK",@"\"OK\" label for alertview")
-                               otherButtonTitles:nil];
-        }
-        else {
-            [BlioAlertManager showAlertWithTitle:NSLocalizedString(@"Auto-Download Setting",@"\"Auto-Download Books\" Alert message title")
-                                         message:NSLocalizedStringWithDefaultValue(@"AUTO_DOWNLOAD_SETTING_INFO_WITHOUT_DOWNLOAD",nil,[NSBundle mainBundle],@"You can download your books later by going to the Archive.  To select whether or not to download books automatically in the future, go to My Account in Settings.",@"Alert message informing the first time iOS end-user where auto-download setting can be changed after someone has chosen not to download books upon first time launch.")
-                                        delegate:nil
-                               cancelButtonTitle:NSLocalizedString(@"OK",@"\"OK\" label for alertview")
-                               otherButtonTitles:nil];
-            [[NSUserDefaults standardUserDefaults] setInteger:-1 forKey:kBlioDownloadNewBooksDefaultsKey];
-            [[NSUserDefaults standardUserDefaults] synchronize];
-        }
-    }
-	if (buttonIndex == 1) {
-        [BlioAlertManager showTaggedAlertWithTitle:NSLocalizedString(@"Auto-Download Setting",@"\"Auto-Download Books\" Alert message title")
-                                     message:NSLocalizedStringWithDefaultValue(@"AUTO_DOWNLOAD_SETTING_INFO_WITH_DOWNLOAD",nil,[NSBundle mainBundle],@"To select whether or not to download books automatically in the future, go to My Account in Settings.",@"Alert message informing the first time iOS end-user where auto-download setting can be changed after someone chosen not to download books upon first time launch.")
-                                    delegate:self
-                                         tag:AUTODOWNLOAD_ALERT_TAG
-                           cancelButtonTitle:NSLocalizedString(@"OK",@"\"OK\" label for alertview")
-                           otherButtonTitles:nil];
-
-	}
-	[alertView dismissWithClickedButtonIndex:buttonIndex animated:YES];
-}
-*/
 
 @end

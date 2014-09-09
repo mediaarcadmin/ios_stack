@@ -9,10 +9,13 @@
 #import <Foundation/Foundation.h>
 #import <CoreData/CoreData.h>
 
+@class BlioSongInfo;
+@class BlioSong;
 @class BlioBookInfo;
 @class BlioBook;
 @class BlioProcessingCompleteOperation;
 @class BlioProcessingDownloadOperation;
+
 
 typedef enum {
 	BlioBookSourceNotSpecified = 0,
@@ -24,6 +27,9 @@ typedef enum {
 	BlioBookSourceFeedbooks = 6,
 	BlioBookSourceGoogleBooks = 7
 } BlioBookSourceID;
+
+// TODO? replace BlioBookSourceID entirely 
+typedef BlioBookSourceID BlioMediaSourceID;
 
 typedef enum {
 	BlioProductTypeFull = 1,
@@ -48,6 +54,7 @@ static NSString * const BlioProcessingOperationFailedNotification = @"BlioProces
 
 @interface BlioProcessingOperation : NSOperation {
     NSManagedObjectID *bookID;
+    NSManagedObjectID *songID;
     BlioBookSourceID sourceID;
     NSString *sourceSpecificID;
     BOOL forceReprocess;
@@ -62,6 +69,7 @@ static NSString * const BlioProcessingOperationFailedNotification = @"BlioProces
 }
 
 @property (nonatomic, retain) NSManagedObjectID *bookID;
+@property (nonatomic, retain) NSManagedObjectID *songID;
 @property (nonatomic, assign) BlioBookSourceID sourceID;
 @property (nonatomic, copy) NSString *sourceSpecificID;
 @property (nonatomic) BOOL forceReprocess;
@@ -85,6 +93,9 @@ static NSString * const BlioProcessingOperationFailedNotification = @"BlioProces
 - (void)setBookValue:(id)value forKey:(NSString *)key;
 - (id)getBookValueForKey:(NSString *)key;
 
+- (void)setSongValue:(id)value forKey:(NSString *)key;
+- (id)getSongValueForKey:(NSString *)key;
+
 - (void)reportBookReadingIfRequired;
 + (BOOL)addSkipBackupAttributeToItemAtURL:(NSURL *)URL;
 
@@ -92,35 +103,66 @@ static NSString * const BlioProcessingOperationFailedNotification = @"BlioProces
 
 @protocol BlioProcessingDelegate
 @required
-- (void)enqueueBookWithTitle:(NSString *)title authors:(NSArray *)authors coverPath:(NSString *)coverPath 
+
+// Songs
+-(void)enqueueSong:(BlioSongInfo*)songInfo download:(BOOL)downloadNewSongs;
+
+-(void)enqueueSongWithTitle:(NSString *)title
+                    authors:(NSArray *)authors
+                  coverPath:(NSString *)coverPath
+                   sourceID:(BlioMediaSourceID)sourceID
+           sourceSpecificID:(NSString*)sourceSpecificID
+    transactionType:(BlioTransactionType)aTransactionType
+            placeholderOnly:(BOOL)placeholderOnly;
+
+-(void)enqueueSong:(BlioSong*)aSong placeholderOnly:(BOOL)placeholderOnly;
+
+// Books
+- (void)enqueueBookWithTitle:(NSString *)title authors:(NSArray *)authors coverPath:(NSString *)coverPath
 					ePubPath:(NSString *)ePubPath pdfPath:(NSString *)pdfPath xpsPath:(NSString *)xpsPath textFlowPath:(NSString *)textFlowPath 
 			   audiobookPath:(NSString *)audiobookPath sourceID:(BlioBookSourceID)sourceID sourceSpecificID:(NSString*)sourceSpecificID placeholderOnly:(BOOL)placeholderOnly;
+
 - (void)enqueueBookWithTitle:(NSString *)title authors:(NSArray *)authors coverPath:(NSString *)coverPath 
 					ePubPath:(NSString *)ePubPath pdfPath:(NSString *)pdfPath xpsPath:(NSString *)xpsPath textFlowPath:(NSString *)textFlowPath 
 			   audiobookPath:(NSString *)audiobookPath sourceID:(BlioBookSourceID)sourceID sourceSpecificID:(NSString*)sourceSpecificID ISBN:(NSString*)anISBN productType:(BlioProductType)aProductType transactionType:(BlioTransactionType)aTransactionType expirationDate:(NSDate*)anExpirationDate placeholderOnly:(BOOL)placeholderOnly;
--(void) enqueueBook:(BlioBook*)aBook;
--(void) enqueueBook:(BlioBook*)aBook resetProcessingAlertSuppression:(BOOL)resetValue;
--(void) enqueueBook:(BlioBook*)aBook placeholderOnly:(BOOL)placeholderOnly;
--(void) enqueueBook:(BlioBookInfo*)bookInfo download:(BOOL)downloadNewBooks;
-- (void) resumeProcessing;
+
+-(void)enqueueBook:(BlioBook*)aBook;
+
+-(void)enqueueBook:(BlioBook*)aBook resetProcessingAlertSuppression:(BOOL)resetValue;
+
+-(void)enqueueBook:(BlioBook*)aBook placeholderOnly:(BOOL)placeholderOnly;
+
+-(void)enqueueBook:(BlioBookInfo*)bookInfo download:(BOOL)downloadNewBooks;
+
+- (void)resumeProcessing;
+
 -(BlioBook*)bookWithSourceID:(BlioBookSourceID)sourceID sourceSpecificID:(NSString*)sourceSpecificID;
+
 -(BlioBook*)bookWithSourceID:(BlioBookSourceID)sourceID ISBN:(NSString*)anISBN;
--(void) reprocessCoverThumbnailsForBook:(BlioBook*)aBook;
-- (void) resumeProcessingForSourceID:(BlioBookSourceID)bookSource;
+
+-(BlioSong*)songWithSourceID:(BlioBookSourceID)sourceID sourceSpecificID:(NSString*)sourceSpecificID;
+
+-(void)reprocessCoverThumbnailsForBook:(BlioBook*)aBook;
+
+- (void)resumeProcessingForSourceID:(BlioBookSourceID)bookSource;
+
 - (BlioProcessingCompleteOperation *)processingCompleteOperationForSourceID:(BlioBookSourceID)sourceID sourceSpecificID:(NSString*)sourceSpecificID;
+
 - (NSArray *)processingOperationsForSourceID:(BlioBookSourceID)sourceID sourceSpecificID:(NSString*)sourceSpecificID;
--(void) resumeSuspendedProcessingForSourceID:(BlioBookSourceID)bookSource;
-	-(void) suspendProcessingForSourceID:(BlioBookSourceID)bookSource;
+
+-(void)resumeSuspendedProcessingForSourceID:(BlioBookSourceID)bookSource;
+
+	-(void)suspendProcessingForSourceID:(BlioBookSourceID)bookSource;
 - (void)pauseProcessingForBook:(BlioBook*)aBook;
 - (void)suspendProcessingForBook:(BlioBook*)aBook;
 - (void)stopProcessingForBook:(BlioBook*)aBook;
-- (void) verifyBundledBooks;
-- (void) processArchivedBooks;
--(void) deleteBooksForSourceID:(BlioBookSourceID)sourceID;
--(void) deletePaidBooks;
--(void) deletePaidBooksForUserNum:(NSInteger)user siteNum:(NSInteger)site;
--(void) deleteBook:(BlioBook*)aBook shouldSave:(BOOL)shouldSave;
--(void) deleteBook:(BlioBook*)aBook attemptArchive:(BOOL)attemptArchive shouldSave:(BOOL)shouldSave;
+- (void)verifyBundledBooks;
+- (void)processArchivedBooks;
+-(void)deleteBooksForSourceID:(BlioBookSourceID)sourceID;
+-(void)deletePaidBooks;
+-(void)deletePaidBooksForUserNum:(NSInteger)user siteNum:(NSInteger)site;
+-(void)deleteBook:(BlioBook*)aBook shouldSave:(BOOL)shouldSave;
+-(void)deleteBook:(BlioBook*)aBook attemptArchive:(BOOL)attemptArchive shouldSave:(BOOL)shouldSave;
 -(void)safeDeleteBook:(BlioBook*)aBook attemptArchive:(BOOL)attemptArchive shouldSave:(BOOL)shouldSave;
 -(void)safeDeleteBookWithSettings:(NSDictionary*)settings;
 - (void)stopInternetOperations;

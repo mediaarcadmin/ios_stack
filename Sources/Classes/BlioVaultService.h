@@ -11,7 +11,7 @@
 typedef enum {
     Book = 0,
     Album,
-    Track,
+    Song,
     Video,
     App
 } BlioMediaType;
@@ -24,7 +24,8 @@ typedef enum {
 + (void)getProductDetails:(NSURLSession*)session  product:(NSString*)productID handler:(void (^)(NSData *data, NSURLResponse *response, NSError *error))handler;
 + (void)getProducts:(NSURLSession*)session;
 + (void)getProductsPlusDetails:(NSURLSession*)session;
-+ (NSURL*)getDownloadURL:(NSString*)productID;
 + (void)getSupportToken:(NSURLSession*)session;
++ (NSURL*)getDownloadURL:(NSString*)productID;
++ (void)reportDownloadCompleted:(NSString*)productID;
 
 @end

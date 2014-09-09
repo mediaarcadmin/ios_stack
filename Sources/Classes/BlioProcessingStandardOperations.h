@@ -62,6 +62,8 @@
 	NSData * requestHTTPBody;
     
     NSInteger statusCode;
+    
+	BOOL mustReport;
 }
 
 @property (nonatomic, retain) NSURL *url;
@@ -79,6 +81,7 @@
 @property (nonatomic, copy) NSString *serverMimetype;
 
 @property (nonatomic, assign) NSInteger statusCode;
+@property (nonatomic, assign) BOOL mustReport;
 
 - (id)initWithUrl:(NSURL *)aURL;
 - (void)downloadDidFinishSuccessfully:(BOOL)success;
@@ -112,6 +115,10 @@
 @end
 
 @interface BlioProcessingDownloadPaidBookOperation : BlioProcessingDownloadOperation 
+
+@end
+
+@interface BlioProcessingDownloadPaidSongOperation : BlioProcessingDownloadOperation
 
 @end
 

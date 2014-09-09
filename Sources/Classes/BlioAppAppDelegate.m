@@ -584,7 +584,7 @@ static void *background_init_thread(void * arg) {
 	// this logic happens to only execute for subsequent applicationDidBecomeActive invocations beyond the first time (effectively never for iOS 3.2)
 	if (self.networkStatus != NotReachable) {
 		if ([[BlioStoreManager sharedInstance] isLoggedInForSourceID:BlioBookSourceOnlineStore] && ![[BlioStoreManager sharedInstance] storeHelperForSourceID:BlioBookSourceOnlineStore].isRetrievingBooks) {
-			[[BlioStoreManager sharedInstance] retrieveBooksForSourceID:BlioBookSourceOnlineStore];
+			[[BlioStoreManager sharedInstance] retrieveMediaForSourceID:BlioBookSourceOnlineStore];
 		}
 	}		
 }

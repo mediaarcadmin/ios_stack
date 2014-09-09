@@ -1,78 +1,179 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model name="Blio.xcdatamodel" userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="878" systemVersion="11C74" minimumToolsVersion="Automatic" macOSVersion="Automatic" iOSVersion="Automatic">
-    <entity name="BlioBook" representedClassName="BlioBook">
-        <attribute name="audiobook" attributeType="Boolean" defaultValueString="NO"/>
-        <attribute name="author" optional="YES" attributeType="String"/>
-        <attribute name="expirationDate" optional="YES" attributeType="Date"/>
-        <attribute name="isbn" optional="YES" attributeType="String"/>
-        <attribute name="layoutPageEquivalentCount" attributeType="Integer 32" defaultValueString="0"/>
-        <attribute name="libraryPosition" attributeType="Integer 32" defaultValueString="0"/>
-        <attribute name="manifest" optional="YES" attributeType="Transformable"/>
-        <attribute name="processingState" attributeType="Integer 16" defaultValueString="0"/>
-        <attribute name="productType" attributeType="Integer 16" defaultValueString="1"/>
-        <attribute name="progress" attributeType="Float" defaultValueString="0"/>
-        <attribute name="reflowRight" attributeType="Boolean" defaultValueString="YES"/>
-        <attribute name="siteNum" optional="YES" attributeType="Integer 32" defaultValueString="0"/>
-        <attribute name="sourceID" attributeType="Integer 16" defaultValueString="0"/>
-        <attribute name="sourceSpecificID" attributeType="String"/>
-        <attribute name="textFlowPageRanges" optional="YES" attributeType="Transformable"/>
-        <attribute name="title" optional="YES" attributeType="String"/>
-        <attribute name="titleSortable" optional="YES" attributeType="String"/>
-        <attribute name="transactionType" optional="YES" attributeType="Integer 16" defaultValueString="0"/>
-        <attribute name="ttsCapable" attributeType="Boolean" defaultValueString="NO"/>
-        <attribute name="ttsRight" attributeType="Boolean" defaultValueString="NO"/>
+<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="3401" systemVersion="13C64" minimumToolsVersion="Automatic" macOSVersion="Automatic" iOSVersion="Automatic">
+    <entity name="BlioBook" representedClassName="BlioBook" parentEntity="BlioMedia">
+        <attribute name="audiobook" attributeType="Boolean" defaultValueString="NO">
+            <userInfo/>
+        </attribute>
+        <attribute name="author" optional="YES" attributeType="String">
+            <userInfo/>
+        </attribute>
+        <attribute name="expirationDate" optional="YES" attributeType="Date">
+            <userInfo/>
+        </attribute>
+        <attribute name="isbn" optional="YES" attributeType="String">
+            <userInfo/>
+        </attribute>
+        <attribute name="layoutPageEquivalentCount" attributeType="Integer 32" defaultValueString="0">
+            <userInfo/>
+        </attribute>
+        <attribute name="manifest" optional="YES" attributeType="Transformable">
+            <userInfo/>
+        </attribute>
+        <attribute name="productType" attributeType="Integer 16" defaultValueString="1">
+            <userInfo/>
+        </attribute>
+        <attribute name="reflowRight" attributeType="Boolean" defaultValueString="YES">
+            <userInfo/>
+        </attribute>
+        <attribute name="textFlowPageRanges" optional="YES" attributeType="Transformable">
+            <userInfo/>
+        </attribute>
+        <attribute name="ttsCapable" attributeType="Boolean" defaultValueString="NO">
+            <userInfo/>
+        </attribute>
+        <attribute name="ttsRight" attributeType="Boolean" defaultValueString="NO">
+            <userInfo/>
+        </attribute>
         <attribute name="twoPageSpread" optional="YES" attributeType="Boolean" syncable="YES"/>
-        <attribute name="userNum" optional="YES" attributeType="Integer 32"/>
-        <attribute name="uuid" optional="YES" attributeType="String"/>
-        <relationship name="bookmarks" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="BlioBookmark" inverseName="book" inverseEntity="BlioBookmark" indexed="YES"/>
-        <relationship name="highlights" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="BlioHighlight" inverseName="book" inverseEntity="BlioHighlight" indexed="YES"/>
-        <relationship name="notes" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="BlioNote" inverseName="book" inverseEntity="BlioNote" indexed="YES"/>
-        <relationship name="placeInBook" optional="YES" minCount="1" maxCount="1" deletionRule="Cascade" destinationEntity="BlioPlaceInBook" inverseName="book" inverseEntity="BlioPlaceInBook" indexed="YES"/>
+        <relationship name="bookmarks" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="BlioBookmark" inverseName="book" inverseEntity="BlioBookmark" indexed="YES">
+            <userInfo/>
+        </relationship>
+        <relationship name="highlights" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="BlioHighlight" inverseName="book" inverseEntity="BlioHighlight" indexed="YES">
+            <userInfo/>
+        </relationship>
+        <relationship name="notes" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="BlioNote" inverseName="book" inverseEntity="BlioNote" indexed="YES">
+            <userInfo/>
+        </relationship>
+        <relationship name="placeInBook" optional="YES" minCount="1" maxCount="1" deletionRule="Cascade" destinationEntity="BlioPlaceInBook" inverseName="book" inverseEntity="BlioPlaceInBook" indexed="YES">
+            <userInfo/>
+        </relationship>
+        <userInfo/>
     </entity>
     <entity name="BlioBookmark" representedClassName="NSManagedObject">
-        <attribute name="bookmarkText" optional="YES" attributeType="String"/>
-        <relationship name="book" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="BlioBook" inverseName="bookmarks" inverseEntity="BlioBook" indexed="YES"/>
-        <relationship name="range" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="BlioBookmarkRange" inverseName="bookBookmark" inverseEntity="BlioBookmarkRange" indexed="YES"/>
+        <attribute name="bookmarkText" optional="YES" attributeType="String">
+            <userInfo/>
+        </attribute>
+        <relationship name="book" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="BlioBook" inverseName="bookmarks" inverseEntity="BlioBook" indexed="YES">
+            <userInfo/>
+        </relationship>
+        <relationship name="range" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="BlioBookmarkRange" inverseName="bookBookmark" inverseEntity="BlioBookmarkRange" indexed="YES">
+            <userInfo/>
+        </relationship>
+        <userInfo/>
     </entity>
     <entity name="BlioBookmarkPoint" representedClassName="NSManagedObject">
-        <attribute name="blockOffset" attributeType="Integer 32" defaultValueString="0"/>
-        <attribute name="elementOffset" attributeType="Integer 32" defaultValueString="0"/>
-        <attribute name="layoutPage" attributeType="Integer 32" defaultValueString="0"/>
-        <attribute name="wordOffset" attributeType="Integer 32" defaultValueString="0"/>
-        <relationship name="rangeWithEndPoint" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="BlioBookmarkRange" inverseName="endPoint" inverseEntity="BlioBookmarkRange" indexed="YES"/>
-        <relationship name="rangeWithStartPoint" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="BlioBookmarkRange" inverseName="startPoint" inverseEntity="BlioBookmarkRange" indexed="YES"/>
+        <attribute name="blockOffset" attributeType="Integer 32" defaultValueString="0">
+            <userInfo/>
+        </attribute>
+        <attribute name="elementOffset" attributeType="Integer 32" defaultValueString="0">
+            <userInfo/>
+        </attribute>
+        <attribute name="layoutPage" attributeType="Integer 32" defaultValueString="0">
+            <userInfo/>
+        </attribute>
+        <attribute name="wordOffset" attributeType="Integer 32" defaultValueString="0">
+            <userInfo/>
+        </attribute>
+        <relationship name="rangeWithEndPoint" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="BlioBookmarkRange" inverseName="endPoint" inverseEntity="BlioBookmarkRange" indexed="YES">
+            <userInfo/>
+        </relationship>
+        <relationship name="rangeWithStartPoint" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="BlioBookmarkRange" inverseName="startPoint" inverseEntity="BlioBookmarkRange" indexed="YES">
+            <userInfo/>
+        </relationship>
+        <userInfo/>
     </entity>
     <entity name="BlioBookmarkRange" representedClassName="NSManagedObject">
-        <attribute name="color" optional="YES" attributeType="Transformable"/>
-        <relationship name="bookBookmark" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="BlioBookmark" inverseName="range" inverseEntity="BlioBookmark" indexed="YES"/>
-        <relationship name="bookHighlight" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="BlioHighlight" inverseName="range" inverseEntity="BlioHighlight" indexed="YES"/>
-        <relationship name="bookNote" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="BlioNote" inverseName="range" inverseEntity="BlioNote" indexed="YES"/>
-        <relationship name="bookPlaceInBook" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="BlioPlaceInBook" inverseName="range" inverseEntity="BlioPlaceInBook" indexed="YES"/>
-        <relationship name="endPoint" optional="YES" minCount="1" maxCount="1" deletionRule="Cascade" destinationEntity="BlioBookmarkPoint" inverseName="rangeWithEndPoint" inverseEntity="BlioBookmarkPoint" indexed="YES"/>
-        <relationship name="startPoint" optional="YES" minCount="1" maxCount="1" deletionRule="Cascade" destinationEntity="BlioBookmarkPoint" inverseName="rangeWithStartPoint" inverseEntity="BlioBookmarkPoint" indexed="YES"/>
+        <attribute name="color" optional="YES" attributeType="Transformable">
+            <userInfo/>
+        </attribute>
+        <relationship name="bookBookmark" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="BlioBookmark" inverseName="range" inverseEntity="BlioBookmark" indexed="YES">
+            <userInfo/>
+        </relationship>
+        <relationship name="bookHighlight" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="BlioHighlight" inverseName="range" inverseEntity="BlioHighlight" indexed="YES">
+            <userInfo/>
+        </relationship>
+        <relationship name="bookNote" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="BlioNote" inverseName="range" inverseEntity="BlioNote" indexed="YES">
+            <userInfo/>
+        </relationship>
+        <relationship name="bookPlaceInBook" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="BlioPlaceInBook" inverseName="range" inverseEntity="BlioPlaceInBook" indexed="YES">
+            <userInfo/>
+        </relationship>
+        <relationship name="endPoint" optional="YES" minCount="1" maxCount="1" deletionRule="Cascade" destinationEntity="BlioBookmarkPoint" inverseName="rangeWithEndPoint" inverseEntity="BlioBookmarkPoint" indexed="YES">
+            <userInfo/>
+        </relationship>
+        <relationship name="startPoint" optional="YES" minCount="1" maxCount="1" deletionRule="Cascade" destinationEntity="BlioBookmarkPoint" inverseName="rangeWithStartPoint" inverseEntity="BlioBookmarkPoint" indexed="YES">
+            <userInfo/>
+        </relationship>
+        <userInfo/>
     </entity>
     <entity name="BlioHighlight" representedClassName="NSManagedObject">
-        <relationship name="book" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="BlioBook" inverseName="highlights" inverseEntity="BlioBook" indexed="YES"/>
-        <relationship name="note" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="BlioNote" inverseName="highlight" inverseEntity="BlioNote" indexed="YES"/>
-        <relationship name="range" optional="YES" minCount="1" maxCount="1" deletionRule="Cascade" destinationEntity="BlioBookmarkRange" inverseName="bookHighlight" inverseEntity="BlioBookmarkRange" indexed="YES"/>
+        <relationship name="book" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="BlioBook" inverseName="highlights" inverseEntity="BlioBook" indexed="YES">
+            <userInfo/>
+        </relationship>
+        <relationship name="note" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="BlioNote" inverseName="highlight" inverseEntity="BlioNote" indexed="YES">
+            <userInfo/>
+        </relationship>
+        <relationship name="range" optional="YES" minCount="1" maxCount="1" deletionRule="Cascade" destinationEntity="BlioBookmarkRange" inverseName="bookHighlight" inverseEntity="BlioBookmarkRange" indexed="YES">
+            <userInfo/>
+        </relationship>
+        <userInfo/>
+    </entity>
+    <entity name="BlioMedia" isAbstract="YES" syncable="YES">
+        <attribute name="libraryPosition" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="processingState" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <attribute name="progress" optional="YES" attributeType="Float" defaultValueString="0.0" syncable="YES"/>
+        <attribute name="siteNum" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="sourceID" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <attribute name="sourceSpecificID" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="title" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="titleSortable" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="transactionType" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <attribute name="userNum" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="uuid" optional="YES" attributeType="String" syncable="YES"/>
     </entity>
     <entity name="BlioNote" representedClassName="NSManagedObject">
-        <attribute name="noteText" optional="YES" attributeType="String"/>
-        <relationship name="book" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="BlioBook" inverseName="notes" inverseEntity="BlioBook" indexed="YES"/>
-        <relationship name="highlight" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="BlioHighlight" inverseName="note" inverseEntity="BlioHighlight" indexed="YES"/>
-        <relationship name="range" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="BlioBookmarkRange" inverseName="bookNote" inverseEntity="BlioBookmarkRange" indexed="YES"/>
+        <attribute name="noteText" optional="YES" attributeType="String">
+            <userInfo/>
+        </attribute>
+        <relationship name="book" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="BlioBook" inverseName="notes" inverseEntity="BlioBook" indexed="YES">
+            <userInfo/>
+        </relationship>
+        <relationship name="highlight" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="BlioHighlight" inverseName="note" inverseEntity="BlioHighlight" indexed="YES">
+            <userInfo/>
+        </relationship>
+        <relationship name="range" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="BlioBookmarkRange" inverseName="bookNote" inverseEntity="BlioBookmarkRange" indexed="YES">
+            <userInfo/>
+        </relationship>
+        <userInfo/>
     </entity>
     <entity name="BlioPlaceInBook" representedClassName="NSManagedObject">
-        <relationship name="book" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="BlioBook" inverseName="placeInBook" inverseEntity="BlioBook" indexed="YES"/>
-        <relationship name="range" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="BlioBookmarkRange" inverseName="bookPlaceInBook" inverseEntity="BlioBookmarkRange" indexed="YES"/>
+        <relationship name="book" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="BlioBook" inverseName="placeInBook" inverseEntity="BlioBook" indexed="YES">
+            <userInfo/>
+        </relationship>
+        <relationship name="range" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="BlioBookmarkRange" inverseName="bookPlaceInBook" inverseEntity="BlioBookmarkRange" indexed="YES">
+            <userInfo/>
+        </relationship>
+        <userInfo/>
+    </entity>
+    <entity name="BlioSong" representedClassName="BlioSong" parentEntity="BlioMedia" syncable="YES">
+        <attribute name="artist" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="coverPath" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="coverURL" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="downloads" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <attribute name="isDownloadable" optional="YES" attributeType="Boolean" syncable="YES"/>
+        <attribute name="length" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="path" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="resizedCovers" optional="YES" attributeType="Transformable" syncable="YES"/>
     </entity>
     <elements>
-        <element name="BlioBookmarkRange" positionX="439" positionY="201" width="128" height="150"/>
-        <element name="BlioHighlight" positionX="27" positionY="153" width="128" height="90"/>
-        <element name="BlioBook" positionX="619" positionY="198" width="128" height="450"/>
-        <element name="BlioBookmark" positionX="441" positionY="63" width="128" height="90"/>
-        <element name="BlioNote" positionX="18" positionY="21" width="128" height="105"/>
-        <element name="BlioBookmarkPoint" positionX="27" positionY="261" width="128" height="135"/>
-        <element name="BlioPlaceInBook" positionX="432" positionY="420" width="128" height="75"/>
+        <element name="BlioBook" positionX="0" positionY="0" width="0" height="0"/>
+        <element name="BlioBookmark" positionX="0" positionY="0" width="0" height="0"/>
+        <element name="BlioBookmarkPoint" positionX="0" positionY="0" width="0" height="0"/>
+        <element name="BlioBookmarkRange" positionX="0" positionY="0" width="0" height="0"/>
+        <element name="BlioHighlight" positionX="0" positionY="0" width="0" height="0"/>
+        <element name="BlioMedia" positionX="0" positionY="0" width="0" height="0"/>
+        <element name="BlioNote" positionX="0" positionY="0" width="0" height="0"/>
+        <element name="BlioPlaceInBook" positionX="0" positionY="0" width="0" height="0"/>
+        <element name="BlioSong" positionX="0" positionY="0" width="0" height="0"/>
     </elements>
 </model>
